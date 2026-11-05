@@ -197,10 +197,12 @@ namespace DOL.GS
                 .ToList();
             int damageNear = ownedShrooms.Count(entry => entry.Kind == AnimistShroomKind.Damage &&
                 entry.Turret.IsWithinRadius(encounterTarget, Math.Max(500, entry.Turret.TurretSpell?.CalculateEffectiveRange(entry.Turret) ?? 1000)));
-            bool crowded = fight.AwakeHostilesNear(bot, damageSpot, PayloadRange(kit.DamageField.Spell, bot)) >= 2;
-            Spell damagePayload = Payload(kit.DamageField.Spell);
-            int desired = AnimistShroomPlanner.DesiredDamageShrooms(fight.EngagedHealth, damagePayload?.Damage ?? 0,
-                crowded ? AnimistShroomPlanner.CrowdedCampDamageCap : 10);
+            // Owner 2026-11-05 (GitHub #16, reset-day S21): the old "only enough shrooms to finish the mob" estimate, the
+            // 2-shroom cap in a crowded camp and the 20% power reserve on every shroom were not period: they came from the
+            // old fast power regeneration. Damage shrooms are planted up to the server's 1.65 turret cap (which it still
+            // enforces with the area cap), and only the power to re-summon the main shroom is kept back.
+            int desired = Math.Max(1, ServerProperties.Properties.TURRET_PLAYER_CAP_COUNT);
+            int reserve = kit.PreferredMain.Spell != null ? bot.PowerCost(kit.PreferredMain.Spell) : 0;
 
             (Spell Spell, SpellLine Line) vent = default;
             if (fight.FightWorthBuffing)
@@ -214,7 +216,7 @@ namespace DOL.GS
                         entry.Turret.TurretSpell?.SpellType == family &&
                         AnimistShroomPlanner.StillCovers(entry.ExpiresAt, now) &&
                         Vector3.Distance(Position(entry.Turret), ventSpot) <= PlantSpacing);
-                    if (!covered && Affordable(bot, candidate.Spell) && CanPlantAt(bot, ventSpot))
+                    if (!covered && Affordable(bot, reserve, candidate.Spell) && CanPlantAt(bot, ventSpot))
                     {
                         vent = candidate;
                         break;
@@ -225,17 +227,17 @@ namespace DOL.GS
             GameLiving beingHit = fight.AllyUnderMelee;
             Vector3 ablativeSpot = beingHit != null ? NearSpot(bot, Position(beingHit), kit.Ablative.Spell) : default;
             bool ablativeNeeded = kit.Ablative.Spell != null && beingHit != null &&
-                Affordable(bot, kit.Ablative.Spell) && CanPlantAt(bot, ablativeSpot) &&
+                Affordable(bot, reserve, kit.Ablative.Spell) && CanPlantAt(bot, ablativeSpot) &&
                 !ownedShrooms.Any(entry => entry.Kind == AnimistShroomKind.Ablative &&
                     AnimistShroomPlanner.StillCovers(entry.ExpiresAt, now) &&
                     Vector3.Distance(Position(entry.Turret), ablativeSpot) <= PlantSpacing);
 
-            bool burstReady = kit.Burst.Spell != null && hasMain && Affordable(bot, kit.Burst.Spell) &&
+            bool burstReady = kit.Burst.Spell != null && hasMain && Affordable(bot, reserve, kit.Burst.Spell) &&
                 fight.EngagedNear(main, 350) && fight.AwakeHostilesNear(bot, Position(main), 450, anyCon: true) == 0;
 
             Vector3 sporeSpot = BehindSpot(bot, encounterTarget, kit.Spore.Spell);
             bool sporeNeeded = kit.Spore.Spell != null && bot.Group?.MemberCount > 1 && beingHit != null &&
-                Affordable(bot, kit.Spore.Spell) && CanPlantAt(bot, sporeSpot) &&
+                Affordable(bot, reserve, kit.Spore.Spell) && CanPlantAt(bot, sporeSpot) &&
                 fight.AwakeHostilesNear(bot, Position(encounterTarget), 750, anyCon: true) == 0 &&
                 !ownedShrooms.Any(entry => entry.Kind == AnimistShroomKind.MeleeDebuff &&
                     AnimistShroomPlanner.StillCovers(entry.ExpiresAt, now) &&
@@ -251,14 +253,15 @@ namespace DOL.GS
                 FightWorthBuffing: fight.FightWorthBuffing,
                 DamageShroomsNearFight: damageNear,
                 DesiredDamageShrooms: desired,
-                CanPlantDamage: kit.DamageField.Spell != null && Affordable(bot, kit.DamageField.Spell) && CanPlantAt(bot, damageSpot),
+                CanPlantDamage: kit.DamageField.Spell != null && Affordable(bot, reserve, kit.DamageField.Spell) && CanPlantAt(bot, damageSpot),
                 VentNeeded: vent.Spell != null,
                 AblativeNeeded: ablativeNeeded,
                 BurstReady: burstReady,
                 SporeNeeded: sporeNeeded);
 
             AnimistShroomAction action = AnimistShroomPlanner.Next(situation);
-            LogPeriodically(bot, state, now, kit, ownedShrooms.Select(entry => entry.Kind), desired, crowded, action);
+            LogPeriodically(bot, state, now, kit, ownedShrooms.Select(entry => entry.Kind), desired,
+                fight.AwakeHostilesNear(bot, damageSpot, PayloadRange(kit.DamageField.Spell, bot)) >= 2, action);
 
             bool cast = action switch
             {
@@ -365,9 +368,8 @@ namespace DOL.GS
             return standoff <= 0 || bot.IsWithinRadius(target, standoff + 100);
         }
 
-        private static bool Affordable(GameBot bot, Spell spell) =>
-            spell != null && AutonomousPetSupport.CanCast(bot, spell) &&
-            AnimistShroomPlanner.KeepsReserve(bot.Mana, bot.MaxMana, bot.PowerCost(spell));
+        private static bool Affordable(GameBot bot, int reserve, Spell spell) =>
+            spell != null && AutonomousPetSupport.CanCast(bot, spell) && bot.Mana - bot.PowerCost(spell) >= reserve;
 
         private static bool CanPlantAt(GameBot bot, Vector3 spot) =>
             AutonomousPetSupport.CanDeployFieldTurretAt(bot, new Point3D((int)spot.X, (int)spot.Y, (int)spot.Z));
