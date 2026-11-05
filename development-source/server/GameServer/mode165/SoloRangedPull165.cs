@@ -52,7 +52,8 @@ namespace DOL.GS
             !HiredCompanions165.IsHired(bot) && bot.CharacterClass != null &&
             !BotRangedCombat.IsDedicatedArcher((eCharacterClass)bot.CharacterClass.ID) &&
             !BotSpellPower.IsOffensiveCaster(bot) &&
-            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID);
+            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
+            !DOL.AI.Brain.BotBrain.OpensFromStealth(bot);   // an assassin opens with Backstab, not a thrown knife
 
         public static bool IsAggressive(GameLiving target, GameBot bot) =>
             target is GameNPC { Brain: StandardMobBrain mob } && mob.AggroLevel > 0 && mob.AggroRange > 0 && mob.CanAggroTarget(bot);

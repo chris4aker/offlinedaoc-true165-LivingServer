@@ -29,21 +29,27 @@ namespace DOL.AI.Brain
 
         private static bool IsStealthOpenerStyle(Style style) => style != null && style.StealthRequirement;
 
+        /// <summary>
+        /// An assassin that opens its fights from stealth: it has Stealth, knows a stealth style at its level and its
+        /// player has not switched the opener off. The solo ranged pull leaves such a bot alone (its thrown knife or
+        /// crossbow shot aggroed the monster first, so the opener never happened - 2026-11-05 audit).
+        /// </summary>
+        public static bool OpensFromStealth(GameBot bot) =>
+            Classic165Mode.IsOn && bot?.CharacterClass != null && bot.Styles != null &&
+            BotPoisonSupply.IsAssassin((eCharacterClass)bot.CharacterClass.ID) && CompanionStealth.CanStealth(bot) &&
+            CompanionOptions165.Choice(bot, "stealthopen") != 1 &&
+            bot.Styles.Any(style => IsStealthOpenerStyle(style) && style.Level <= bot.Level);
+
         private bool StealthOpenerWanted(GameLiving target)
         {
             GameBot bot = BotBody;
-            if (!Classic165Mode.IsOn || bot?.CharacterClass == null || target == null || !target.IsAlive ||
-                target == _openerGaveUpOn || bot.Styles == null ||
-                !BotPoisonSupply.IsAssassin((eCharacterClass)bot.CharacterClass.ID) ||
-                !CompanionStealth.CanStealth(bot) || CompanionOptions165.Choice(bot, "stealthopen") == 1 ||
+            if (!OpensFromStealth(bot) || target == null || !target.IsAlive || target == _openerGaveUpOn ||
                 bot.ActiveWeaponSlot == eActiveWeaponSlot.Distance || GameRelic.IsPlayerCarryingRelic(bot) ||
                 target.TargetObject == bot || target.CurrentRegionID != bot.CurrentRegionID ||
                 !bot.IsWithinRadius(target, 2_500))
                 return false;
             // hiding needs a moment out of combat; already hidden, it carries on
-            if (!bot.IsStealthed && (bot.InCombat || HasAggro))
-                return false;
-            return bot.Styles.Any(style => IsStealthOpenerStyle(style) && style.Level <= bot.Level);
+            return bot.IsStealthed || !bot.InCombat && !HasAggro;
         }
 
         /// <summary>The opener for this approach: Perforate Artery (front) on a monster not fighting a groupmate, else the
