@@ -292,9 +292,40 @@ namespace DOL.GS;
                 ? WeaponSpecValue * Math.Max(0, bot.TrainedWeaponSpec((eObjectType)objectType, (int)slot))
                 : 0;
 
-        /// <summary>EquipmentValue plus, for a melee weapon, what the bot's training in its line is worth in that hand.</summary>
+        /// <summary>EquipmentValue plus, for a melee weapon, what the bot's training in its line is worth in that hand, less
+        /// the focus bonuses for spell lines the bot does not have (they do nothing for it).</summary>
         public static int FitValue(GameBot bot, DbInventoryItem item, eInventorySlot slot) =>
-            item == null ? 0 : EquipmentValue(item) + WeaponSpecBonus(bot, item.Object_Type, slot);
+            item == null ? 0 : EquipmentValue(item) + WeaponSpecBonus(bot, item.Object_Type, slot) - 3 * WastedFocus(bot,
+                [(item.Bonus1Type, item.Bonus1), (item.Bonus2Type, item.Bonus2), (item.Bonus3Type, item.Bonus3),
+                 (item.Bonus4Type, item.Bonus4), (item.Bonus5Type, item.Bonus5), (item.Bonus6Type, item.Bonus6),
+                 (item.Bonus7Type, item.Bonus7), (item.Bonus8Type, item.Bonus8), (item.Bonus9Type, item.Bonus9),
+                 (item.Bonus10Type, item.Bonus10), (item.ExtraBonusType, item.ExtraBonus)]);
+
+        /// <summary>
+        /// The focus bonus points (a staff's "+N to Darkness", ...) for spell lines the bot does not have. Item values add
+        /// up every bonus point whatever it raises, so any caster rated a staff of another class's lines like its own
+        /// (2026-11-05 audit: 16 Cabalists with a Wizard staff, 18 Necromancers with a Sorcerer staff, 14 Spiritmasters
+        /// with Bonedancer staves).
+        /// </summary>
+        public static int WastedFocus(GameBot bot, (int Type, int Value)[] bonuses)
+        {
+            if (bot == null)
+                return 0;
+            int wasted = 0;
+            foreach ((int type, int value) in bonuses)
+            {
+                if (value == 0 || type == 0 || SkillBase.FocusToSpec((eProperty)type) is not string spec)
+                    continue;
+                if ((bot.GetSpecializationByName(spec)?.Level ?? 0) <= 0)
+                    wasted += Math.Abs(value);
+            }
+            return wasted;
+        }
+
+        public static int WastedFocus(GameBot bot, DbItemTemplate t) => t == null ? 0 : WastedFocus(bot,
+            [(t.Bonus1Type, t.Bonus1), (t.Bonus2Type, t.Bonus2), (t.Bonus3Type, t.Bonus3), (t.Bonus4Type, t.Bonus4),
+             (t.Bonus5Type, t.Bonus5), (t.Bonus6Type, t.Bonus6), (t.Bonus7Type, t.Bonus7), (t.Bonus8Type, t.Bonus8),
+             (t.Bonus9Type, t.Bonus9), (t.Bonus10Type, t.Bonus10), (t.ExtraBonusType, t.ExtraBonus)]);
 
         /// <summary>
         /// Compares against what the move actually displaces (the idea behind the

@@ -174,7 +174,7 @@ namespace DOL.GS
                             int slot = SlotKey(t.Item_Type);
                             if (!equippedValue.TryGetValue(slot, out int worn))
                                 equippedValue[slot] = worn = WornValue(bot, t.Item_Type);
-                            gain = TemplateValue(t) - worn;
+                            gain = TemplateValue(t) - 3 * AutonomousBotEconomy.WastedFocus(bot, t) - worn;
                         }
                         if (gain <= AutonomousBotEconomy.MinimumEquipmentUpgrade || !MightWear(bot, t))
                             continue;
@@ -194,7 +194,7 @@ namespace DOL.GS
                 DbInventoryItem item = GameInventoryItem.Create(c.Entry.Template);
                 if (item == null || !AutonomousBotEconomy.TryGetEquipmentUpgrade(bot, item, out eInventorySlot slot))
                     continue;
-                int gain = AutonomousBotEconomy.EquipmentValue(item) - AutonomousBotEconomy.EquipmentValue(bot.Inventory.GetItem(slot));
+                int gain = AutonomousBotEconomy.FitValue(bot, item, slot) - AutonomousBotEconomy.FitValue(bot, bot.Inventory.GetItem(slot), slot);
                 return new ShoppingPlan(c.Entry.Merchant, c.Entry.Template, c.Entry.Template.Price, gain);
             }
             return null;
@@ -246,7 +246,7 @@ namespace DOL.GS
         private static int WeaponGain(GameBot bot, DbItemTemplate t)
         {
             eInventorySlot hand = t.Item_Type == Slot.TWOHAND ? eInventorySlot.TwoHandWeapon : eInventorySlot.RightHandWeapon;
-            return TemplateValue(t) + AutonomousBotEconomy.WeaponSpecBonus(bot, t.Object_Type, hand) -
+            return TemplateValue(t) - 3 * AutonomousBotEconomy.WastedFocus(bot, t) + AutonomousBotEconomy.WeaponSpecBonus(bot, t.Object_Type, hand) -
                    AutonomousBotEconomy.FitValue(bot, bot.Inventory.GetItem(hand), hand);
         }
 

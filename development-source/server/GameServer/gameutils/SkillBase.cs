@@ -2971,6 +2971,15 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="specKey"></param>
 		/// <returns></returns>
+		/// <summary>The spell line (spec key) a focus bonus property raises, or null when the property is no focus.</summary>
+		public static string FocusToSpec(eProperty focus)
+		{
+			foreach (KeyValuePair<string, eProperty> pair in m_specToFocus)
+				if (pair.Value == focus)
+					return pair.Key;
+			return null;
+		}
+
 		public static eProperty SpecToSkill(string specKey)
 		{
 			if (!m_specToSkill.TryGetValue(specKey, out eProperty res))
