@@ -1327,7 +1327,8 @@ namespace DOL.AI.Brain
                 return;
 
             GameNPC nearbyMonster = Body.GetNPCsInRadius(1200)
-                .Where(npc => npc != Body && npc.IsAlive && npc.Realm == eRealm.None && CanAggroTarget(npc))
+                .Where(npc => npc != Body && npc.IsAlive && npc.Realm == eRealm.None && CanAggroTarget(npc) &&
+                              StealthedMonsters165.CanSee(Body, npc))   // never chats about a hidden ambusher
                 .OrderBy(Body.GetDistanceTo)
                 .FirstOrDefault();
             var context = new AutonomousBotChat.Context(

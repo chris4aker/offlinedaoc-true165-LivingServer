@@ -3220,6 +3220,8 @@ namespace DOL.GS
                 // ... and one another bot (or player) outside its group has pulled or hit, even before it turns on them
                 // (owner 2026-11-05: bots shared monsters and their XP)
                 .Where(npc => !AutonomousMobClaims.TakenByOther(bot, npc))
+                // a stealthed monster only once the bot is close enough to see it, as a player (StealthedMonsters165)
+                .Where(npc => StealthedMonsters165.CanSee(bot, npc))
                 // A solo bot with no ranged attack can't reach a flying monster (owner 2026-10-31 run: 122 of 193 pull
                 // timeouts were melee bots standing under a mygga). Groups keep their flying-target handoff.
                 .Where(npc => bot.Group != null || (npc.Flags & GameNPC.eFlags.FLYING) == 0 || soloRanged)
