@@ -4329,6 +4329,8 @@ namespace DOL.AI.Brain
                                   spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99);
         }
 
+        private GameLiving _hybridOpenedOn;
+
         private bool HardFight(GameLiving target)
         {
             if (target is GamePlayer or GameBot || target.Level >= Body.Level || Body.HealthPercent < 60)
@@ -4518,9 +4520,12 @@ namespace DOL.AI.Brain
                 // Melee hybrids prefer melee when in range
                 // (owner 2026-11-05: a melee hybrid class melees in range whether or not it has learned a style yet - low
                 // Thanes train Stormcalling first and stood nuking at point blank like casters)
-                if (!PrefersCurrentSpellRange() && (BotBody.CanUsePositionalStyles || BotBody.CanUseAnytimeStyles ||
-                     IsMeleeHybridClass((eCharacterClass)BotBody.CharacterClass.ID)) &&
-                    (Body.IsWithinRadius(Body.TargetObject, 550) || Body.ManaPercent <= 10))
+                // From farther away they open with ONE spell, then close in (class audit 2026-11-05: Thanes chain-cast
+                // Thor's Bolt from range; Prima's Thane opens with a bolt and fights in melee).
+                bool meleeHybrid = !PrefersCurrentSpellRange() && (BotBody.CanUsePositionalStyles || BotBody.CanUseAnytimeStyles ||
+                     IsMeleeHybridClass((eCharacterClass)BotBody.CharacterClass.ID));
+                if (meleeHybrid &&
+                    (Body.IsWithinRadius(Body.TargetObject, 550) || Body.ManaPercent <= 10 || _hybridOpenedOn == Body.TargetObject))
                     return false;
 
                 if (BotBody.CanCastCrowdControlSpells)
@@ -4640,6 +4645,9 @@ namespace DOL.AI.Brain
                 }
             }
 
+            if (casted && type == eCheckSpellType.Offensive && Body.TargetObject is GameLiving opened &&
+                !PrefersCurrentSpellRange() && !Body.IsWithinRadius(opened, 550))
+                _hybridOpenedOn = opened;   // the ranged opener is spent on this target: melee from here on
             return casted || Body.IsCasting;
         }
 
