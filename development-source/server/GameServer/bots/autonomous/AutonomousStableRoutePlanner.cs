@@ -80,7 +80,7 @@ public sealed class AutonomousStableBoardingFailureCache
 /// </summary>
 public static class AutonomousStableRoutePlanner
 {
-    public const short StableSpeed = 1500;
+    public const short StableSpeed = 1000;   // the routes' own speed, as players' horses (owner 2026-11-05)
     public const int BoardingArrivalRadius = 45;
     private const int MaximumPathPoints = 5000;
     private const int MaximumBoardingDistance = 500;

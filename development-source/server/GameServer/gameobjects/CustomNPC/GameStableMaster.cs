@@ -166,7 +166,9 @@ namespace DOL.GS
 						mount.CurrentRegion = CurrentRegion;
 						mount.Heading = path.GetHeading( path.Next );
 						mount.FixedSpeed = true;
-						mount.MaxSpeedBase = 1500;
+						// The routes' own speed (21,430 horse route points say 1000; owner 2026-11-05: some legs with 2000-5000
+						// points ran at super speed with fast hooves). A point may still ask for slower.
+						mount.MaxSpeedBase = 1000;
 						mount.AddToWorld();
 						mount.CurrentPathPoint = path;
 						new MountHorseAction(player, mount).Start(400);
