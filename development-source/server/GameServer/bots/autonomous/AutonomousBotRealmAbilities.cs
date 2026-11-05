@@ -266,6 +266,15 @@ public static class AutonomousBotRealmAbilities
         return gained;
     }
 
+    /// <summary>Re-reads the actives a bot has (a hired companion's player buys them in its realm-ability window; they
+    /// never reached the list the brain fires from, so a companion never used a Purge or Ignore Pain it was given;
+    /// owner 2026-11-05 audit).</summary>
+    public static void RefreshActives(GameBot bot)
+    {
+        if (bot == null) return;
+        States.GetOrCreateValue(bot).Actives = UsableActives.Select(key => bot.GetAbility(key) as TimedRealmAbility).Where(a => a != null).ToArray();
+    }
+
     /// <summary>Uses a bought active when the situation calls for it. Checked at most once a second.</summary>
     public static void UseActives(GameBot bot)
     {

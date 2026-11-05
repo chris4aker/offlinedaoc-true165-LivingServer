@@ -652,6 +652,7 @@ namespace DOL.GS
                 if (level > 0 && SkillBase.GetAbility(key, level) is RealmAbilities.RealmAbility ability &&
                     (bot.GetAbility(key)?.Level ?? 0) < level)
                     bot.AddAbility(ability, false);
+            AutonomousBotRealmAbilities.RefreshActives(bot);   // the actives it was given are used, not only granted
         }
 
         private static string BuyRealmAbility(GameBot bot, OfflineHiredCompanionRecord hired, int index)

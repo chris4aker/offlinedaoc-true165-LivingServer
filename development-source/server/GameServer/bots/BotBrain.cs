@@ -4843,6 +4843,7 @@ namespace DOL.AI.Brain
                 case eSpellType.DexterityQuicknessDebuff:
                 case eSpellType.StrengthDebuff:
                 case eSpellType.StrengthConstitutionDebuff:
+                case eSpellType.ConstitutionDebuff:   // Animist Sap Strength (owner 2026-11-05 class audit)
                 case eSpellType.CombatSpeedDebuff:
                 case eSpellType.DamageOverTime:
                 case eSpellType.MeleeDamageDebuff:
@@ -4865,6 +4866,13 @@ namespace DOL.AI.Brain
                         break;
 
                     if (!LivingHasEffect((GameLiving)Body.TargetObject, spell) && Body.IsWithinRadius(Body.TargetObject, spell.Range))
+                        castSpell = true;
+                    break;
+                // An instant snare (Champion Slowness, Valewalker Close Path, Nightshade Constrict Spirit) on a monster that is
+                // about to run, as players kept runners from bringing friends (owner 2026-11-05 class audit: never cast).
+                case eSpellType.SpeedDecrease:
+                    if (!spell.IsPBAoE && spell.Radius == 0 && Body.TargetObject is GameNPC runner && runner.HealthPercent < 35 &&
+                        !LivingHasEffect(runner, spell) && Body.IsWithinRadius(runner, spell.Range))
                         castSpell = true;
                     break;
             }
