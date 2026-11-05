@@ -3239,7 +3239,7 @@ namespace DOL.GS
                 // orange or harder alone (owner 2026-10-31 run: a level-6 Hunter died to it four times in a row).
                 .Where(npc => _groupDirective?.IsDynamic == true ||
                     ConLevels.GetConColor(bot.GetConLevel(npc)) <=
-                    (_camp.FallbackMaximumCon is ConColor fallback && fallback > ConColor.YELLOW ? fallback : ConColor.YELLOW))
+                    (_camp.FallbackMaximumCon is ConColor fallback && fallback > ConColor.YELLOW ? fallback : SoloCeiling(bot)))
                 // A grey only when nothing else is there: a camp's nearest monster being grey made a solo bot give up a
                 // camp full of good targets as "outleveled" (owner 2026-10-31 runs: 2,263 such abandons an hour).
                 .OrderBy(npc => _groupDirective?.IsDynamic != true &&
@@ -3353,8 +3353,8 @@ namespace DOL.GS
             int planningLevel = sharedGroup ? _groupDirective.AverageLevel : bot.Level;
             int highestMemberLevel = sharedGroup
                 ? bot.Group.GetMembersInTheGroup().Max(member => member.EffectiveLevel) : bot.EffectiveLevel;
-            ConColor maximumTargetCon = MaximumTargetCon(groupSize);
-            ConColor naturalMaximumTargetCon = NaturalMaximumTargetCon(groupSize);
+            ConColor maximumTargetCon = MaximumTargetCon(groupSize, bot);
+            ConColor naturalMaximumTargetCon = NaturalMaximumTargetCon(groupSize, bot);
             // Normal groups start at yellow-or-better, but every death retry is
             // allowed to step down through green. Grey creatures are rejected
             // when candidates are built and can never become a recovery goal.
@@ -3988,7 +3988,7 @@ namespace DOL.GS
         {
             int deathCount = Math.Max(0, bot.PersistentRecord?.DeathCount ?? 0);
             int groupSize = Math.Max(1, (int)(bot.Group?.MemberCount ?? 1));
-            ConColor naturalMaximum = NaturalMaximumTargetCon(groupSize);
+            ConColor naturalMaximum = NaturalMaximumTargetCon(groupSize, bot);
             int maximumSafetySteps = (int)naturalMaximum - (int)ConColor.GREEN;
 
             if (_observedDeathCount < 0)
@@ -4026,7 +4026,7 @@ namespace DOL.GS
                 AutonomousDeathRecoveryPolicy.RetryDelayMilliseconds(_recentSoloDeathsWithoutExperience);
             _recoverAfterSoloDeath = true;
 
-            ConColor failedCon = _lastEngagedCon ?? MaximumTargetCon(groupSize);
+            ConColor failedCon = _lastEngagedCon ?? MaximumTargetCon(groupSize, bot);
             ConColor saferCon = (ConColor)Math.Max((int)ConColor.GREEN, (int)failedCon - 1);
             int requiredSteps = (int)naturalMaximum - (int)saferCon;
             _deathDifficultySteps = Math.Clamp(
@@ -4073,7 +4073,7 @@ namespace DOL.GS
             Log.Warn($"AUTONOMOUS_DEATH_ROUTE_REPLAN bot={bot.Name} id={bot.DatabaseID} " +
                      $"level={bot.Level} realm={GlobalConstants.RealmToName(bot.Realm)} class=\"{bot.ClassName}\" deaths={deathCount} " +
                      $"failed_target=\"{failedTarget}\" at_camp={diedAtCamp} died_at={bot.LastDeathSpot.Region}:{bot.LastDeathSpot.X},{bot.LastDeathSpot.Y} " +
-                     $"goal=\"{goalAtDeath}\" con_lost={bot.TotalConstitutionLostAtDeath} new_max_con={MaximumTargetCon(groupSize)} " +
+                     $"goal=\"{goalAtDeath}\" con_lost={bot.TotalConstitutionLostAtDeath} new_max_con={MaximumTargetCon(groupSize, bot)} " +
                      $"no_xp_death_streak={_recentSoloDeathsWithoutExperience} " +
                      $"recovery_wait_ms={Math.Max(0, _soloDeathRecoveryUntilTick - nowTick)} " +
                      $"region={bot.CurrentRegionID} position={bot.X},{bot.Y},{bot.Z}");
@@ -4081,23 +4081,32 @@ namespace DOL.GS
                 bot,
                 "Recovering from defeat",
                 "Find a safer XP-bearing grind camp",
-                $"Defeat against {failedTarget} lowered the target ceiling to {MaximumTargetCon(groupSize).ToString().ToLowerInvariant()}",
+                $"Defeat against {failedTarget} lowered the target ceiling to {MaximumTargetCon(groupSize, bot).ToString().ToLowerInvariant()}",
                 failedTarget,
                 forceSave: true);
         }
 
-        private static ConColor NaturalMaximumTargetCon(int groupSize) => groupSize switch
+        private static ConColor NaturalMaximumTargetCon(int groupSize, GameBot bot = null) => groupSize switch
         {
             >= 6 => ConColor.PURPLE,
             >= 4 => ConColor.RED,
             >= 2 => ConColor.ORANGE,
-            _ => ConColor.YELLOW,
+            _ => SoloCeiling(bot),
         };
 
-        private ConColor MaximumTargetCon(int groupSize) =>
+        /// <summary>
+        /// The hardest con a solo bot hunts: yellow; a Forester (the Animist's base class, levels 1-4) blue, as the period
+        /// guide teaches (SI Prima: "Find a monster that cons blue to you ... Lifetap the creature as many times as you can
+        /// before it reaches you ... Killing three blues is easier and faster than a single yellow MOB"). 2026-11-05: the
+        /// three Foresters averaged level 3.7 and 112 deaths; in their fair fights yellow monsters reached them half dead.
+        /// </summary>
+        public static ConColor SoloCeiling(GameBot bot) =>
+            bot?.CharacterClass?.ID == (int)eCharacterClass.Forester ? ConColor.BLUE : ConColor.YELLOW;
+
+        private ConColor MaximumTargetCon(int groupSize, GameBot bot = null) =>
             (ConColor)Math.Max(
                 (int)ConColor.GREEN,
-                (int)NaturalMaximumTargetCon(groupSize) - Math.Max(_deathDifficultySteps, _groupDirective?.WipePenalty ?? 0));
+                (int)NaturalMaximumTargetCon(groupSize, bot) - Math.Max(_deathDifficultySteps, _groupDirective?.WipePenalty ?? 0));
 
         private bool HandleStableTravel(GameBot bot)
         {
