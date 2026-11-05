@@ -2906,6 +2906,29 @@ namespace DOL.AI.Brain
                 item?.Object_Type == (int)eObjectType.Instrument &&
                 (requiredInstrument <= 0 || item.DPS_AF == requiredInstrument);
 
+            // The best instrument of the type it carries: a real one before a training one (owner 2026-11-05: given a
+            // Melodic Lute, a Minstrel kept playing her training lute), then the higher level and quality.
+            DbInventoryItem best = bot.Inventory?.AllItems.Where(item => item != null && CorrectInstrument(item) &&
+                    (item.SlotPosition is (int)eInventorySlot.DistanceWeapon or (int)eInventorySlot.TwoHandWeapon ||
+                     item.SlotPosition >= (int)eInventorySlot.FirstBackpack && item.SlotPosition <= (int)eInventorySlot.LastBackpack))
+                .OrderBy(item => BotStarterInstruments.IsTraining(item) ? 1 : 0)
+                .ThenByDescending(item => item.Level).ThenByDescending(item => item.Quality).FirstOrDefault();
+            if (best != null && CorrectInstrument(bot.ActiveWeapon) &&
+                (bot.ActiveWeapon == best || !BotStarterInstruments.IsTraining(bot.ActiveWeapon) || BotStarterInstruments.IsTraining(best)))
+                return true;
+            if (best != null && best.SlotPosition >= (int)eInventorySlot.FirstBackpack && best.SlotPosition <= (int)eInventorySlot.LastBackpack &&
+                bot.Inventory.MoveItem((eInventorySlot)best.SlotPosition, eInventorySlot.TwoHandWeapon, best.Count))
+            {
+                bot.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                return CorrectInstrument(bot.ActiveWeapon);
+            }
+            if (best != null && best != bot.ActiveWeapon &&
+                best.SlotPosition is (int)eInventorySlot.DistanceWeapon or (int)eInventorySlot.TwoHandWeapon)
+            {
+                bot.SwitchWeapon(best.SlotPosition == (int)eInventorySlot.DistanceWeapon ? eActiveWeaponSlot.Distance : eActiveWeaponSlot.TwoHanded);
+                return CorrectInstrument(bot.ActiveWeapon);
+            }
+
             if (CorrectInstrument(bot.ActiveWeapon))
                 return true;
 
