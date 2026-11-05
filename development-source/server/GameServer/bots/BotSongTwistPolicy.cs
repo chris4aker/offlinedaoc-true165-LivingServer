@@ -104,10 +104,19 @@ namespace DOL.GS
         /// playing. Null when none of the wanted songs is known.
         /// </summary>
         public static eSpellType? PerformerHold(bool traveling, bool combat, bool powerLow, bool healthLow, bool enduranceLow,
-            ICollection<eSpellType> available, eSpellType? active)
+            ICollection<eSpellType> available, eSpellType? active, bool? otherPowerRegen = null)
         {
             if (traveling && !combat && available.Contains(eSpellType.SpeedEnhancement))
                 return eSpellType.SpeedEnhancement;
+            // Standing around (owner 2026-11-05, reset-day S23): the power song when trained and nobody else in the group
+            // gives power regeneration, otherwise the heal song. (otherPowerRegen is null when the caller cannot tell.)
+            if (!combat && otherPowerRegen is { } othersGivePower)
+            {
+                if (!othersGivePower && available.Contains(eSpellType.PowerRegenBuff))
+                    return eSpellType.PowerRegenBuff;
+                if (available.Contains(eSpellType.HealthRegenBuff))
+                    return eSpellType.HealthRegenBuff;
+            }
             var wanted = new List<eSpellType>();
             if (combat)
                 wanted.AddRange([eSpellType.EnduranceRegenBuff, eSpellType.PowerRegenBuff, eSpellType.HealthRegenBuff]);

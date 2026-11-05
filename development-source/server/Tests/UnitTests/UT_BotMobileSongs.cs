@@ -857,6 +857,18 @@ namespace DOL.UnitTests
             Assert.That(BotBrain.IsClassicSongClass(eCharacterClass.Warden), Is.False);
         }
 
+        // Owner 2026-11-05 (S23): standing around, the power song unless another group member's class already gives power
+        // regeneration, then the heal song; travel and combat are unchanged.
+        [TestCase(false, eSpellType.PowerRegenBuff)]
+        [TestCase(true, eSpellType.HealthRegenBuff)]
+        public void IdleSongIsPowerUnlessSomeoneElseGivesPower(bool others, eSpellType expected)
+        {
+            var known = new List<eSpellType> { eSpellType.PowerRegenBuff, eSpellType.HealthRegenBuff, eSpellType.EnduranceRegenBuff, eSpellType.SpeedEnhancement };
+            Assert.That(BotSongTwistPolicy.PerformerHold(false, false, false, false, false, known, null, others), Is.EqualTo(expected));
+            Assert.That(BotSongTwistPolicy.PerformerHold(true, false, false, false, false, known, null, others), Is.EqualTo(eSpellType.SpeedEnhancement));
+            Assert.That(BotSongTwistPolicy.PerformerHold(false, true, false, false, false, known, null, others), Is.EqualTo(eSpellType.EnduranceRegenBuff));
+        }
+
         // GitHub #14: the Warden's speed chant has a 3 s cast; it is still the Warden's managed chant (else Wardens
         // never cast speed), not a mobile song, and its other chants stay instant-only.
         [Test]

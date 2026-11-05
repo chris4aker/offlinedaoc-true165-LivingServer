@@ -2505,7 +2505,9 @@ namespace DOL.AI.Brain
                 audience.Any(member => Short(member, m => m.MaxMana > 0 && m.ManaPercent < 85)),
                 audience.Any(member => Short(member, m => m.HealthPercent < 85)),
                 audience.Any(member => Short(member, m => m.EndurancePercent < 85)),
-                songsByType.Keys, activeType);
+                songsByType.Keys, activeType,
+                audience.Any(member => member.effectListComponent.GetSpellEffects().Any(effect =>
+                    effect.SpellHandler?.Spell?.SpellType == eSpellType.PowerRegenBuff && effect.SpellHandler.Caster != bot)));
             Spell song = wanted is { } type ? songsByType[type] : null;
             if (managingCharm)
                 return TryTwistWithCharm(bot, song, charmHoldLeft);
