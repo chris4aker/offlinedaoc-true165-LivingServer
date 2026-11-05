@@ -680,6 +680,9 @@ namespace DOL.GS
                     else
                     {
                         ServiceObjectStore.Remove(existingEffect);
+                        // the new instance is stopped later instead of this one: hand its stat bonus over, or the bonus drifts
+                        if (existingEffect.IsActive && existingEffect is StatBuffECSEffect oldBuff && effect is StatBuffECSEffect newBuff)
+                            oldBuff.HandOverBonusTo(newBuff);
                         existingEffect.IsBeingReplaced = true; // Will be checked by the parent pulse effect so that it doesn't call `Stop` on it.
                         ServiceObjectStore.Add(effect);
                         existingEffects[i] = effect;

@@ -30,6 +30,29 @@ namespace DOL.GS
             OnEffectStartsMsg(true, true, true);
         }
 
+        /// <summary>
+        /// A pulsing chant or song renews its buff by swapping in a new effect instance without starting it (EffectListComponent),
+        /// and only the new one is stopped later. Its bonus is the spell value times ITS effectiveness, which differs from the
+        /// one applied when the caster's effectiveness changed in between (resurrection illness wearing off). The bonus then
+        /// drifted: a Paladin's endurance chant left group members at a negative endurance regeneration, stuck at 0% even
+        /// sitting (2026-11-05: Albion bots "Recovering after release" for 15 hours; the owner's Necromancer in a group with two
+        /// Paladins). The bonus is handed over: what this instance applied comes off, the next instance's amount goes on.
+        /// </summary>
+        public void HandOverBonusTo(StatBuffECSEffect next)
+        {
+            if (next == null || next == this || SpellHandler is not PropertyChangingSpell current ||
+                next.SpellHandler is not PropertyChangingSpell following)
+                return;
+            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
+            {
+                ApplyBonus(Owner, current.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
+                ApplyBonus(Owner, following.BonusCategory1, property, next.SpellHandler.Spell.Value, next.Effectiveness, false);
+            }
+            Owner.StartHealthRegeneration();
+            Owner.StartEnduranceRegeneration();
+            Owner.StartPowerRegeneration();
+        }
+
         public override void OnStopEffect()
         {
             base.OnStopEffect();
