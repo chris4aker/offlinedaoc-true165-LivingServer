@@ -186,6 +186,14 @@ namespace DOL.GS
             // Not every pulsing effect is a `ECSPulseEffect`. Snares and roots decreasing effect are also handled as pulsing spells for example.
             if (spellEffect is ECSPulseEffect pulseEffect)
             {
+                // A dead caster's song stops (owner 2026-11-05: a Minstrel kept pulsing her charm while dead; death clears
+                // effects, but a charm started or queued around the death went on pulsing).
+                if (!caster.IsAlive)
+                {
+                    pulseEffect.End();
+                    return;
+                }
+
                 // This should be unreachable.
                 if (!caster.ActivePulseSpells.ContainsKey(spell.SpellType))
                 {

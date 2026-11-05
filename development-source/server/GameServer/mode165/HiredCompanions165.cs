@@ -30,6 +30,8 @@ namespace DOL.GS
         [DataElement(AllowDbNull = false)] public int HairColour { get; set; }
         /// <summary>Height chosen in the hire window: 1 Short, 2 Average, 3 Tall (0 = Average, rows from before it).</summary>
         [DataElement(AllowDbNull = false)] public int Height { get; set; }
+        /// <summary>The player's choices for this companion (CompanionOptions165): charm, pet, sub-pets, songs.</summary>
+        [DataElement(AllowDbNull = false)] public string Options { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -98,6 +100,12 @@ namespace DOL.GS
             bot != null && bot.DatabaseID > 0 && Hired.TryGetValue(bot.DatabaseID, out OfflineHiredCompanionRecord h) ? h.HairColour : -1;
 
         public static bool IsHired(GameBot bot) => bot != null && bot.DatabaseID > 0 && Hired.ContainsKey(bot.DatabaseID);
+
+        /// <summary>A hired companion's hire record, or null for any other bot.</summary>
+        public static OfflineHiredCompanionRecord HiredRecord(GameBot bot) =>
+            bot != null && bot.DatabaseID > 0 && Hired.TryGetValue(bot.DatabaseID, out OfflineHiredCompanionRecord h) ? h : null;
+
+        public static void SaveRecord(OfflineHiredCompanionRecord hired) => Save(hired);
 
         /// <summary>A hired companion's bag: 10 slots, no weight limit (owner 2026-10-30), for what the player gives it
         /// to use (arrows, poisons, potions) or to carry. The first 10 backpack slots of the bot's own inventory.</summary>

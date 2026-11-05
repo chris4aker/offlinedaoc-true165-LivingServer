@@ -474,8 +474,13 @@ public static class AutonomousPetSupport
                 nextDeployablePetTick = now + 3_000;
             }
 
-            (Spell Spell, SpellLine Line) summon = ChooseCastableByRank(owner, spells, null,
-                owner is GameBot { IsEndgameCompanion: true });
+            (Spell Spell, SpellLine Line) summon = default;
+            // A hired Cabalist / Enchanter summons the pet its player chose (CompanionOptions165), else its own choice.
+            if (owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
+                summon = ChooseCastableByRank(owner, spells.Where(entry => entry.Line?.KeyName == chosenLine).ToList(), null, true);
+            if (summon.Spell == null)
+                summon = ChooseCastableByRank(owner, spells, null,
+                    owner is GameBot { IsEndgameCompanion: true });
             if (summon.Spell != null)
             {
                 PrepareAnimistGroundTarget(owner, combatTarget, summon.Spell);
@@ -523,15 +528,24 @@ public static class AutonomousPetSupport
             if (petActionReady && pet is CommanderPet bonedancerCommander)
             {
                 PruneBonedancerMinionSlots(bonedancerCommander);
-                int desiredCount = DesiredBonedancerMinionCount(bonedancerCommander);
+                int?[] plan = owner is GameBot planner ? CompanionOptions165.SubPets(planner) : null;
+                bool planned = plan != null && plan.Any(slot => slot.HasValue);
+                int desiredCount = planned
+                    ? Math.Min(Math.Min(3, bonedancerCommander.SubPetCapacity), plan.Take(Math.Min(3, bonedancerCommander.SubPetCapacity)).Count(slot => slot != -1))
+                    : DesiredBonedancerMinionCount(bonedancerCommander);
                 if (CanAddBonedancerMinion(bonedancerCommander, desiredCount))
                 {
-                    (Spell Spell, SpellLine Line) minion = ChooseBonedancerMinion(
-                        owner,
-                        bonedancerCommander,
-                        desiredCount,
-                        spells.Where(entry => entry.Spell.SpellType == eSpellType.SummonMinion &&
-                                              CanCast(owner, entry.Spell)));
+                    var minionSpells = spells.Where(entry => entry.Spell.SpellType == eSpellType.SummonMinion &&
+                                                             CanCast(owner, entry.Spell)).ToList();
+                    (Spell Spell, SpellLine Line) minion = planned
+                        ? PlannedBonedancerMinion(owner, bonedancerCommander, plan, minionSpells)
+                        : default;
+                    if (minion.Spell == null)
+                        minion = ChooseBonedancerMinion(
+                            owner,
+                            bonedancerCommander,
+                            desiredCount,
+                            planned ? minionSpells.Where(_ => plan.Any(slot => slot == null)) : minionSpells);
                     if (minion.Spell != null && CastPreservingTarget(owner, owner, minion.Spell, minion.Line))
                     {
                         nextDeployablePetTick = now + PetActionCooldown(minion.Spell);
@@ -1538,6 +1552,16 @@ public static class AutonomousPetSupport
     }
 
     // The upkeep list without a per-call filter (every ordinary pet turn), cached with the known spells.
+    /// <summary>The main-pet summons a bot knows (the companion window's pet choice, CompanionOptions165).</summary>
+    public static (Spell Spell, SpellLine Line)[] MainPetSummons(GameBot bot) =>
+        BotAutomatedSpells(bot).Where(entry => entry.Spell != null && IsMainPetSummon(entry.Spell.SpellType) &&
+                                               entry.Spell.Level <= bot.Level).ToArray();
+
+    /// <summary>The Bonedancer sub-pet summons a bot knows.</summary>
+    public static (Spell Spell, SpellLine Line)[] MinionSummons(GameBot bot) =>
+        BotAutomatedSpells(bot).Where(entry => entry.Spell?.SpellType == eSpellType.SummonMinion &&
+                                               entry.Spell.Level <= bot.Level).ToArray();
+
     private static (Spell Spell, SpellLine Line)[] BotAutomatedSpells(GameBot bot)
     {
         BotKnownSpells(bot);
@@ -1847,6 +1871,51 @@ public static class AutonomousPetSupport
         Search(0, 0, 0, 0, default);
         return best;
     }
+
+    /// <summary>
+    /// A hired Bonedancer's sub-pet plan (CompanionOptions165, owner 2026-11-05): the first planned kind not yet out
+    /// is summoned with its best rank that fits the commander's 75 levels; "automatic" slots are left to the usual pick.
+    /// </summary>
+    private static (Spell Spell, SpellLine Line) PlannedBonedancerMinion(GameLiving owner, CommanderPet commander, int?[] plan,
+        List<(Spell Spell, SpellLine Line)> available)
+    {
+        var active = new List<BdSubPet.SubPetType>();
+        int activeLevels;
+        lock (commander.ControlledNpcListLock)
+        {
+            var alive = commander.ControlledNpcList?.Where(brain => brain?.Body is { IsAlive: true, ObjectState: GameObject.eObjectState.Active })
+                .Select(brain => brain.Body).ToArray() ?? [];
+            activeLevels = alive.Sum(body => (int)body.Level);
+            foreach (GameNPC body in alive)
+                if (MinionType(body) is BdSubPet.SubPetType type)
+                    active.Add(type);
+        }
+        int capacity = Math.Min(3, commander.SubPetCapacity);
+        foreach (int? slot in plan.Take(capacity))
+        {
+            if (slot is not int wanted || wanted < 0)
+                continue;
+            var type = (BdSubPet.SubPetType)wanted;
+            if (active.Remove(type))
+                continue;   // this slot is out already
+            return available.Where(entry => (BdSubPet.SubPetType)entry.Spell.DamageType == type &&
+                                            activeLevels + BonedancerSubPetLevel(owner.Level, entry.Spell) <= 75)
+                .OrderByDescending(entry => BonedancerSubPetLevel(owner.Level, entry.Spell)).ThenByDescending(entry => entry.Spell.Level)
+                .FirstOrDefault();
+        }
+        return default;
+    }
+
+    private static BdSubPet.SubPetType? MinionType(GameNPC body) => body switch
+    {
+        BdMeleeSubPet => BdSubPet.SubPetType.Melee,
+        BdArcherSubPet => BdSubPet.SubPetType.Archer,
+        BdCasterSubPet => BdSubPet.SubPetType.Caster,
+        BdDebufferSubPet => BdSubPet.SubPetType.Debuffer,
+        BdHealerSubPet => BdSubPet.SubPetType.Healer,
+        BdBufferSubPet => BdSubPet.SubPetType.Buffer,
+        _ => null,
+    };
 
     public static int BonedancerSubPetLevel(int ownerLevel, Spell spell)
     {

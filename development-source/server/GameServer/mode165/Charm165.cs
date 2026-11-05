@@ -110,6 +110,11 @@ namespace DOL.GS
             if (!Classic165Mode.IsOn || bot == null || bot.ControlledBrain != null ||
                 bot.IsCasting || bot.castingComponent?.HasPendingSkillRequests == true || AutonomousRealmRaid.IsReserved(bot))
                 return false;
+            // owner 2026-11-05 (reset-day S33): a hired companion whose player switched charming off never charms; a
+            // Minstrel's pet support passes no fight target (its pet is defensive only), so its own target in a fight is used
+            if (!CompanionOptions165.CharmAllowed(bot))
+                return false;
+            combatTarget ??= bot.InCombat ? bot.TargetObject as GameLiving : null;
             Spell charm = LearnedCharm(bot);
             // a charm song still pulsing (between a break and its recapture) is left to run: casting it again would stop it
             if (charm == null || bot.Mana < bot.PowerCost(charm) || bot.GetSkillDisabledDuration(charm) > 0 || HoldsPulsingCharm(bot))

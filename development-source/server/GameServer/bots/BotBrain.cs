@@ -2192,6 +2192,8 @@ namespace DOL.AI.Brain
         private bool TryMaintainTravelAndClassBuffs()
         {
             GameBot bot = BotBody;
+            if (!bot.InCombat && TryNecromancerPowerGift())
+                return true;
             bool waitingForLeader = CompanionFollowPolicy.WaitingForLeaderToStop(bot);
             if (waitingForLeader && !CompanionFollowPolicy.CanStopForNativeTravelSpeed(bot))
                 return false;
@@ -2542,6 +2544,9 @@ namespace DOL.AI.Brain
                 songsByType.Keys, activeType,
                 audience.Any(member => member.effectListComponent.GetSpellEffects().Any(effect =>
                     effect.SpellHandler?.Spell?.SpellType == eSpellType.PowerRegenBuff && effect.SpellHandler.Caster != bot)));
+            // the player's choice for this situation, for a hired performer (CompanionOptions165, owner 2026-11-05)
+            if (CompanionOptions165.Song(bot, immediateCombat ? 1 : _songTraveling ? 3 : 2) is { } picked && songsByType.ContainsKey(picked))
+                wanted = picked;
             Spell song = wanted is { } type ? songsByType[type] : null;
             if (managingCharm)
                 return TryTwistWithCharm(bot, song, charmHoldLeft);
@@ -2766,6 +2771,10 @@ namespace DOL.AI.Brain
                 // A Paladin holds one chant, grouped or solo (owner 2026-10-30: endurance in a fight, no cycling):
                 // endurance, else damage add, else armor. Each recast replays the chant's sound.
                 eSpellType held = BotSongTwistPolicy.PaladinHold(chants.Select(spell => spell.SpellType).ToHashSet());
+                // the player's choice for a hired Paladin, in a fight (1) or not (2) (CompanionOptions165, owner 2026-11-05)
+                if (CompanionOptions165.Song(bot, bot.InCombat || HasAggro || bot.IsAttacking ? 1 : 2) is { } chosenChant &&
+                    chants.Any(spell => spell.SpellType == chosenChant))
+                    held = chosenChant;
                 chosen = chants.FirstOrDefault(spell => spell.SpellType == held);
             }
 
@@ -4529,6 +4538,47 @@ namespace DOL.AI.Brain
             return casted || Body.IsCasting;
         }
 
+        /// <summary>
+        /// A Deathsight necromancer as a power battery (owner 2026-11-05, reset-day S32): the servant's "Gift of ..."
+        /// command gives power to a group member who uses it and is under 60%, healers first, in or out of combat - but
+        /// only while the necromancer keeps at least half its own power after paying for it, as a player would.
+        /// </summary>
+        private bool TryNecromancerPowerGift()
+        {
+            if (BotBody?.CharacterClass?.ID is not ((int)eCharacterClass.Necromancer or (int)eCharacterClass.Disciple) ||
+                Body.Group == null || Body.ControlledBrain is not NecromancerPetBrain servantBrain ||
+                servantBrain.Body?.IsAlive != true || servantBrain.Body.ObjectState is not GameObject.eObjectState.Active ||
+                GameLoop.GameLoopTime < _nextNecromancerCommandTick || Body.IsCasting || servantBrain.HasPendingBotCommand ||
+                Body.Spells == null)
+                return false;
+            Spell gift = Body.Spells
+                .Where(spell => spell != null && spell.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
+                                spell.Level <= Body.Level && Body.GetSkillDisabledDuration(spell) <= 0 &&
+                                SkillBase.GetSpellByID(spell.SubSpellID)?.SpellType == eSpellType.PowerTransferPet &&
+                                Body.Mana - BotBody.PowerCost(spell) >= Body.MaxMana / 2)
+                .OrderByDescending(spell => spell.Level).FirstOrDefault();
+            if (gift == null)
+                return false;
+            int range = Math.Max(1000, gift.CalculateEffectiveRange(Body));
+            GameLiving needy = Body.Group.GetMembersInTheGroup()
+                .Where(member => member != Body && member.IsAlive && member.MaxMana > 0 && member.ManaPercent < 60 &&
+                                 member.CurrentRegionID == Body.CurrentRegionID && Body.IsWithinRadius(member, range) &&
+                                 !(member is GameBot { CharacterClass: { } cls } &&
+                                   (eCharacterClass)cls.ID is eCharacterClass.Necromancer or eCharacterClass.Disciple))
+                .OrderBy(member => ((member as GamePlayer)?.CharacterClass?.ID ?? (member as GameBot)?.CharacterClass?.ID) is int id &&
+                                   BotPartyRoles.IsHealingClass((eCharacterClass)id) ? 0 : 1)
+                .ThenBy(member => member.ManaPercent)
+                .FirstOrDefault();
+            if (needy == null)
+                return false;
+            GameObject oldTarget = Body.TargetObject;
+            Body.TargetObject = needy;
+            bool cast = Body.CastSpell(gift, ResolveKnownSpellLine(gift), false);
+            Body.TargetObject = oldTarget;
+            _nextNecromancerCommandTick = GameLoop.GameLoopTime + (cast ? 1_500 : 3_000);
+            return cast;
+        }
+
         private bool TryIssueNecromancerServantCommand(eCheckSpellType type)
         {
             if (BotBody?.CharacterClass?.ID is not ((int)eCharacterClass.Necromancer or (int)eCharacterClass.Disciple) ||
@@ -4539,6 +4589,9 @@ namespace DOL.AI.Brain
                 GameLoop.GameLoopTime < _nextNecromancerCommandTick ||
                 Body.IsCasting || servantBrain.HasPendingBotCommand)
                 return false;
+
+            if (TryNecromancerPowerGift())
+                return true;
 
             GameLiving target;
             IEnumerable<Spell> commands = Body.Spells
