@@ -90,12 +90,14 @@ namespace DOL.GS
             [BdSubPet.SubPetType.Melee, BdSubPet.SubPetType.Archer, BdSubPet.SubPetType.Caster,
              BdSubPet.SubPetType.Debuffer, BdSubPet.SubPetType.Healer, BdSubPet.SubPetType.Buffer];
 
-        /// <summary>The sub-pet kinds the Bonedancer can summon now, with the level its best rank comes at.</summary>
-        private static List<(BdSubPet.SubPetType Type, int Level)> SubPetKinds(GameBot bot) =>
-            SubPetTypes.Select(type => (type, Level: AutonomousPetSupport.MinionSummons(bot)
+        /// <summary>The sub-pet kinds the Bonedancer can summon now: the name of its best rank (the minion spell, e.g.
+        /// Bone Guard) and the level that rank comes at.</summary>
+        private static List<(BdSubPet.SubPetType Type, int Level, string Name)> SubPetKinds(GameBot bot) =>
+            SubPetTypes.Select(type => AutonomousPetSupport.MinionSummons(bot)
                     .Where(entry => (BdSubPet.SubPetType)entry.Spell.DamageType == type)
-                    .Select(entry => AutonomousPetSupport.BonedancerSubPetLevel(bot.Level, entry.Spell))
-                    .DefaultIfEmpty(0).Max()))
+                    .Select(entry => (Type: type, Level: AutonomousPetSupport.BonedancerSubPetLevel(bot.Level, entry.Spell), entry.Spell.Name))
+                    .OrderByDescending(entry => entry.Level).ThenBy(entry => entry.Name)
+                    .FirstOrDefault())
                 .Where(entry => entry.Level > 0)
                 .ToList();
 
@@ -116,7 +118,7 @@ namespace DOL.GS
             bot.ControlledBrain?.Body is CommanderPet commander ? Math.Min(3, commander.SubPetCapacity)
                 : bot.Level >= 45 ? 3 : bot.Level >= 30 ? 2 : bot.Level >= 15 ? 1 : 0;
 
-        private static int PlanLevels(int?[] plan, List<(BdSubPet.SubPetType Type, int Level)> kinds) =>
+        private static int PlanLevels(int?[] plan, List<(BdSubPet.SubPetType Type, int Level, string Name)> kinds) =>
             plan.Sum(slot => slot is int type && type >= 0 ? kinds.FirstOrDefault(k => (int)k.Type == type).Level : 0);
 
         private static List<Row> Rows(GameBot bot)
@@ -145,7 +147,7 @@ namespace DOL.GS
                 {
                     int?[] plan = SubPets(bot);
                     int used = PlanLevels(plan.Take(capacity).ToArray(), kinds);
-                    List<string> names = ["Automatic", "None", .. kinds.Select(k => $"{k.Type} (level {k.Level})")];
+                    List<string> names = ["Automatic", "None", .. kinds.Select(k => $"{k.Name} ({k.Level})")];
                     for (int slot = 0; slot < capacity; slot++)
                     {
                         int chosen = plan[slot] switch
