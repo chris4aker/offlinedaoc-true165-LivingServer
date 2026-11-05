@@ -236,13 +236,68 @@ namespace DOL.GS.Quests
                 string key = (whisper.Text ?? string.Empty).Trim().TrimEnd('.', '!', '?');
                 if (TryChooseReward(player, npc, key)) return;
                 if (!_config.Chat.TryGetValue(npc.Name, out var lines)) return;
-                if (lines.TryGetValue(key, out string reply) && !string.IsNullOrWhiteSpace(reply))
+                string reply = FindLine(lines, key) ?? SiblingReply(lines, key, npc);
+                if (!string.IsNullOrWhiteSpace(reply))
                     npc.SayTo(player, PacketHandler.eChatLoc.CL_PopupWindow, DOL.GS.Behaviour.BehaviourUtils.GetPersonalizedMessage(reply, player));
             }
             catch (Exception ex)
             {
                 Log.Error("Classic quest conversation failed", ex);
             }
+        }
+
+        /// <summary>
+        /// A [keyword] in a recorded line that has no recorded reply of its own (owner 2026-11-05: Kaere's [get it for
+        /// me] went nowhere, so Protecting Anniogel could not be started that way; ~80 such links on 34 NPCs). The
+        /// recorded walkthroughs give one branch of a "[this] or [that]" choice; the dead branch now answers with the
+        /// recorded reply of the other keyword in the same line, so the conversation goes on with recorded text only.
+        /// Never for a quest's own accept keyword (DataQuest answers that).
+        /// </summary>
+        public static string SiblingReply(IReadOnlyDictionary<string, string> lines, string key, GameNPC npc)
+        {
+            if (string.IsNullOrWhiteSpace(key) || IsAcceptKeyword(npc, key)) return null;
+            return SiblingReply(lines, key);
+        }
+
+        public static string SiblingReply(IReadOnlyDictionary<string, string> lines, string key)
+        {
+            string link = "[" + key + "]";
+            foreach (string said in lines.Values)
+            {
+                if (said == null || said.IndexOf(link, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(said, @"\[([^\]]+)\]"))
+                {
+                    string other = Keyword(m.Groups[1].Value);
+                    if (string.Equals(other, Keyword(key), StringComparison.OrdinalIgnoreCase)) continue;
+                    if (FindLine(lines, other) is { } reply && !string.IsNullOrWhiteSpace(reply)) return reply;
+                }
+            }
+            return null;
+        }
+
+        private static string Keyword(string text) => (text ?? string.Empty).Trim().TrimEnd('.', '!', '?').Trim();
+
+        /// <summary>The recorded reply to a keyword, ignoring case and a closing ?, . or ! (a click or whisper drops
+        /// them, so "[Will you gather the components ...?]" never matched its recorded line).</summary>
+        public static string FindLine(IReadOnlyDictionary<string, string> lines, string key)
+        {
+            if (lines.TryGetValue(key, out string exact)) return exact;
+            string wanted = Keyword(key);
+            foreach (var (said, reply) in lines)
+                if (string.Equals(Keyword(said), wanted, StringComparison.OrdinalIgnoreCase)) return reply;
+            return null;
+        }
+
+        private static bool IsAcceptKeyword(GameNPC npc, string key)
+        {
+            try
+            {
+                foreach (DataQuest quest in npc?.DataQuestList ?? [])
+                    if (string.Equals(quest.DBDataQuest?.AcceptText?.Trim().TrimEnd('.', '!', '?'), key, StringComparison.OrdinalIgnoreCase))
+                        return true;
+            }
+            catch (InvalidOperationException) { }   // the list changed while read: answer nothing this time
+            return false;
         }
 
         /// <summary>A say step completes when the player speaks its words aloud on the step's point ("at night, speak
