@@ -39,9 +39,20 @@ namespace DOL.AI.Brain
             GameLiving healer = squishies.FirstOrDefault(member =>
                 PeelClass(member) is eCharacterClass characterClass && BotPartyRoles.IsHealingClass(characterClass));
 
-            if (protect && (healer ?? threatened) is GameLiving protectTarget)
+            // The player's choice for a hired tank (AI Options): guard and protect the player, the healer, or nobody.
+            int choice = CompanionOptions165.Choice(bot, "guard");
+            if (choice == 3)
+                return;
+            GameLiving chosen = choice switch
+            {
+                1 => AssistedPlayer is { IsAlive: true } you && you.CurrentRegion == bot.CurrentRegion &&
+                     bot.IsWithinRadius(you, ProtectAbilityHandler.PROTECT_DISTANCE) ? you : null,
+                2 => healer,
+                _ => null,
+            };
+            if (protect && (chosen ?? healer ?? threatened) is GameLiving protectTarget)
                 Apply(eEffect.Protect, protectTarget);
-            if (guard && ShieldInUse(bot) && (threatened ?? healer) is GameLiving guardTarget)
+            if (guard && ShieldInUse(bot) && (chosen ?? threatened ?? healer) is GameLiving guardTarget)
                 Apply(eEffect.Guard, guardTarget);
             if (intercept && threatened != null && threatened.HealthPercent < InterceptHealthPercent &&
                 bot.IsWithinRadius(threatened, InterceptAbilityHandler.INTERCEPT_DISTANCE) &&

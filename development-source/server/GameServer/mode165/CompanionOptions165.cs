@@ -17,11 +17,41 @@ namespace DOL.GS
     /// 4 song), [2] slot, [3] chosen index, [4] number of choices, [5..6] used u16, [7..8] cap u16, [9..] choice names,
     /// each zero-ended. Verbs: charm (row) on|off, pet (row) (i), subpet (row) (slot 1-3) (i), song (row) (slot) (i)
     /// (song slot 1 in a fight, 2 standing around, 3 travelling).
+    ///
+    /// Kinds 5 and up are generic (client protocol, 2026-11-05): names[0] is the row's caption, the rest the choices,
+    /// [3] the chosen index into the choices without the caption; the client sends "option (row) (kind) (slot) (i)".
+    /// Each is one class AI choice from the 2026-11-05 class audit (see Generics); choice 0 is always "Automatic".
     /// </summary>
     public static class CompanionOptions165
     {
         public const byte KindCharm = 1, KindPet = 2, KindSubPet = 3, KindSong = 4;
-        public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song"];
+        public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
+            KindHunterPet = 11;
+        public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
+
+        /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
+        private sealed record Generic(byte Kind, string Key, string Caption, string[] Choices, Func<GameBot, bool> Applies);
+
+        private static readonly Generic[] Generics =
+        [
+            // melee: taunt styles to hold a monster, or detaunt styles to give it back to the tank
+            new(KindAggro, "aggro", "Aggro", ["Automatic", "Hold it (taunt)", "Shed it (detaunt)"],
+                bot => bot.StylesTaunt?.Count > 0 || bot.StylesDetaunt?.Count > 0),
+            new(KindHealAt, "healat", "Heal at", ["Automatic", "Early (90%)", "Late (50%)"], bot => bot.CanCastHealSpells),
+            new(KindDebuff, "debuff", "Debuff before nuking", ["Automatic", "Always", "Never"],
+                bot => (bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Any(BotCasterPriority.IsDebuff)),
+            new(KindBolts, "bolts", "Bolts", ["Automatic", "Nukes only"], bot => bot.CanCastBolts),
+            new(KindBerserk, "berserk", "Berserk", ["Automatic (hard fights)", "On cooldown", "Off"],
+                bot => bot.HasAbility(Abilities.Berserk)),
+            new(KindGuard, "guard", "Guard and protect", ["Automatic", "You", "The healer", "Off"],
+                bot => bot.HasAbility(Abilities.Guard) || bot.HasAbility(Abilities.Protect) || bot.HasAbility(Abilities.Intercept)),
+            new(KindHunterPet, "hunterpet", "Pet", ["Automatic (on)", "Off"],
+                bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Hunter),
+        ];
+
+        /// <summary>The player's choice for a generic AI option (0 = Automatic; always 0 for gamebots).</summary>
+        public static int Choice(GameBot bot, string key) =>
+            Get(bot, key) is { } v && int.TryParse(v, out int i) ? i : 0;
 
         // ---- storage: "key=value;key=value" in OfflineHiredCompanionRecord.Options
 
@@ -173,6 +203,10 @@ namespace DOL.GS
                     }
                 }
             }
+            foreach (Generic option in Generics)
+                if (option.Applies(bot))
+                    rows.Add(new Row(option.Kind, 0, Math.Clamp(Choice(bot, option.Key), 0, option.Choices.Length - 1),
+                        [option.Caption, .. option.Choices], 0, 0));
             return rows;
         }
 
@@ -239,6 +273,15 @@ namespace DOL.GS
                     if (bot.ControlledBrain?.Body is CommanderPet commander)
                         foreach (IControlledBrain minion in commander.ControlledNpcList?.Where(m => m?.Body != null).ToArray() ?? [])
                             minion.Body.Die(null);
+                    return null;
+                }
+                case "option":
+                {
+                    int kind = Int(3), i = Int(5);
+                    Generic option = Generics.FirstOrDefault(g => g.Kind == kind);
+                    if (option == null || !option.Applies(bot) || i < 0 || i >= option.Choices.Length)
+                        return "Choose an option.";
+                    Set(hired, option.Key, i == 0 ? null : i.ToString());
                     return null;
                 }
                 case "song":

@@ -28,11 +28,21 @@ namespace DOL.GS
         /// melee bot taunted on every swing, because the taunt style is the highest-growth anytime style of nearly every
         /// weapon line.
         /// </summary>
-        public static bool MayTaunt(GameBot bot) => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot);
+        public static bool MayTaunt(GameBot bot) => CompanionOptions165.Choice(bot, "aggro") switch
+        {
+            1 => true,    // the player chose: hold the monster
+            2 => false,   // the player chose: shed it
+            _ => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot),
+        };
 
         /// <summary>A non-tank the monster has turned on, with a living tank (bot tank class or player) in its group: detaunt.</summary>
-        public static bool ShouldDetaunt(GameBot bot) => !BotPartyRoles.IsTank(bot) &&
-            bot.TargetObject is GameLiving target && target.TargetObject == bot && HasTankPartner(bot);
+        public static bool ShouldDetaunt(GameBot bot)
+        {
+            int aggro = CompanionOptions165.Choice(bot, "aggro");
+            if (aggro == 1 || bot.TargetObject is not GameLiving target || target.TargetObject != bot)
+                return false;
+            return aggro == 2 || !BotPartyRoles.IsTank(bot) && HasTankPartner(bot);
+        }
 
         private static bool HasTankPartner(GameBot bot)
         {

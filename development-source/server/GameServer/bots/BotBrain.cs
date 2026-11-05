@@ -4286,6 +4286,22 @@ namespace DOL.AI.Brain
             return false;
         }
 
+        /// <summary>
+        /// A fight worth a long-reuse burst (Berserk; Prima treats it as one): the target at or above the bot's level, a
+        /// player-like enemy, two or more monsters on the bot, or the bot below 60% health. Before 2026-11-05 Berserk went
+        /// off on the first swing at anything, a grey rabbit included, and was then down for seven minutes.
+        /// </summary>
+        private bool HardFight(GameLiving target)
+        {
+            if (target is GamePlayer or GameBot || target.Level >= Body.Level || Body.HealthPercent < 60)
+                return true;
+            int onMe = 0;
+            foreach (GameNPC npc in Body.GetNPCsInRadius(600))
+                if (npc.IsAlive && npc.TargetObject == Body && npc.InCombat && npc is not GameBot && ++onMe >= 2)
+                    return true;
+            return false;
+        }
+
         public void CheckOffensiveAbilities()
         {
             if (Body.AbilityCount <= 0)
@@ -4299,7 +4315,10 @@ namespace DOL.AI.Brain
                     {
                         case Abilities.Berserk:
                         {
-                            if (Body.TargetObject is GameLiving target)
+                            int berserkChoice = CompanionOptions165.Choice(BotBody, "berserk");
+                            if (berserkChoice == 2)
+                                break;
+                            if (Body.TargetObject is GameLiving target && (berserkChoice == 1 || HardFight(target)))
                             {
                                 if (Body.IsWithinRadius(Body.TargetObject, Body.MeleeAttackRange) &&
                                     GameServer.ServerRules.IsAllowedToAttack(Body, target, true))
@@ -4493,7 +4512,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                if (BotBody.CanCastBolts && spellsToCast.Count < 1)
+                if (BotBody.CanCastBolts && spellsToCast.Count < 1 && CompanionOptions165.Choice(BotBody, "bolts") != 1)
                 {
                     foreach (Spell spell in BotBody.BoltSpells)
                     {
@@ -4592,7 +4611,10 @@ namespace DOL.AI.Brain
                 _openingDebuffTarget = target;
                 _openingDebuffsCast = 0;
             }
-            return BotCasterPriority.DebuffOpeningWorthwhile(Body.Level, Body.ManaPercent, Body.Group?.MemberCount > 1,
+            int choice = CompanionOptions165.Choice(BotBody, "debuff");   // 1 always, 2 never
+            if (choice == 2)
+                return false;
+            return BotCasterPriority.DebuffOpeningWorthwhile(Body.Level, Body.ManaPercent, Body.Group?.MemberCount > 1 || choice == 1,
                 target.Level, target.HealthPercent, target is GamePlayer or GameBot, _openingDebuffsCast);
         }
 
@@ -4863,7 +4885,7 @@ namespace DOL.AI.Brain
                 case eSpellType.SummonHunterPet:
                     // Summons have an effect on the pet, not the caster. An
                     // owner-effect check incorrectly created a new pet every turn.
-                    castSpell = Body.ControlledBrain == null;
+                    castSpell = Body.ControlledBrain == null && CompanionOptions165.Choice(BotBody, "hunterpet") != 1;
                     break;
 
                 case eSpellType.CombatHeal:
@@ -5523,6 +5545,11 @@ namespace DOL.AI.Brain
 
             AlreadyCheckedHeals = true;
 
+            // The player's "Heal at" choice for a hired healer (AI Options): early 90%, late 50%; emergencies stay at 40%.
+            int healAt = CompanionOptions165.Choice(BotBody, "healat");
+            int needAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 65;
+            int healerNeedAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 80;
+
             if (TryResurrectGroupMember())
                 return true;
             if (TryResurrectSiegeComrade())
@@ -5565,7 +5592,7 @@ namespace DOL.AI.Brain
                     {
                         amountToHeal += deficit;
 
-                        if (member.HealthPercent < 65)
+                        if (member.HealthPercent < needAt)
                         {
                             numNeedHealing++;
 
@@ -5577,7 +5604,7 @@ namespace DOL.AI.Brain
                                     : TemporaryCompanionPetHealing.PreferHealingTarget(BotBody, member, spellTarget))
                                 spellTarget = member;
                         }
-                        else if (IsHealer && member.HealthPercent < 80)
+                        else if (IsHealer && member.HealthPercent < healerNeedAt)
                         {
                             numNeedHealing++;
 
@@ -5612,7 +5639,7 @@ namespace DOL.AI.Brain
                             continue;
 
                         amountToHeal += deficit;
-                        if (playerPet.HealthPercent < 65)
+                        if (playerPet.HealthPercent < needAt)
                         {
                             numNeedHealing++;
                             if (playerPet.HealthPercent < 40)
@@ -5620,7 +5647,7 @@ namespace DOL.AI.Brain
                             if (TemporaryCompanionPetHealing.PreferHealingTarget(BotBody, playerPet, spellTarget))
                                 spellTarget = playerPet;
                         }
-                        else if (IsHealer && playerPet.HealthPercent < 80)
+                        else if (IsHealer && playerPet.HealthPercent < healerNeedAt)
                         {
                             numNeedHealing++;
                             if (TemporaryCompanionPetHealing.PreferHealingTarget(BotBody, playerPet, spellTarget))
@@ -5636,7 +5663,7 @@ namespace DOL.AI.Brain
                 if (BotBody.IsPlayerLedGroup && assistedPlayer?.IsAlive == true && Body.Group.IsInTheGroup(assistedPlayer) &&
                     InSupportReach(assistedPlayer))
                 {
-                    bool playerNeedsHealing = assistedPlayer.HealthPercent < 65 || (IsHealer && assistedPlayer.HealthPercent < 80);
+                    bool playerNeedsHealing = assistedPlayer.HealthPercent < needAt || (IsHealer && assistedPlayer.HealthPercent < healerNeedAt);
                     // ...unless someone else is an emergency and worse off (owner 2026-11-03: a tank at 15% before the
                     // player at 64%)
                     bool worseEmergency = spellTarget != null && spellTarget != assistedPlayer &&
@@ -5675,7 +5702,7 @@ namespace DOL.AI.Brain
                 {
                     spellTarget = BotBody;
 
-                    if (BotBody.HealthPercent < 65)
+                    if (BotBody.HealthPercent < needAt)
                     {
                         numNeedHealing = 1;
 
@@ -5711,11 +5738,11 @@ namespace DOL.AI.Brain
                 // Lowest-health raid member or pet in range, without sorting the whole roster.
                 GameLiving raidPatient = null;
                 foreach (GameLiving m in AutonomousRealmRaid.SupportMembers(BotBody))
-                    if (m != null && m.IsAlive && m.CurrentRegionID == Body.CurrentRegionID && m.HealthPercent < 80 &&
+                    if (m != null && m.IsAlive && m.CurrentRegionID == Body.CurrentRegionID && m.HealthPercent < healerNeedAt &&
                         Body.IsWithinRadius(m, 1800) && (raidPatient == null || m.HealthPercent < raidPatient.HealthPercent))
                         raidPatient = m;
                 foreach (GameLiving m in AutonomousRealmRaid.SupportPets(BotBody, 1800))
-                    if (m.HealthPercent < 80 && (raidPatient == null || m.HealthPercent < raidPatient.HealthPercent))
+                    if (m.HealthPercent < healerNeedAt && (raidPatient == null || m.HealthPercent < raidPatient.HealthPercent))
                         raidPatient = m;
                 if (raidPatient != null && (spellTarget == null || raidPatient.HealthPercent < spellTarget.HealthPercent))
                 {
