@@ -4311,6 +4311,24 @@ namespace DOL.AI.Brain
                 bot.StartEnduranceRegeneration();   // the drain runs on the regeneration timer
         }
 
+        /// <summary>
+        /// A cast worth Quick Cast while being hit (player practice: Quick Cast is the escape and the finisher, not a way to
+        /// nuke faster): a stun, a finishing nuke on a monster under 25% health, and against a player-like enemy also a
+        /// mez, root or a nuke under half health. Emergency heals are handled in CheckHeals.
+        /// </summary>
+        private bool QuickCastWorthwhile(Spell spell)
+        {
+            if (spell == null || Body.TargetObject is not GameLiving target || !target.IsAlive)
+                return false;
+            if (spell.SpellType == eSpellType.Stun)
+                return true;
+            bool playerLike = target is GamePlayer or GameBot;
+            if (BotCasterPriority.IsDamage(spell))
+                return target.HealthPercent < (playerLike ? 50 : 25);
+            return playerLike && (spell.SpellType is eSpellType.Mesmerize or eSpellType.Mez ||
+                                  spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99);
+        }
+
         private bool HardFight(GameLiving target)
         {
             if (target is GamePlayer or GameBot || target.Level >= Body.Level || Body.HealthPercent < 60)
@@ -4602,6 +4620,12 @@ namespace DOL.AI.Brain
 
                     if (spellToCast.Uninterruptible || !Body.IsBeingInterrupted)
                         casted = CheckOffensiveSpells(spellToCast);
+                    else if (Body.IsBeingInterruptedByOther && QuickCastWorthwhile(spellToCast) &&
+                             BotBody.ArmQuickCast(spellToCast))
+                    {
+                        casted = CheckOffensiveSpells(spellToCast);
+                        BotBody.DisarmQuickCast();
+                    }
                     else if (shamanHybrid && ShamanBotCombatPolicy.HoldMeleeForCast(true,
                                  Body.IsBeingInterruptedByOther, Body.IsBeingSelfInterrupted))
                     {
@@ -4611,8 +4635,8 @@ namespace DOL.AI.Brain
                         Body.StopAttack();
                         return true;
                     }
-                    // Bots never use Quickcast. Instants remain available above;
-                    // an interrupted ordinary cast waits for its legal window.
+                    // Otherwise an interrupted ordinary cast waits for its legal window (Quick Cast is kept for the casts
+                    // that matter: QuickCastWorthwhile).
                 }
             }
 
@@ -4738,6 +4762,19 @@ namespace DOL.AI.Brain
                 : BotBody.IsEndgameCompanion
                     ? TemporaryCompanionBalance.HighestSpell(best)
                     : best[Random.Shared.Next(best.Length)];
+            // The Necromancer's Quick Cast is Facilitate Painworking (owner 2026-11-05): an instant servant command that
+            // keeps the servant's casts from being interrupted for 6 s (30 s reuse; normal cast times, normal power). Used
+            // as a player does: when the servant is being hit and a cast-time command is next.
+            if (SkillBase.GetSpellByID(command.SubSpellID) is { CastTime: > 0 } && servant.IsBeingInterruptedByOther &&
+                !servant.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking) &&
+                Body.Spells.FirstOrDefault(spell => spell != null && spell.SpellType == eSpellType.PetSpell &&
+                    spell.Level <= Body.Level && Body.GetSkillDisabledDuration(spell) <= 0 &&
+                    SkillBase.GetSpellByID(spell.SubSpellID)?.SpellType == eSpellType.FacilitatePainworking) is Spell facilitate &&
+                Body.CastSpell(facilitate, ResolveKnownSpellLine(facilitate), false))
+            {
+                _nextNecromancerCommandTick = GameLoop.GameLoopTime + 250;
+                return true;
+            }
             GameObject oldTarget = Body.TargetObject;
             Body.TargetObject = target;
             bool cast = Body.CastSpell(command, ResolveKnownSpellLine(command), false);
@@ -5581,7 +5618,10 @@ namespace DOL.AI.Brain
             bool canCastInstantHeal = CheckHealSpell(BotBody.HealInstant);
             bool canCastInstantGroupHeal = CheckHealSpell(BotBody.HealInstantGroup);
 
-            if (BotBody.IsBeingInterruptedByOther && !canCastInstantHeal && !canCastInstantGroupHeal)
+            bool quickHealReady = BotBody.IsBeingInterruptedByOther &&
+                (BotBody.QuickCastReady(BotBody.HealBig) || BotBody.QuickCastReady(BotBody.HealEfficient) ||
+                 BotBody.QuickCastReady(BotBody.HealGroup));
+            if (BotBody.IsBeingInterruptedByOther && !canCastInstantHeal && !canCastInstantGroupHeal && !quickHealReady)
                 return false;
 
             bool isCastingHeal = BotBody.IsCasting && BotBody.castingComponent.SpellHandler.Spell.IsHealing &&
@@ -5785,11 +5825,12 @@ namespace DOL.AI.Brain
                     spellToCast = BotBody.HealInstantGroup;
                 else if (!isCastingHeal)
                 {
-                    if (CheckHealSpell(BotBody.HealBig))
+                    // Being hit, no instant heal left: Quick Cast carries the emergency heal (player practice).
+                    if (CheckHealSpell(BotBody.HealBig) || quickHealReady && BotBody.QuickCastReady(BotBody.HealBig))
                         spellToCast = BotBody.HealBig;
-                    else if (CheckHealSpell(BotBody.HealEfficient))
+                    else if (CheckHealSpell(BotBody.HealEfficient) || quickHealReady && BotBody.QuickCastReady(BotBody.HealEfficient))
                         spellToCast = BotBody.HealEfficient;
-                    else if (CheckHealSpell(BotBody.HealGroup))
+                    else if (CheckHealSpell(BotBody.HealGroup) || quickHealReady && BotBody.QuickCastReady(BotBody.HealGroup))
                         spellToCast = BotBody.HealGroup;
                 }
             }
@@ -5915,7 +5956,11 @@ namespace DOL.AI.Brain
 
                 GameObject oldTarget = BotBody.TargetObject;
                 BotBody.TargetObject = spellTarget;
+                bool quickHeal = !spellToCast.IsInstantCast && BotBody.IsBeingInterruptedByOther && numEmergency > 0 &&
+                                 BotBody.ArmQuickCast(spellToCast);
                 startedCasting = BotBody.CastSpell(spellToCast, m_mobSpellLine, false);
+                if (quickHeal)
+                    BotBody.DisarmQuickCast();
 
                 if (!startedCasting)
                 {

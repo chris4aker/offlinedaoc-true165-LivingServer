@@ -61,7 +61,9 @@ namespace DOL.GS.Spells
 		private long _calculatedCastTime;
 		private long _puslingSpellLastEndOfCastMessage;
 
-		public bool IsQuickCasting => Caster is not GameBot && _quickcast != null;
+		// Bots quick cast too since 2026-11-05 (owner: "bots also never utilize quickcast intelligently like a player would"):
+		// a bot arms it only through GameBot.ArmQuickCast; any other quick cast effect on a bot is ended in GameBot.CastSpell.
+		public bool IsQuickCasting => _quickcast != null;
 		public long CastStartTick => _castStartTick;
 		public bool StartReuseTimer => m_startReuseTimer;
 
@@ -488,8 +490,7 @@ namespace DOL.GS.Spells
 			}
 
 			CancelFocusSpells();
-			_quickcast = m_caster is GameBot ? null :
-				EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) as QuickCastECSGameEffect;
+			_quickcast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) as QuickCastECSGameEffect;
 
 			if (IsQuickCasting)
 				_quickcast.ExpireTick = GameLoop.GameLoopTime + _quickcast.Duration;
@@ -602,7 +603,7 @@ namespace DOL.GS.Spells
 							return false;
 						}
 					}
-					else
+					else if (!(m_caster is GameBot && IsQuickCasting))   // a quick casting bot starts through, as a player does
 						return false;
 				}
 			}
@@ -1205,8 +1206,8 @@ namespace DOL.GS.Spells
 			if (syphon > 0 && Util.Chance(syphon))
 				return 0;
 
-			if (Caster is GameBot botCaster)
-				return BotSpellPower.Cost(botCaster, Spell, SpellLine);
+			if (Caster is GameBot botCaster)   // doubled when quick casting, as for a player
+				return BotSpellPower.Cost(botCaster, Spell, SpellLine) * (IsQuickCasting && Spell.CastTime > 0 ? 2 : 1);
 
 			double powerCost = m_spell.Power;
 			GamePlayer playerCaster = Caster as GamePlayer;
@@ -1436,12 +1437,12 @@ namespace DOL.GS.Spells
 
 			//the quick cast is unallowed whenever you miss the spell
 			//set the time when casting to can not quickcast during a minimum time
-			if (playerCaster != null)
+			if (playerCaster != null || m_caster is GameBot)
 			{
 				if (IsQuickCasting && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
-					playerCaster.DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					m_caster.DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
 					_quickcast.Cancel(false);
 				}
 			}

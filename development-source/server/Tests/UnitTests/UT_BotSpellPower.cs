@@ -656,7 +656,8 @@ namespace DOL.UnitTests
             Assert.That(brain.Normal, Is.Zero);
         }
 
-        [Test] public void QuickcastIsIgnoredByBotsButStillWorksForHumans()
+        // Owner 2026-11-05: bots quick cast like players (armed by the brain for casts that matter): 2 s, double power.
+        [Test] public void QuickcastWorksForBotsAndHumansAlike()
         {
             Bot bot = MakeBot(typeof(ClassSpiritmaster), 50);
             Player player = Actor<Player>(); player.Class = bot.Class; player.Level = 50;
@@ -666,8 +667,8 @@ namespace DOL.UnitTests
             {
                 var handler = new SpellHandler(actor, spell, line);
                 Field(typeof(SpellHandler), handler, "_quickcast", new QuickCastECSGameEffect(new(actor, 3000, 1)));
-                Assert.That(handler.IsQuickCasting, Is.EqualTo(actor is GamePlayer));
-                Assert.That(handler.PowerCost(actor), Is.EqualTo(actor is GamePlayer ? 60 : 30));
+                Assert.That(handler.IsQuickCasting, Is.True);
+                Assert.That(handler.PowerCost(actor), Is.EqualTo(60));
             }
         }
 

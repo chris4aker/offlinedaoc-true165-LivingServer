@@ -3086,9 +3086,12 @@ namespace DOL.GS
             else if (IsTemporaryGroupHelper && !BotSongTwistPolicy.IsMobileSong(this, spell))
                 (Brain as BotBrain)?.MarkTemporaryCompanionRestActivity();
 
-            // Quickcast is explicitly disabled for all bot kinds. Clear a
-            // lingering externally applied effect without changing human casts.
-            EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
+            // A quick cast the brain armed for this very cast (ArmQuickCast) is used by it; any other quick cast effect
+            // (stale or externally applied) is cleared, so no ordinary bot cast is quick cast by accident.
+            bool quickCastThisCast = _quickCastArmed;
+            _quickCastArmed = false;
+            if (!quickCastThisCast)
+                EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
 
             if (IsRecoveryResting && !IsTemporaryGroupHelper &&
                 !BotSongTwistPolicy.IsMobileSong(this, spell))
@@ -3097,6 +3100,8 @@ namespace DOL.GS
             if (_seatedForClients)
                 SetSeatedForClients(false);
             bool started = base.CastSpell(spell, line, spellCastingAbilityHandler, checkLos);
+            if (quickCastThisCast && !started)
+                EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
             if (spell.IsHarmful || spell.IsHealing)
                 Trace165($"{(started ? "cast" : "refused")} {spell.Name} d={TraceDistance165()}");
             LogCompanionCast165(spell, started ? "cast" : "refused");
@@ -3109,6 +3114,38 @@ namespace DOL.GS
         public override bool CastSpell(Spell spell, SpellLine line, bool checkLos)
         {
             return CastSpell(spell, line, null, checkLos);
+        }
+
+        // ---- Quick Cast, as a player uses it (owner 2026-11-05): the next spell takes a flat 2 s and cannot be
+        // interrupted, at double power, then 30 s before the next one. The brain arms it for one cast that matters
+        // while the bot is being hit (BotBrain.QuickCastWorthwhile / the emergency heal).
+
+        private bool _quickCastArmed;
+
+        /// <summary>Quick Cast could carry this cast-time spell now: trained, off its reuse, not swinging, power for 2x.</summary>
+        public bool QuickCastReady(Spell spell) =>
+            spell != null && !spell.IsInstantCast && IsAlive && !attackComponent.AttackState &&
+            GetAbility(DOL.GS.Abilities.Quickcast) is Ability quickCast && GetSkillDisabledDuration(quickCast) <= 0 &&
+            !effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
+            Mana >= 2 * PowerCost(spell);
+
+        /// <summary>Turns Quick Cast on for the next CastSpell call; false when it is not ready for this spell.</summary>
+        public bool ArmQuickCast(Spell spell)
+        {
+            if (!QuickCastReady(spell))
+                return false;
+            ECSGameEffectFactory.Create(new(this, QuickCastECSGameEffect.DURATION, 1), static (in i) => new QuickCastECSGameEffect(i));
+            _quickCastArmed = true;
+            return true;
+        }
+
+        /// <summary>After the armed cast was attempted: an arm no cast used is taken back.</summary>
+        public void DisarmQuickCast()
+        {
+            if (!_quickCastArmed)
+                return;
+            _quickCastArmed = false;
+            EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
         }
 
         public override void StartAttack(GameObject target)
