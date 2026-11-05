@@ -327,7 +327,11 @@ namespace DOL.GS
                     }
                     s.Problem = verb switch
                     {
-                        "summon" => HiredCompanions165.Summon(player, row),
+                        // owner 2026-11-05: companions are summoned at the innkeeper of a traveler's inn (the window opened
+                        // from a companion anywhere in the world may dismiss them, not call them back)
+                        "summon" => s.Mode != 0 || s.Keeper == null && !s.Test
+                            ? "Summon your companions at the innkeeper of a traveler's inn."
+                            : HiredCompanions165.Summon(player, row),
                         "dismiss" => HiredCompanions165.Dismiss(player, row),
                         "revive" => s.Mode == 1 || s.Test ? HiredCompanions165.Revive(player, row) : "A healer brings companions back.",
                         _ => null,
