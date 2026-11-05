@@ -1185,7 +1185,9 @@ namespace DOL.GS
             if (CurrentPathPoint != null)
             {
                 Vector3 next = new(CurrentPathPoint.X, CurrentPathPoint.Y, CurrentPathPoint.Z);
-                short nextSpeed = Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed);
+                // a stable horse or boat keeps one speed for the whole ride (owner 2026-11-05: 250 route points that drop to
+                // 300-450 made every horse slow almost to a stop at the same spots, then catch up sideways)
+                short nextSpeed = Owner is GameTaxi or GameTaxiBoat ? _moveOnPathSpeed : Math.Min(_moveOnPathSpeed, CurrentPathPoint.MaxSpeed);
                 if (justArrived && Owner is (GameTaxi or GameTaxiBoat) && IsFlagSet(MovementState.OnPath))
                     ContinueTaxiLeg(next, nextSpeed);   // taxis never pathfind (Pathfinder.ShouldPath)
                 else
@@ -1248,6 +1250,10 @@ namespace DOL.GS
             magic = (float) Math.Max(15, CurrentSpeed * 0.1);
             ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
             _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
+            // a taxi's route turns at every point: aiming the client past it made the horse overshoot each bend and get
+            // pulled sideways onto the next leg (owner 2026-11-05 drift report)
+            if (Owner is GameTaxi or GameTaxiBoat)
+                _destinationForClient = _destination;
         }
 
         private void UpdateMovement(short speed)
