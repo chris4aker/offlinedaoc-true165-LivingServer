@@ -28,7 +28,9 @@ namespace DOL.GS
         /// melee bot taunted on every swing, because the taunt style is the highest-growth anytime style of nearly every
         /// weapon line.
         /// </summary>
-        public static bool MayTaunt(GameBot bot) => CompanionOptions165.Choice(bot, "aggro") switch
+        public static bool MayTaunt(GameBot bot) => bot.TargetObject is GamePlayer or GameBot
+            ? false   // players have no aggro: taunt styles only waste endurance in RvR (period forums, Jun 2003)
+            : CompanionOptions165.Choice(bot, "aggro") switch
         {
             1 => true,    // the player chose: hold the monster
             2 => false,   // the player chose: shed it
@@ -44,7 +46,7 @@ namespace DOL.GS
             return aggro == 2 || !BotPartyRoles.IsTank(bot) && HasTankPartner(bot);
         }
 
-        private static bool HasTankPartner(GameBot bot)
+        public static bool HasTankPartner(GameBot bot)
         {
             if (bot?.Group == null || bot.Group.MemberCount <= 1)
                 return false;

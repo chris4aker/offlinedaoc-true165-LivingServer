@@ -376,6 +376,19 @@ namespace DOL.UnitTests
             Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, false, 20, 100, true, 0), Is.True);
         }
 
+        // Period forums (Jun 2002): debuff, Nearsight and root pulls bring the monster with little anger; a nuke pull
+        // "sticks the mob to the caster". Low-aggro pull spells count as pulls and are preferred.
+        [TestCase("Nearsight", 0, 0, true, true)] [TestCase("StrengthDebuff", 0, 0, true, true)]
+        [TestCase("SpeedDecrease", 0, 99, true, true)] [TestCase("SpeedDecrease", 0, 40, false, false)]
+        [TestCase("DirectDamage", 30, 0, true, false)] [TestCase("Mesmerize", 0, 0, false, false)]
+        public void PullSpellsPreferLowAggro(string type, int damage, int value, bool pull, bool lowAggro)
+        {
+            var spell = new Spell(new DbSpell { Name = "test", Type = type, Target = "Enemy", Range = 1500, Damage = damage,
+                Value = value }, 1);
+            Assert.That(AutonomousDefensivePull.IsPullSpell(spell, 50), Is.EqualTo(pull));
+            Assert.That(AutonomousDefensivePull.IsLowAggroPullSpell(spell), Is.EqualTo(lowAggro));
+        }
+
         [TestCase(50, 35, 35)] [TestCase(10, 20, 10)] [TestCase(50, 0, 0)] [TestCase(50, 61, 50)]
         public void PoisonsRespectBothLevelAndEnvenom(int level, int spec, int expected) =>
             Assert.That(BotPoisonSupply.EligibleLevel(level, spec), Is.EqualTo(expected));

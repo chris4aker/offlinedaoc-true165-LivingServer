@@ -43,11 +43,28 @@ namespace DOL.GS
             groupPve && memberCount >= MinimumPullParty;
 
         public static bool IsPullSpell(Spell spell, int level) => spell != null && spell.Level <= level &&
-            spell.Target == eSpellTarget.ENEMY && spell.Range >= 1000 && spell.Radius == 0 && spell.Damage > 0 && !spell.NeedInstrument &&
-            spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or eSpellType.DamageOverTime;
+            spell.Target == eSpellTarget.ENEMY && spell.Range >= 1000 && spell.Radius == 0 && !spell.NeedInstrument &&
+            (spell.Damage > 0 && spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or eSpellType.DamageOverTime ||
+             IsLowAggroPullSpell(spell));
+
+        /// <summary>
+        /// A pull that brings the monster with little anger at the puller (period forums, "Who makes the best puller?",
+        /// Jun 2002: debuff pulls (Spiritmaster, Cabalist), Nearsight pulls (Eldritch, Runemaster) and root pulls (the
+        /// monster arrives disabled) were favoured; a fire nuke pull "sticks the mob to the caster"). Preferred when known.
+        /// </summary>
+        public static bool IsLowAggroPullSpell(Spell spell) => spell != null &&
+            (BotCasterPriority.IsDebuff(spell) && spell.SpellType != eSpellType.Disease ||
+             spell.SpellType == eSpellType.Nearsight ||
+             spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99);
 
         private static Spell PullSpell(GameBot bot) => bot.Spells?.Where(spell => IsPullSpell(spell, bot.Level))
-            .OrderByDescending(spell => spell.Range).ThenByDescending(spell => spell.Level).FirstOrDefault();
+            .OrderBy(spell => IsLowAggroPullSpell(spell) ? 0 : 1)
+            .ThenByDescending(spell => spell.Range).ThenByDescending(spell => spell.Level).FirstOrDefault();
+
+        /// <summary>A bot whose only ranged pull is a damage spell: it pulls only when no tank or low-aggro puller can.</summary>
+        public static bool PullsWithNuke(GameBot bot) =>
+            !BotRangedCombat.CanUse(bot, bot?.Inventory?.GetItem(eInventorySlot.DistanceWeapon)) &&
+            PullSpell(bot) is Spell spell && !IsLowAggroPullSpell(spell);
 
         // Flying-target handoff must choose a spell that can be fired now.
         // This is deliberately separate from the established level-50 pull
@@ -56,7 +73,8 @@ namespace DOL.GS
             Func<Spell, int> powerCost, Func<Spell, int> disabledDuration) =>
             spells?.Where(spell => IsPullSpell(spell, level) &&
                     powerCost(spell) <= mana && disabledDuration(spell) == 0)
-                .OrderByDescending(spell => spell.Range).ThenByDescending(spell => spell.Level)
+                .OrderBy(spell => IsLowAggroPullSpell(spell) ? 0 : 1)
+                .ThenByDescending(spell => spell.Range).ThenByDescending(spell => spell.Level)
                 .FirstOrDefault();
 
         private static Spell ReadyPullSpell(GameBot bot) => bot == null ? null :

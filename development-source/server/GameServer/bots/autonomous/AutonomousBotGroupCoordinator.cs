@@ -2862,6 +2862,8 @@ public static partial class AutonomousBotGroupCoordinator
             GameBot ranged = members.Where(AutonomousDefensivePull.HasRangedPull)
                 .OrderBy(member => session.PveRoles.TryGetValue(MemberKey(member), out BotPveGroupRole role)
                     ? role == BotPveGroupRole.Tank ? 0 : role == BotPveGroupRole.Healer ? 2 : 1 : 3)
+                // a nuker pulls last (period forums: tanks with a ranged attack or the crowd-control player pull)
+                .ThenBy(member => AutonomousDefensivePull.PullsWithNuke(member) ? 1 : 0)
                 .ThenBy(MemberKey).FirstOrDefault();
             if (ranged != null) return ranged;
         }

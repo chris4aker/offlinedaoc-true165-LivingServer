@@ -862,6 +862,9 @@ namespace DOL.AI.Brain
         private bool PrefersCurrentSpellRange() =>
             (PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true) ||
             BotBody?.CharacterClass?.ID == (int)eCharacterClass.Shaman && RoleChoice is 1 or 2 ||   // AI Options role
+            // a grouped Shaman with a tank doesn't melee: "aggro then follows you when you heal" (period forums, Jun 2002)
+            BotBody?.CharacterClass?.ID == (int)eCharacterClass.Shaman && RoleChoice == 0 && Classic165Mode.IsOn &&
+                BotMeleeStylePolicy.HasTankPartner(BotBody) ||
             PerformerStaysBack) && !PerformerMelees;
 
         /// <summary>A hired Bard, Minstrel or Skald whose player chose "Support": songs and spells from the back, no melee.</summary>
@@ -4358,6 +4361,46 @@ namespace DOL.AI.Brain
         }
 
         private GameLiving _hybridOpenedOn;
+        private GameLiving _holdDamageTarget;
+        private long _holdDamageSince;
+        private const long HoldDamageMilliseconds = 8_000;
+
+        /// <summary>
+        /// A ranged damage caster lets the tank or its own pet take the monster before it nukes (period forums: Theurgist,
+        /// "wait for the tank's hits/taunts, start nuking at ~50-75% mob health"; Enchanter, "send pet, start nuking at
+        /// ~85%"; Spiritmaster, "pet takes aggro, SM nukes"). Holds damage spells (debuffs and control still go) until the
+        /// monster is on the group's tank (or a player) under 75% health, or on its own pet under 85%; never when the
+        /// monster is on the caster, never solo without a pet, never against players, and at most 8 seconds per target so
+        /// a fight with nobody holding the monster is not stalled.
+        /// </summary>
+        private bool HoldDamageForTank()
+        {
+            if (!Classic165Mode.IsOn || !PrefersCurrentSpellRange() || Body.TargetObject is not GameNPC target ||
+                target is GameBot || !target.IsAlive || target.TargetObject == Body)
+                return false;
+            GameNPC pet = Body.ControlledBrain?.Body;
+            bool tankInGroup = BotMeleeStylePolicy.HasTankPartner(BotBody);
+            if (!tankInGroup && pet?.IsAlive != true)
+                return false;
+            long now = GameLoop.GameLoopTime;
+            if (_holdDamageTarget != target)
+            {
+                _holdDamageTarget = target;
+                _holdDamageSince = now;
+            }
+            if (now - _holdDamageSince > HoldDamageMilliseconds)
+                return false;
+            GameLiving holder = target.TargetObject as GameLiving;
+            if (holder == null)
+                return tankInGroup;   // a pet caster opens itself (the pet goes in with it); a group waits for its tank's pull
+            if (pet != null && holder == pet)
+                return target.HealthPercent > 85;
+            if (!tankInGroup)
+                return false;
+            bool tankHolds = holder != null && holder != Body && Body.Group?.IsInTheGroup(holder) == true &&
+                             (holder is GamePlayer || holder is GameBot tankBot && BotPartyRoles.IsTank(tankBot));
+            return !tankHolds || target.HealthPercent > 75;
+        }
 
         private bool HardFight(GameLiving target)
         {
@@ -4495,6 +4538,7 @@ namespace DOL.AI.Brain
 
                 // Check instant spells
                 bool debuffOpening = DebuffOpeningWorthwhile();
+                bool holdDamage = HoldDamageForTank();
                 if (Body.CanCastInstantHarmfulSpells)
                 {
                     IEnumerable<Spell> instantOffense = Body.InstantHarmfulSpells;
@@ -4507,6 +4551,8 @@ namespace DOL.AI.Brain
                         bool meleePressure = Body.IsBeingInterruptedByOther &&
                             Body.IsWithinRadius(Body.TargetObject, Body.MeleeAttackRange + 35);
                         if (!BotCasterPriority.AllowInstant(spell, PrefersCurrentSpellRange(), meleePressure, debuffOpening))
+                            continue;
+                        if (holdDamage && BotCasterPriority.IsDamage(spell))
                             continue;
                         if (CheckInstantOffensiveSpells(spell))
                         {
@@ -4584,7 +4630,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                if (BotBody.CanCastBolts && spellsToCast.Count < 1 && CompanionOptions165.Choice(BotBody, "bolts") != 1)
+                if (BotBody.CanCastBolts && spellsToCast.Count < 1 && CompanionOptions165.Choice(BotBody, "bolts") != 1 && !holdDamage)
                 {
                     foreach (Spell spell in BotBody.BoltSpells)
                     {
@@ -4624,6 +4670,8 @@ namespace DOL.AI.Brain
                     // Do not roll a DoT/debuff already on this mob and mistake
                     // its refusal for a reason to abandon ranged combat.
                     spellsToCast.RemoveAll(spell => !NeedsOffensiveSpellApplication((GameLiving)Body.TargetObject, spell));
+                    if (holdDamage)
+                        spellsToCast.RemoveAll(BotCasterPriority.IsDamage);   // debuffs and control may still go
                     if (spellsToCast.Count == 0) return Body.IsCasting;
                     if (PrefersCurrentSpellRange() &&
                         spellsToCast.Exists(spell => spell.Range > Body.MeleeAttackRange))
