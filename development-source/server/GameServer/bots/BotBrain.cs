@@ -3473,8 +3473,9 @@ namespace DOL.AI.Brain
                 // A melee bot already chasing its own target at stick range keeps
                 // that order. Clearing it every think made NpcStartAttack stop the
                 // running bot and re-follow, which clients saw as rubberbanding.
-                // A caster meleeing because it is out of power chases like a melee bot.
-                bool outOfPowerMelee = rangedCaster && (OutOfPowerForOffense() || NoAttackSpellYet());
+                // A caster meleeing because it has no attack spell yet (a new base-class caster) chases like a melee
+                // bot. Out of power it no longer walks in (owner 2026-11-05): it waits for power, see TryOutOfPowerWait.
+                bool outOfPowerMelee = rangedCaster && NoAttackSpellYet();
                 if (rangedCaster && !outOfPowerMelee || !IsMeleeChasing(Body.TargetObject))
                     Body.StopFollowing();
                 if (!rangedCaster && Body.TargetObject is GameLiving meleeTarget && TryEngageUnderMeleePressure(meleeTarget))
@@ -3483,9 +3484,9 @@ namespace DOL.AI.Brain
                 // End our own staff swings/chase before considering a spell.
                 // Otherwise each new swing refreshes SelfInterruptTime forever.
                 // Actual incoming interruption still goes through native rules.
-                // A caster with no power for any attack spell keeps swinging.
+                // A caster with no attack spell yet keeps swinging.
                 if (rangedCaster && !Body.IsBeingInterruptedByOther && Body.attackComponent.AttackState &&
-                    !OutOfPowerForOffense())
+                    !NoAttackSpellYet())
                     Body.StopAttack();
 
                 if (!UsesDefensiveOnlyPet)
@@ -3560,6 +3561,7 @@ namespace DOL.AI.Brain
                         // order a staff charge.
                         if (TryEngageUnderMeleePressure(spellTarget)) return;
                         if (TryOutOfPowerMelee(spellTarget)) return;
+                        if (TryOutOfPowerWait(spellTarget)) return;
                         ApproachForOffensiveSpell(spellTarget);
                         return;
                     }
@@ -3870,7 +3872,7 @@ namespace DOL.AI.Brain
             if (target?.IsAlive != true || Body.IsCasting ||
                 BotBody?.CharacterClass?.ID is (int)eCharacterClass.Necromancer or (int)eCharacterClass.Disciple ||
                 !GameServer.ServerRules.IsAllowedToAttack(Body, target, true) ||
-                !(OutOfPowerForOffense() || NoAttackSpellYet()))
+                !NoAttackSpellYet())
                 return false;
 
             StopTwistedSong();
@@ -3886,6 +3888,24 @@ namespace DOL.AI.Brain
                 Body.TargetObject = target;
                 Body.StartAttack(target);
             }
+            return true;
+        }
+
+        /// <summary>
+        /// Out of power for every attack spell (owner 2026-11-05, reverting the staff charge): a caster or pet class
+        /// stays where it is and waits for power, as a player does; its pet keeps fighting. It melees back and uses its
+        /// instants only when something is hitting it (TryEngageUnderMeleePressure, checked before this).
+        /// </summary>
+        private bool TryOutOfPowerWait(GameLiving target)
+        {
+            if (target?.IsAlive != true || Body.IsCasting || !OutOfPowerForOffense())
+                return false;
+            if (Body.ControlledBrain != null && !UsesDefensiveOnlyPet)
+                CommandPetAttack(target);
+            if (Body.attackComponent.AttackState && !Body.IsBeingInterruptedByOther)
+                Body.StopAttack();
+            if (Body.IsMoving && !CompanionFollowPolicy.HasFormationOrder(BotBody))
+                Body.StopMoving();
             return true;
         }
 
