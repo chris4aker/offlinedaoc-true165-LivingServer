@@ -31,7 +31,7 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger StatsLog = Logging.LoggerManager.Create(typeof(CompanionWindows165));
 
-        public static readonly HashSet<string> Verbs = ["gear", "equip", "bag", "unequip", "swap", "stats", "repair", "select", "spec", "respec", "train", "ra", "buyra", "pick", "vault"];
+        public static readonly HashSet<string> Verbs = ["gear", "equip", "bag", "unequip", "swap", "stats", "repair", "select", "spec", "respec", "train", "ra", "buyra", "pick", "vault", "delve", "charm", "pet", "subpet", "song"];
 
         // ---- the original client's clean list windows (owner 2026-10-30: TRAIN / GEAR / REALM ABILITIES / STATS replace the
         // champion trainer window and the house-vault gear window there). Op 12 = list text [4] slot 0..63, [5..] ASCII;
@@ -162,6 +162,19 @@ namespace DOL.GS
             }
             OfflineHiredCompanionRecord hired = HiredCompanions165.RosterOf(player).FirstOrDefault(h => h.Row == row);
             GameBot bot = hired == null ? null : HiredCompanions165.LiveBot(hired.BotId);
+            if (verb is "delve")
+            {
+                SendDelve(player, bot, args);   // always answered: the new client matches replies in order
+                return;
+            }
+            if (CompanionOptions165.Verbs.Contains(verb))
+            {
+                // the Pets / Songs tab (reset-day S33 / C17): apply the choice, then send the rows again
+                Problem(player, CompanionOptions165.Handle(bot, hired, verb, args) ?? string.Empty);
+                if (bot != null)
+                    CompanionOptions165.Send(player, row, bot);
+                return;
+            }
             if (verb is "select" && hired != null)
             {
                 // the original client's roster click: remember it, mark it, show its stats (owner layout, overlay 0.14)
@@ -201,6 +214,7 @@ namespace DOL.GS
             // "pick" acts on the list last sent and answers with that list again
             if (verb is "pick")
                 verb = LastList.TryGetValue(player, out string last) ? last switch { "spec" => "train", "ra" => "buyra", _ => last } : "gear";
+            CompanionOptions165.Send(player, row, bot);   // op 14: the Pets / Songs tab rows, with every window fill
             if (verb is "stats")
             {
                 SendStats(player, row, bot);
@@ -232,6 +246,47 @@ namespace DOL.GS
         }
 
         private static void Problem(GamePlayer player, string text) => Hire165.Text(player, 8, text);
+
+        /// <summary>
+        /// The new client's hover tooltips in the companion window (owner 2026-11-05, reset-day C15): "delve &lt;row&gt; item
+        /// &lt;slot&gt;" answers with the player's own item delve of the companion's item in that slot, "delve &lt;row&gt; style
+        /// &lt;line&gt; &lt;level&gt;" with the player style delve (endurance cost, threat, opening...) of the style the TRAIN
+        /// preview lists at that line (ops 8/9 line index) and level. Every request gets a window, empty when there is
+        /// nothing to show, because the client pairs replies with requests in order.
+        /// </summary>
+        private static void SendDelve(GamePlayer player, GameBot bot, string[] args)
+        {
+            string caption = string.Empty;
+            var lines = new List<string>();
+            string kind = args.Length > 3 ? args[3].ToLowerInvariant() : string.Empty;
+            int first = args.Length > 4 && int.TryParse(args[4], out int a) ? a : -1;
+            int second = args.Length > 5 && int.TryParse(args[5], out int b) ? b : -1;
+            try
+            {
+                if (bot != null && kind == "item" && first >= 0 && bot.Inventory?.GetItem((eInventorySlot)first) is DbInventoryItem item)
+                {
+                    caption = item.Name;
+                    player.DelveItem(item, lines);
+                }
+                else if (bot != null && kind == "style")
+                {
+                    List<Specialization> specs = Lines(bot);
+                    if (first >= 0 && first < specs.Count &&
+                        AllUnlocks(bot, specs[first]).Where(u => u.Skill is Style && u.Level == second)
+                            .Select(u => (Style)u.Skill).FirstOrDefault() is { } style)
+                    {
+                        caption = style.Name;
+                        DOL.GS.PacketHandler.Client.v168.DetailDisplayHandler.WriteStyleInfo(lines, style, player.Client);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                StatsLog.Warn($"COMPANION_DELVE_165 player={player.Name} args=\"{string.Join(' ', args)}\" failed: {ex.Message}");
+                lines.Clear();
+            }
+            player.Out.SendCustomTextWindow(caption, lines);
+        }
 
         // ---- gear
 
@@ -723,7 +778,7 @@ namespace DOL.GS
 
         public static void SendStats(GamePlayer player, int row, GameBot bot)
         {
-            var body = new byte[59];
+            var body = new byte[77];
             body[0] = (byte)row;
             body[1] = (byte)bot.Level;
             int xp = Hire165.XpPerMille(bot, bot.PersistentRecord);
@@ -744,6 +799,11 @@ namespace DOL.GS
             at++;   // [56] spare: 10 resist bytes reserved
             Int(bot.PersistentRecord?.MoneyCopper ?? 0);
             Short((int)((bot.PersistentRecord?.RealmPoints ?? 0) / 1000));
+            // [63..78] the 8 stats without buffs or debuffs (base and items), [79..80] armor factor likewise: the new
+            // client shows a buffed stat green and a debuffed one red (owner 2026-11-05, reset-day C15)
+            for (eProperty p = eProperty.Strength; p <= eProperty.Charisma; p++)
+                Short(bot.GetModifiedBase(p));
+            Short(bot.GetModifiedBase(eProperty.ArmorFactor));
             Hire165.Send(player, 10, body);
         }
 
