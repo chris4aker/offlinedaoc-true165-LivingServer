@@ -2377,6 +2377,28 @@ namespace DOL.GS
             return GetHealthRegenerationInterval();
         }
 
+        private long _nextNoEnduranceRegenLog;
+
+        /// <summary>
+        /// Owner 2026-11-05 (reset-day S41): a Necromancer sitting in shade form got no endurance back. Endurance regen is 0
+        /// while "in combat" (the player's own, the pet's, or a stun/mez on either) or moving; this says which, once a
+        /// minute, so one session shows the cause.
+        /// </summary>
+        private void LogNoSittingEnduranceRegen()
+        {
+            long now = GameLoop.GameLoopTime;
+            if (now < _nextNoEnduranceRegenLog)
+                return;
+            _nextNoEnduranceRegenLog = now + 60_000;
+            GameNPC pet = ControlledBrain?.Body;
+            if (log.IsInfoEnabled)
+                log.Info($"NO_SITTING_ENDURANCE_REGEN player={Name} class={CharacterClass?.Name} shade={HasShadeModel} moving={IsMoving} " +
+                         $"selfCombat={base.InCombat} selfCC={IsCrowdControlled} lastCombatPvE={GameLoop.GameLoopTime - LastCombatTickPvE}ms " +
+                         $"pet={pet?.Name ?? "none"} petCombat={pet?.InCombat} petCC={pet?.IsCrowdControlled} " +
+                         $"petLastCombatPvE={(pet == null ? 0 : GameLoop.GameLoopTime - pet.LastCombatTickPvE)}ms " +
+                         $"endurance={Endurance}/{MaxEndurance} regenAmount={GetModified(eProperty.EnduranceRegenerationAmount)}");
+        }
+
         protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
             int maxEndurance = MaxEndurance;
@@ -2416,6 +2438,8 @@ namespace DOL.GS
 
             if (regen != 0)
                 ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+            else if (IsSitting && Endurance < maxEndurance)
+                LogNoSittingEnduranceRegen();
 
             if (sprinting)
             {
