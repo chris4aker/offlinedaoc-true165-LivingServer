@@ -36,9 +36,14 @@ namespace DOL.GS
         public static void RecordBarrierWait(long started) =>
             _stageWaitMs += Stopwatch.GetElapsedTime(started).TotalMilliseconds;
 
+        /// <summary>When the last game loop stage that ran over half a second ended (monotonic ms; 0 = none yet).</summary>
+        public static long LastStallEndMs { get; private set; }
+
         public static void EndStage(string stage, long started)
         {
             double ms = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+            if (ms > 500)
+                LastStallEndMs = DOL.Timing.MonotonicTime.NowMs;
             if (!Stages.TryGetValue(stage, out Counters counters))
                 Stages[stage] = counters = new();
             counters.Count++;

@@ -41,6 +41,7 @@ namespace DOL.GS
         public static int TeleportThreshold { get; set; } = 5;              // Number of consecutive teleports before kicking.
         public static double MaxSpeedToleranceFactor { get; set; } = 1.15;  // Factor to allow for some tolerance in speed checks (measurement errors, lag, etc.).
         public static int LatencyBuffer { get; set; } = 750;                // Buffer time to account for latency when checking speed changes.
+        public static int StallGraceMilliseconds { get; set; } = 5000;     // After a server stall, no speed violations for this long.
 
         public PlayerMovementMonitor(GamePlayer player)
         {
@@ -93,6 +94,16 @@ namespace DOL.GS
                 _teleport = default;
                 _teleportCount = 0;
                 _accumulatedPauseTime = 0;
+                return;
+            }
+
+            // Owner 2026-11-05 (reset-day S39): after a server stall the player's queued movement is processed in a burst
+            // over a few quick ticks and looked like speeding, so the player was snapped back. The real client keeps
+            // moving through a stall; for 5 s after one, nothing counts as a violation.
+            if (MonotonicTime.NowMs - GameLoopWorkMetrics.LastStallEndMs < StallGraceMilliseconds && GameLoopWorkMetrics.LastStallEndMs > 0)
+            {
+                _violationTimestamps.Clear();
+                _teleport = default;
                 return;
             }
 
