@@ -175,7 +175,7 @@ func _ready() -> void:
 			var ob := c as OptionButton
 			var tw := ob.get_theme_font("font").get_string_size(ob.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
 					ob.get_theme_font_size("font_size")).x
-			if tw > ob.size.x - 22.0:
+			if tw > ob.size.x - 27.0:                     # (inside the padding: 7 left, 20 right for the arrow)
 				clipped.append(ob.text)
 	print("[opts] minstrel %d rows, lowest %.0f of %.0f, clipped %s" % [nrows, low, w._options_box.get_parent().size.y, clipped])
 	ok = ok and nrows == 9 and low <= w._options_box.get_parent().size.y and clipped.is_empty()

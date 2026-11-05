@@ -723,9 +723,15 @@ static func _choice(items: Array) -> OptionButton:
 	o.add_theme_font_size_override("font_size", TEXT)
 	o.add_theme_color_override("font_color", UiArt.CREAM)
 	o.add_theme_color_override("font_hover_color", UiArt.GOLD_HI)
-	o.add_theme_stylebox_override("normal", UiArt.bar_style(0))
-	o.add_theme_stylebox_override("hover", UiArt.bar_style(1))
-	o.add_theme_stylebox_override("pressed", UiArt.bar_style(2))
+	# the bar art with room inside it: the text clear of the frame's left edge and of the arrow on the right (owner
+	# 2026-11-05: the AI options' "SUPPORT" / "AUTOMATIC" ran out over the box's edge)
+	for k in [["normal", 0], ["hover", 1], ["pressed", 2], ["disabled", 0]]:
+		var sb := UiArt.bar_style(int(k[1])).duplicate() as StyleBox
+		sb.content_margin_left = 7.0
+		sb.content_margin_right = 20.0
+		sb.content_margin_top = 3.0                         # (the font's capitals sit high: down to the middle)
+		sb.content_margin_bottom = 0.0
+		o.add_theme_stylebox_override(String(k[0]), sb)
 	o.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	for it in items:
 		o.add_item(String(it).to_upper())

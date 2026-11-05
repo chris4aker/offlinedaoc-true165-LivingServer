@@ -101,5 +101,9 @@ func _ready() -> void:
 	Server.client = was
 	Server.listings = {}
 	Server.listing_minutes = {}
+	ex.show_tab("browse")
+	await get_tree().create_timer(0.3).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(String(v.args.get("out", "user://")) + "/exchange_browse.png")
 	print("[similar] RESULT ", "PASS" if ok else "FAIL")
 	get_tree().quit()
