@@ -102,9 +102,18 @@ namespace DOL.GS.PropertyCalc
 
                 speedIncrease *= horseSpeed;
             }
-            // True 1.65 Mode: a bot moving by player rules sprints as a player does (+30%, paid in endurance)
-            else if (living is GameBot sprintingBot && PlayerRules165.IsPlayerRulesBot(sprintingBot) && sprintingBot.IsSprinting)
-                speedIncrease *= SPRINT;
+            // True 1.65 Mode: a bot moving by player rules sneaks at a player's stealth speed and sprints as a player does
+            // (+30%, paid in endurance)
+            else if (living is GameBot ruleBot && PlayerRules165.IsPlayerRulesBot(ruleBot))
+            {
+                if (ruleBot.IsStealthed)
+                {
+                    double stealthSpec = Math.Min(ruleBot.GetModifiedSpecLevel(Specs.Stealth), ruleBot.Level);
+                    speedIncrease *= 0.3 + (stealthSpec + 10) * 0.3 / (ruleBot.Level + 10);
+                }
+                if (ruleBot.IsSprinting)
+                    speedIncrease *= SPRINT;
+            }
             else if (living is GameNPC npc && !PlayerRules165.IsPlayerRulesBot(npc))   // True 1.65 Mode: bots move by player rules (no catch-up, no low-health slow)
             {
                 // Special handling for pets.

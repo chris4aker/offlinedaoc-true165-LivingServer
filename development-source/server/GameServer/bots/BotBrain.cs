@@ -3585,6 +3585,9 @@ namespace DOL.AI.Brain
                 }
                 if (Body.TargetObject is GameLiving ambushTarget && TryApproachAmbush(ambushTarget))
                     return;
+                // an assassin hides and opens with Backstab / Perforate Artery (BotBrain.StealthOpener)
+                if (Body.TargetObject is GameLiving openerTarget && TryStealthOpener(openerTarget))
+                    return;
                 if (Body.IsStealthed)
                     Body.Stealth(false);
 

@@ -46,7 +46,8 @@ namespace DOL.GS
             GamePlayer leader = StealthedLeader(bot);
             if (bot.IsStealthed)
             {
-                if (leader == null)
+                // hidden on its own for a stealth opener (BotBrain.StealthOpener): that approach decides
+                if (leader == null && bot.Brain is not BotBrain { StealthOpenerActive: true })
                     bot.Stealth(false);
                 return;
             }

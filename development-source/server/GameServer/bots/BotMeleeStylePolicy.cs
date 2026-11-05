@@ -131,9 +131,16 @@ namespace DOL.GS
             double bestValue = 0;
             Style detauntStyle = null;
             Style anytime = null;
+            Style stealthOpener = null;
             foreach (Style style in bot.Styles)
             {
                 if (!Usable(bot, style, lastAttack)) continue;
+                // hidden and in place: the stealth opener comes first, whatever its growth (its damage is its own formula)
+                if (style.StealthRequirement)
+                {
+                    if (stealthOpener == null || style.Level > stealthOpener.Level) stealthOpener = style;
+                    continue;
+                }
                 int threat = ThreatSign(style);
                 if (threat > 0 && !mayTaunt) continue;
                 if (threat < 0 && detaunt && Better(style, detauntStyle)) detauntStyle = style;
@@ -146,7 +153,7 @@ namespace DOL.GS
                 if (SavageBotCombatPolicy.IsReliableAnytimeStyle(style) && Better(style, anytime)) anytime = style;
             }
             bot.styleComponent.NextCombatBackupStyle = anytime;
-            return detauntStyle ?? best;
+            return stealthOpener ?? detauntStyle ?? best;
         }
     }
 }

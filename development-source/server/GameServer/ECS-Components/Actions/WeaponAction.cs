@@ -102,9 +102,11 @@ namespace DOL.GS
                     break;
             }
 
-            // Unstealth before attack animation.
+            // Unstealth before attack animation (a bot too: its stealth opener reveals it, as a player's does).
             if (_owner is GamePlayer playerOwner)
                 playerOwner.Stealth(false);
+            else if (_owner is GameBot botOwner && botOwner.IsStealthed)
+                botOwner.Stealth(false);
 
             // Show the animation.
             if (mainHandAttackData.AttackResult is not eAttackResult.HitUnstyled and not eAttackResult.HitStyle && leftHandAttackData != null)

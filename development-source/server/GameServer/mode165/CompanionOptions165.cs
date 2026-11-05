@@ -26,7 +26,7 @@ namespace DOL.GS
     {
         public const byte KindCharm = 1, KindPet = 2, KindSubPet = 3, KindSong = 4;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
-            KindHunterPet = 11;
+            KindHunterPet = 11, KindStealthOpen = 12;
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -47,6 +47,10 @@ namespace DOL.GS
                 bot => bot.HasAbility(Abilities.Guard) || bot.HasAbility(Abilities.Protect) || bot.HasAbility(Abilities.Intercept)),
             new(KindHunterPet, "hunterpet", "Pet", ["Automatic (on)", "Off"],
                 bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Hunter),
+            // assassins: hide and open with Backstab / Perforate Artery (BotBrain.StealthOpener)
+            new(KindStealthOpen, "stealthopen", "Open from stealth", ["Automatic (on)", "Off"],
+                bot => BotPoisonSupply.IsAssassin((eCharacterClass)bot.CharacterClass.ID) &&
+                       bot.Styles?.Any(style => style.StealthRequirement) == true),
         ];
 
         /// <summary>The player's choice for a generic AI option (0 = Automatic; always 0 for gamebots).</summary>
