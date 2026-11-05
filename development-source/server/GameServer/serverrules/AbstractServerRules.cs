@@ -1783,6 +1783,10 @@ namespace DOL.GS.ServerRules
             }
         }
 
+        /// <summary>A hired companion below its (online) player's level: no per-kill XP cap (see AwardBotOnNpcKill).</summary>
+        public static bool CatchesUp(GameBot bot) =>
+            HiredCompanions165.IsHired(bot) && bot.CompanionPlayer is { } player && bot.Level < player.Level;
+
         private static void AwardBotOnNpcKill(GameBot botToAward,
             double npcTotalDamageReceived,
             GameNPC killedNpc,
@@ -1819,6 +1823,11 @@ namespace DOL.GS.ServerRules
             double damagePercent = Math.Min(1.0, contribution.Damage / npcTotalDamageReceived);
             long xpCap = GameServer.ServerRules.GetExperienceForLiving(botToAward.Level);
             xpCap = (long)(xpCap * Properties.XP_CAP_PERCENT / 100.0 * killedNpc.ExceedXPCapAmount);
+            // A hired companion below its player's level has no per-kill cap, so it can catch up (owner 2026-11-05: a
+            // level 5 companion got ~3% a kill beside its level 15 player; the cap held it to 200 XP a kill). Gamebots and
+            // a companion at or above its player's level keep the period cap.
+            if (CatchesUp(botToAward))
+                xpCap = long.MaxValue;
             baseXpReward = (long)(Math.Min(baseXpReward, xpCap) * damagePercent);
             if (baseXpReward <= 0)
                 return;
