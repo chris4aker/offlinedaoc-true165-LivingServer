@@ -157,16 +157,12 @@ namespace DOL.GS
                 if (spell == null && !flyingHandoff && !HasRangedPull(shooter)) return false;
                 state.RetryAfter = GameLoop.GameLoopTime + TimeoutMilliseconds;
                 eActiveWeaponSlot previous = shooter.ActiveWeaponSlot;
-                if (spell == null)
-                {
-                    if (flyingHandoff && !HasUsableDistanceWeapon(shooter)) return true;
-                    shooter.SwitchWeapon(eActiveWeaponSlot.Distance);
-                }
-                int range = spell?.Range ?? shooter.attackComponent.AttackRange;
+                if (spell == null && flyingHandoff && !HasUsableDistanceWeapon(shooter)) return true;
+                // the bow's reach is read without drawing it; the bow comes out only once a firing spot is found
+                int range = spell?.Range ?? BotRangedCombat.EstimatedRange(shooter);
                 Vector3 origin = new(shooter.X, shooter.Y, shooter.Z), enemy = new(target.X, target.Y, target.Z);
                 if (!TryFiringPoint(PathfindingProvider.Instance, shooter.CurrentZone, origin, enemy, range, out Vector3 point))
                 {
-                    shooter.SwitchWeapon(previous);
                     // Merely too far for the short proven approach: the party keeps walking in and the
                     // camp check (every 1.5 s) pulls once in range. Holding here stood parties 2,000
                     // units from their camp (1,087 unreachable pulls in run 11's first hour, mostly
@@ -182,6 +178,8 @@ namespace DOL.GS
                         $"AUTONOMOUS_DEFENSIVE_PULL_UNREACHABLE bot={shooter.Name} target={target.Name} region={shooter.CurrentRegionID} x={shooter.X} y={shooter.Y} z={shooter.Z} tries={state.UnreachableTries}");
                     return state.UnreachableTries < UnreachableTriesBeforeRelease;
                 }
+                if (spell == null)
+                    shooter.SwitchWeapon(eActiveWeaponSlot.Distance);
                 state.Members = members;
                 state.Shooter = shooter;
                 state.Target = target;

@@ -3714,8 +3714,11 @@ namespace DOL.AI.Brain
                         int distance = (int)Body.GetDistanceTo(livingTarget);
                         var stance = BotBody.Stance;
                         DbInventoryItem distanceItem = BotBody.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                        // Back to the bow from melee only with endurance for a few shots: at the bare shot cost the bot
+                        // flipped bow/melee on every shot (2026-11-05 weapon-swap audit).
                         bool hasRangedCombatWeapon = BotRangedCombat.CanUse(BotBody, distanceItem) &&
-                                                     Body.Endurance >= Body.rangeAttackComponent.ShotEnduranceCost;
+                                                     Body.Endurance >= Body.rangeAttackComponent.ShotEnduranceCost *
+                                                     (Body.ActiveWeaponSlot == eActiveWeaponSlot.Distance ? 1 : 3);
 
                         // Direct melee pressure was handled above by
                         // TryEngageUnderMeleePressure.  Until that happens, a
@@ -3725,7 +3728,9 @@ namespace DOL.AI.Brain
                         // Gamebot and hired archers fight like a player (owner 2026-11-03): a monster that reaches
                         // them and is on them gets the melee weapon before its first blow; one busy with someone
                         // else is still shot at.
-                        bool targetForcesMelee = distance <= Body.MeleeAttackRange &&
+                        // once in melee, a monster stepping just out of reach does not swap the bow back in (audit O4)
+                        int meleeHold = Body.ActiveWeaponSlot == eActiveWeaponSlot.Distance ? 0 : 150;
+                        bool targetForcesMelee = distance <= Body.MeleeAttackRange + meleeHold &&
                                                  (!BotRangedCombat.UsesAutonomousBowPositioning(BotBody) ||
                                                   livingTarget.TargetObject == Body) ||
                                                  ArcherMeleeFallbackActive;
@@ -4083,7 +4088,7 @@ namespace DOL.AI.Brain
             // An off-hand-only persisted loadout is not combat-ready; weapon
             // reconciliation will move/create a legal primary weapon instead.
             bool oneHandUsable = rightUsable;
-            bool preferTwoHand = PreferTwoHandedSlot(twoHandUsable, oneHandUsable,
+            bool preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(BotBody, twoHandUsable, oneHandUsable,
                 BotBody.BotSpec?.Is2H == true ||
                 BotBody.CharacterClass.ClassType == eClassType.ListCaster ||
                 BotBody.CharacterClass.ID is (int)eCharacterClass.Friar or (int)eCharacterClass.Valewalker);

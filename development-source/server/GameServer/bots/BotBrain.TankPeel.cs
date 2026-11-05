@@ -52,7 +52,15 @@ namespace DOL.AI.Brain
             };
             if (protect && (chosen ?? healer ?? threatened) is GameLiving protectTarget)
                 Apply(eEffect.Protect, protectTarget);
-            if (guard && ShieldInUse(bot) && (chosen ?? threatened ?? healer) is GameLiving guardTarget)
+            // Guard blocks only within 256 of the guarded member: the member being hit within reach first, else the
+            // healer or another squishy member within reach (Prima: guarded healers stick close; the tank never left its
+            // monster to stand by the healer, so a far-away guard did nothing, 2026-11-05).
+            GameLiving guardTarget = chosen ?? squishies
+                .Where(member => bot.IsWithinRadius(member, GuardAbilityHandler.GUARD_DISTANCE))
+                .OrderBy(member => member == threatened ? 0 : member == healer ? 1 : BeingHitInMelee(member) ? 2 : 3)
+                .ThenBy(member => member.HealthPercent)
+                .FirstOrDefault() ?? threatened ?? healer;
+            if (guard && ShieldInUse(bot) && guardTarget != null)
                 Apply(eEffect.Guard, guardTarget);
             if (intercept && threatened != null && threatened.HealthPercent < InterceptHealthPercent &&
                 bot.IsWithinRadius(threatened, InterceptAbilityHandler.INTERCEPT_DISTANCE) &&

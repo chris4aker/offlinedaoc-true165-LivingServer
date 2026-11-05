@@ -208,11 +208,13 @@ namespace DOL.GS
             if (oneHand <= 0 && twoHand <= 0)
                 return false;
 
-            // Keep the current choice on an exact tie to avoid restarting a
-            // swing when both weapon shapes deal the same effective damage.
-            if (oneHand == twoHand)
-                slot = bot.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded
-                    ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard;
+            // Keep the current shape unless the other is clearly (10%) better: wear lowers only the weapon in use, so two
+            // similar weapons alternated through long fights (2026-11-05 weapon-swap audit).
+            bool holdingTwoHand = bot.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded;
+            if (holdingTwoHand && twoHand > 0 && oneHand <= twoHand * 1.1)
+                slot = eActiveWeaponSlot.TwoHanded;
+            else if (!holdingTwoHand && oneHand > 0 && twoHand <= oneHand * 1.1)
+                slot = eActiveWeaponSlot.Standard;
             else if (twoHand > oneHand)
                 slot = eActiveWeaponSlot.TwoHanded;
             return true;

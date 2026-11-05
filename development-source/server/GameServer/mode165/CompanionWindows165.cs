@@ -454,7 +454,10 @@ namespace DOL.GS
             else if (want == eActiveWeaponSlot.Standard && !oneHand && twoHand)
                 want = eActiveWeaponSlot.TwoHanded;
             if (changed != eInventorySlot.DistanceWeapon)
+            {
                 bot.SwitchWeapon(want);
+                bot.PlayerReadiedSlot = want;   // and keeps fighting with it (BotWeaponSetPolicy)
+            }
         }
 
         private static void Saved(GamePlayer player, GameBot bot, DbInventoryItem given, DbInventoryItem returned)

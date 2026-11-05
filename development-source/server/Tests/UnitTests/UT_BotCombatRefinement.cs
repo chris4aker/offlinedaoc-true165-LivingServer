@@ -257,6 +257,22 @@ namespace DOL.UnitTests
             Assert.That(BotMeleeStylePolicy.Value(bot, opener, true), Is.EqualTo(.3).Within(1e-9));
         }
 
+        // 2026-11-05: a hired companion keeps the set its player readied; otherwise its build decides; never an unusable set.
+        [Test]
+        public void WeaponSetFollowsThePlayersChoiceThenTheBuild()
+        {
+            var bot = (Assassin)RuntimeHelpers.GetUninitializedObject(typeof(Assassin));
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, true, true, true), Is.True);
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, true, true, false), Is.False);
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, false, true, true), Is.False);
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, true, false, false), Is.True);
+            bot.PlayerReadiedSlot = eActiveWeaponSlot.Standard;
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, true, true, true), Is.False);
+            bot.PlayerReadiedSlot = eActiveWeaponSlot.TwoHanded;
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, true, true, false), Is.True);
+            Assert.That(BotWeaponSetPolicy.PreferTwoHanded(bot, false, true, false), Is.False);
+        }
+
         [Test]
         public void NonPositionalSelectionKeepsLowLevelUsefulStylesAndPrefersGrowth()
         {

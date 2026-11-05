@@ -3116,6 +3116,9 @@ namespace DOL.GS
             return CastSpell(spell, line, null, checkLos);
         }
 
+        /// <summary>The melee set a hired companion's player readied last in the companion window (BotWeaponSetPolicy).</summary>
+        public eActiveWeaponSlot? PlayerReadiedSlot { get; set; }
+
         // ---- Quick Cast, as a player uses it (owner 2026-11-05): the next spell takes a flat 2 s and cannot be
         // interrupted, at double power, then 30 s before the next one. The brain arms it for one cast that matters
         // while the bot is being hit (BotBrain.QuickCastWorthwhile / the emergency heal).

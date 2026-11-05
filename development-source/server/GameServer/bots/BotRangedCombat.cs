@@ -166,6 +166,27 @@ namespace DOL.GS
             int rangedAttackRange) =>
             useRangedWeapon && rangedAttackRange > 0 && distanceToTarget > rangedAttackRange;
 
+        /// <summary>
+        /// The reach of the bot's bow or crossbow without drawing it (AttackComponent.AttackRange's weapon table and archery
+        /// range bonus; ammunition and height left out, which errs short). The pull code used to switch to the bow just to
+        /// read its range and switch back when no firing spot was found, every 1.5 s (2026-11-05 weapon-swap audit).
+        /// </summary>
+        public static int EstimatedRange(GameBot bot)
+        {
+            DbInventoryItem bow = bot?.Inventory?.GetItem(eInventorySlot.DistanceWeapon);
+            if (bow == null)
+                return 0;
+            double range = (eObjectType)bow.Object_Type switch
+            {
+                eObjectType.Longbow => 1760,
+                eObjectType.RecurvedBow => 1680,
+                eObjectType.CompositeBow => 1600,
+                eObjectType.Thrown => bow.Name?.Contains("weighted", StringComparison.OrdinalIgnoreCase) == true ? 1450 : 1160,
+                _ => 1200,
+            };
+            return (int)Math.Max(32, range * bot.GetModified(eProperty.ArcheryRange) * 0.01);
+        }
+
         public static int BowApproachDistance(int meleeAttackRange, int rangedAttackRange) =>
             Math.Max(meleeAttackRange + 100, rangedAttackRange - 100);
 

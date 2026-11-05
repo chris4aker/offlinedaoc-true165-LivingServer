@@ -80,17 +80,17 @@ namespace DOL.GS
             if (bow && !BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon)))
                 return false;
             eActiveWeaponSlot previous = bot.ActiveWeaponSlot;
-            if (bow)
-                bot.SwitchWeapon(eActiveWeaponSlot.Distance);
-            int range = spell?.Range ?? bot.attackComponent.AttackRange;
+            // the bow's reach is read without drawing it; the bow comes out only once a firing spot is found (it used to
+            // come out and go back for every target with no spot, 2026-11-05 weapon-swap audit)
+            int range = spell?.Range ?? BotRangedCombat.EstimatedRange(bot);
             if (!TryFiringPoint(bot, target, range, out Vector3 point))
             {
-                if (bow)
-                    bot.SwitchWeapon(MeleeSlot(bot, previous));
                 s.RetryAfter = now + RetryMilliseconds;
                 s.RetryTarget = target;
                 return false;
             }
+            if (bow)
+                bot.SwitchWeapon(eActiveWeaponSlot.Distance);
             s.Active = true;
             s.Shot = false;
             s.UsedBow = bow;
