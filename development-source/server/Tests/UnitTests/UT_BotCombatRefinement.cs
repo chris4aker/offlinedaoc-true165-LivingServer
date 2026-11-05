@@ -235,12 +235,35 @@ namespace DOL.UnitTests
         }
 
         [Test]
+        public void TauntStylesAreKnownAndChainOpenersCountTheirFollowUp()
+        {
+            var taunt = Style(11, growth: .57, level: 12);
+            taunt.Procs.Add(new StyleProcInfo(new Spell(new DbSpell { SpellID = 20000, Type = "StyleTaunt", Target = "Enemy", Value = 17 }, 1), 0, 100));
+            var detaunt = Style(11, growth: 0, level: 14);
+            detaunt.Procs.Add(new StyleProcInfo(new Spell(new DbSpell { SpellID = 20001, Type = "StyleTaunt", Target = "Enemy", Value = -19 }, 1), 0, 100));
+            Assert.That(BotMeleeStylePolicy.ThreatSign(taunt), Is.EqualTo(1));
+            Assert.That(BotMeleeStylePolicy.ThreatSign(detaunt), Is.EqualTo(-1));
+            Assert.That(BotMeleeStylePolicy.ThreatSign(Style(11)), Is.EqualTo(0));
+
+            var bot = (Assassin)RuntimeHelpers.GetUninitializedObject(typeof(Assassin));
+            bot.Level = 30;
+            var opener = Style(11, growth: .3, level: 8);
+            var followUp = new Style(new DbStyle { Name = "follow", ID = 95, SpecKeyName = Specs.Sword, SpecLevelRequirement = 20,
+                WeaponTypeRequirement = 11, OpeningRequirementValue = opener.ID, GrowthRate = 1.1 }, null);
+            bot.Styles = new List<Style> { opener, followUp, taunt };
+            // (0.3 + 1.1) / 2 = 0.7 beats the 0.57 taunt style
+            Assert.That(BotMeleeStylePolicy.Value(bot, opener, true), Is.EqualTo(.7).Within(1e-9));
+            bot.Level = 15;   // follow-up not trained yet
+            Assert.That(BotMeleeStylePolicy.Value(bot, opener, true), Is.EqualTo(.3).Within(1e-9));
+        }
+
+        [Test]
         public void NonPositionalSelectionKeepsLowLevelUsefulStylesAndPrefersGrowth()
         {
             var low = Style(11, level: 2, growth: .7);
             var high = Style(11, level: 40, growth: .2);
             Assert.That(BotMeleeStylePolicy.IsEligible(low), Is.True);
-            Assert.That(BotMeleeStylePolicy.IsEligible(Style(11, opening: 2)), Is.False);
+            Assert.That(BotMeleeStylePolicy.IsEligible(Style(11, opening: 2)), Is.True);   // position checked at the swing
             Assert.That(BotMeleeStylePolicy.IsEligible(Style(11, opening: 1)), Is.True);
             Assert.That(BotMeleeStylePolicy.Better(low, high), Is.True);
         }
@@ -282,7 +305,8 @@ namespace DOL.UnitTests
             var stealth = new Style(new DbStyle { Name = "stealth", ID = 92, SpecKeyName = Specs.Sword,
                 SpecLevelRequirement = 5, WeaponTypeRequirement = (int)eObjectType.Sword,
                 StealthRequirement = true, GrowthRate = 8 }, null);
-            bot.Styles = new List<Style> { positional, tooHigh, wrongWeapon, stealth, anytime };
+            // (positional styles are now eligible; the swing checks the real position, which this bare test bot has none of)
+            bot.Styles = new List<Style> { tooHigh, wrongWeapon, stealth, anytime };
 
             Assert.That(BotMeleeStylePolicy.Select(bot, null), Is.SameAs(anytime));
             Assert.That(bot.styleComponent.NextCombatBackupStyle, Is.SameAs(anytime));

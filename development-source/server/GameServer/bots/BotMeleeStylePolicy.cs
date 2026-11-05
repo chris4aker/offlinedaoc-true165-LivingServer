@@ -6,8 +6,69 @@ namespace DOL.GS
     /// <summary>Shared companion/world-bot selection; native openings and costs remain authoritative.</summary>
     public static class BotMeleeStylePolicy
     {
-        public static bool IsEligible(Style style) => style != null &&
-            style.OpeningRequirementType != Style.eOpening.Positional && !style.StealthRequirement;
+        // Positional (front/side/back) and stealth styles are eligible: StyleProcessor.CanUseStyle (checked in Usable)
+        // only lets them through when the bot really stands at that side of the target, or is hidden, as for a player
+        // (owner 2026-11-05 class audit: bots never used a single positional style, and every chain after one was dead).
+        public static bool IsEligible(Style style) => style != null;
+
+        /// <summary>A style whose proc raises (taunt) or lowers (detaunt) the attacker's threat.</summary>
+        public static int ThreatSign(Style style)
+        {
+            if (style?.Procs == null)
+                return 0;
+            foreach (StyleProcInfo proc in style.Procs)
+                if (proc?.Spell?.SpellType == eSpellType.StyleTaunt && proc.Spell.Value != 0)
+                    return proc.Spell.Value > 0 ? 1 : -1;
+            return 0;
+        }
+
+        /// <summary>
+        /// Taunt styles are a tank's job. A damage dealer or hybrid grouped with a tank never taunts (Prima: damage dealers
+        /// must not pull aggro off the tank); solo, or with no tank to hold the monster, it may. Before 2026-11-05 every
+        /// melee bot taunted on every swing, because the taunt style is the highest-growth anytime style of nearly every
+        /// weapon line.
+        /// </summary>
+        public static bool MayTaunt(GameBot bot) => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot);
+
+        /// <summary>A non-tank the monster has turned on, with a living tank (bot tank class or player) in its group: detaunt.</summary>
+        public static bool ShouldDetaunt(GameBot bot) => !BotPartyRoles.IsTank(bot) &&
+            bot.TargetObject is GameLiving target && target.TargetObject == bot && HasTankPartner(bot);
+
+        private static bool HasTankPartner(GameBot bot)
+        {
+            if (bot?.Group == null || bot.Group.MemberCount <= 1)
+                return false;
+            foreach (GameLiving member in bot.Group.GetMembersInTheGroup())
+            {
+                if (member == null || member == bot || !member.IsAlive || member.CurrentRegionID != bot.CurrentRegionID)
+                    continue;
+                if (member is GameBot other ? BotPartyRoles.IsTank(other) :
+                    member is GamePlayer player && player.CharacterClass != null &&
+                    BotPartyRoles.For((eCharacterClass)player.CharacterClass.ID) == BotPartyRole.Tank)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Swing value of a style: its growth, or for an opener whose follow-up the bot knows and can use, the average over
+        /// both swings (a player opens a chain even when the opener alone hits softer than the plain best style).
+        /// </summary>
+        public static double Value(GameBot bot, Style style, bool mayTaunt)
+        {
+            double value = style.GrowthRate;
+            if (bot?.Styles == null || style.ID == 0)
+                return value;
+            foreach (Style next in bot.Styles)
+            {
+                if (next == null || next.OpeningRequirementType != Style.eOpening.Offensive ||
+                    next.OpeningRequirementValue != style.ID || next.Level > bot.Level ||
+                    !mayTaunt && ThreatSign(next) > 0)
+                    continue;
+                value = System.Math.Max(value, (style.GrowthRate + next.GrowthRate) / 2);
+            }
+            return value;
+        }
 
         public static bool Better(Style candidate, Style current) => current == null ||
             candidate.GrowthRate > current.GrowthRate ||
@@ -52,18 +113,30 @@ namespace DOL.GS
                 bot.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 return null;
             // Preserve a deliberate tank taunt, but revalidate at the actual swing.
+            bool mayTaunt = MayTaunt(bot);
             Style queued = bot.styleComponent.NextCombatStyle;
-            if (preserveQueued && Usable(bot, queued, lastAttack)) return queued;
+            if (preserveQueued && Usable(bot, queued, lastAttack) && (mayTaunt || ThreatSign(queued) <= 0)) return queued;
+            bool detaunt = ShouldDetaunt(bot);
             Style best = null;
+            double bestValue = 0;
+            Style detauntStyle = null;
             Style anytime = null;
             foreach (Style style in bot.Styles)
             {
                 if (!Usable(bot, style, lastAttack)) continue;
-                if (Better(style, best)) best = style;
+                int threat = ThreatSign(style);
+                if (threat > 0 && !mayTaunt) continue;
+                if (threat < 0 && detaunt && Better(style, detauntStyle)) detauntStyle = style;
+                double value = Value(bot, style, mayTaunt);
+                if (best == null || value > bestValue || value == bestValue && style.Level > best.Level)
+                {
+                    best = style;
+                    bestValue = value;
+                }
                 if (SavageBotCombatPolicy.IsReliableAnytimeStyle(style) && Better(style, anytime)) anytime = style;
             }
             bot.styleComponent.NextCombatBackupStyle = anytime;
-            return best;
+            return detauntStyle ?? best;
         }
     }
 }
