@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using DOL.AI.Brain;
@@ -285,6 +286,18 @@ namespace DOL.GS
                 AutonomousObjectiveAssignments.EndBattlegroundTour(bot, "No realm teleporter could be reached for the battlegrounds");
                 return true;
             }
+            // True 1.65 Mode (owner 2026-11-05, reset-day S35): the period way in is the realm's portal keep teleporter
+            // with the battlegrounds medallion; a bot standing at it goes through to the realm's arrival point.
+            if (porter is DOL.GS.Scripts.OFTeleporter && bot.CurrentRegionID == porter.CurrentRegionID && bot.IsWithinRadius(porter, 350) && !bot.InCombat)
+            {
+                GameLocation arrival = BattlegroundBrackets.BotArrival(bracket, bot.Realm);
+                if (arrival != null && bot.MoveTo(bracket.RegionId, arrival.X, arrival.Y, arrival.Z, arrival.Heading))
+                {
+                    SetStatus(bot, $"Entering {bracket.Name}", $"Battleground: {bracket.Name}", $"Took {porter.Name}'s portal", porter.Name,
+                        porter.CurrentZone?.Description ?? string.Empty);
+                    return true;
+                }
+            }
             SetStatus(bot, $"Heading to {porter.Name}", $"Battleground: {bracket.Name}",
                 $"Walking to the teleporter for {bracket.Name}", porter.Name, porter.CurrentZone?.Description ?? string.Empty);
             if (bot.CurrentRegionID == porter.CurrentRegionID)
@@ -299,6 +312,16 @@ namespace DOL.GS
         /// <summary>The bot's own-realm teleporter: one in this region first, otherwise one in the realm's capital.</summary>
         private static GameNPC NearestRealmTeleporter(GameBot bot)
         {
+            // True 1.65 Mode: the freeshard town teleporters are gone; the realm's portal keep teleporter (Master Visur,
+            // Stor Gothi, Glasny) takes medallion holders to the battlegrounds, the period way in
+            if (Classic165Mode.IsOn)
+            {
+                GameNPC keepPorter = PortalKeepTeleporters(bot.Realm)
+                    .OrderBy(porter => porter.CurrentRegionID == bot.CurrentRegionID ? 0 : 1)
+                    .ThenBy(porter => Vector2.DistanceSquared(new(bot.X, bot.Y), new(porter.X, porter.Y)))
+                    .FirstOrDefault();
+                if (keepPorter != null) return keepPorter;
+            }
             GameNPC local = AutonomousTownTeleporters.Porters(bot.CurrentRegion)
                 .Where(porter => porter.Realm == bot.Realm)
                 .OrderBy(porter => Vector2.DistanceSquared(new(bot.X, bot.Y), new(porter.X, porter.Y)))
@@ -307,6 +330,18 @@ namespace DOL.GS
             ushort capital = bot.Realm switch { eRealm.Albion => 10, eRealm.Midgard => 101, eRealm.Hibernia => 201, _ => (ushort)0 };
             return capital == 0 ? null : AutonomousTownTeleporters.Porters(WorldMgr.GetRegion(capital))
                 .FirstOrDefault(porter => porter.Realm == bot.Realm);
+        }
+
+        private static GameNPC[] _portalKeepTeleporters;
+
+        /// <summary>The portal keep teleporters (OFTeleporter) of a realm, looked up once.</summary>
+        private static IEnumerable<GameNPC> PortalKeepTeleporters(eRealm realm)
+        {
+            _portalKeepTeleporters ??= WorldMgr.GetAllRegions()
+                .SelectMany(region => region.Objects.OfType<DOL.GS.Scripts.OFTeleporter>())
+                .Where(npc => npc.ObjectState == GameObject.eObjectState.Active)
+                .Cast<GameNPC>().ToArray();
+            return _portalKeepTeleporters.Where(npc => npc.Realm == realm && npc.ObjectState == GameObject.eObjectState.Active);
         }
 
         /// <summary>
