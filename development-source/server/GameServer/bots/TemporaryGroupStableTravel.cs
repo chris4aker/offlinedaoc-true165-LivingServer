@@ -18,6 +18,7 @@ namespace DOL.GS;
 /// </summary>
 public static class TemporaryGroupStableTravel
 {
+    private static readonly DOL.Logging.Logger log = DOL.Logging.LoggerManager.Create(typeof(TemporaryGroupStableTravel));
     private const int CompanionBoardingRadius = 650;
     private const int BoardAfterPlayerMountMilliseconds = 550;
     private const int PlayerRouteStartMilliseconds = 4000;
@@ -303,7 +304,11 @@ public static class TemporaryGroupStableTravel
             Vector3 destination = FormationPoint(player, ordinal++);
             if (!bot.MoveTo(player.CurrentRegionID, (int)Math.Round(destination.X), (int)Math.Round(destination.Y),
                     (int)Math.Round(destination.Z), player.Heading))
+            {
+                // left behind: say so in the log (owner 2026-11-05: invited gamebots once stayed at the SI portal)
+                log.Warn($"HELPER_TRANSFER_FAILED player={player.Name} bot={bot.Name} from={bot.CurrentRegionID} to={player.CurrentRegionID}");
                 continue;
+            }
 
             bot.EnterPlayerLedGroup(player);
             bot.WakeRecoveryRest();   // a rest lock kept from before the move ignored the follow (audit 2026-11-03)
