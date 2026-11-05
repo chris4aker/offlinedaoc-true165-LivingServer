@@ -5852,6 +5852,9 @@ namespace DOL.AI.Brain
                 // Raise nearby casualties, but do not abandon recovery to chase
                 // a distant corpse back into the failed pull/dungeon room.
                 .Where(member => !regrouping || BotBody.IsWithinRadius(member, range))
+                // A player's companion raises only corpses near its player, and gives up on one it cannot reach (owner
+                // 2026-11-05: a hired cleric kept walking out of its leash to a dead invited gamebot until it faded).
+                .Where(member => !LeavesPlayerToSupport(member) && !_supportReach.IsSkipped(member, GameLoop.GameLoopTime))
                 .OrderBy(member => member == AssistedPlayer ? 0 : 1)
                 .ThenBy(Body.GetDistanceTo)
                 .FirstOrDefault();
@@ -5860,6 +5863,8 @@ namespace DOL.AI.Brain
 
             if (!BotBody.IsWithinRadius(deadMember, range) || !BotGroupSupport.HasCorpseLineOfSight(BotBody, deadMember))
             {
+                if (!_supportReach.KeepApproaching(deadMember, Body.GetDistanceTo(deadMember), GameLoop.GameLoopTime))
+                    return false;   // no progress for 12 s: skipped for 30 s
                 Vector3 current = new(BotBody.X, BotBody.Y, BotBody.Z);
                 Vector3 desired = new(deadMember.X, deadMember.Y, deadMember.Z);
                 AutonomousThreatAwarePathing.SafeStep step = AutonomousThreatAwarePathing.ChooseStep(BotBody, current, desired, 900);
