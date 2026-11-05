@@ -5,6 +5,9 @@ extends Node
 ##   --skip-login --zone=26 --world-mode=1.65 --probe=redress_probe
 
 
+const StealthLook := preload("res://game/stealth_look.gd")
+
+
 func _ready() -> void:
 	var v := get_tree().current_scene
 	await get_tree().create_timer(8.0).timeout
@@ -41,5 +44,22 @@ func _ready() -> void:
 	print("[redress] %s: redress %s, same model %s, weapons %d -> %d, slots %s" % [n.spawn.get("name", "?"), ok,
 			same_model, old_weapons, n._weapon_nodes.size(), n._weapon_slots])
 	ok = ok and same_model and n._weapon_slots.has(13) and not n._weapon_slots.has(10)
+	# a hidden-but-seen one (the green stealth look, a stealthed assassin bot): re-dressed in place too, its new parts
+	# green at once (server chat 2026-11-05: "bots don't flicker out of existence when they swap weapons")
+	n.state.stealth_look = true
+	StealthLook.set_on(n.model, true)
+	await get_tree().process_frame
+	rows.append({"slot": 10, "model": 4, "color": 0})
+	v.npcs.data.equipment[key] = rows
+	n.spawn["weapon_slots"] = 0x10
+	var ok2 := n.redress()
+	var ghost: ShaderMaterial = StealthLook.ghost_material()
+	var all_green := true
+	for mi in n.model.find_children("*", "MeshInstance3D", true, false):
+		if (mi as MeshInstance3D).visible and (mi as MeshInstance3D).material_override != ghost:
+			all_green = false
+	print("[redress] stealthed: redress %s, same model %s, every part green at once %s" % [ok2,
+			n.model.get_instance_id() == model_before, all_green])
+	ok = ok and ok2 and n.model.get_instance_id() == model_before and all_green
 	print("[redress] RESULT ", "PASS" if ok else "FAIL")
 	get_tree().quit()

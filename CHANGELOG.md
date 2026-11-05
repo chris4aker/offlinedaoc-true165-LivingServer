@@ -62,7 +62,7 @@ hold). Its changelog has the history of everything this version inherits.
 - World: Avalon Marsh's water no longer shows dark squares and steps where its pools meet.
 - Quickbars: a weapon or instrument on a quickbar switches to it again (a Minstrel's instrument and weapon), as in the 1.64 client.
 - Movement: going up and down stairs, your character, the camera and NPCs glide over the steps instead of jerking up and down; climbing itself is unchanged.
-- Companions: companions ease into their place when the server corrects them in lag, instead of jumping onto you; a companion or gamebot changing its gear (a Minstrel drawing a weapon as combat starts) no longer blinks out and back.
+- Companions: companions ease into their place when the server corrects them in lag, instead of jumping onto you; a companion or gamebot changing its gear or swapping weapons (a Minstrel drawing a weapon as combat starts, a stealthed assassin you can see) no longer blinks out and back.
 - Characters: a Highlander's kilt takes the look of the chest armour worn (a leather tunic, a leather kilt), as in the 1.64 client; the grey cloth kilt only without chest armour.
 - Companions: hovering a companion's gear shows the item's full information, as for your own items, and hovering a style shows its endurance cost, threat and the rest; its stats show green when buffed and red when debuffed (needs the next server update).
 - Companions: an AI OPTIONS tab in the companion window for companions with choices - charm on or off, the Cabalist's and Enchanter's pet, the Bonedancer's three sub-pets (with the 75-point limit), and the songs or chants it uses in combat, out of combat and travelling (needs the next server update).

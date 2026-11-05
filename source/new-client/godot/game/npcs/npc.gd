@@ -339,6 +339,7 @@ func _hang_weapons(drawn: bool) -> void:
 		for w in _weapon_nodes:
 			if is_instance_valid(w):
 				ghost_look(w as Node3D, _weapon_root is Fig3Figure)
+	_restealth()                                              # (and a hidden one's as green - at once)
 
 
 ## The drawn weapon's stance ("" one-hand, "2h", "staff", "pole") and its version of a combat clip: combat_idle ->
@@ -412,7 +413,10 @@ func _dress(f: Fig3Figure) -> void:
 ## started; the old client chat's Q5). False when this view can't (a ghost / hidden look laid over every part when
 ## it was built, or no model): it is then built again as before.
 func redress() -> bool:
-	if model == null or not is_instance_valid(model) or (int(spawn.get("flags", 0)) & FLAG_GHOST) 			or (state and state.stealth_look):
+	# (a hidden-but-seen figure - the green stealth look - is re-dressed in place too: the look turns the new parts
+	# at once, _restealth; the server chat 2026-11-05: "check that bots don't flicker out of existence when they swap
+	# weapons". Only the ghost flag's look, laid over every part when built, still builds the view again.)
+	if model == null or not is_instance_valid(model) or (int(spawn.get("flags", 0)) & FLAG_GHOST):
 		return false
 	var rows: Array = manager.data.get("equipment", {}).get(String(spawn.get("equipment", "")), [])
 	if model is Fig3Figure:
@@ -436,7 +440,16 @@ func redress() -> bool:
 		if is_instance_valid(w):
 			for g in (w as Node).find_children("*", "GeometryInstance3D", true, false):
 				(g as GeometryInstance3D).layers = 2
+	_restealth()
 	return true
+
+
+## The green stealth look over parts just put on (new gear, weapons hung again) at once - not after its next check.
+func _restealth() -> void:
+	if model and is_instance_valid(model):
+		var look := model.get_node_or_null(StealthLook.NAME)
+		if look:
+			look.call("_apply")
 
 
 ## The GHOST flag's look (a spiritmaster's spirit pets, ghostly NPCs): see-through, with a subtle white glow over it
