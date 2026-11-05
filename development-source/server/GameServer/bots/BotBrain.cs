@@ -3588,6 +3588,9 @@ namespace DOL.AI.Brain
                 // an assassin hides and opens with Backstab / Perforate Artery (BotBrain.StealthOpener)
                 if (Body.TargetObject is GameLiving openerTarget && TryStealthOpener(openerTarget))
                     return;
+                // a damage dealer steps behind (or beside) a monster the tank holds, for its back/side styles
+                if (Body.TargetObject is GameLiving flankTarget && TryFlank(flankTarget))
+                    return;
                 if (Body.IsStealthed)
                     Body.Stealth(false);
 
