@@ -1215,13 +1215,14 @@ namespace DOL.AI.Brain
             int slot = Math.Max(0, Body.GroupIndex - 1) % RearFormationDegrees.Length;
             int drift = ambientWander ? formation.AngleDegrees - AutonomousFormation.For(BotBody.Name, tightInterior).AngleDegrees : 0;
             int relative = RearFormationDegrees[slot] + drift;
-            ushort slotHeading = (ushort)((leader.Heading + relative * 4096 / 360 + 4096 * 2) & 0xFFF);
+            ushort facing = FormationHeading(leader);
+            ushort slotHeading = (ushort)((facing + relative * 4096 / 360 + 4096 * 2) & 0xFFF);
             Point2D spot = leader.GetPointFromHeading(slotHeading, formation.Distance);
             var destination = new Point3D(spot.X, spot.Y, leader.Z);
             // A standing player who only turns does not send the group walking around: a companion already behind or
             // beside its player, at about its distance, stays; one left in front of the player (a run-past, a fight)
             // walks back round behind.
-            if (!ambientWander && !leader.IsMoving && !leader.IsObjectInFront(Body, 120, 0) &&
+            if (!ambientWander && !leader.IsMoving && !InFrontOfFormation(leader, facing, Body, 120) &&
                 Body.IsWithinRadius(leader, formation.Distance + 80) && !Body.IsWithinRadius(leader, 30))
             {
                 if (!Body.IsMoving)
@@ -1253,6 +1254,31 @@ namespace DOL.AI.Brain
 
         /// <summary>Formation places around a player, in degrees from the player's facing (180 = straight behind).</summary>
         private static readonly int[] RearFormationDegrees = [180, 140, 220, 110, 250, 160, 200];
+
+        private sealed class FormationAnchor { public ushort Heading; }
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<GameLiving, FormationAnchor> FormationAnchors = new();
+
+        /// <summary>
+        /// The facing the formation is laid out from: the leader's heading, taken only while the leader moves (owner
+        /// 2026-11-05: turning the camera with the right mouse button while standing turned the character and so
+        /// reshuffled the companions; they should stay put until the player walks).
+        /// </summary>
+        private static ushort FormationHeading(GameLiving leader)
+        {
+            FormationAnchor anchor = FormationAnchors.GetValue(leader, l => new FormationAnchor { Heading = l.Heading });
+            if (leader.IsMoving)
+                anchor.Heading = leader.Heading;
+            return anchor.Heading;
+        }
+
+        /// <summary>Is the bot within the leader's front cone, judged from the formation facing (see FormationHeading).</summary>
+        private static bool InFrontOfFormation(GameLiving leader, ushort heading, GameObject body, double cone)
+        {
+            float diff = leader.GetHeading(body) - heading;
+            if (diff < 0) diff += 4096f;
+            float angle = diff * 360f / 4096f;
+            return angle >= 360 - cone / 2 || angle < cone / 2;
+        }
 
         private void MaybeIdleRoleplay()
         {
