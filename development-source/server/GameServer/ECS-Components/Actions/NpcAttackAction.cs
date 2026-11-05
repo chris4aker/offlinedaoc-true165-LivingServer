@@ -217,6 +217,16 @@ namespace DOL.GS
                     return false;
                 }
                 bot.rangeAttackComponent.UpdateAmmo(_weapon);
+                // An archer opens on a monster that isn't fighting yet with Critical Shot, as players pulled (Prima's Hunter:
+                // Critical Shot, then normal shots); never with it ended up in the class audit 2026-11-05. The player-only
+                // check in RangeAttackComponent (no crit on a running, fighting or mezzed target) is applied here at the
+                // draw, which is also when the doubled draw time is taken.
+                if (bot.rangeAttackComponent.RangedAttackState == eRangedAttackState.None &&
+                    bot.rangeAttackComponent.RangedAttackType == eRangedAttackType.Normal &&
+                    bot.GetAbilityLevel(Abilities.Critical_Shot) > 0 && _target is GameLiving opening && !opening.InCombat &&
+                    opening.CurrentSpeed <= 90 && EffectListService.GetEffectOnTarget(opening, eEffect.Mez) == null &&
+                    bot.Endurance >= RangeAttackComponent.CRITICAL_SHOT_ENDURANCE_COST + RangeAttackComponent.DEFAULT_ENDURANCE_COST)
+                    bot.rangeAttackComponent.RangedAttackType = eRangedAttackType.Critical;
             }
             if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK)
             {
