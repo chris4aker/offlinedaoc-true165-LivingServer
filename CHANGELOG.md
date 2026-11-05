@@ -86,6 +86,12 @@ hold). Its changelog has the history of everything this version inherits.
 - Server: fewer stalls (the once-a-minute pause while bots planned shopping trips), and no speed-hack snap-back right after a stall.
 - Battlegrounds: Thidranki has a keep lord.
 - /invite with a name finds the realm's world gamebots.
+- Gamebots: low-level bots stop walking into spots where bots of their level keep dying (a pack of level 8-9 lunantishee and blackthorn south of Mag Mell killed low Hibernian bots thousands of times on their way to a merchant); a bot that dies on its way to a merchant picks another for a while.
+- Gamebots: after a death a solo bot no longer hunts only green monsters until the server restarts - it steps back up after a level or half an hour without dying.
+- Gamebots: assassins hide and open with Backstab or Perforate Artery instead of pulling with a thrown knife or crossbow; bots keep a smaller coin reserve so archers and stealthers can afford better bows, weapons and armor; casters pick staves for their own spell lines; solo Foresters hunt blue monsters, as the period guide teaches.
+- Necromancer bots: a bot whose servant dies keeps 10% of its health, as a player does (it was left with 1 hit point).
+- Chants and songs: a pulsing chant (a Paladin's endurance chant among them) no longer leaves its group with no endurance regeneration after deaths and resurrections - endurance could stay at 0% even sitting.
+- Loot: monsters no longer drop items far above their level: level-3 phantom hounds dropped a level-49 "Gnawed Bone" worth almost 4 gold to a merchant; they now drop a plain gnawed bone, and such out-of-level gear drops are gone.
 
 ## 0.2 (2026-11-01)
 
