@@ -118,8 +118,8 @@ namespace DOL.GS
                     return eSpellType.HealthRegenBuff;
             }
             var wanted = new List<eSpellType>();
-            if (combat)
-                wanted.AddRange([eSpellType.EnduranceRegenBuff, eSpellType.PowerRegenBuff, eSpellType.HealthRegenBuff]);
+            if (combat)   // the damage-add chant first: only a Skald performs one
+                wanted.AddRange([eSpellType.DamageAdd, eSpellType.EnduranceRegenBuff, eSpellType.PowerRegenBuff, eSpellType.HealthRegenBuff]);
             else
             {
                 if (powerLow) wanted.Add(eSpellType.PowerRegenBuff);

@@ -2482,7 +2482,12 @@ namespace DOL.AI.Brain
                 // Song playing"): the endurance song, or the one the player chose for fights, is started once as the fight
                 // begins and left playing; any other song stops. Until now every song stopped, so the chosen fight song
                 // never played.
-                eSpellType? fightSong = CompanionOptions165.Song(bot, 1) ?? eSpellType.EnduranceRegenBuff;
+                // A Skald has no endurance song: its fight chant is the group damage add (Chant of the Brawl ... Chant of
+                // Blood; Prima: open with the damage-add song and keep fighting under it). Before, it played nothing in a fight.
+                bool knowsDamageAddSong = (bot.MiscSpells ?? []).Concat(bot.InstantMiscSpells ?? []).Any(s => s != null &&
+                    s.Level <= bot.Level && s.IsPulsing && s.SpellType == eSpellType.DamageAdd);
+                eSpellType? fightSong = CompanionOptions165.Song(bot, 1) ??
+                    (knowsDamageAddSong ? eSpellType.DamageAdd : eSpellType.EnduranceRegenBuff);
                 ECSPulseEffect playing = Body.effectListComponent.GetPulseEffects().FirstOrDefault(effect => !effect.IsEnding && !effect.IsEnded &&
                     effect.SpellHandler?.Spell is Spell s && s.IsPulsing && !s.IsHarmful && IsMaintainableClassBuff(s));
                 bool knowsFightSong = (bot.MiscSpells ?? []).Concat(bot.InstantMiscSpells ?? []).Any(s => s != null &&

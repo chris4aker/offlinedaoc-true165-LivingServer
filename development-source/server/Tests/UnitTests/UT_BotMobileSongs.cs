@@ -869,6 +869,17 @@ namespace DOL.UnitTests
             Assert.That(BotSongTwistPolicy.PerformerHold(false, true, false, false, false, known, null, others), Is.EqualTo(eSpellType.EnduranceRegenBuff));
         }
 
+        // Class audit 2026-11-05: a Skald (no endurance song) fights under its damage-add chant; a Bard keeps endurance.
+        [Test]
+        public void SkaldFightsUnderItsDamageAddChant()
+        {
+            var skald = new List<eSpellType> { eSpellType.DamageAdd, eSpellType.HealthRegenBuff, eSpellType.SpeedEnhancement };
+            Assert.That(BotSongTwistPolicy.PerformerHold(false, true, false, false, false, skald, null), Is.EqualTo(eSpellType.DamageAdd));
+            Assert.That(BotSongTwistPolicy.PerformerHold(true, false, false, false, false, skald, null), Is.EqualTo(eSpellType.SpeedEnhancement));
+            var bard = new List<eSpellType> { eSpellType.EnduranceRegenBuff, eSpellType.PowerRegenBuff, eSpellType.SpeedEnhancement };
+            Assert.That(BotSongTwistPolicy.PerformerHold(false, true, false, false, false, bard, null), Is.EqualTo(eSpellType.EnduranceRegenBuff));
+        }
+
         // GitHub #14: the Warden's speed chant has a 3 s cast; it is still the Warden's managed chant (else Wardens
         // never cast speed), not a mobile song, and its other chants stay instant-only.
         [Test]
