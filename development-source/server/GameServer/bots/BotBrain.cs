@@ -613,6 +613,7 @@ namespace DOL.AI.Brain
         private long _nextDeployablePetTick;
         private long _nextCombatProgressTick;
         private long _nextMaintenanceBuffTick;
+        private bool _fightSongTried;
         private readonly Dictionary<(GameLiving Target, int Spell), (int Tries, long Since)> _buffAttempts = new();
 
         /// <summary>
@@ -2477,11 +2478,27 @@ namespace DOL.AI.Brain
                                     !IsUnderImmediateMeleePressure();
             if (immediateCombat && !minstrelAtRange)
             {
-                StopTwistedSong();
-                SwitchToUsableMeleeWeapon();
-                _nextSongTwistTick = GameLoop.GameLoopTime + 1_000;
-                return false;
+                // The fight song stays on while it melees (owner 2026-11-05 class audit; Prima: "In battle, keep the Endurance
+                // Song playing"): the endurance song, or the one the player chose for fights, is started once as the fight
+                // begins and left playing; any other song stops. Until now every song stopped, so the chosen fight song
+                // never played.
+                eSpellType? fightSong = CompanionOptions165.Song(bot, 1) ?? eSpellType.EnduranceRegenBuff;
+                ECSPulseEffect playing = Body.effectListComponent.GetPulseEffects().FirstOrDefault(effect => !effect.IsEnding && !effect.IsEnded &&
+                    effect.SpellHandler?.Spell is Spell s && s.IsPulsing && !s.IsHarmful && IsMaintainableClassBuff(s));
+                bool knowsFightSong = (bot.MiscSpells ?? []).Concat(bot.InstantMiscSpells ?? []).Any(s => s != null &&
+                    s.Level <= bot.Level && s.IsPulsing && s.SpellType == fightSong);
+                if (playing?.SpellHandler.Spell.SpellType == fightSong || !knowsFightSong || _fightSongTried)
+                {
+                    if (playing != null && playing.SpellHandler.Spell.SpellType != fightSong)
+                        StopTwistedSong();
+                    SwitchToUsableMeleeWeapon();
+                    _nextSongTwistTick = GameLoop.GameLoopTime + 1_000;
+                    return false;
+                }
+                _fightSongTried = true;   // one try per fight: the song code below starts it, then it melees
             }
+            else if (!immediateCombat)
+                _fightSongTried = false;
 
             // True 1.65: a Minstrel holding a pet twists its charm song with ONE other song, as a player does (owner
             // 2026-11-03): see TryTwistWithCharm. Between the partner song and the renewed charm, TryRenewTwistedCharm
