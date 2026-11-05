@@ -5447,6 +5447,23 @@ namespace DOL.AI.Brain
 
         private long nextCureTime = 0;
 
+        /// <summary>
+        /// Two or more group members hurt: a group heal-over-time not already running on the patient, else the group heal
+        /// (cast-time, then instant when it has no long recast), else the spread heal (Prima: a Healer has an instant heal
+        /// and a group heal going in every fight; Shaman group regeneration).
+        /// </summary>
+        private Spell GroupHealChoice(GameLiving patient)
+        {
+            foreach (Spell regen in new[] { BotBody.HealOverTimeInstantGroup, BotBody.HealOverTimeGroup })
+                if (CheckHealSpell(regen) && patient != null && !LivingHasEffect(patient, regen))
+                    return regen;
+            if (CheckHealSpell(BotBody.HealGroup))
+                return BotBody.HealGroup;
+            if (CheckHealSpell(BotBody.HealSpread))
+                return BotBody.HealSpread;
+            return null;
+        }
+
         bool CheckHealSpell(Spell spell)
         {
             return spell != null
@@ -5706,7 +5723,11 @@ namespace DOL.AI.Brain
             // Emergency heal
             if (numEmergency > 0)
             {
-                if (canCastInstantHeal)
+                // Several in danger: the instant group heal reaches them all (owner 2026-11-05 class audit: group heals
+                // were only ever a last fallback, so a Healer never cast one while the whole group was low).
+                if (numEmergency >= 2 && canCastInstantGroupHeal)
+                    spellToCast = BotBody.HealInstantGroup;
+                else if (canCastInstantHeal)
                     spellToCast = BotBody.HealInstant;
                 else if (canCastInstantGroupHeal)
                     spellToCast = BotBody.HealInstantGroup;
@@ -5796,8 +5817,12 @@ namespace DOL.AI.Brain
             {
                 if (!BotBody.IsCasting || (numEmergency > 0 && !isCastingHeal))
                 {
-                    if (CheckHealSpell(BotBody.HealOverTime) && !LivingHasEffect(spellTarget, BotBody.HealOverTime))
+                    if (Body.Group != null && numNeedHealing >= 2 && GroupHealChoice(spellTarget) is Spell groupHeal)
+                        spellToCast = groupHeal;
+                    else if (CheckHealSpell(BotBody.HealOverTime) && !LivingHasEffect(spellTarget, BotBody.HealOverTime))
                         spellToCast = BotBody.HealOverTime;
+                    else if (CheckHealSpell(BotBody.HealOverTimeInstant) && !LivingHasEffect(spellTarget, BotBody.HealOverTimeInstant))
+                        spellToCast = BotBody.HealOverTimeInstant;
                     else if (BotBody.ManaPercent >= ManaThreshold && CheckHealSpell(BotBody.HealBig)
                         && (spellTarget.MaxHealth - spellTarget.Health) >= GameBot.HealAmount(BotBody.HealBig, spellTarget))
                         spellToCast = BotBody.HealBig;
@@ -5811,7 +5836,9 @@ namespace DOL.AI.Brain
             // Cast the selected spell
             if (BotBody.IsAutonomousWorldBot && (AutonomousObjectiveAssignments.Is(BotBody, eAutonomousObjectiveKind.RvR) || AutonomousRealmRaid.GetView(BotBody.Group) != null) &&
                 spellTarget != null && spellTarget != Body && Body.Group?.IsInTheGroup(spellTarget) != true &&
-                (spellToCast == BotBody.HealGroup || spellToCast == BotBody.HealInstantGroup))
+                (spellToCast == BotBody.HealGroup || spellToCast == BotBody.HealInstantGroup ||
+                 spellToCast == BotBody.HealSpread || spellToCast == BotBody.HealOverTimeGroup ||
+                 spellToCast == BotBody.HealOverTimeInstantGroup))
                 spellToCast = CheckHealSpell(BotBody.HealBig) ? BotBody.HealBig :
                     CheckHealSpell(BotBody.HealEfficient) ? BotBody.HealEfficient :
                     CheckHealSpell(BotBody.HealInstant) ? BotBody.HealInstant : null;

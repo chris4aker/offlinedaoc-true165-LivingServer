@@ -2287,6 +2287,8 @@ namespace DOL.GS
         public Spell HealOverTimeGroup { get; protected set; }
         public Spell HealOverTimeInstant { get; protected set; }
         public Spell HealOverTimeInstantGroup { get; protected set; }
+        /// <summary>Cleric Gift/Boon/Blessing of the Host: heals the group, most to the most hurt.</summary>
+        public Spell HealSpread { get; protected set; }
         public Spell CureMezz { get; protected set; }
         public Spell CureDisease { get; protected set; }
         public Spell CureDiseaseGroup { get; protected set; }
@@ -2339,6 +2341,7 @@ namespace DOL.GS
             HealOverTimeGroup = null;
             HealOverTimeInstant = null;
             HealOverTimeInstantGroup = null;
+            HealSpread = null;
             CureMezz = null;
             CureDisease = null;
             CureDiseaseGroup = null;
@@ -2507,6 +2510,11 @@ namespace DOL.GS
                                         HealOverTime = spell;
                                 }
                             }
+                        }
+                        else if (spell.SpellType == eSpellType.SpreadHeal)
+                        {
+                            if (HealSpread == null || valueNew > HealAmount(HealSpread, this))
+                                HealSpread = spell;
                         }
                         else if (spell.SpellType == eSpellType.Heal)
                         {
