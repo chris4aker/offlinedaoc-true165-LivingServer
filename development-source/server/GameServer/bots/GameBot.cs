@@ -2212,14 +2212,17 @@ namespace DOL.GS
             {
                 Shade(false);
 
-                // In classic 1.65 a Necromancer survives the loss of its
-                // zombie only barely. Match that failure state for autonomous
-                // and temporary bots, while leaving normal voluntary releases
-                // and stable-travel despawns untouched.
+                // A Necromancer survives the loss of its servant weakened: the player rule (ClassDisciple), at most 10% of its
+                // health (owner 2026-11-05: bots dropped to 1 HP and died right after). Voluntary releases and stable-travel
+                // despawns are untouched.
                 if (necromancerPetDied && IsAlive)
-                    Health = 1;
+                    DropToServantLossHealth();
             }
         }
+
+        /// <summary>A Necromancer's health after its servant died: as for a player, at most 10% of its maximum.</summary>
+        private void DropToServantLossHealth() =>
+            Health = (int)Math.Ceiling(Math.Min(Health, MaxHealth * 0.10));
 
         public override bool RemoveControlledBrain(IControlledBrain controlledBrain)
         {
@@ -2237,7 +2240,7 @@ namespace DOL.GS
             if (IsShade)
                 Shade(false);
             if (deadNecromancerPet && IsAlive)
-                Health = 1;
+                DropToServantLossHealth();
             return true;
         }
 
