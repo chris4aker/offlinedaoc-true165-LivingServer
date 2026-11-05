@@ -316,7 +316,12 @@ namespace DOL.GS
             // Stor Gothi, Glasny) takes medallion holders to the battlegrounds, the period way in
             if (Classic165Mode.IsOn)
             {
+                // one of its own in the bot's region, otherwise its realm's own portal keep (Castle Sauvage, Svasud
+                // Faste, Druim Ligen): never one at the realm's arrival point in an enemy frontier, which the bot can't
+                // walk to (an Albion bot in Camelot picked Master Visur in Hibernia's frontier)
+                ushort home = bot.Realm switch { eRealm.Albion => 1, eRealm.Midgard => 100, eRealm.Hibernia => 200, _ => (ushort)0 };
                 GameNPC keepPorter = PortalKeepTeleporters(bot.Realm)
+                    .Where(porter => porter.CurrentRegionID == bot.CurrentRegionID || porter.CurrentRegionID == home)
                     .OrderBy(porter => porter.CurrentRegionID == bot.CurrentRegionID ? 0 : 1)
                     .ThenBy(porter => Vector2.DistanceSquared(new(bot.X, bot.Y), new(porter.X, porter.Y)))
                     .FirstOrDefault();

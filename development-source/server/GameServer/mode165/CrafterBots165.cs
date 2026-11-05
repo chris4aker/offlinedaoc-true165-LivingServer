@@ -202,6 +202,24 @@ namespace DOL.GS
         /// A siege crew buys a kit from a siegecrafter of its realm (the realm's crafters, wherever they are; the kit is
         /// handed over as a trade by courier would be). Returns true when the crew now holds the kit.
         /// </summary>
+        /// <summary>Whether SupplySiege could hand this crew the kit now: a siegecrafter of its realm holds one, the crew
+        /// can pay a quarter of its price and has a free backpack slot.</summary>
+        public static bool CanSupplySiege(GameBot crew, string kitId)
+        {
+            if (!Classic165Mode.IsOn || crew?.Inventory == null || string.IsNullOrEmpty(kitId))
+                return false;
+            if (crew.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == eInventorySlot.Invalid)
+                return false;
+            long price = Math.Max(1, (GameServer.Database.FindObjectByKey<DbItemTemplate>(kitId)?.Price ?? 50_000) / 4);
+            if (AutonomousBotEconomy.GetMoney(crew.DatabaseID) < price)
+                return false;
+            foreach (GameBot crafter in AutonomousBotRegistry.Snapshot())
+                if (crafter != crew && crafter.Realm == crew.Realm && crafter.Inventory != null &&
+                    CraftOf(crafter.PersistentRecord) == eCraftingSkill.SiegeCrafting && BotSiegeRuntime.Item(crafter, kitId) != null)
+                    return true;
+            return false;
+        }
+
         public static bool SupplySiege(GameBot crew, string kitId)
         {
             if (!Classic165Mode.IsOn || crew?.Inventory == null || BotSiegeRuntime.Item(crew, kitId) != null)

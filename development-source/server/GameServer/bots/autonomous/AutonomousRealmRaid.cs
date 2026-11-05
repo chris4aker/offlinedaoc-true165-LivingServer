@@ -335,6 +335,14 @@ namespace DOL.GS
 
         public static bool Start(string id, eRealm realm, out string reason, bool forced = false)
         {
+            // Darkness Falls opens only to the realm that holds the most keeps (owner 2026-11-05 audit: 300 bots would
+            // gather and then stall at a closed entrance)
+            if (Definitions.FirstOrDefault(d => d.Id == id && d.Realm == realm) is { Region: AutonomousDarknessFallsPolicy.RegionId } &&
+                !DOL.GS.ServerRules.DFEnterJumpPoint.CanRealmEnter(realm))
+            {
+                reason = "Darkness Falls is closed to your realm: it opens to the realm that holds the most keeps.";
+                return false;
+            }
             RealmRaidMuster.Hub rallyHub = RealmRaidMuster.Hubs.FirstOrDefault(h => h.Event == id);
             // A forced dungeon raid proves its entrance before reserving 300 bots: a route that can never be built
             // reports why at once instead of after the roster is gathered (forced Darkness Falls, 2026-10-11).

@@ -60,6 +60,10 @@ namespace DOL.GS
         private static bool CanSupplySiege(GameBot bot)
         {
             if (BotSiegeRuntime.Item(bot,BotSiegeRuntime.Kit(bot.Realm,BotSiegeKind.Ram))!=null) return true;
+            // True 1.65 Mode: no frontier siege merchants; a ram comes from a siegecrafter bot of the realm
+            // (CrafterBots165.SupplySiege). Without this check no bot warband ever started a keep or relic assault.
+            if (Classic165Mode.IsOn)
+                return CrafterBots165.CanSupplySiege(bot, BotSiegeRuntime.Kit(bot.Realm, BotSiegeKind.Ram));
             var merchant=FindReachableSiegeMerchant(bot);
             long price=merchant?.TradeItems?.GetAllItems().Values.OfType<DbItemTemplate>()
                 .Where(t=>t.Price>0 && AutonomousSiegePolicy.IsRamKit(bot.Realm,t.Id_nb)).Select(t=>t.Price).DefaultIfEmpty(0).Min() ?? 0;

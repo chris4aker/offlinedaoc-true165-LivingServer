@@ -26,7 +26,8 @@ public static class AutonomousTownTeleporters
 
     public const string OverrideVariable = "OFFLINE_DAOC_BOT_TELEPORTERS";
     private static readonly bool EnvironmentEnabled = Environment.GetEnvironmentVariable(OverrideVariable) == "1";
-    public static bool IsEnabled => Enabled || EnvironmentEnabled;
+    // never in True 1.65 Mode: the freeshard town teleporters are gone there (owner 2026-11-05 audit)
+    public static bool IsEnabled => (Enabled || EnvironmentEnabled) && !Classic165Mode.IsOn;
 
     public const double ChannelSeconds = 6;
     public const int ChannelMilliseconds = 6_000;
