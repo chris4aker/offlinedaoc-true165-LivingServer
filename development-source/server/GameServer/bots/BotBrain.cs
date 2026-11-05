@@ -860,7 +860,8 @@ namespace DOL.AI.Brain
             eCharacterClass.Valewalker or eCharacterClass.Skald or eCharacterClass.Warden or eCharacterClass.Friar;
 
         private bool PrefersCurrentSpellRange() =>
-            PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true);
+            PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true) ||
+            BotBody?.CharacterClass?.ID == (int)eCharacterClass.Shaman && RoleChoice is 1 or 2;   // AI Options role
 
         // True when the body already runs the same melee follow NpcStartAttack would
         // issue (its own target, melee weapon, stick distance).
@@ -872,7 +873,14 @@ namespace DOL.AI.Brain
         private bool UsesMinstrelHybridCombat => BotBody?.IsAutonomousWorldBot == true &&
             BotBody.CharacterClass?.ID == (int)eCharacterClass.Minstrel;
 
+        /// <summary>The player's "Role" choice for a hired healer (AI Options; 0 = Automatic).</summary>
+        private int RoleChoice => CompanionOptions165.Choice(BotBody, "role");
+
         private bool HoldsExclusiveSupportRole() =>
+            BotBody?.CharacterClass?.ID is (int)eCharacterClass.Shaman or (int)eCharacterClass.Friar && RoleChoice == 1 &&
+                BotBody.Group?.MemberCount > 1 ||
+            (RoleChoice == 0 || BotBody?.CharacterClass?.ID is not ((int)eCharacterClass.Cleric or (int)eCharacterClass.Druid or
+                (int)eCharacterClass.Healer)) &&
             BotPartyRoles.IsSupport(BotBody) &&
             ((eCharacterClass?)BotBody?.CharacterClass?.ID != eCharacterClass.Minstrel ||
              RecentDirectAttacker() is not GameLiving attacker ||
@@ -4465,12 +4473,13 @@ namespace DOL.AI.Brain
             else if (!casted && type == eCheckSpellType.Offensive)
             {
                 if (TryPvpCrowdControl()) return true;
+                if (TryUtilitySpells()) return true;
                 if (TryBardPveAddMez()) return true;
                 if (TryPveAddControl()) return true;
                 if (TryGroupCelerity()) return true;
                 if (TryShamanPveAddRoot()) return true;
                 if (TryShortCombatShield()) return true;
-                if (BotBody.CharacterClass.ID == (int)eCharacterClass.Cleric)
+                if (BotBody.CharacterClass.ID == (int)eCharacterClass.Cleric && RoleChoice != 2)
                 {
                     if (!Util.Chance(Math.Max(5, Body.ManaPercent - 50)))
                         return false;
@@ -5626,6 +5635,13 @@ namespace DOL.AI.Brain
             int healAt = CompanionOptions165.Choice(BotBody, "healat");
             int needAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 65;
             int healerNeedAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 80;
+            // Role (AI Options): an attacking healer, or an off-healer Friar in a fight, heals emergencies only
+            bool emergenciesOnly = healAt == 0 &&
+                (RoleChoice == 2 && BotBody.CharacterClass?.ID is (int)eCharacterClass.Cleric or (int)eCharacterClass.Druid or
+                     (int)eCharacterClass.Healer ||
+                 RoleChoice == 1 && BotBody.CharacterClass?.ID == (int)eCharacterClass.Friar && Body.InCombat);
+            if (emergenciesOnly)
+                needAt = healerNeedAt = 40;
 
             if (TryResurrectGroupMember())
                 return true;
@@ -5867,6 +5883,21 @@ namespace DOL.AI.Brain
                             spellToCast = BotBody.CureMezz;
                             spellTarget = member;
                             break;
+                        }
+                    }
+
+                    // Cure Nearsight (period RvR: Nearsight is the first spell on a caster or archer; healers cure it)
+                    if (spellToCast == null && BotBody.HealSpells?.Where(spell => spell.SpellType is eSpellType.CureNearsight or
+                                eSpellType.CureNearsightCustom && spell.Level <= Body.Level)
+                            .OrderByDescending(spell => spell.Level).FirstOrDefault() is Spell cureNearsight &&
+                        CheckHealSpell(cureNearsight))
+                    {
+                        GameLiving blinded = Body.Group.GetMembersInTheGroup().FirstOrDefault(member => member.IsAlive &&
+                            InSupportReach(member) && member.effectListComponent.ContainsEffectForEffectType(eEffect.Nearsight));
+                        if (blinded != null)
+                        {
+                            spellToCast = cureNearsight;
+                            spellTarget = blinded;
                         }
                     }
 

@@ -26,7 +26,8 @@ namespace DOL.GS
     {
         public const byte KindCharm = 1, KindPet = 2, KindSubPet = 3, KindSong = 4;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
-            KindHunterPet = 11, KindStealthOpen = 12;
+            KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
+            KindLifeTransfer = 16, KindAmnesia = 17;
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -51,6 +52,21 @@ namespace DOL.GS
             new(KindStealthOpen, "stealthopen", "Open from stealth", ["Automatic (on)", "Off"],
                 bot => BotPoisonSupply.IsAssassin((eCharacterClass)bot.CharacterClass.ID) &&
                        bot.Styles?.Any(style => style.StealthRequirement) == true),
+            // Roles (one stored key "role"; the rows differ by class). Prima / period forums: a Cleric either smites and
+            // does crowd control or heals; a Shaman buffs, heals and rezzes from the back; a Friar is the off-healer.
+            new(KindHealerRole, "role", "Role", ["Automatic (heal and buff)", "Heal first, attack when nobody is hurt",
+                    "Attack, heal only emergencies"],
+                bot => (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Cleric or eCharacterClass.Druid or
+                    eCharacterClass.Healer),
+            new(KindShamanRole, "role", "Role", ["Automatic (melee and cast)", "Stay back and heal", "Caster, no melee"],
+                bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Shaman),
+            new(KindFriarRole, "role", "Role", ["Automatic (fight and heal)", "Off-healer (heals under 40% in a fight)",
+                    "Main healer (stays back)"],
+                bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Friar),
+            new(KindLifeTransfer, "lifetransfer", "Life transfer", ["Automatic (groupmate under 35%)", "Off"],
+                bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.LifeTransfer) == true),
+            new(KindAmnesia, "amnesia", "Amnesia", ["Automatic (give monsters back to my pet)", "Off"],
+                bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.Amnesia) == true),
         ];
 
         /// <summary>The player's choice for a generic AI option (0 = Automatic; always 0 for gamebots).</summary>
