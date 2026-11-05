@@ -51,7 +51,16 @@ func _ready() -> void:
 			[0, 0x48, 1, 14, 1, 0xFF],
 			_op14(2, 2, 0, 0, ["Automatic", "Matter Simulacrum", "Spirit Simulacrum", "Body Simulacrum"]),
 			_op14(2, 5, 1, 1, ["Pull with", "Automatic", "Root", "Bolt"]),     # (a later AI choice: kind 5, generic)
-			[0, 0x48, 1, 14, 2, 0xFF]]:
+			[0, 0x48, 1, 14, 2, 0xFF],
+			# row 3: a Paladin tank - chants, then the server's generic rows (kind 5 Aggro, 10 Guard and protect, 6 Heal at)
+			_op14(3, 4, 1, 0, ["Automatic", "Battle Zeal", "Fury of the Gods"]),
+			_op14(3, 4, 2, 0, ["Automatic", "Rejuvenating Chant"]),
+			_op14(3, 5, 0, 0, ["Aggro", "Automatic", "Hold it (taunt)", "Shed it (detaunt)"]),
+			_op14(3, 10, 0, 2, ["Guard and protect", "Automatic", "You", "The healer", "Off"]),
+			_op14(3, 6, 0, 0, ["Heal at", "Automatic", "Early (90%)", "Late (50%)"]),
+			_op14(3, 8, 0, 1, ["Bolts", "Automatic", "Nukes only"]),
+			_op14(3, 11, 0, 0, ["Pet", "Automatic (on)", "Off"]),
+			[0, 0x48, 1, 14, 3, 0xFF]]:
 		net.handle(PackedByteArray(m))
 	await get_tree().process_frame
 	var shown_with: bool = (w._tabs[4] as Button).visible
@@ -116,6 +125,30 @@ func _ready() -> void:
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(String(v.args.get("out", "user://")) + "/companion_options_pet_open.png")
 	pet_list.get_popup().hide()
+	# the Paladin's 7 rows: all drawn inside the tab, the two-choice ones as buttons, a pick sends "option"
+	w.open_row(3, 4)
+	fake.commands.clear()
+	await get_tree().process_frame
+	var labels := []
+	var lowest := 0.0
+	var two_buttons := 0
+	var olists := []
+	for c in w._options_box.get_children():
+		if c is Label:
+			labels.append((c as Label).text)
+		if c is Control:
+			lowest = maxf(lowest, (c as Control).position.y + (c as Control).size.y)
+		if c is Button and not (c is OptionButton):
+			two_buttons += 1
+		if c is OptionButton:
+			olists.append(c)
+	(olists[olists.size() - 1] as OptionButton).item_selected.emit(2)            # Heal at: Late (50%)
+	print("[opts] paladin rows %s, lowest %.0f of the tab's %.0f, buttons %d, sent %s" % [labels, lowest,
+			w._options_box.get_parent().size.y, two_buttons, fake.commands])
+	ok = ok and labels.size() == 7 and lowest <= w._options_box.get_parent().size.y and two_buttons == 4 			and fake.commands == ["&companionui option 3 6 0 2"]
+	await get_tree().create_timer(0.3).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(String(v.args.get("out", "user://")) + "/companion_options_paladin.png")
 	Server.client = was
 	print("[opts] RESULT ", "PASS" if ok else "FAIL")
 	get_tree().quit()
