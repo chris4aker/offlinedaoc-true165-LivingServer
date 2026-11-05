@@ -83,6 +83,18 @@ namespace DOL.GS
                 ShoppingPlans.TryRemove(bot.DatabaseID, out _);
         }
 
+        /// <summary>
+        /// The shopping plan already worked out for the bot, without working one out: for the once-a-minute assignment
+        /// pass over every bot, which runs serially on the game loop (owner 2026-11-05 log audit: building plans there for
+        /// ~1,000 recently dead bots made the server stall 1-3.5 s every minute). No cached plan answers "unknown" (null).
+        /// </summary>
+        public static bool? CachedShoppingPlanExists(GameBot bot)
+        {
+            if (bot == null || !ShoppingPlans.TryGetValue(bot.DatabaseID, out var cached))
+                return null;
+            return GameLoop.GameLoopTime < cached.Until || cached.Plan != null ? cached.Plan != null : null;
+        }
+
         /// <summary>The bot's current shopping trip, or null. Re-planned at most every two minutes.</summary>
         public static ShoppingPlan ShoppingPlanFor(GameBot bot)
         {

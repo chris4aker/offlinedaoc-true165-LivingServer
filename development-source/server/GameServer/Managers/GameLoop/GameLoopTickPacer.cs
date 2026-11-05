@@ -83,6 +83,10 @@ namespace DOL.GS
             }
 
             double elapsedTime = _stopwatch.Elapsed.TotalMilliseconds;
+            // a whole tick over half a second (a slow stage, a GC pause, anything): movement checks give players grace
+            // (PlayerMovementMonitor, owner 2026-11-05)
+            if (elapsedTime > 500)
+                GameLoopWorkMetrics.NoteStall();
             _totalElapsedTime += elapsedTime;
             _stopwatch.Restart();
 

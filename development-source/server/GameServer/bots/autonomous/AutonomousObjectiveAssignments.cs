@@ -257,6 +257,7 @@ public static class AutonomousObjectiveAssignments
                 // Solo roaming retains its own clock. Warbands expire together.
                 BeginPveIntermission(bot);
             }
+            _shoppingPlanBudget = ShoppingPlansPerPass;
             GameBot[] completedPve = roster.Where(bot => Parse(bot.PersistentRecord.ObjectiveKind) != eAutonomousObjectiveKind.RvR &&
                                                           !IsBetweenPveTasks(bot) &&
                                                           !groupOwned.Contains(bot) &&
@@ -625,7 +626,23 @@ public static class AutonomousObjectiveAssignments
     private static bool GoesShoppingAfterDefeat165(GameBot bot) =>
         Classic165Mode.IsOn && bot.Group == null && bot.IsAlive && bot.LastDeathTick165 > 0 &&
         GameLoop.GameLoopTime - bot.LastDeathTick165 < 10 * 60_000 &&
-        AutonomousWorldBotController.ShoppingPlanFor(bot) != null;
+        PlanKnownOrBudgeted(bot);
+
+    // At most this many new shopping plans are worked out per assignment pass; the rest use the plan the bot already has
+    // (or get theirs on a later pass). The pass runs serially on the game loop over every bot (owner 2026-11-05: it was
+    // the once-a-minute stall).
+    private const int ShoppingPlansPerPass = 24;
+    private static int _shoppingPlanBudget;
+
+    private static bool PlanKnownOrBudgeted(GameBot bot)
+    {
+        if (AutonomousWorldBotController.CachedShoppingPlanExists(bot) is bool known)
+            return known;
+        if (_shoppingPlanBudget <= 0)
+            return false;
+        _shoppingPlanBudget--;
+        return AutonomousWorldBotController.ShoppingPlanFor(bot) != null;
+    }
 
     public static void MarkPveTaskCompleted(GameBot bot)
     {

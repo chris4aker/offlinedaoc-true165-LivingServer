@@ -39,6 +39,8 @@ namespace DOL.GS
         /// <summary>When the last game loop stage that ran over half a second ended (monotonic ms; 0 = none yet).</summary>
         public static long LastStallEndMs { get; private set; }
 
+        public static void NoteStall() => LastStallEndMs = DOL.Timing.MonotonicTime.NowMs;
+
         public static void EndStage(string stage, long started)
         {
             double ms = Stopwatch.GetElapsedTime(started).TotalMilliseconds;

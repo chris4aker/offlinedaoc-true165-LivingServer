@@ -4751,11 +4751,18 @@ namespace DOL.GS
                 return false;
             if (StarterWeapon165 is { } own && string.Equals(own.Id_nb, template.Id_nb, StringComparison.OrdinalIgnoreCase))
                 return true;
-            ICharacterClass baseClass = CharacterClass.HasAdvancedFromBaseClass() ? ScriptMgr.FindCharacterBaseClass(CharacterClass.ID) : null;
-            DbItemTemplate baseStarter = baseClass == null ? null :
-                DOL.GS.GameEvents.CreationStartupEquipment.GetStarterWeaponTemplate((eCharacterClass)baseClass.ID);
+            DbItemTemplate baseStarter = BaseStarterWeapons.GetOrAdd(CharacterClass.ID, id =>
+            {
+                ICharacterClass cls = ScriptMgr.FindCharacterClass(id);
+                ICharacterClass baseClass = cls != null && cls.HasAdvancedFromBaseClass() ? ScriptMgr.FindCharacterBaseClass(id) : null;
+                return baseClass == null ? null : DOL.GS.GameEvents.CreationStartupEquipment.GetStarterWeaponTemplate((eCharacterClass)baseClass.ID);
+            });
             return baseStarter != null && string.Equals(baseStarter.Id_nb, template.Id_nb, StringComparison.OrdinalIgnoreCase);
         }
+
+        // The base class's starter weapon per class id, looked up once: FindCharacterBaseClass builds class objects through
+        // reflection, and this runs on every weapon check (owner 2026-11-05 log audit: ~400 MB of garbage a minute).
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, DbItemTemplate> BaseStarterWeapons = new();
 
         /// <summary>The starting weapon goes in its own hand: a two-handed one in the two-hand slot, a one-handed one in
         /// the main hand.</summary>
