@@ -153,6 +153,11 @@ namespace DOL.GS
                 int free = code == 0 ? AutonomousRealmRaid.ForcedRecruitsAvailable(events[i].Id, events[i].Realm) : 0;
                 if (code == 0 && free < RealmRaidRecruitmentPolicy.MaximumBots)
                     code = 4;
+                // Darkness Falls is open only to the realm holding the most keeps (owner 2026-11-05): greyed out, with why
+                bool dfClosed = events[i].Region == AutonomousDarknessFallsPolicy.RegionId &&
+                                !DOL.GS.ServerRules.DFEnterJumpPoint.CanRealmEnter(player.Realm);
+                if (dfClosed && code is 0 or 4)
+                    code = 4;
                 uint seconds = code is 2 or 3 ? (uint)Math.Max(0, (s?.Remaining ?? 0) / 1000) : 0;
                 var row = new byte[122];
                 row[0] = (byte)i;
@@ -164,6 +169,7 @@ namespace DOL.GS
                 // the numbers as text too: the original client can show only this line (both clients the same)
                 string status = code switch
                 {
+                    4 when dfClosed => "Closed: Darkness Falls opens to the realm holding the most keeps",
                     0 => $"Ready - {free} free champions (300 needed)",
                     4 when s?.State == "Available" => $"Not enough free champions: {free} of {RealmRaidRecruitmentPolicy.MaximumBots}",
                     2 => $"Respawning: {Duration(seconds)}",
