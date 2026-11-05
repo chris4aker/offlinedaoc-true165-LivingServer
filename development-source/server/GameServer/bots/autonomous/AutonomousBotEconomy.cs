@@ -961,6 +961,11 @@ namespace DOL.GS;
             bot.MarkAutonomousStateDirty();
             MarkInventoryChanged(bot);
             AutonomousBotStatusPersistence.Queue(bot, true);
+            // a big vendor sale is logged (2026-11-05: level-3 bots sold level-49 "Gnawed Bones" for ~37,700 copper each
+            // and nothing in the log showed where their money came from)
+            if (copper >= 10_000)
+                Log.Info($"BOT_VENDOR_SALE bot={bot.Name} id={bot.DatabaseID} level={bot.Level} item=\"{item.Name}\" " +
+                         $"item_level={item.Level} copper={copper}");
             return true;
         }
 
