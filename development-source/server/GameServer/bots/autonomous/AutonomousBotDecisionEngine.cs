@@ -69,7 +69,8 @@ public static class AutonomousBotDecisionEngine
         double TravelMinutes,
         int AverageMobLevel = 0,
         int DungeonPopulation = 0,
-        int DungeonSoftCapacity = 0);
+        int DungeonSoftCapacity = 0,
+        int SpreadWeight = 0);
 
     public sealed record Service(
         eWorldServiceKind Kind,
@@ -258,15 +259,19 @@ public static class AutonomousBotDecisionEngine
 
     public static int OutdoorSpawnWeight(Camp camp) => Math.Clamp(camp.LiveMobCount, 1, OutdoorSpawnWeightCap);
 
+    /// <summary>The draw weight: the spread weight when the planner set one (spawns, nearness, bots already there),
+    /// otherwise the capped live spawns.</summary>
+    private static int DrawWeight(Camp camp) => camp.SpreadWeight > 0 ? camp.SpreadWeight : OutdoorSpawnWeight(camp);
+
     private static Camp SelectByLiveSpawns(Camp[] choices, Random random)
     {
         int total = 0;
         foreach (Camp camp in choices)
-            total += OutdoorSpawnWeight(camp);
+            total += DrawWeight(camp);
         int draw = random.Next(total);
         foreach (Camp camp in choices)
         {
-            int weight = OutdoorSpawnWeight(camp);
+            int weight = DrawWeight(camp);
             if (draw < weight)
                 return camp;
             draw -= weight;
