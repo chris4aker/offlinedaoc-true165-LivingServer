@@ -823,6 +823,11 @@ namespace DOL.AI.Brain
             // Shamans melee between their nukes (ShamanBotCombatPolicy).
             characterClass.ID != (int)eCharacterClass.Shaman;
 
+        /// <summary>Hybrids that fight with their weapon and cast on the side (period play): they melee once in range.</summary>
+        public static bool IsMeleeHybridClass(eCharacterClass characterClass) => characterClass is
+            eCharacterClass.Thane or eCharacterClass.Paladin or eCharacterClass.Reaver or eCharacterClass.Champion or
+            eCharacterClass.Valewalker or eCharacterClass.Skald or eCharacterClass.Warden or eCharacterClass.Friar;
+
         private bool PrefersCurrentSpellRange() =>
             PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true);
 
@@ -4358,7 +4363,11 @@ namespace DOL.AI.Brain
                     return true;
 
                 // Melee hybrids prefer melee when in range
-                if (!PrefersCurrentSpellRange() && (BotBody.CanUsePositionalStyles || BotBody.CanUseAnytimeStyles) && (Body.IsWithinRadius(Body.TargetObject, 550) || Body.ManaPercent <= 10))
+                // (owner 2026-11-05: a melee hybrid class melees in range whether or not it has learned a style yet - low
+                // Thanes train Stormcalling first and stood nuking at point blank like casters)
+                if (!PrefersCurrentSpellRange() && (BotBody.CanUsePositionalStyles || BotBody.CanUseAnytimeStyles ||
+                     IsMeleeHybridClass((eCharacterClass)BotBody.CharacterClass.ID)) &&
+                    (Body.IsWithinRadius(Body.TargetObject, 550) || Body.ManaPercent <= 10))
                     return false;
 
                 if (BotBody.CanCastCrowdControlSpells)
