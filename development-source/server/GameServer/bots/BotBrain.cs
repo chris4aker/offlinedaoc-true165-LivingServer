@@ -4401,19 +4401,25 @@ namespace DOL.AI.Brain
                 }
 
                 // Check instant spells
+                bool debuffOpening = DebuffOpeningWorthwhile();
                 if (Body.CanCastInstantHarmfulSpells)
                 {
                     IEnumerable<Spell> instantOffense = Body.InstantHarmfulSpells;
                     if (UsesMinstrelHybridCombat)
                         instantOffense = instantOffense.OrderByDescending(BotCasterPriority.IsDamage);
+                    else if (debuffOpening)
+                        instantOffense = instantOffense.OrderByDescending(BotCasterPriority.IsDebuff);
                     foreach (Spell spell in instantOffense)
                     {
                         bool meleePressure = Body.IsBeingInterruptedByOther &&
                             Body.IsWithinRadius(Body.TargetObject, Body.MeleeAttackRange + 35);
-                        if (!BotCasterPriority.AllowInstant(spell, PrefersCurrentSpellRange(), meleePressure))
+                        if (!BotCasterPriority.AllowInstant(spell, PrefersCurrentSpellRange(), meleePressure, debuffOpening))
                             continue;
                         if (CheckInstantOffensiveSpells(spell))
+                        {
+                            NoteOpeningDebuff(spell);
                             return true;
+                        }
                     }
                 }
 
@@ -4491,6 +4497,10 @@ namespace DOL.AI.Brain
                     }
                 }
 
+                if (debuffOpening && spellsToCast.Count > 0 && Body.CanCastHarmfulSpells)
+                    spellsToCast.AddRange(Body.HarmfulSpells.Where(spell => BotCasterPriority.IsDebuff(spell) &&
+                                                                            CanCastOffensiveSpell(spell)));
+
                 if (spellsToCast.Count < 1)
                 {
                     if (Body.CanCastHarmfulSpells)
@@ -4523,7 +4533,17 @@ namespace DOL.AI.Brain
                         spellsToCast.Exists(spell => spell.Range > Body.MeleeAttackRange))
                         spellsToCast.RemoveAll(spell => spell.Range <= Body.MeleeAttackRange);
                     if (PrefersCurrentSpellRange() && spellsToCast.Exists(BotCasterPriority.IsDamage))
-                        spellsToCast.RemoveAll(spell => !BotCasterPriority.IsDamage(spell));
+                        spellsToCast.RemoveAll(spell => !BotCasterPriority.IsDamage(spell) &&
+                                                        !(debuffOpening && BotCasterPriority.IsDebuff(spell)));
+                    // Debuff first, then nuke (owner 2026-11-05 class audit: casters never cast a single debuff).
+                    Spell openingDebuff = debuffOpening && !Body.IsBeingInterrupted
+                        ? spellsToCast.Where(BotCasterPriority.IsDebuff).OrderByDescending(spell => spell.Level).FirstOrDefault()
+                        : null;
+                    if (openingDebuff != null && CheckOffensiveSpells(openingDebuff))
+                    {
+                        NoteOpeningDebuff(openingDebuff);
+                        return true;
+                    }
                     bool shamanHybrid = ShamanBotCombatPolicy.IsHybrid((eCharacterClass)BotBody.CharacterClass.ID);
                     // Two or more monsters in the fight within an area damage spell's reach: that spell, when its total
                     // beats the best single nuke. Area spells that would wake a mez or pull a monster are dropped here.
@@ -4553,6 +4573,28 @@ namespace DOL.AI.Brain
             }
 
             return casted || Body.IsCasting;
+        }
+
+        private GameLiving _openingDebuffTarget;
+        private int _openingDebuffsCast;
+
+        private bool DebuffOpeningWorthwhile()
+        {
+            if (Body.TargetObject is not GameLiving target || !target.IsAlive)
+                return false;
+            if (_openingDebuffTarget != target)
+            {
+                _openingDebuffTarget = target;
+                _openingDebuffsCast = 0;
+            }
+            return BotCasterPriority.DebuffOpeningWorthwhile(Body.Level, Body.ManaPercent, Body.Group?.MemberCount > 1,
+                target.Level, target.HealthPercent, target is GamePlayer or GameBot, _openingDebuffsCast);
+        }
+
+        private void NoteOpeningDebuff(Spell spell)
+        {
+            if (BotCasterPriority.IsDebuff(spell) && Body.TargetObject == _openingDebuffTarget)
+                _openingDebuffsCast++;
         }
 
         /// <summary>
@@ -4869,6 +4911,18 @@ namespace DOL.AI.Brain
                 case eSpellType.CrushSlashThrustDebuff:
                 case eSpellType.EffectivenessDebuff:
                 case eSpellType.Disease:
+                case eSpellType.ArmorFactorDebuff:
+                case eSpellType.SlashResistDebuff:
+                case eSpellType.CrushResistDebuff:
+                case eSpellType.ThrustResistDebuff:
+                case eSpellType.BodyResistDebuff:
+                case eSpellType.SpiritResistDebuff:
+                case eSpellType.EnergyResistDebuff:
+                case eSpellType.HeatResistDebuff:
+                case eSpellType.ColdResistDebuff:
+                case eSpellType.MatterResistDebuff:
+                case eSpellType.DexterityConstitutionDebuff:
+                case eSpellType.WeaponSkillConstitutionDebuff:
                 case eSpellType.Stun:
                 case eSpellType.Mez:
                 case eSpellType.Mesmerize:

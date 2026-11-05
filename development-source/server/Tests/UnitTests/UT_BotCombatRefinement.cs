@@ -341,6 +341,25 @@ namespace DOL.UnitTests
             Assert.That(BotCasterPriority.AllowInstant(spell, false, false), Is.True);
         }
 
+        [TestCase("StrengthDebuff", true)] [TestCase("HeatResistDebuff", true)] [TestCase("Disease", true)]
+        [TestCase("CombatSpeedDebuff", true)] [TestCase("DirectDamage", false)] [TestCase("Mesmerize", false)]
+        [TestCase("Nearsight", false)]
+        public void CastersOpenWithDebuffsOnFightsThatMatter(string type, bool debuff)
+        {
+            var spell = new Spell(new DbSpell { Name = "test", Type = type, Target = "Enemy" }, 1);
+            Assert.That(BotCasterPriority.IsDebuff(spell), Is.EqualTo(debuff));
+            if (debuff)
+                Assert.That(BotCasterPriority.AllowInstant(spell, true, false, true), Is.True);
+            // a fresh even-con monster solo, a blue one only in a group, never past two debuffs, low power or half dead
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, false, 30, 100, false, 0), Is.True);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, false, 26, 100, false, 0), Is.False);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, true, 26, 100, false, 0), Is.True);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, true, 26, 100, false, 2), Is.False);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 20, true, 30, 100, false, 0), Is.False);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, true, 30, 50, false, 0), Is.False);
+            Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, false, 20, 100, true, 0), Is.True);
+        }
+
         [TestCase(50, 35, 35)] [TestCase(10, 20, 10)] [TestCase(50, 0, 0)] [TestCase(50, 61, 50)]
         public void PoisonsRespectBothLevelAndEnvenom(int level, int spec, int expected) =>
             Assert.That(BotPoisonSupply.EligibleLevel(level, spec), Is.EqualTo(expected));

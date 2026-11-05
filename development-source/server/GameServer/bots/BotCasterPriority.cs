@@ -6,7 +6,35 @@ namespace DOL.GS
             (spell.Damage > 0 || spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or
                 eSpellType.Bolt or eSpellType.DirectDamageWithDebuff or eSpellType.DamageSpeedDecrease);
 
-        public static bool AllowInstant(Spell spell, bool rangedCaster, bool meleePressure) =>
-            !rangedCaster || IsDamage(spell) || meleePressure;
+        public static bool AllowInstant(Spell spell, bool rangedCaster, bool meleePressure, bool debuffOpening = false) =>
+            !rangedCaster || IsDamage(spell) || meleePressure || debuffOpening && IsDebuff(spell);
+
+        /// <summary>
+        /// A debuff a caster opens with before nuking (Prima: Runemaster, Spiritmaster, Sorcerer, Cabalist debuff first,
+        /// then nuke): stat, attack-speed, armor and resist debuffs, and disease (stops the monster's regeneration).
+        /// </summary>
+        public static bool IsDebuff(Spell spell) => spell != null && !IsDamage(spell) && spell.SpellType is
+            eSpellType.StrengthDebuff or eSpellType.DexterityDebuff or eSpellType.ConstitutionDebuff or
+            eSpellType.StrengthConstitutionDebuff or eSpellType.DexterityQuicknessDebuff or
+            eSpellType.DexterityConstitutionDebuff or eSpellType.WeaponSkillConstitutionDebuff or
+            eSpellType.CombatSpeedDebuff or eSpellType.MeleeDamageDebuff or eSpellType.ArmorAbsorptionDebuff or
+            eSpellType.ArmorFactorDebuff or eSpellType.AllStatsPercentDebuff or eSpellType.CrushSlashThrustDebuff or
+            eSpellType.EffectivenessDebuff or eSpellType.Disease or
+            eSpellType.SlashResistDebuff or eSpellType.CrushResistDebuff or eSpellType.ThrustResistDebuff or
+            eSpellType.BodyResistDebuff or eSpellType.SpiritResistDebuff or eSpellType.EnergyResistDebuff or
+            eSpellType.HeatResistDebuff or eSpellType.ColdResistDebuff or eSpellType.MatterResistDebuff;
+
+        /// <summary>At most this many debuffs open a fight on one target; then the caster nukes.</summary>
+        public const int OpeningDebuffs = 2;
+
+        /// <summary>
+        /// Debuffing is worth its cast on a fresh target that will last: a player-like enemy, a monster of the caster's level
+        /// or above, or any monster when grouped (the group's damage gains from it). Not on greys and blues solo, and not
+        /// below 30% power, where the power belongs to the nukes.
+        /// </summary>
+        public static bool DebuffOpeningWorthwhile(int casterLevel, int casterPowerPercent, bool grouped,
+            int targetLevel, int targetHealthPercent, bool targetIsPlayerLike, int debuffsCastOnTarget) =>
+            debuffsCastOnTarget < OpeningDebuffs && casterPowerPercent >= 30 && targetHealthPercent >= 60 &&
+            (targetIsPlayerLike || grouped || targetLevel >= casterLevel);
     }
 }
