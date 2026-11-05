@@ -890,6 +890,24 @@ namespace DOL.GS.Quests
             return origin;
         }
 
+        /// <summary>
+        /// Owner 2026-11-05 (reset-day S12): holding Heart of Sephucoth and Sunken Cargo, two orange Sephucoths spawned
+        /// on top of the permanent one. A fight spawn is skipped when a monster of that name is already alive near its
+        /// point: one this player's other quest spawned, or a permanent one (the step counts kills by name, so that one
+        /// does). 37 steps spawn a monster that also stands there permanently.
+        /// </summary>
+        private static bool AlreadyThere(GamePlayer player, EventSpawn spawn)
+        {
+            if (spawn.Peaceful || string.IsNullOrWhiteSpace(spawn.Name)) return false;
+            bool Same(GameNPC n) => n?.IsAlive == true && n.ObjectState == GameObject.eObjectState.Active &&
+                                    string.Equals(n.Name, spawn.Name, StringComparison.OrdinalIgnoreCase);
+            if (EventSpawns.Any(e => e.Key.Item1 == player && e.Value.Any(Same))) return true;
+            ushort region = spawn.Region > 0 ? spawn.Region : player.CurrentRegionID;
+            ushort radius = (ushort)Math.Clamp(Math.Max(spawn.TriggerRadius, 1500), 1500, ushort.MaxValue);
+            return WorldMgr.GetNPCsCloseToSpot(region, spawn.X, spawn.Y, spawn.Z, radius)
+                .Any(n => Same(n) && n.TempProperties.GetProperty<string>(EventSpawnProperty) == null);
+        }
+
         private static void TrySpawnEvent(GamePlayer player, int quest, int step, EventSpawn spawn)
         {
             var key = (player, quest, step);
@@ -898,6 +916,7 @@ namespace DOL.GS.Quests
                     e.Value.Any(n => n?.IsAlive == true && string.Equals(n.Name, spawn.Name, StringComparison.OrdinalIgnoreCase)))) return;
             if (spawn.TriggerRadius > 0 && (player.CurrentRegionID != spawn.Region ||
                 !player.IsWithinRadius(new Point3D(spawn.X, spawn.Y, spawn.Z), spawn.TriggerRadius))) return;
+            if (AlreadyThere(player, spawn)) return;
             var spawned = new List<GameNPC>();
             for (int i = 0; i < Math.Max(1, spawn.Count); i++)
             {
