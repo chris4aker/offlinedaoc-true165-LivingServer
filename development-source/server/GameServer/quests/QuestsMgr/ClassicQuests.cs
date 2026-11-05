@@ -815,7 +815,7 @@ namespace DOL.GS.Quests
                     {
                         QuestInfo info = _config.Quests[quest.ID];
                         StepInfo step = quest.Step > 0 && quest.Step < info.Steps.Count ? info.Steps[quest.Step] : null;
-                        ShowMarker(player, quest.ID, quest.Step, step?.Marker);
+                        ShowMarker(player, quest.ID, quest.Step, StepMarker(player, step));
                         if (step?.Spawn != null) TrySpawnEvent(player, quest.ID, quest.Step, step.Spawn);
                         if (step?.Grant != null) GrantItems(player, quest, step);
                         if (!string.IsNullOrEmpty(step?.NeedsItem)) ReissueWithoutIssuer(player, quest, step);
@@ -842,6 +842,40 @@ namespace DOL.GS.Quests
         /// <summary>A classic quest's own marker id: MarkerId for the first quest id, one more per id after it (the
         /// bounty, reputation and Sluaghbinder markers sit below MarkerId).</summary>
         public static uint QuestMarkerId(int questId) => MarkerId + (uint)Math.Max(0, questId - 20000);
+
+        private static readonly ConcurrentDictionary<(ushort Region, string Name), Point[]> MobSpots = new();
+
+        /// <summary>
+        /// Where a step's map marker points (owner 2026-11-05, reset-day S40): a "bring me what the monsters drop" step
+        /// was marked on the NPC who takes the items (Gronyr's zombie sows), so the map never said where to hunt. Until
+        /// the player holds a drop, the marker stands on the nearest spawn of the monster that drops it; then it goes
+        /// back to the NPC.
+        /// </summary>
+        private static Point StepMarker(GamePlayer player, StepInfo step)
+        {
+            Point marker = step?.Marker;
+            List<StepDrop> drops = step?.Custom?.Drops;
+            if (marker == null || drops == null || drops.Count == 0)
+                return marker;
+            foreach (StepDrop drop in drops)
+            {
+                if (string.IsNullOrEmpty(drop?.Mob) ||
+                    !string.IsNullOrEmpty(drop.Item) &&
+                    player.Inventory.CountItemTemplate(drop.Item, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) > 0)
+                    continue;
+                Point[] spots = MobSpots.GetOrAdd((marker.Region, drop.Mob.ToLowerInvariant()), key =>
+                    WorldMgr.GetNPCsByNameFromRegion(drop.Mob, key.Region, eRealm.None)
+                        .Select(npc => new Point(key.Region, npc.SpawnPoint.X, npc.SpawnPoint.Y, npc.SpawnPoint.Z))
+                        .ToArray());
+                if (spots.Length == 0)
+                {
+                    MobSpots.TryRemove((marker.Region, drop.Mob.ToLowerInvariant()), out _);   // none up now: ask again later
+                    continue;
+                }
+                return spots.OrderBy(s => (long)(s.X - marker.X) * (s.X - marker.X) + (long)(s.Y - marker.Y) * (s.Y - marker.Y)).First();
+            }
+            return marker;
+        }
 
         private static void ShowMarker(GamePlayer player, int quest, int step, Point marker)
         {
