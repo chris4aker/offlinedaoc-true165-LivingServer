@@ -60,7 +60,18 @@ func _ready() -> void:
 			_op14(3, 6, 0, 0, ["Heal at", "Automatic", "Early (90%)", "Late (50%)"]),
 			_op14(3, 8, 0, 1, ["Bolts", "Automatic", "Nukes only"]),
 			_op14(3, 11, 0, 0, ["Pet", "Automatic (on)", "Off"]),
-			[0, 0x48, 1, 14, 3, 0xFF]]:
+			[0, 0x48, 1, 14, 3, 0xFF],
+			# row 4: the server's worst case (2026-11-05), a Minstrel with 9 rows and its longest choice chosen
+			_op14(4, 1, 0, 1, ["Off", "On"]),
+			_op14(4, 4, 1, 0, ["Automatic", "Battle Song", "Power Song"]),
+			_op14(4, 4, 2, 0, ["Automatic", "Battle Song", "Power Song"]),
+			_op14(4, 4, 3, 0, ["Automatic", "Speed Song"]),
+			_op14(4, 5, 0, 0, ["Aggro", "Automatic", "Hold it (taunt)", "Shed it (detaunt)"]),
+			_op14(4, 7, 0, 0, ["Debuff before nuking", "Automatic", "Always", "Never"]),
+			_op14(4, 8, 0, 0, ["Bolts", "Automatic", "Nukes only"]),
+			_op14(4, 17, 0, 0, ["Amnesia", "Automatic", "Off"]),
+			_op14(4, 18, 0, 1, ["Fight", "Automatic", "Support (stay back: songs, spells, no melee)", "Melee"]),
+			[0, 0x48, 1, 14, 4, 0xFF]]:
 		net.handle(PackedByteArray(m))
 	await get_tree().process_frame
 	var shown_with: bool = (w._tabs[4] as Button).visible
@@ -149,6 +160,28 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(String(v.args.get("out", "user://")) + "/companion_options_paladin.png")
+	# the Minstrel's 9 rows: all inside the tab, the long choice not clipped
+	w.open_row(4, 4)
+	await get_tree().process_frame
+	var low := 0.0
+	var clipped := []
+	var nrows := 0
+	for c in w._options_box.get_children():
+		if c is Control:
+			low = maxf(low, (c as Control).position.y + (c as Control).size.y)
+		if c is Label:
+			nrows += 1
+		if c is OptionButton:
+			var ob := c as OptionButton
+			var tw := ob.get_theme_font("font").get_string_size(ob.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+					ob.get_theme_font_size("font_size")).x
+			if tw > ob.size.x - 22.0:
+				clipped.append(ob.text)
+	print("[opts] minstrel %d rows, lowest %.0f of %.0f, clipped %s" % [nrows, low, w._options_box.get_parent().size.y, clipped])
+	ok = ok and nrows == 9 and low <= w._options_box.get_parent().size.y and clipped.is_empty()
+	await get_tree().create_timer(0.3).timeout
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(String(v.args.get("out", "user://")) + "/companion_options_minstrel.png")
 	Server.client = was
 	print("[opts] RESULT ", "PASS" if ok else "FAIL")
 	get_tree().quit()

@@ -478,6 +478,7 @@ func _refresh_stats() -> void:
 
 var _options_box: Control
 const SONG_SLOTS := {1: "IN COMBAT", 2: "OUT OF COMBAT", 3: "TRAVELLING", 4: "TWIST"}
+const OPT_X := 142.0                                # where an AI option's choices start (its caption left of it)
 
 
 func _build_options(page: Control) -> void:
@@ -518,21 +519,33 @@ func _refresh_options() -> void:
 			CompanionUi.text(_options_box, "SUB-PETS %d / %d" % [int(o.used), int(o.cap)], Vector2(2, y), Vector2(300, 12),
 					9, UiArt.GOLD_HI)
 			y += 16.0
-		CompanionUi.text(_options_box, caption, Vector2(2, y + 2), Vector2(170, 12), 8, UiArt.GOLD)
+		# (the captions in a narrower column, the choices to the tab's edge - the server's long choices such as "Support
+		# (stay back: songs, spells, no melee)" fit; the server chat 2026-11-05)
+		var lc := CompanionUi.text(_options_box, caption, Vector2(2, y + 2), Vector2(OPT_X - 6, 12), 8, UiArt.GOLD)
+		lc.clip_text = true
+		lc.tooltip_text = caption
+		lc.mouse_filter = Control.MOUSE_FILTER_PASS
 		var pick := func(i: int): _choose(kind, slot, i, names)
+		var room := _options_box.size.x - OPT_X - 2.0
 		if names.size() == 2 and (kind == 1 or (kind == 4 and slot == 4) or kind >= 5):   # (two-way ones: buttons)
 			for i in 2:
-				var b := CompanionUi.button(_options_box, String(names[i]), Vector2(176 + i * 84, y), Vector2(80, 16),
-						pick.bind(i), 8)
+				var b := CompanionUi.button(_options_box, String(names[i]), Vector2(OPT_X + i * (room * 0.5 + 2.0), y),
+						Vector2(room * 0.5 - 2.0, 16), pick.bind(i), 8)
 				b.toggle_mode = true
 				b.set_pressed_no_signal(i == chosen)
+				b.clip_text = true
+				b.tooltip_text = String(names[i])
 		else:
 			var ob := ExchangeWindow._choice(names)
-			ob.position = Vector2(176, y)
-			ExchangeWindow._fix_size(ob, Vector2(250, 18))
+			ob.position = Vector2(OPT_X, y)
+			ob.add_theme_font_size_override("font_size", 9)
+			ExchangeWindow._fix_size(ob, Vector2(room, 18))
 			if chosen < names.size():
 				ob.select(chosen)
-			ob.item_selected.connect(pick)
+				ob.tooltip_text = String(names[chosen])           # (the whole choice on hover, should it ever clip)
+			ob.item_selected.connect(func(i: int):
+				ob.tooltip_text = String(names[i]) if i < names.size() else ""
+				pick.call(i))
 			_options_box.add_child(ob)
 		y += 22.0
 
