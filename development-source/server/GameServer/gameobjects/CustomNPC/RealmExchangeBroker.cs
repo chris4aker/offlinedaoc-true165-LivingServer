@@ -24,6 +24,25 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
     private const string ModeBrowse = "browse";
     private const string ModeSell = "sell";
     private const string ListingsPageProperty = "OfflineRealmExchange.ListingsPage";
+    private const string SortProperty = "OfflineRealmExchange.Sort";
+
+    /// <summary>A search's results in the order the player chose by clicking a column (name, level, quality, price).</summary>
+    private static List<DbInventoryItem> Sorted(List<DbInventoryItem> items, string sort)
+    {
+        string[] parts = (sort ?? string.Empty).Split(' ');
+        if (parts.Length != 2) return items;
+        bool down = parts[1] == "desc";
+        Func<DbInventoryItem, IComparable> key = parts[0] switch
+        {
+            "name" => item => item.Name ?? string.Empty,
+            "level" => item => item.Level,
+            "quality" => item => item.Quality,
+            "price" => item => item.SellPrice,
+            _ => null,
+        };
+        if (key == null) return items;
+        return (down ? items.OrderByDescending(key) : items.OrderBy(key)).ThenBy(item => item.SellPrice).ToList();
+    }
     private const string ProceedsKeyPrefix = "RealmExchange.Proceeds.";
     private const int PageSize = 20;
 
@@ -85,6 +104,32 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
             OpenListings(player);
             return true;
         }
+        // The new client (owner 2026-11-05, reset-day S38 / C16): "sort <name|level|quality|price> <asc|desc>" orders
+        // every following search; "duration <chest slot 0-99> <12|24|48>" sets a priced listing's time.
+        string[] words = command.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length == 3 && words[0] == "sort")
+        {
+            player.TempProperties.SetProperty(SortProperty, $"{words[1]} {words[2]}");
+            return true;
+        }
+        if (words.Length == 3 && words[0] == "duration" && int.TryParse(words[1], out int chestSlot) && int.TryParse(words[2], out int hours))
+        {
+            if (!RealmExchangeExpiry.PlayerHours.Contains(hours) || chestSlot is < 0 or > 99 ||
+                !GetClientInventory(player).TryGetValue((int)FirstClientSlot + chestSlot, out DbInventoryItem listed))
+                return true;
+            lock (TransactionLock)
+            {
+                RealmExchangeExpiry.SetPlayerListingHours(listed, hours);
+                if (listed.SellPrice > 0)
+                {
+                    listed.RealmExchangeListedUtc = DateTime.UtcNow.ToString("O");   // the time runs from now
+                    GameServer.Database.SaveObject(listed);
+                    player.Out.SendMessage($"{listed.Name} stays listed for {hours} hours.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
+                }
+            }
+            SendTimeLeft(player);
+            return true;
+        }
         if (command.Contains("browse"))
         {
             OpenBrowse(player);
@@ -139,7 +184,29 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
         player.Out.SendConsignmentMerchantMoney(0);
         player.Out.SendMessage("Drag a real item into an empty exchange slot, then set its price in copper.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
         int page = player.TempProperties.GetProperty<int>(ListingsPageProperty);
-        player.Out.SendMessage($"Your listings - page {page + 1}. Your listings have no total cap and never expire.\n[Previous listing page]  [Next listing page]\n[Browse the exchange]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+        player.Out.SendMessage($"Your listings - page {page + 1}. A priced listing runs 12, 24 or 48 hours (48 unless you choose); unsold, it waits here unoffered. No listing fees.\n[Previous listing page]  [Next listing page]\n[Browse the exchange]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+        SendTimeLeft(player);
+    }
+
+    /// <summary>
+    /// The new client's time-left column for the listing chest page shown (hire op 15): [0] count, then per listed item
+    /// [chest slot 0-99] [minutes left u16] (0 = stored, not offered; 0xFFFF = no time limit).
+    /// </summary>
+    private void SendTimeLeft(GamePlayer player)
+    {
+        DateTime now = DateTime.UtcNow;
+        var entries = GetClientInventory(player).Where(pair => pair.Value != null).Take(100).ToList();
+        var body = new byte[1 + entries.Count * 3];
+        body[0] = (byte)entries.Count;
+        int at = 1;
+        foreach (var (clientSlot, item) in entries)
+        {
+            ushort minutes = RealmExchangeExpiry.MinutesLeft(item, now);
+            body[at++] = (byte)(clientSlot - (int)FirstClientSlot);
+            body[at++] = (byte)minutes;
+            body[at++] = (byte)(minutes >> 8);
+        }
+        Hire165.Send(player, 15, body);
     }
 
     private void SetActive(GamePlayer player, string mode)
@@ -177,6 +244,7 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
         if (!CanUseExchange(player) || player.ActiveInventoryObject != this)
             return false;
         List<DbInventoryItem> all = new MarketSearch(player).FindExchangeItems(searchData, ExchangeOwnerLot);
+        all = Sorted(all, player.TempProperties.GetProperty<string>(SortProperty));
 
         // The legacy protocol has one-byte page numbers; never wrap page 256
         // back to zero. Narrower filters expose any matching listing.
@@ -298,8 +366,11 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
 
         int price = sellPrice > int.MaxValue ? int.MaxValue : (int)sellPrice;
         MarketCache.UpdateItem(item, static (listedItem, value) => listedItem.SellPrice = value, price);
+        // its listing time runs from now (RealmExchangeExpiry: 12/24/48 h, 48 unless chosen); unpriced, it never runs out
+        item.RealmExchangeListedUtc = price > 0 ? DateTime.UtcNow.ToString("O") : string.Empty;
         GameServer.Database.SaveObject(item);
-        player.Out.SendMessage(price > 0 ? $"{item.Name} is listed for {Money.GetString(price)}." : $"{item.Name} is stored but not offered for sale.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
+        player.Out.SendMessage(price > 0 ? $"{item.Name} is listed for {Money.GetString(price)} for {RealmExchangeExpiry.PlayerListingHours(item)} hours." : $"{item.Name} is stored but not offered for sale.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
+        SendTimeLeft(player);
         return true;
     }
 

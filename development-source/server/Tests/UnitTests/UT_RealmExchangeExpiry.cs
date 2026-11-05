@@ -83,7 +83,7 @@ public sealed class UT_RealmExchangeExpiry
     }
 
     [Test]
-    public void HumanListing_NeverExpiresEvenWhenItsTimestampLooksLikeABotListing()
+    public void HumanListing_StoredWithoutAPriceNeverExpires()
     {
         DbInventoryItem item = new()
         {
@@ -94,7 +94,27 @@ public sealed class UT_RealmExchangeExpiry
 
         Assert.That(RealmExchangeExpiry.ExpiresUtc(item), Is.Null);
         Assert.That(RealmExchangeExpiry.IsExpired(item, DateTime.UtcNow), Is.False);
-        Assert.That(RealmExchangeExpiry.Describe(item, DateTime.UtcNow), Is.EqualTo("Player listing: no expiration."));
+        Assert.That(RealmExchangeExpiry.Describe(item, DateTime.UtcNow), Is.EqualTo("Stored, not offered for sale."));
+        Assert.That(RealmExchangeExpiry.MinutesLeft(item, DateTime.UtcNow), Is.EqualTo(0));
+    }
+
+    // owner 2026-11-05 (reset-day S38): a priced player listing runs 12, 24 or 48 hours, 48 unless chosen
+    [Test]
+    public void HumanListing_PricedRunsFortyEightHoursByDefault()
+    {
+        DateTime now = new(2026, 11, 5, 12, 0, 0, DateTimeKind.Utc);
+        DbInventoryItem item = new()
+        {
+            OwnerLot = RealmExchangeBroker.HiberniaOwnerLot,
+            OwnerID = "human-character-id",
+            SellPrice = 500,
+            RealmExchangeListedUtc = now.ToString("O"),
+        };
+
+        Assert.That(RealmExchangeExpiry.ExpiresUtc(item), Is.EqualTo(now.AddHours(48)));
+        Assert.That(RealmExchangeExpiry.IsExpired(item, now.AddHours(47)), Is.False);
+        Assert.That(RealmExchangeExpiry.IsExpired(item, now.AddHours(48)), Is.True);
+        Assert.That(RealmExchangeExpiry.MinutesLeft(item, now.AddHours(47)), Is.EqualTo(60));
     }
 
     [Test]
@@ -104,7 +124,7 @@ public sealed class UT_RealmExchangeExpiry
 
         Assert.That(RealmExchangeExpiry.ExpiresUtc(item), Is.Null);
         Assert.That(RealmExchangeExpiry.IsExpired(item, DateTime.UtcNow.AddYears(10)), Is.False);
-        Assert.That(RealmExchangeExpiry.Describe(item, DateTime.UtcNow), Is.EqualTo("Player listing: no expiration."));
+        Assert.That(RealmExchangeExpiry.Describe(item, DateTime.UtcNow), Is.EqualTo("Bot listing."));
     }
 
     [Test]
