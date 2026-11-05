@@ -2763,10 +2763,15 @@ namespace DOL.AI.Brain
 
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, BotBuffReservations<GameLiving>> BuffClaims = new();
 
+        /// <summary>The scope's buff claims; null when the group broke up mid-think (a null key throws, and the NPC service
+        /// then removes the bot from the world; owner 2026-11-04).</summary>
+        private static BotBuffReservations<GameLiving> BuffClaimsFor(GameBot bot) =>
+            AutonomousRealmRaid.SupportScope(bot) is { } scope ? BuffClaims.GetValue(scope, _ => new()) : null;
+
         private GameLiving FindRandomMissingRealmBuffTarget(Spell spell, int minimumRange = 0)
         {
             Group group = Body.Group;
-            var claims = group == null ? null : BuffClaims.GetValue(AutonomousRealmRaid.SupportScope(BotBody), _ => new());
+            var claims = group == null ? null : BuffClaimsFor(BotBody);
             int family = (int)EffectHelper.GetEffectFromSpell(spell);
             long now = GameLoop.GameLoopTime;
             int range = Math.Max(minimumRange, spell.CalculateEffectiveRange(Body));
@@ -2804,7 +2809,8 @@ namespace DOL.AI.Brain
             GameLiving target = Body.TargetObject as GameLiving;
             bool shared = group != null && target != null && spell.Target == eSpellTarget.REALM &&
                 !spell.IsPulsing && IsMaintainableClassBuff(spell);
-            BotBuffReservations<GameLiving> claims = shared ? BuffClaims.GetValue(AutonomousRealmRaid.SupportScope(BotBody), _ => new()) : null;
+            BotBuffReservations<GameLiving> claims = shared ? BuffClaimsFor(BotBody) : null;
+            shared = claims != null;
             int family = shared ? (int)EffectHelper.GetEffectFromSpell(spell) : 0;
             if (shared && (LivingHasEffect(target, spell) ||
                 !claims.TryReserve(Body, target, family, GameLoop.GameLoopTime, spell.CastTime)))

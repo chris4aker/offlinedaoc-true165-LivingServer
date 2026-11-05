@@ -796,29 +796,11 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            GamePlayer playerPuller;
-            GameLiving countFrom = puller; // Group members are counted within visibility of this living.
-
-            // Only BAF on players, pets of players and the player's companion bots (and their pets).
-            if (puller is GamePlayer player)
-                playerPuller = player;
-            else if (CompanionBringAFriend.Enabled && CompanionBringAFriend.IsCompanion(puller))
-                playerPuller = ((GameBot) puller).Owner;
-            else if (puller is GameNPC pet && pet.Brain is ControlledMobBrain brain)
-            {
-                playerPuller = brain.GetPlayerOwner();
-
-                if (playerPuller == null)
-                    return;
-
-                // A companion's pet resolves to the player; only count it when companions count.
-                GameLiving petOwner = brain.Owner;
-                if (petOwner is GameBot && !(CompanionBringAFriend.Enabled && CompanionBringAFriend.IsCompanion(petOwner)))
-                    return;
-
-                countFrom = petOwner is GameBot ? petOwner : playerPuller;
-            }
-            else
+            // Only BAF on players, pets of players and the player's companion bots (and their pets). Group members are
+            // counted within visibility of countFrom. (BafFriends.PullerPlayer: a hired companion has no Owner; owner
+            // 2026-11-04, monsters vanished when one hit first.)
+            GamePlayer playerPuller = BafFriends.PullerPlayer(puller, out GameLiving countFrom);
+            if (playerPuller == null)
                 return;
 
             // No new round of adds while the puller's group is still in the fight that brought friends (owner 2026-10-29:

@@ -51,8 +51,50 @@ namespace DOL.AI.Brain
         public static bool SameFight(bool inCombat, long now, long lastBaf) =>
             inCombat && lastBaf > 0 && now - lastBaf < BafFightMilliseconds;
 
+        /// <summary>
+        /// The player a pull counts for (null: no Bring A Friend), and the member whose group is counted. A player
+        /// counts for itself; a companion (a /spawn helper, a hired companion, a gamebot the player invited) for its
+        /// player; a pet (or a sub-pet) for its root: a player, or a companion's player.
+        /// Owner 2026-11-04: when a hired companion hit a monster first, the monster vanished with no kill credit or
+        /// loot. The companion branch read GameBot.Owner, which only /spawn helpers have; for a hired or invited
+        /// companion it was null, InBafFight threw, and the NPC service's error handler removed the monster from the
+        /// world. CompanionPlayer is the player CompanionBringAFriend.IsCompanion already checked.
+        /// </summary>
+        public static GamePlayer PullerPlayer(GameLiving puller, out GameLiving countFrom)
+        {
+            countFrom = puller;
+            if (puller is GamePlayer player)
+                return player;
+            if (puller is GameBot bot)
+                return CompanionPullerPlayer(bot);
+            if (puller is not GameNPC pet || pet.Brain is not ControlledMobBrain brain)
+                return null;
+
+            // A pet's root: its player, or the bot (BotBrain is a controlled brain too, so stop at the first bot).
+            GameLiving root = brain.Owner;
+            for (int depth = 0; depth < 16 && root is GameNPC npc and not GameBot &&
+                 npc.Brain is IControlledBrain controlled && controlled.Owner != null; depth++)
+            {
+                root = controlled.Owner;
+            }
+            if (root is GamePlayer rootPlayer)
+            {
+                countFrom = rootPlayer;
+                return rootPlayer;
+            }
+            if (root is not GameBot rootBot)
+                return null;
+            countFrom = rootBot;
+            return CompanionPullerPlayer(rootBot);
+        }
+
+        private static GamePlayer CompanionPullerPlayer(GameBot bot) =>
+            CompanionBringAFriend.Enabled && CompanionBringAFriend.IsCompanion(bot) ? bot.CompanionPlayer : null;
+
         public static bool InBafFight(GamePlayer puller)
         {
+            if (puller == null)
+                return false;
             long now = GameLoop.GameLoopTime;
             long last = puller.TempProperties.GetProperty<long>(BafFightProperty);
             if (!SameFight(puller.InCombat, now, last))
@@ -62,7 +104,7 @@ namespace DOL.AI.Brain
         }
 
         public static void MarkBafFight(GamePlayer puller) =>
-            puller.TempProperties.SetProperty(BafFightProperty, GameLoop.GameLoopTime);
+            puller?.TempProperties.SetProperty(BafFightProperty, GameLoop.GameLoopTime);
 
         /// <summary>In sight along the walkable ground (the navmesh); where there is no navmesh, assumed so.</summary>
         public static bool InSight(GameNPC pulled, GameNPC other)

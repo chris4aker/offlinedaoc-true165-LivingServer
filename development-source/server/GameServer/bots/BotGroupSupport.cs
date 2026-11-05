@@ -46,15 +46,26 @@ namespace DOL.GS
             return false;
         }
 
+        /// <summary>
+        /// The bot's support scope, read once (owner 2026-11-04: a group that broke up between a bot.Group check and
+        /// the scope lookup handed null to the state table; the ArgumentNullException made the NPC service remove the
+        /// healer bots from the world).
+        /// </summary>
+        private static object Scope(GameBot bot) => AutonomousRealmRaid.SupportScope(bot);
+
         public static void CancelResurrection(GameBot bot)
         {
-            if (bot.Group != null && States.TryGetValue(AutonomousRealmRaid.SupportScope(bot), out State state))
+            object scope = Scope(bot);
+            if (scope != null && States.TryGetValue(scope, out State state))
                 state.Resurrection.ReleaseCaster(bot);
         }
 
         public static GameLiving ReserveResurrection(GameBot bot, Spell spell)
         {
             if (bot.Group == null || !bot.IsAlive || bot.IsCasting || bot.IsCrowdControlled || bot.IsSilenced || UnderAttack(bot))
+                return null;
+            object scope = Scope(bot);
+            if (scope == null)
                 return null;
             int range = bot.castingComponent.CalculateSpellRange(spell);
             // A wounded party elsewhere in the dungeon cannot consume this
@@ -69,7 +80,7 @@ namespace DOL.GS
             // Keep at least half the available healers healing during combat.
             int critical = members.Count(m => m.IsAlive && m.CurrentRegionID == bot.CurrentRegionID && m.HealthPercent < 35);
             int budget = combat ? CombatResurrectionBudget(healers, critical) : healers;
-            State state = States.GetOrCreateValue(AutonomousRealmRaid.SupportScope(bot));
+            State state = States.GetOrCreateValue(scope);
             foreach (GameLiving corpse in members.Where(m => !m.IsAlive && m.ObjectState == GameObject.eObjectState.Active &&
                 m.CurrentRegionID == bot.CurrentRegionID && bot.IsWithinRadius(m, range)).OrderBy(m => m is GamePlayer ? 0 : 1).ThenBy(bot.GetDistanceTo))
             {
@@ -105,7 +116,8 @@ namespace DOL.GS
 
         public static void CancelHeal(GameBot bot)
         {
-            if (bot.Group != null && States.TryGetValue(AutonomousRealmRaid.SupportScope(bot), out State state))
+            object scope = Scope(bot);
+            if (scope != null && States.TryGetValue(scope, out State state))
                 lock (state.Sync) state.Heals.Remove(bot);
         }
 
@@ -113,7 +125,9 @@ namespace DOL.GS
         {
             if ((!CompanionRaid.IsMember(bot) && !AutonomousRealmRaid.HasSharedSupport(bot)) || !spell.IsHealing || spell.Target != eSpellTarget.REALM || spell.IsInstantCast || spell.Duration > 0)
                 return preferred;
-            object scope = AutonomousRealmRaid.SupportScope(bot);
+            object scope = Scope(bot);
+            if (scope == null)
+                return preferred;
             State state = States.GetOrCreateValue(scope);
             int range = bot.castingComponent.CalculateSpellRange(spell);
             var candidates = AutonomousRealmRaid.SupportMembers(bot).Concat(AutonomousRealmRaid.SupportPets(bot, range)).Concat(
