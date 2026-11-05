@@ -1158,7 +1158,7 @@
   {
    "MerchantItem_ID": "p165goods-p165list_Eluned-0-17",
    "ItemListID": "p165list_Eluned",
-   "ItemTemplateID": "p165_item_3858",
+   "ItemTemplateID": "plain_robe2",
    "PageNumber": 0,
    "SlotPosition": 17,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1334,7 +1334,7 @@
   {
    "MerchantItem_ID": "p165goods-3c20c276-a1fb-497c-b389-fe62712ea01f-0-16",
    "ItemListID": "3c20c276-a1fb-497c-b389-fe62712ea01f",
-   "ItemTemplateID": "p165_item_4732",
+   "ItemTemplateID": "p165_item_11655",
    "PageNumber": 0,
    "SlotPosition": 16,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"

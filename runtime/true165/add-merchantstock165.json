@@ -108,86 +108,6 @@
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
   },
   {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-0",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "alloy_great_axe",
-   "PageNumber": 1,
-   "SlotPosition": 0,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-1",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "alloy_war_axe",
-   "PageNumber": 1,
-   "SlotPosition": 1,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-2",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "bronze_great_axe",
-   "PageNumber": 1,
-   "SlotPosition": 2,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-3",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "bronze_war_axe",
-   "PageNumber": 1,
-   "SlotPosition": 3,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-4",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "fine_alloy_great_axe",
-   "PageNumber": 1,
-   "SlotPosition": 4,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-5",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "fine_alloy_war_axe",
-   "PageNumber": 1,
-   "SlotPosition": 5,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-6",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "iron_great_axe",
-   "PageNumber": 1,
-   "SlotPosition": 6,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-7",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "iron_war_axe",
-   "PageNumber": 1,
-   "SlotPosition": 7,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-8",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "steel_great_axe",
-   "PageNumber": 1,
-   "SlotPosition": 8,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-7a411b91-e85e-42e7-be42-412fcfd272f5-1-9",
-   "ItemListID": "7a411b91-e85e-42e7-be42-412fcfd272f5",
-   "ItemTemplateID": "steel_war_axe",
-   "PageNumber": 1,
-   "SlotPosition": 9,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
    "MerchantItem_ID": "p165stock-93cd2d04-d5db-4754-b0b8-c976e0b65960-1-0",
    "ItemListID": "93cd2d04-d5db-4754-b0b8-c976e0b65960",
    "ItemTemplateID": "mithril_bill",
@@ -785,14 +705,6 @@
    "ItemTemplateID": "Mithril_Chain_Leggings",
    "PageNumber": 0,
    "SlotPosition": 18,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165stock-AlbSlashCrushPierce-0-24",
-   "ItemListID": "AlbSlashCrushPierce",
-   "ItemTemplateID": "alloy_great_axe",
-   "PageNumber": 0,
-   "SlotPosition": 24,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
   },
   {
