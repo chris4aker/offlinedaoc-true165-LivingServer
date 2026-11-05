@@ -27,7 +27,7 @@ namespace DOL.GS
         public const byte KindCharm = 1, KindPet = 2, KindSubPet = 3, KindSong = 4;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
             KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
-            KindLifeTransfer = 16, KindAmnesia = 17;
+            KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18;
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -67,6 +67,12 @@ namespace DOL.GS
                 bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.LifeTransfer) == true),
             new(KindAmnesia, "amnesia", "Amnesia", ["Automatic (give monsters back to my pet)", "Off"],
                 bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.Amnesia) == true),
+            // Performers (Prima: a Bard's group role is to prevent downtime - the endurance song in battle, mez every add,
+            // heal the Druid; a Minstrel plays a "passive game" of songs and shouts or an "active game" in melee; period
+            // forums: the "Battlebard" melee build)
+            new(KindPerform, "perform", "Fight", ["Automatic", "Support (stay back: songs, spells, no melee)", "Melee"],
+                bot => (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Bard or eCharacterClass.Minstrel or
+                    eCharacterClass.Skald),
         ];
 
         /// <summary>The player's choice for a generic AI option (0 = Automatic; always 0 for gamebots).</summary>

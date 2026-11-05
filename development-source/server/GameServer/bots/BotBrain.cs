@@ -860,8 +860,15 @@ namespace DOL.AI.Brain
             eCharacterClass.Valewalker or eCharacterClass.Skald or eCharacterClass.Warden or eCharacterClass.Friar;
 
         private bool PrefersCurrentSpellRange() =>
-            PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true) ||
-            BotBody?.CharacterClass?.ID == (int)eCharacterClass.Shaman && RoleChoice is 1 or 2;   // AI Options role
+            (PrefersSpellRange(BotBody?.CharacterClass, BotBody?.Group?.MemberCount > 1, BotBody?.IsAutonomousWorldBot == true) ||
+            BotBody?.CharacterClass?.ID == (int)eCharacterClass.Shaman && RoleChoice is 1 or 2 ||   // AI Options role
+            PerformerStaysBack) && !PerformerMelees;
+
+        /// <summary>A hired Bard, Minstrel or Skald whose player chose "Support": songs and spells from the back, no melee.</summary>
+        private bool PerformerStaysBack => IsClassicSongClass(BotBody) && CompanionOptions165.Choice(BotBody, "perform") == 1;
+
+        /// <summary>... or "Melee": it fights in melee even where it would otherwise keep its distance.</summary>
+        private bool PerformerMelees => IsClassicSongClass(BotBody) && CompanionOptions165.Choice(BotBody, "perform") == 2;
 
         // True when the body already runs the same melee follow NpcStartAttack would
         // issue (its own target, melee weapon, stick distance).
@@ -2485,8 +2492,9 @@ namespace DOL.AI.Brain
             // None of the three becomes a passive
             // support-only actor merely because a group exists.
             bool minstrelAtRange = !groupedSupport && !UsesMinstrelHybridCombat && (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Minstrel &&
-                                    !IsUnderImmediateMeleePressure();
-            if (immediateCombat && !minstrelAtRange)
+                                    !IsUnderImmediateMeleePressure() && !PerformerMelees;
+            // a performer in the Support role keeps its instrument and plays on in the fight (no melee weapon)
+            if (immediateCombat && !minstrelAtRange && !PerformerStaysBack)
             {
                 // The fight song stays on while it melees (owner 2026-11-05 class audit; Prima: "In battle, keep the Endurance
                 // Song playing"): the endurance song, or the one the player chose for fights, is started once as the fight
