@@ -28,9 +28,16 @@ namespace DOL.GS
         private static long _stockIndexBuiltTick = long.MinValue;
         private static readonly object StockIndexLock = new();
 
-        /// <summary>Copper a bot may spend on gear: its coin less a small reserve for repairs and arrows.</summary>
+        /// <summary>
+        /// Copper a bot may spend on gear: its coin less a small reserve for repairs and arrows. The reserve was
+        /// level x level x 10 (640 copper at level 8): sized to the coin, not to what supplies cost (arrows about 19
+        /// copper a stack, poisons 11-39 copper a vial), it left 53% of Rangers, 41% of Infiltrators and 69% of Scouts with
+        /// nothing to spend and their level-5 bows (2026-11-05 audit). Now level x level x 4 (256 copper at level 8).
+        /// </summary>
         public static long ShoppingBudget(GameBot bot) =>
-            AutonomousBotEconomy.GetMoney(bot.DatabaseID) - Math.Max(100L, bot.Level * bot.Level * 10L);
+            AutonomousBotEconomy.GetMoney(bot.DatabaseID) - ShoppingReserve(bot.Level);
+
+        public static long ShoppingReserve(int level) => Math.Max(50L, level * level * 4L);
 
         /// <summary>A vendor item a bot would consider buying: priced in coin within its budget, at most one level above it.</summary>
         public static bool ShoppingConsiders(GameBot bot, DbItemTemplate template, long budget) =>
@@ -57,6 +64,12 @@ namespace DOL.GS
             int empty = EmptyBodyArmorSlots(bot);
             if (empty == 0 || template == null)
                 return true;
+            // A bot still swinging its period starter weapon may also buy a real one, as one more share of the coin
+            // (2026-11-05 audit: Infiltrators, Rangers and Shadowblades with an empty armor slot kept their training weapon).
+            if (template.Item_Type is Slot.RIGHTHAND or Slot.TWOHAND &&
+                bot.Inventory.GetItem(eInventorySlot.RightHandWeapon) is { } mainHand &&
+                bot.IsPeriodStarter165(mainHand.Template))
+                return template.Price <= budget / (empty + 1);
             if (!BodyArmorSlots.Contains((eInventorySlot)template.Item_Type) || bot.Inventory.GetItem((eInventorySlot)template.Item_Type) != null)
                 return false;
             return template.Price <= budget / empty;
