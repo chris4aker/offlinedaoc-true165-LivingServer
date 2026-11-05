@@ -857,6 +857,18 @@ namespace DOL.UnitTests
             Assert.That(BotBrain.IsClassicSongClass(eCharacterClass.Warden), Is.False);
         }
 
+        // GitHub #14: the Warden's speed chant has a 3 s cast; it is still the Warden's managed chant (else Wardens
+        // never cast speed), not a mobile song, and its other chants stay instant-only.
+        [Test]
+        public void WardenSpeedChantWithACastTimeIsManagedButNotMobile()
+        {
+            Bot warden = NewBot(typeof(ClassWarden));
+            Assert.That(BotSongTwistPolicy.IsManagedSong(warden, Song("SpeedEnhancement", cast: 3)), Is.True);
+            Assert.That(BotSongTwistPolicy.IsMobileSong(warden, Song("SpeedEnhancement", cast: 3)), Is.False);
+            Assert.That(BotSongTwistPolicy.IsManagedSong(warden, Song("Bladeturn", cast: 3)), Is.False);
+            Assert.That(BotSongTwistPolicy.IsManagedSong(NewBot(typeof(ClassPaladin)), Song("SpeedEnhancement", cast: 3)), Is.False);
+        }
+
         [TestCase(typeof(ClassPaladin), "SpecArmorFactorBuff")]
         [TestCase(typeof(ClassPaladin), "CombatHeal")]
         [TestCase(typeof(ClassPaladin), "BodyResistBuff")]

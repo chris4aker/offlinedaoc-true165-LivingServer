@@ -70,16 +70,17 @@ namespace DOL.GS
             return BotBrain.IsMaintainableClassBuff(spell);
         }
 
-        // These four classes learn a stationary, three-second group speed pulse.
+        // These classes learn a stationary, three-second group speed pulse.
         // Unlike a performer's mobile song, it requires a real stop and cast.
         // Restrict the exception to temporary player companions and learned
         // native speed spells; ordinary buffs and world-bot behavior stay put.
+        // Warden: its speed chant is the same kind of 3 s group pulse (GitHub #14); TryMaintainTankChant casts it.
         private static bool HasNativeTravelSpeed(GameBot bot) =>
             bot is { IsPlayerCompanion: true, IsPlayerLedGroup: true } &&
             bot.CharacterClass != null &&
             (eCharacterClass)bot.CharacterClass.ID is
                 (eCharacterClass.Enchanter or eCharacterClass.Sorcerer or
-                 eCharacterClass.Healer or eCharacterClass.Runemaster);
+                 eCharacterClass.Healer or eCharacterClass.Runemaster or eCharacterClass.Warden);
 
         public static bool IsNativeCompanionTravelSpeed(GameBot bot, Spell spell) =>
             HasNativeTravelSpeed(bot) &&

@@ -2681,6 +2681,10 @@ namespace DOL.AI.Brain
 
             if (chosen == null || chosen.ID == active?.ID || bot.GetSkillDisabledDuration(chosen) > 0 ||
                 bot.Mana < bot.PowerCost(chosen)) return;
+            // A companion Warden stops for its 3 s speed cast only when it can keep up afterwards (the casters' rule:
+            // the player moving, out of combat, within reach); otherwise it waits (GitHub #14).
+            if (chosen.SpellType == eSpellType.SpeedEnhancement && CompanionFollowPolicy.DeferBuff(bot, chosen))
+                return;
             GameObject oldTarget = bot.TargetObject;
             try
             {
