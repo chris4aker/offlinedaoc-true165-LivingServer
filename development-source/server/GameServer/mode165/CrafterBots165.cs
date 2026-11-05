@@ -120,8 +120,11 @@ namespace DOL.GS
             bool listed = AutonomousBotEconomy.TryList(bot, product, price);
             if (!listed)
             {
-                bot.Inventory.RemoveItem(product);   // no exchange space: it goes to a vendor's scrap pile
-                AutonomousBotEconomy.AddMoney(bot.DatabaseID, recipe.MaterialCost / 2);
+                // no exchange space: sold to a merchant for what it fetches (at least half the materials back) - the old
+                // half-materials-only made crafting a money sink: crafters averaged 1.8-7.7 gold (owner 2026-11-05 audit)
+                long vendor = AutonomousBotEconomy.CalculateStandardVendorSaleCopper(product);
+                bot.Inventory.RemoveItem(product);
+                AutonomousBotEconomy.AddMoney(bot.DatabaseID, Math.Max(recipe.MaterialCost / 2, vendor));
             }
             Log.Info($"BOT_CRAFTED_165 bot={bot.Name} id={bot.DatabaseID} craft={craft} skill={record.CraftLevel} " +
                      $"item=\"{template.Name}\" recipe={recipe.Level} listed={listed} price={price}");
