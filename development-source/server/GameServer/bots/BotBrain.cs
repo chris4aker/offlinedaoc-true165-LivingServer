@@ -2677,6 +2677,17 @@ namespace DOL.AI.Brain
                 return;
 
             _nextSongTwistTick = GameLoop.GameLoopTime + 750;
+            // A chant that drains power each pulse (Chant of Endurance...) is dropped while the bot rests and not
+            // restarted then: it kept running while seated, so power never reached full and a Paladin sat forever
+            // (owner 2026-11-05). No free power: the drain just stops, as a player stops it.
+            if (bot.IsRecoveryResting)
+            {
+                foreach (ECSPulseEffect draining in bot.effectListComponent.GetPulseEffects()
+                             .Where(effect => !effect.IsEnding && !effect.IsEnded && effect.SpellHandler?.Spell is { PulsePower: > 0 } s &&
+                                              BotSongTwistPolicy.IsManagedSong(bot, s)).ToList())
+                    draining.End();
+                return;
+            }
             List<Spell> chants = (bot.MiscSpells ?? []).Concat(bot.InstantMiscSpells ?? [])
                 .Where(spell => spell?.Level <= bot.Level && BotSongTwistPolicy.IsManagedSong(bot, spell))
                 .GroupBy(spell => spell.SpellType)
@@ -2719,6 +2730,11 @@ namespace DOL.AI.Brain
 
             if (chosen == null || chosen.ID == active?.ID || bot.GetSkillDisabledDuration(chosen) > 0 ||
                 bot.Mana < bot.PowerCost(chosen)) return;
+            // A draining chant starts only with power for a while of it (5 pulses, or a fifth of the bot's power):
+            // restarted near empty, the server ended it at the next pulse and the bot recast it every few seconds,
+            // replaying its sound and animation (owner 2026-11-05).
+            if (chosen.PulsePower > 0 && bot.Mana < bot.PowerCost(chosen) + Math.Max(chosen.PulsePower * 5, bot.MaxMana / 5))
+                return;
             // A companion Warden stops for its 3 s speed cast only when it can keep up afterwards (the casters' rule:
             // the player moving, out of combat, within reach); otherwise it waits (GitHub #14).
             if (chosen.SpellType == eSpellType.SpeedEnhancement && CompanionFollowPolicy.DeferBuff(bot, chosen))
