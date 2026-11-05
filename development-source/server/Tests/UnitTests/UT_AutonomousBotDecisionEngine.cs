@@ -141,6 +141,9 @@ public class UT_AutonomousBotDecisionEngine
             Assert.That(AutonomousRestPolicy.NeedsRecovery(99, 100, 100, true), Is.False);
             Assert.That(AutonomousRestPolicy.NeedsRecovery(69, 100, 100, true), Is.True);
             Assert.That(AutonomousRestPolicy.NeedsRecovery(100, 44, 100, true), Is.True);
+            // owner 2026-11-05: rest below 70% power
+            Assert.That(AutonomousRestPolicy.NeedsRecovery(100, 69, 100, true), Is.True);
+            Assert.That(AutonomousRestPolicy.NeedsRecovery(100, 70, 100, true), Is.False);
             Assert.That(AutonomousRestPolicy.NeedsRecovery(100, 100, 34, true), Is.True);
             Assert.That(AutonomousRestPolicy.NeedsRecovery(100, 40, 100, false), Is.False);
             Assert.That(AutonomousRestPolicy.CanSit(false, false, false, 50, 0, 0, true), Is.False);

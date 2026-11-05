@@ -388,7 +388,9 @@ public static class AutonomousTownDowntime
 public static class AutonomousRestPolicy
 {
     public const byte HealthRestThreshold = 70;
-    public const byte PowerRestThreshold = 45;
+    // Owner 2026-11-05 (reset-day S15): every bot (companions and gamebots) that uses power rests once it is below
+    // 70% (45% made them wait too long). Health and endurance keep their thresholds.
+    public const byte PowerRestThreshold = 70;
     public const byte EnduranceRestThreshold = 35;
 
     public static bool NeedsRecovery(
