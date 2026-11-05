@@ -376,7 +376,7 @@ namespace DOL.GS
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.CrafterName", Creator));
                 delve.Add(" ");
             }
-            else if (Description != null && Description != string.Empty)
+            else if (ItemTooltip165.ShowsDescription(Description))   // never database notes like "Non Public" (owner 2026-11-05)
             {
                 delve.Add(Description);
                 delve.Add(" ");
@@ -504,18 +504,22 @@ namespace DOL.GS
 
             output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteUsableClasses.UsableBy"));
 
+            var ids = new List<int>();
             foreach (string allowed in Util.SplitCSV(AllowedClasses, true))
             {
                 int classID = -1;
                 if (int.TryParse(allowed, out classID))
                 {
-                    output.Add("- " + ((eCharacterClass)classID).ToString());
+                    ids.Add(classID);
                 }
                 else
                 {
                     log.Error(Id_nb + " has an invalid entry for allowed classes '" + allowed + "'");
                 }
             }
+            // True 1.65 Mode: classes not in 1.65 are left out (owner 2026-11-05, ItemTooltip165)
+            foreach (int classID in ItemTooltip165.UsableClasses(ids, Classic165Mode.IsOn))
+                output.Add("- " + ((eCharacterClass)classID).ToString());
         }
 
 

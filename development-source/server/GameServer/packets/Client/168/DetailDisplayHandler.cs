@@ -132,7 +132,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 						}
 						// "Atlas ROG | <class>" marks a randomly generated item for salvage (Salvage.cs); never shown (owner
 						// 2026-10-31: bots' training swords and hammers were labelled Atlas ROG)
-						else if (!string.IsNullOrEmpty(invItem.Description) && !invItem.Description.StartsWith("Atlas ROG"))
+						// (ItemTooltip165: also never "Non Public", "class template" or other database notes, owner 2026-11-05)
+						else if (ItemTooltip165.ShowsDescription(invItem.Description))
 						{
 							objectInfo.Add(invItem.Description);
 							objectInfo.Add(" ");
@@ -1284,13 +1285,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteUsableClasses.UsableBy"));
 
+			var ids = new List<int>();
 			foreach (string allowed in Util.SplitCSV(item.AllowedClasses, true))
 			{
 				int classID = -1;
 				if (int.TryParse(allowed, out classID))
-					output.Add("- " + ((eCharacterClass)classID).ToString());
+					ids.Add(classID);
 				else log.Error(item.Id_nb + " has an invalid entry for allowed classes '" + allowed + "'");
 			}
+			// True 1.65 Mode: classes not in 1.65 are left out (owner 2026-11-05, ItemTooltip165)
+			foreach (int classID in ItemTooltip165.UsableClasses(ids, Classic165Mode.IsOn))
+				output.Add("- " + ((eCharacterClass)classID).ToString());
 		}
 
 		/// <summary>
