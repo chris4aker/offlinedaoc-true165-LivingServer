@@ -7,6 +7,13 @@ namespace DOL.UnitTests
     [TestFixture]
     public class UT_AutonomousDeathRecoveryPolicy
     {
+        // 2026-11-05: the after-death difficulty relaxes after a level-up or 30 minutes without a death.
+        [TestCase(8, 8, 60_000, false)]
+        [TestCase(9, 8, 60_000, true)]
+        [TestCase(8, 8, 30 * 60_000, true)]
+        public void DeathDifficultyRelaxesAfterALevelOrQuietTime(int level, int levelAtChange, long since, bool relaxes) =>
+            Assert.That(AutonomousDeathRecoveryPolicy.RelaxesDifficulty(level, levelAtChange, since, 30 * 60_000), Is.EqualTo(relaxes));
+
         [Test]
         public void RepeatedZeroExperienceDeathsPauseButNewProgressRestartsTheStreak()
         {

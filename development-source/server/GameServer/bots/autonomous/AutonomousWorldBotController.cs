@@ -138,6 +138,12 @@ namespace DOL.GS
         private AutonomousRvrStaging.BorderKeep? _soloRvrBorderKeep;
         private int _observedDeathCount = -1;
         private int _deathDifficultySteps;
+        // When the after-death difficulty last changed, and the bot's level then: it relaxes one con step per level
+        // gained or per DeathDifficultyRelaxMilliseconds without a death (2026-11-05 audit: it never relaxed, so after
+        // one or two deaths a solo bot hunted greens until the server restarted - 2,832 of 2,927 Ranger replans).
+        private long _deathDifficultyChangedTick;
+        private int _deathDifficultyLevel;
+        public const long DeathDifficultyRelaxMilliseconds = 30 * 60_000;
         private int _recentSoloDeathsWithoutExperience;
         private long _lastSoloDeathTick;
         private long _experienceAtLastSoloDeath;
@@ -3961,6 +3967,20 @@ namespace DOL.GS
             SetStatus(bot, "Choosing a new live goal", "Find a reachable level-appropriate XP camp", reason, oldTarget);
         }
 
+        private void RelaxDeathDifficulty(GameBot bot)
+        {
+            if (_deathDifficultySteps <= 0)
+                return;
+            long now = GameLoop.GameLoopTime;
+            if (AutonomousDeathRecoveryPolicy.RelaxesDifficulty(bot.Level, _deathDifficultyLevel, now - _deathDifficultyChangedTick,
+                    DeathDifficultyRelaxMilliseconds))
+            {
+                _deathDifficultySteps--;
+                _deathDifficultyChangedTick = now;
+                _deathDifficultyLevel = bot.Level;
+            }
+        }
+
         private void ObserveDeaths(GameBot bot)
         {
             int deathCount = Math.Max(0, bot.PersistentRecord?.DeathCount ?? 0);
@@ -3978,7 +3998,10 @@ namespace DOL.GS
             }
 
             if (deathCount <= _observedDeathCount)
+            {
+                RelaxDeathDifficulty(bot);
                 return;
+            }
 
             if (_groupDirective?.IsDynamic == true)
             {
@@ -4007,6 +4030,8 @@ namespace DOL.GS
                 Math.Max(_deathDifficultySteps + deathCount - _observedDeathCount, requiredSteps),
                 0,
                 maximumSafetySteps);
+            _deathDifficultyChangedTick = nowTick;
+            _deathDifficultyLevel = bot.Level;
             _observedDeathCount = deathCount;
             _lastEngagedCon = null;
 

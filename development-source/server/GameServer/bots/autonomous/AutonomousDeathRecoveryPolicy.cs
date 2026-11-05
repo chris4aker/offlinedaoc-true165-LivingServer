@@ -48,5 +48,9 @@ namespace DOL.GS
 
         public static bool IsEligible(ConColor target, ConColor maximum) =>
             target > ConColor.GREY && target <= maximum;
+
+        /// <summary>The after-death difficulty steps back up once the bot has gained a level or gone long enough without a death.</summary>
+        public static bool RelaxesDifficulty(int level, int levelAtChange, long millisecondsSinceChange, long relaxAfterMilliseconds) =>
+            level > levelAtChange || millisecondsSinceChange >= relaxAfterMilliseconds;
     }
 }
