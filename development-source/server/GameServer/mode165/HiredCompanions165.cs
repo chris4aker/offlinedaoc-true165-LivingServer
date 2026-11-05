@@ -119,6 +119,10 @@ namespace DOL.GS
         public static OfflineWorldBotRecord Record(long botId) =>
             DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("BotId").IsEqualTo(botId));
 
+        /// <summary>The player's hired companions that are in the world now.</summary>
+        public static IEnumerable<GameBot> LiveFor(GamePlayer player) =>
+            RosterOf(player).Select(h => LiveBot(h.BotId)).Where(bot => bot != null).ToArray();
+
         public static GameBot LiveBot(long botId) =>
             Live.TryGetValue(botId, out GameBot bot) && bot.ObjectState == GameObject.eObjectState.Active ? bot : null;
 
@@ -236,6 +240,7 @@ namespace DOL.GS
                 hired.WithOwner = true;
                 Save(hired);
                 BotGroupInvite.TryInvite(player, bot);
+                AutonomousBotGuilds.Present(bot);   // its player's guild name and emblem (owner 2026-11-05)
                 AutonomousBotStatusPersistence.Queue(bot, true);
                 Hire165.SendRosterNumbers(player);   // its object id and hair colour for the clients
                 return null;
