@@ -3849,14 +3849,67 @@ namespace DOL.GS
                         IsFrontierZone(representative.CurrentRegionID, representative.CurrentZone.ID)));
                 }
 
+                AddUncoveredLiveCamps(cells, snapshot);
                 AddStarterCamps(cells, snapshot);
                 AddVerifiedDungeonCamps(cells, liveByZoneAndName);
                 return cells.ToArray();
         }
 
+        /// <summary>
+        /// Live spawns the period catalog never recorded (owner 2026-11-05: "a ton of spots in zones that bots dont even
+        /// touch"; e.g. 1,334 of Campacorentin's 1,682 spawns and 862 of Avalon Marsh's 1,132 had no camp, because in a
+        /// zone the CapnBry sightings cover, a spawn counted only if a sighting of that name was within 5,000 units). A
+        /// cluster of at least three outdoor spawns of one name and level, with no camp of that name within 5,000 units,
+        /// becomes a camp at the live spawn nearest its centre. No monster is added or moved; routes to these camps are
+        /// verified like the other live camps (IsSourceEmptyCamp).
+        /// </summary>
+        private static void AddUncoveredLiveCamps(List<CampCatalogCell> cells, CampMonster[] snapshot)
+        {
+            const int MinimumSpawns = 3;
+            long reach = (long)TargetSearchRadius * TargetSearchRadius;
+            var covered = cells.GroupBy(cell => (cell.RegionId, Name: cell.MonsterName.Trim().ToLowerInvariant()))
+                .ToDictionary(group => group.Key, group => group.Select(cell => (cell.X, cell.Y)).ToArray());
+            bool Covered(CampMonster npc) =>
+                covered.TryGetValue((npc.CurrentRegionID, npc.Name.Trim().ToLowerInvariant()), out var spots) &&
+                spots.Any(spot => DistanceSquared(npc.X, npc.Y, spot.X, spot.Y) <= reach);
+            var added = new List<CampCatalogCell>();
+            foreach (var group in snapshot
+                         .Where(npc => npc.CurrentZone != null && npc.CurrentZone.IsDungeon != true &&
+                                       npc.CurrentZone.ZoneRegion?.IsDungeon != true &&
+                                       npc.CurrentZone.ZoneRegion != null &&
+                                       AutonomousCapnBryGoalCatalog.IsClassicOrShroudedIslesExpansion(npc.CurrentZone.ZoneRegion.Expansion) &&
+                                       !BattlegroundBrackets.IsBattlegroundRegion(npc.CurrentRegionID) &&
+                                       !AutonomousAuditedCampPolicy.UsesLiveAnchor(npc.CurrentRegionID, npc.Name) &&
+                                       !Covered(npc))
+                         .GroupBy(npc => (npc.CurrentZone.ID, npc.CurrentRegionID,
+                             CellX: npc.X / SourceEmptyCampCellSize, CellY: npc.Y / SourceEmptyCampCellSize,
+                             Name: npc.Name.Trim().ToLowerInvariant(), npc.EffectiveLevel)))
+            {
+                CampMonster[] members = group.ToArray();
+                if (members.Length < MinimumSpawns)
+                    continue;
+                float averageX = (float)members.Average(npc => npc.X);
+                float averageY = (float)members.Average(npc => npc.Y);
+                CampMonster representative = members
+                    .OrderBy(npc => Math.Abs(npc.X - averageX) + Math.Abs(npc.Y - averageY))
+                    .ThenBy(npc => npc.InternalId, StringComparer.Ordinal)
+                    .First();
+                added.Add(new CampCatalogCell(
+                    $"live-uncovered:{group.Key.ID}:{group.Key.CurrentRegionID}:{group.Key.CellX}:{group.Key.CellY}:{group.Key.Name}:{group.Key.EffectiveLevel}",
+                    representative.Name,
+                    representative.CurrentZone.Description ?? representative.CurrentZone.ZoneRegion?.Description ?? $"region {group.Key.CurrentRegionID}",
+                    group.Key.CurrentRegionID, representative.X, representative.Y, representative.Z,
+                    members.Select(npc => npc.EffectiveLevel).OrderBy(level => level).ToArray(),
+                    members.Length, representative.CurrentZone, false,
+                    IsFrontierZone(representative.CurrentRegionID, representative.CurrentZone.ID)));
+            }
+            cells.AddRange(added);
+        }
+
         private static bool IsSourceEmptyCamp(string campId) =>
             !string.IsNullOrWhiteSpace(campId) &&
-            campId.StartsWith("capnbry-source-empty:", StringComparison.OrdinalIgnoreCase);
+            (campId.StartsWith("capnbry-source-empty:", StringComparison.OrdinalIgnoreCase) ||
+             campId.StartsWith("live-uncovered:", StringComparison.OrdinalIgnoreCase));
 
         private void AbandonCamp(GameBot bot, string reason)
         {
