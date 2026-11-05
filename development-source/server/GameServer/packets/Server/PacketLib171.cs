@@ -194,7 +194,7 @@ namespace DOL.GS.PacketHandler
 					if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 				else flags2 |= 0x02;
 
-				if (npc.IsStealthed)
+				if (npc.IsStealthed && npc is GameBot)   // monsters drawn normally once seen (1.65 look, owner 2026-11-05)
 					flags2 |= 0x04;
 
 				eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);

@@ -11329,11 +11329,12 @@ namespace DOL.GS
                     // for players, so they get the player rules. Other stealthed NPCs are unchanged.
                     if (enemy is GameBot stealthedBot)
                         return CanDetectStealthedBot(stealthedBot);
-                    // Custom feature to make stealthed NPCs actually invisible.
-                    // Currently disabled.
-                    return true;
-                    int detectionRange = Math.Clamp(1500 + (Level - enemy.Level) * 50, 500, 3000);
-                    return IsWithinRadius(enemy, detectionRange);
+                    // A stealthed monster (urchin ambushers, footpads, black wraiths...) is unseen until you come within its
+                    // aggro range, or it attacks (which takes its stealth off): owner 2026-11-05, from period sources
+                    // ("invisible until you approach them", ambushers "jump out ... with little to no warning"). No source
+                    // lets the player's level or Detect Hidden reveal a monster, so neither does.
+                    int reach = enemy is GameNPC { Brain: StandardMobBrain hider } ? hider.AggroRange : 0;
+                    return IsWithinRadius(enemy, Math.Max(150, reach));
                 }
                 default:
                     return true;
