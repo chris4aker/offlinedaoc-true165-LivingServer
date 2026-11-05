@@ -126,6 +126,7 @@ namespace DOL.GS
             DbItemTemplate template = seller == null ? null : Ammo(seller, type, weapon);
             if (template == null || template.Price <= 0)
                 return;
+            int before = AmmoCount(bot, type);
             for (int i = 0; i < 20 && AmmoCount(bot, type) < KeepFor(bot); i++)
             {
                 eInventorySlot slot = bot.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
@@ -143,7 +144,8 @@ namespace DOL.GS
             AutonomousBotEconomy.MarkInventoryChanged(bot);
             bot.MarkAutonomousStateDirty();
             AutonomousBotStatusPersistence.Queue(bot, true);
-            Log.Info($"BOT_RESTOCKED_165 bot={bot.Name} id={bot.DatabaseID} ammo={type} now={AmmoCount(bot, type)} from=\"{seller.Name}\"");
+            if (AmmoCount(bot, type) > before)   // only when something was bought
+                Log.Info($"BOT_RESTOCKED_165 bot={bot.Name} id={bot.DatabaseID} ammo={type} now={AmmoCount(bot, type)} from=\"{seller.Name}\"");
         }
 
         /// <summary>A throwing weapon is its own ammunition and is used up per throw, as a player's is: its stack is topped

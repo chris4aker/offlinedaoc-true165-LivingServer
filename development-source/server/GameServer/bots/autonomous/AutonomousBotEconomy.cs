@@ -796,11 +796,27 @@ namespace DOL.GS;
                 .FirstOrDefault();
         }
 
+        public static bool IsOwnSupply(GameBot bot, DbInventoryItem item)
+        {
+            if (bot?.Inventory == null || item == null)
+                return false;
+            if ((eObjectType)item.Object_Type is eObjectType.Arrow or eObjectType.Bolt)
+                return Supplies165.AmmoType(bot.Inventory.GetItem(eInventorySlot.DistanceWeapon)) == (eObjectType)item.Object_Type;
+            if ((eObjectType)item.Object_Type == eObjectType.Poison)
+                return bot.CharacterClass != null && BotPoisonSupply.IsAssassin((eCharacterClass)bot.CharacterClass.ID);
+            return false;
+        }
+
         private static bool IsProtectedFromVendor(GameBot bot, DbInventoryItem item, bool trainedCrafter,
             bool canList, HashSet<DbInventoryItem> operationalLoadout)
         {
             if (item is GameInventoryRelic || BotSiegeRuntime.IsSupply(item.Id_nb) ||
                 operationalLoadout.Contains(item))
+                return true;
+            // The bot's own supplies are never trash (owner 2026-11-05 log audit: bots bought arrows and poisons and sold
+            // them straight back on the next pulse, ~350,000 times in 31 h, until they were broke; archers then fought in
+            // melee with their training dirk): ammunition for the bow or crossbow it carries, an assassin's poisons.
+            if (IsOwnSupply(bot, item))
                 return true;
             if (TryGetEquipmentUpgrade(bot, item, out _))
                 return true;
