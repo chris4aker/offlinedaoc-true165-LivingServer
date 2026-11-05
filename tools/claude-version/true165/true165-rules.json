@@ -46619,6 +46619,234 @@
   {
    "sql": "UPDATE ItemTemplate SET Price = 3360 WHERE Id_nb = 'vom_khertiks_staff' AND Price = 0",
    "reason": "True 1.65 reset day (S10): a merchant value (median of priced items of its type and level)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite greensilk') AND lower(ItemTemplateID) = lower('p165_item_3504')",
+   "reason": "True 1.65 dropfix: arachite greensilk (level 5-5) no longer drops the level 25 'Svartalf Hair Collar' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite greensilk') AND lower(ItemTemplateID) = lower('p165_item_1216')",
+   "reason": "True 1.65 dropfix: arachite greensilk (level 5-5) no longer drops the level 39 'Svartalf Crafted Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite greensilk') AND lower(ItemTemplateID) = lower('p165_item_1353')",
+   "reason": "True 1.65 dropfix: arachite greensilk (level 5-5) no longer drops the level 40 'Svartalf Crafted Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite greensilk') AND lower(ItemTemplateID) = lower('p165_item_1354')",
+   "reason": "True 1.65 dropfix: arachite greensilk (level 5-5) no longer drops the level 38 'Svartalf Crafted Ring' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite hatchling') AND lower(ItemTemplateID) = lower('p165_item_3504')",
+   "reason": "True 1.65 dropfix: arachite hatchling (level 1-1) no longer drops the level 25 'Svartalf Hair Collar' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite hatchling') AND lower(ItemTemplateID) = lower('p165_item_1216')",
+   "reason": "True 1.65 dropfix: arachite hatchling (level 1-1) no longer drops the level 39 'Svartalf Crafted Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite hatchling') AND lower(ItemTemplateID) = lower('p165_item_1353')",
+   "reason": "True 1.65 dropfix: arachite hatchling (level 1-1) no longer drops the level 40 'Svartalf Crafted Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite hatchling') AND lower(ItemTemplateID) = lower('p165_item_1354')",
+   "reason": "True 1.65 dropfix: arachite hatchling (level 1-1) no longer drops the level 38 'Svartalf Crafted Ring' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite priest') AND lower(ItemTemplateID) = lower('p165_item_1216')",
+   "reason": "True 1.65 dropfix: arachite priest (level 15-16) no longer drops the level 39 'Svartalf Crafted Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite priest') AND lower(ItemTemplateID) = lower('p165_item_1353')",
+   "reason": "True 1.65 dropfix: arachite priest (level 15-16) no longer drops the level 40 'Svartalf Crafted Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite priest') AND lower(ItemTemplateID) = lower('p165_item_1354')",
+   "reason": "True 1.65 dropfix: arachite priest (level 15-16) no longer drops the level 38 'Svartalf Crafted Ring' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite weblasher') AND lower(ItemTemplateID) = lower('p165_item_1216')",
+   "reason": "True 1.65 dropfix: arachite weblasher (level 14-16) no longer drops the level 39 'Svartalf Crafted Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite weblasher') AND lower(ItemTemplateID) = lower('p165_item_1353')",
+   "reason": "True 1.65 dropfix: arachite weblasher (level 14-16) no longer drops the level 40 'Svartalf Crafted Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite weblasher') AND lower(ItemTemplateID) = lower('p165_item_1354')",
+   "reason": "True 1.65 dropfix: arachite weblasher (level 14-16) no longer drops the level 38 'Svartalf Crafted Ring' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite youngling') AND lower(ItemTemplateID) = lower('p165_item_1216')",
+   "reason": "True 1.65 dropfix: arachite youngling (level 11-11) no longer drops the level 39 'Svartalf Crafted Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite youngling') AND lower(ItemTemplateID) = lower('p165_item_1353')",
+   "reason": "True 1.65 dropfix: arachite youngling (level 11-11) no longer drops the level 40 'Svartalf Crafted Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arachite youngling') AND lower(ItemTemplateID) = lower('p165_item_1354')",
+   "reason": "True 1.65 dropfix: arachite youngling (level 11-11) no longer drops the level 38 'Svartalf Crafted Ring' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('arbordon') AND lower(ItemTemplateID) = lower('p165_drop_5268')",
+   "reason": "True 1.65 dropfix: arbordon (level 24-29) no longer drops the level 51 'Speedy Kite Shield' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('bantam spectre') AND lower(ItemTemplateID) = lower('spectral_essence')",
+   "reason": "True 1.65 dropfix: bantam spectre (level 15-17) no longer drops the level 48 'Spectral Essence' (period drop: now the level 15 loot item spectral_essence_165l15)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('brown bear') AND lower(ItemTemplateID) = lower('Werewolf_Tooth_Necklace')",
+   "reason": "True 1.65 dropfix: brown bear (level 15-15) no longer drops the level 31 'Werewolf Tooth Necklace' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('carrion drake') AND lower(ItemTemplateID) = lower('Shimmering_Gnawed_Bone')",
+   "reason": "True 1.65 dropfix: carrion drake (level 8-9) no longer drops the level 49 'Gnawed Bone' (period drop: now the level 9 loot item Shimmering_Gnawed_Bone_165l9)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('decaying troll') AND lower(ItemTemplateID) = lower('Glowing_Gloves_of_Precision')",
+   "reason": "True 1.65 dropfix: decaying troll (level 10-11) no longer drops the level 30 'Gloves of Precision' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('decaying troll') AND lower(ItemTemplateID) = lower('Note-spun_Tunic')",
+   "reason": "True 1.65 dropfix: decaying troll (level 10-11) no longer drops the level 28 'Note-spun Tunic' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('draugr hound') AND lower(ItemTemplateID) = lower('Shimmering_Gnawed_Bone')",
+   "reason": "True 1.65 dropfix: draugr hound (level 23-25) no longer drops the level 49 'Gnawed Bone' (period drop: now the level 24 loot item Shimmering_Gnawed_Bone_165l24)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('druid seer') AND lower(ItemTemplateID) = lower('Cloack of the Resolute')",
+   "reason": "True 1.65 dropfix: druid seer (level 20-20) no longer drops the level 36 'Cloak of the Resolute' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('druidic spirit') AND lower(ItemTemplateID) = lower('Cloack of the Resolute')",
+   "reason": "True 1.65 dropfix: druidic spirit (level 21-21) no longer drops the level 36 'Cloak of the Resolute' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('dunter') AND lower(ItemTemplateID) = lower('lustrousavengingknightshammer')",
+   "reason": "True 1.65 dropfix: dunter (level 30-35) no longer drops the level 50 'Lustrous Avenging Knight's Hammer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('dwarf brawler') AND lower(ItemTemplateID) = lower('Sack_of_Grain')",
+   "reason": "True 1.65 dropfix: dwarf brawler (level 3-4) no longer drops the level 32 'Sack of Grain' (period drop: now the level 4 loot item Sack_of_Grain_165l4)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('eriu fiscere') AND lower(ItemTemplateID) = lower('Cloak_of_Concealment')",
+   "reason": "True 1.65 dropfix: eriu fiscere (level 15-15) no longer drops the level 30 'Cloak of Concealment' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('eriu fiscere') AND lower(ItemTemplateID) = lower('Feverish_Runner')",
+   "reason": "True 1.65 dropfix: eriu fiscere (level 15-15) no longer drops the level 34 'Feverish Runner' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('escaped thrall') AND lower(ItemTemplateID) = lower('Icebound_Bracer3')",
+   "reason": "True 1.65 dropfix: escaped thrall (level 3-3) no longer drops the level 51 'Icebound Bracer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('giant frog') AND lower(ItemTemplateID) = lower('Breastplate_of_the_Depths')",
+   "reason": "True 1.65 dropfix: giant frog (level 3-4) no longer drops the level 24 'Breastplate of the Depths' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('giant frog') AND lower(ItemTemplateID) = lower('Shadow-slicer')",
+   "reason": "True 1.65 dropfix: giant frog (level 3-4) no longer drops the level 25 'Shadow-slicer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('gray spectre') AND lower(ItemTemplateID) = lower('spectral_essence')",
+   "reason": "True 1.65 dropfix: gray spectre (level 22-24) no longer drops the level 48 'Spectral Essence' (period drop: now the level 23 loot item spectral_essence_165l23)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('Koalinth Castellan') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: Koalinth Castellan (level 26-26) no longer drops the level 42 'Sphene' (period drop: now the level 26 loot item p165_drop_6988_165l26)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('Koalinth Elder') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: Koalinth Elder (level 27-27) no longer drops the level 42 'Sphene' (period drop: now the level 27 loot item p165_drop_6988_165l27)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('koalinth guardian') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: koalinth guardian (level 24-24) no longer drops the level 42 'Sphene' (period drop: now the level 24 loot item p165_drop_6988_165l24)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('large skeleton') AND lower(ItemTemplateID) = lower('p165_drop_1525')",
+   "reason": "True 1.65 dropfix: large skeleton (level 5-5) no longer drops the level 31 'Golden Oak Bow' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('Meurig') AND lower(ItemTemplateID) = lower('Insurgents_Vest')",
+   "reason": "True 1.65 dropfix: Meurig (level 27-27) no longer drops the level 50 'Insurgent's Vest' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('nip mephit') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: nip mephit (level 23-27) no longer drops the level 42 'Sphene' (period drop: now the level 24 loot item p165_drop_6988_165l24)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('pelagian crab') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: pelagian crab (level 26-27) no longer drops the level 42 'Sphene' (period drop: now the level 26 loot item p165_drop_6988_165l26)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('puny skeleton') AND lower(ItemTemplateID) = lower('HauberkOfTheValiant')",
+   "reason": "True 1.65 dropfix: puny skeleton (level 1-1) no longer drops the level 20 'Hauberk of the Valiant' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('rat boy') AND lower(ItemTemplateID) = lower('Helm_of_Shadow_Melding')",
+   "reason": "True 1.65 dropfix: rat boy (level 2-3) no longer drops the level 20 'Helm of Shadow Melding' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('scavenger') AND lower(ItemTemplateID) = lower('Darksteel_Bracer')",
+   "reason": "True 1.65 dropfix: scavenger (level 1-1) no longer drops the level 40 'DarkSteel Bracer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('skeleton') AND lower(ItemTemplateID) = lower('SilverOakLongbow')",
+   "reason": "True 1.65 dropfix: skeleton (level 2-5) no longer drops the level 21 'Silver Oak Longbow' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('Slythcur') AND lower(ItemTemplateID) = lower('Shimmering_Gnawed_Bone')",
+   "reason": "True 1.65 dropfix: Slythcur (level 12-12) no longer drops the level 49 'Gnawed Bone' (period drop: now the level 12 loot item Shimmering_Gnawed_Bone_165l12)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('snow imp') AND lower(ItemTemplateID) = lower('p165_drop_6988')",
+   "reason": "True 1.65 dropfix: snow imp (level 20-23) no longer drops the level 42 'Sphene' (period drop: now the level 21 loot item p165_drop_6988_165l21)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('spriggarn') AND lower(ItemTemplateID) = lower('FootmansChainSleeves')",
+   "reason": "True 1.65 dropfix: spriggarn (level 2-2) no longer drops the level 17 'Footman's Chain Sleeves' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('svartalf') AND lower(ItemTemplateID) = lower('Cloak_of_the_Bloodwolf')",
+   "reason": "True 1.65 dropfix: svartalf (level 10-11) no longer drops the level 45 'Cloak of the Bloodwolf' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('svartalf') AND lower(ItemTemplateID) = lower('Vest_of_the_Bloodwolf')",
+   "reason": "True 1.65 dropfix: svartalf (level 10-11) no longer drops the level 48 'Vest of the Bloodwolf' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('tomte shaman') AND lower(ItemTemplateID) = lower('Icebound_Bracer3')",
+   "reason": "True 1.65 dropfix: tomte shaman (level 10-10) no longer drops the level 51 'Icebound Bracer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('venomspitter') AND lower(ItemTemplateID) = lower('Eir_Blessed_Tunic')",
+   "reason": "True 1.65 dropfix: venomspitter (level 13-13) no longer drops the level 30 'Eir Blessed Tunic' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('wildling') AND lower(ItemTemplateID) = lower('Icebound_Bracer3')",
+   "reason": "True 1.65 dropfix: wildling (level 7-14) no longer drops the level 51 'Icebound Bracer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('wood ogre scourge') AND lower(ItemTemplateID) = lower('p165_drop_1709')",
+   "reason": "True 1.65 dropfix: wood ogre scourge (level 12-13) no longer drops the level 51 'Thick Hide Bracer' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('Leildolf') AND lower(ItemTemplateID) = lower('Mystical_Golden_Scale_Belt')",
+   "reason": "True 1.65 dropfix: Leildolf (level 35-35) no longer drops the level 50 'Mystical Golden Scale Belt' (Uthgard-only, no period page names it)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('phantom hound') AND lower(ItemTemplateID) = lower('Shimmering_Gnawed_Bone')",
+   "reason": "True 1.65 dropfix: phantom hound (level 3-3) no longer drops the level 49 'Gnawed Bone' (period drop: now the level 3 loot item Shimmering_Gnawed_Bone_165l3)"
+  },
+  {
+   "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('snow giant') AND lower(ItemTemplateID) = lower('ice_water')",
+   "reason": "True 1.65 dropfix: snow giant (level 30-35) no longer drops the level 50 'Vial of Ice Water' (period drop: now the level 31 loot item ice_water_165l31)"
   }
  ]
 }

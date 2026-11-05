@@ -1,0 +1,844 @@
+{
+ "decisions": [
+  {
+   "mob": "arachite greensilk",
+   "item": "p165_item_3504",
+   "item_name": "Svartalf Hair Collar",
+   "item_level": 25,
+   "item_price": 0,
+   "mob_levels": [
+    5,
+    5
+   ],
+   "chance": 3,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite greensilk",
+   "item": "p165_item_1216",
+   "item_name": "Svartalf Crafted Necklace",
+   "item_level": 39,
+   "item_price": 0,
+   "mob_levels": [
+    5,
+    5
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite greensilk",
+   "item": "p165_item_1353",
+   "item_name": "Svartalf Crafted Belt",
+   "item_level": 40,
+   "item_price": 0,
+   "mob_levels": [
+    5,
+    5
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite greensilk",
+   "item": "p165_item_1354",
+   "item_name": "Svartalf Crafted Ring",
+   "item_level": 38,
+   "item_price": 0,
+   "mob_levels": [
+    5,
+    5
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite hatchling",
+   "item": "p165_item_3504",
+   "item_name": "Svartalf Hair Collar",
+   "item_level": 25,
+   "item_price": 0,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 3,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite hatchling",
+   "item": "p165_item_1216",
+   "item_name": "Svartalf Crafted Necklace",
+   "item_level": 39,
+   "item_price": 0,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite hatchling",
+   "item": "p165_item_1353",
+   "item_name": "Svartalf Crafted Belt",
+   "item_level": 40,
+   "item_price": 0,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite hatchling",
+   "item": "p165_item_1354",
+   "item_name": "Svartalf Crafted Ring",
+   "item_level": 38,
+   "item_price": 0,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite priest",
+   "item": "p165_item_1216",
+   "item_name": "Svartalf Crafted Necklace",
+   "item_level": 39,
+   "item_price": 0,
+   "mob_levels": [
+    15,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite priest",
+   "item": "p165_item_1353",
+   "item_name": "Svartalf Crafted Belt",
+   "item_level": 40,
+   "item_price": 0,
+   "mob_levels": [
+    15,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite priest",
+   "item": "p165_item_1354",
+   "item_name": "Svartalf Crafted Ring",
+   "item_level": 38,
+   "item_price": 0,
+   "mob_levels": [
+    15,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite weblasher",
+   "item": "p165_item_1216",
+   "item_name": "Svartalf Crafted Necklace",
+   "item_level": 39,
+   "item_price": 0,
+   "mob_levels": [
+    14,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite weblasher",
+   "item": "p165_item_1353",
+   "item_name": "Svartalf Crafted Belt",
+   "item_level": 40,
+   "item_price": 0,
+   "mob_levels": [
+    14,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite weblasher",
+   "item": "p165_item_1354",
+   "item_name": "Svartalf Crafted Ring",
+   "item_level": 38,
+   "item_price": 0,
+   "mob_levels": [
+    14,
+    16
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite youngling",
+   "item": "p165_item_1216",
+   "item_name": "Svartalf Crafted Necklace",
+   "item_level": 39,
+   "item_price": 0,
+   "mob_levels": [
+    11,
+    11
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite youngling",
+   "item": "p165_item_1353",
+   "item_name": "Svartalf Crafted Belt",
+   "item_level": 40,
+   "item_price": 0,
+   "mob_levels": [
+    11,
+    11
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arachite youngling",
+   "item": "p165_item_1354",
+   "item_name": "Svartalf Crafted Ring",
+   "item_level": 38,
+   "item_price": 0,
+   "mob_levels": [
+    11,
+    11
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "arbordon",
+   "item": "p165_drop_5268",
+   "item_name": "Speedy Kite Shield",
+   "item_level": 51,
+   "item_price": 78732,
+   "mob_levels": [
+    24,
+    29
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "bantam spectre",
+   "item": "spectral_essence",
+   "item_name": "Spectral Essence",
+   "item_level": 48,
+   "item_price": 46100,
+   "mob_levels": [
+    15,
+    17
+   ],
+   "chance": 40,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "spectral_essence_165l15",
+   "twin_level": 15,
+   "twin_price": 198
+  },
+  {
+   "mob": "brown bear",
+   "item": "Werewolf_Tooth_Necklace",
+   "item_name": "Werewolf Tooth Necklace",
+   "item_level": 31,
+   "item_price": 34020,
+   "mob_levels": [
+    15,
+    15
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "carrion drake",
+   "item": "Shimmering_Gnawed_Bone",
+   "item_name": "Gnawed Bone",
+   "item_level": 49,
+   "item_price": 75438,
+   "mob_levels": [
+    8,
+    9
+   ],
+   "chance": 65,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "Shimmering_Gnawed_Bone_165l9",
+   "twin_level": 9,
+   "twin_price": 126
+  },
+  {
+   "mob": "decaying troll",
+   "item": "Glowing_Gloves_of_Precision",
+   "item_name": "Gloves of Precision",
+   "item_level": 30,
+   "item_price": 34020,
+   "mob_levels": [
+    10,
+    11
+   ],
+   "chance": 4,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "decaying troll",
+   "item": "Note-spun_Tunic",
+   "item_name": "Note-spun Tunic",
+   "item_level": 28,
+   "item_price": 34020,
+   "mob_levels": [
+    10,
+    11
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "draugr hound",
+   "item": "Shimmering_Gnawed_Bone",
+   "item_name": "Gnawed Bone",
+   "item_level": 49,
+   "item_price": 75438,
+   "mob_levels": [
+    23,
+    25
+   ],
+   "chance": 35,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "Shimmering_Gnawed_Bone_165l24",
+   "twin_level": 24,
+   "twin_price": 1200
+  },
+  {
+   "mob": "druid seer",
+   "item": "Cloack of the Resolute",
+   "item_name": "Cloak of the Resolute",
+   "item_level": 36,
+   "item_price": 0,
+   "mob_levels": [
+    20,
+    20
+   ],
+   "chance": 3,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "druidic spirit",
+   "item": "Cloack of the Resolute",
+   "item_name": "Cloak of the Resolute",
+   "item_level": 36,
+   "item_price": 0,
+   "mob_levels": [
+    21,
+    21
+   ],
+   "chance": 15,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "dunter",
+   "item": "lustrousavengingknightshammer",
+   "item_name": "Lustrous Avenging Knight's Hammer",
+   "item_level": 50,
+   "item_price": 55842,
+   "mob_levels": [
+    30,
+    35
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "dwarf brawler",
+   "item": "Sack_of_Grain",
+   "item_name": "Sack of Grain",
+   "item_level": 32,
+   "item_price": 31200,
+   "mob_levels": [
+    3,
+    4
+   ],
+   "chance": 15,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "Sack_of_Grain_165l4",
+   "twin_level": 4,
+   "twin_price": 60
+  },
+  {
+   "mob": "eriu fiscere",
+   "item": "Cloak_of_Concealment",
+   "item_name": "Cloak of Concealment",
+   "item_level": 30,
+   "item_price": 34020,
+   "mob_levels": [
+    15,
+    15
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "eriu fiscere",
+   "item": "Feverish_Runner",
+   "item_name": "Feverish Runner",
+   "item_level": 34,
+   "item_price": 34020,
+   "mob_levels": [
+    15,
+    15
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "escaped thrall",
+   "item": "Icebound_Bracer3",
+   "item_name": "Icebound Bracer",
+   "item_level": 51,
+   "item_price": 10000,
+   "mob_levels": [
+    3,
+    3
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "giant frog",
+   "item": "Breastplate_of_the_Depths",
+   "item_name": "Breastplate of the Depths",
+   "item_level": 24,
+   "item_price": 20510,
+   "mob_levels": [
+    3,
+    4
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "giant frog",
+   "item": "Shadow-slicer",
+   "item_name": "Shadow-slicer",
+   "item_level": 25,
+   "item_price": 20510,
+   "mob_levels": [
+    3,
+    4
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "gray spectre",
+   "item": "spectral_essence",
+   "item_name": "Spectral Essence",
+   "item_level": 48,
+   "item_price": 46100,
+   "mob_levels": [
+    22,
+    24
+   ],
+   "chance": 50,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "spectral_essence_165l23",
+   "twin_level": 23,
+   "twin_price": 1200
+  },
+  {
+   "mob": "Koalinth Castellan",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    26,
+    26
+   ],
+   "chance": 5,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l26",
+   "twin_level": 26,
+   "twin_price": 1375
+  },
+  {
+   "mob": "Koalinth Elder",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    27,
+    27
+   ],
+   "chance": 12,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l27",
+   "twin_level": 27,
+   "twin_price": 1375
+  },
+  {
+   "mob": "koalinth guardian",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    24,
+    24
+   ],
+   "chance": 5,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l24",
+   "twin_level": 24,
+   "twin_price": 1200
+  },
+  {
+   "mob": "large skeleton",
+   "item": "p165_drop_1525",
+   "item_name": "Golden Oak Bow",
+   "item_level": 31,
+   "item_price": 10325,
+   "mob_levels": [
+    5,
+    5
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "Meurig",
+   "item": "Insurgents_Vest",
+   "item_name": "Insurgent's Vest",
+   "item_level": 50,
+   "item_price": 86400,
+   "mob_levels": [
+    27,
+    27
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "nip mephit",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    23,
+    27
+   ],
+   "chance": 2,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l24",
+   "twin_level": 24,
+   "twin_price": 1200
+  },
+  {
+   "mob": "pelagian crab",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    26,
+    27
+   ],
+   "chance": 2,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l26",
+   "twin_level": 26,
+   "twin_price": 1375
+  },
+  {
+   "mob": "puny skeleton",
+   "item": "HauberkOfTheValiant",
+   "item_name": "Hauberk of the Valiant",
+   "item_level": 20,
+   "item_price": 12370,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "rat boy",
+   "item": "Helm_of_Shadow_Melding",
+   "item_name": "Helm of Shadow Melding",
+   "item_level": 20,
+   "item_price": 12370,
+   "mob_levels": [
+    2,
+    3
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "scavenger",
+   "item": "Darksteel_Bracer",
+   "item_name": "DarkSteel Bracer",
+   "item_level": 40,
+   "item_price": 49512,
+   "mob_levels": [
+    1,
+    1
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "skeleton",
+   "item": "SilverOakLongbow",
+   "item_name": "Silver Oak Longbow",
+   "item_level": 21,
+   "item_price": 12370,
+   "mob_levels": [
+    2,
+    5
+   ],
+   "chance": 1,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "Slythcur",
+   "item": "Shimmering_Gnawed_Bone",
+   "item_name": "Gnawed Bone",
+   "item_level": 49,
+   "item_price": 75438,
+   "mob_levels": [
+    12,
+    12
+   ],
+   "chance": 90,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "Shimmering_Gnawed_Bone_165l12",
+   "twin_level": 12,
+   "twin_price": 198
+  },
+  {
+   "mob": "snow imp",
+   "item": "p165_drop_6988",
+   "item_name": "Sphene",
+   "item_level": 42,
+   "item_price": 6972,
+   "mob_levels": [
+    20,
+    23
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "p165_drop_6988_165l21",
+   "twin_level": 21,
+   "twin_price": 1100
+  },
+  {
+   "mob": "spriggarn",
+   "item": "FootmansChainSleeves",
+   "item_name": "Footman's Chain Sleeves",
+   "item_level": 17,
+   "item_price": 1724,
+   "mob_levels": [
+    2,
+    2
+   ],
+   "chance": 4,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "svartalf",
+   "item": "Cloak_of_the_Bloodwolf",
+   "item_name": "Cloak of the Bloodwolf",
+   "item_level": 45,
+   "item_price": 150,
+   "mob_levels": [
+    10,
+    11
+   ],
+   "chance": 11,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "svartalf",
+   "item": "Vest_of_the_Bloodwolf",
+   "item_name": "Vest of the Bloodwolf",
+   "item_level": 48,
+   "item_price": 85080,
+   "mob_levels": [
+    10,
+    11
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "tomte shaman",
+   "item": "Icebound_Bracer3",
+   "item_name": "Icebound Bracer",
+   "item_level": 51,
+   "item_price": 10000,
+   "mob_levels": [
+    10,
+    10
+   ],
+   "chance": 3,
+   "period_page_names_it": true,
+   "action": "removed"
+  },
+  {
+   "mob": "venomspitter",
+   "item": "Eir_Blessed_Tunic",
+   "item_name": "Eir Blessed Tunic",
+   "item_level": 30,
+   "item_price": 34020,
+   "mob_levels": [
+    13,
+    13
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "wildling",
+   "item": "Icebound_Bracer3",
+   "item_name": "Icebound Bracer",
+   "item_level": 51,
+   "item_price": 10000,
+   "mob_levels": [
+    7,
+    14
+   ],
+   "chance": 3,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "wood ogre scourge",
+   "item": "p165_drop_1709",
+   "item_name": "Thick Hide Bracer",
+   "item_level": 51,
+   "item_price": 15000,
+   "mob_levels": [
+    12,
+    13
+   ],
+   "chance": 1,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "Leildolf",
+   "item": "Mystical_Golden_Scale_Belt",
+   "item_name": "Mystical Golden Scale Belt",
+   "item_level": 50,
+   "item_price": 15000,
+   "mob_levels": [
+    35,
+    35
+   ],
+   "chance": 30,
+   "period_page_names_it": false,
+   "action": "removed"
+  },
+  {
+   "mob": "phantom hound",
+   "item": "Shimmering_Gnawed_Bone",
+   "item_name": "Gnawed Bone",
+   "item_level": 49,
+   "item_price": 75438,
+   "mob_levels": [
+    3,
+    3
+   ],
+   "chance": 35,
+   "period_page_names_it": true,
+   "action": "junk twin",
+   "twin": "Shimmering_Gnawed_Bone_165l3",
+   "twin_level": 3,
+   "twin_price": 40
+  },
+  {
+   "mob": "snow giant",
+   "item": "ice_water",
+   "item_name": "Vial of Ice Water",
+   "item_level": 50,
+   "item_price": 34010,
+   "mob_levels": [
+    30,
+    35
+   ],
+   "chance": 4,
+   "period_page_names_it": false,
+   "action": "junk twin",
+   "twin": "ice_water_165l31",
+   "twin_level": 31,
+   "twin_price": 1925
+  }
+ ]
+}

@@ -975,24 +975,7 @@
   },
   "arachite greensilk": {
    "drop_count": 1,
-   "items": [
-    [
-     "p165_item_3504",
-     3
-    ],
-    [
-     "p165_item_1216",
-     1
-    ],
-    [
-     "p165_item_1353",
-     1
-    ],
-    [
-     "p165_item_1354",
-     1
-    ]
-   ]
+   "items": []
   },
   "arachite grymherre": {
    "drop_count": 2,
@@ -1129,22 +1112,6 @@
     [
      "p165_drop_1449",
      8
-    ],
-    [
-     "p165_item_3504",
-     3
-    ],
-    [
-     "p165_item_1216",
-     1
-    ],
-    [
-     "p165_item_1353",
-     1
-    ],
-    [
-     "p165_item_1354",
-     1
     ]
    ]
   },
@@ -1602,18 +1569,6 @@
     [
      "Lashed_Web_Sleeves",
      1
-    ],
-    [
-     "p165_item_1216",
-     1
-    ],
-    [
-     "p165_item_1353",
-     1
-    ],
-    [
-     "p165_item_1354",
-     1
     ]
    ]
   },
@@ -2030,18 +1985,6 @@
     [
      "Lashed_Web_Sleeves",
      1
-    ],
-    [
-     "p165_item_1216",
-     1
-    ],
-    [
-     "p165_item_1353",
-     1
-    ],
-    [
-     "p165_item_1354",
-     1
     ]
    ]
   },
@@ -2059,18 +2002,6 @@
     [
      "Lashed_Web_Gloves",
      2
-    ],
-    [
-     "p165_item_1216",
-     1
-    ],
-    [
-     "p165_item_1353",
-     1
-    ],
-    [
-     "p165_item_1354",
-     1
     ]
    ]
   },
@@ -2199,10 +2130,6 @@
    "items": [
     [
      "Icebender_Wrap",
-     3
-    ],
-    [
-     "p165_drop_5268",
      3
     ]
    ]
@@ -3341,7 +3268,7 @@
      2
     ],
     [
-     "spectral_essence",
+     "spectral_essence_165l15",
      40
     ]
    ]
@@ -5398,10 +5325,6 @@
      3
     ],
     [
-     "Werewolf_Tooth_Necklace",
-     1
-    ],
-    [
      "p165_uth_2296",
      37
     ]
@@ -6168,7 +6091,7 @@
      3
     ],
     [
-     "Shimmering_Gnawed_Bone",
+     "Shimmering_Gnawed_Bone_165l9",
      65
     ]
    ]
@@ -11396,20 +11319,12 @@
    "drop_count": 1,
    "items": [
     [
-     "Glowing_Gloves_of_Precision",
-     4
-    ],
-    [
      "Decayed_Bone_Ring",
      3
     ],
     [
      "Decaying_Hammer",
      3
-    ],
-    [
-     "Note-spun_Tunic",
-     1
     ]
    ]
   },
@@ -13485,7 +13400,7 @@
    "drop_count": 1,
    "items": [
     [
-     "Shimmering_Gnawed_Bone",
+     "Shimmering_Gnawed_Bone_165l24",
      35
     ]
    ]
@@ -13758,10 +13673,6 @@
      10
     ],
     [
-     "Cloack of the Resolute",
-     3
-    ],
-    [
      "GlovesOfTheResloute",
      3
     ],
@@ -13782,10 +13693,6 @@
   "druidic spirit": {
    "drop_count": 2,
    "items": [
-    [
-     "Cloack of the Resolute",
-     15
-    ],
     [
      "GlovesOfTheResloute",
      15
@@ -14120,10 +14027,6 @@
    "drop_count": 1,
    "items": [
     [
-     "lustrousavengingknightshammer",
-     3
-    ],
-    [
      "Deluged_Kelp_Jerkin",
      1
     ],
@@ -14389,7 +14292,7 @@
    "drop_count": 1,
    "items": [
     [
-     "Sack_of_Grain",
+     "Sack_of_Grain_165l4",
      15
     ],
     [
@@ -15951,14 +15854,6 @@
      1
     ],
     [
-     "Cloak_of_Concealment",
-     1
-    ],
-    [
-     "Feverish_Runner",
-     1
-    ],
-    [
      "Woven_Crafter's_Pants",
      1
     ]
@@ -16107,10 +16002,6 @@
     [
      "Oiled_Leather_Belt",
      5
-    ],
-    [
-     "Icebound_Bracer3",
-     3
     ],
     [
      "Bronze_Wood_Choppers_Axe",
@@ -19755,14 +19646,6 @@
     [
      "frog_legs",
      59
-    ],
-    [
-     "Breastplate_of_the_Depths",
-     1
-    ],
-    [
-     "Shadow-slicer",
-     1
     ]
    ]
   },
@@ -23313,7 +23196,7 @@
      1
     ],
     [
-     "spectral_essence",
+     "spectral_essence_165l23",
      50
     ]
    ]
@@ -28721,7 +28604,7 @@
      10
     ],
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l26",
      5
     ]
    ]
@@ -28755,7 +28638,7 @@
      15
     ],
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l27",
      12
     ],
     [
@@ -28829,7 +28712,7 @@
    "drop_count": 1,
    "items": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l24",
      5
     ],
     [
@@ -29847,10 +29730,6 @@
     ],
     [
      "SuppleHideJerkin",
-     1
-    ],
-    [
-     "p165_drop_1525",
      1
     ]
    ]
@@ -33195,10 +33074,6 @@
      1
     ],
     [
-     "Insurgents_Vest",
-     1
-    ],
-    [
      "Keltoi_Mantle_of_Insight",
      1
     ],
@@ -35512,7 +35387,7 @@
      4
     ],
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l24",
      2
     ],
     [
@@ -36430,7 +36305,7 @@
      2
     ],
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l26",
      2
     ],
     [
@@ -38084,10 +37959,6 @@
      1
     ],
     [
-     "HauberkOfTheValiant",
-     1
-    ],
-    [
      "PetrifiedBranch",
      1
     ],
@@ -38482,10 +38353,6 @@
     ],
     [
      "Braided_Silver_Necklace",
-     1
-    ],
-    [
-     "Helm_of_Shadow_Melding",
      1
     ],
     [
@@ -40437,12 +40304,7 @@
   },
   "scavenger": {
    "drop_count": 1,
-   "items": [
-    [
-     "Darksteel_Bracer",
-     1
-    ]
-   ]
+   "items": []
   },
   "scorned bwca": {
    "drop_count": 1,
@@ -43580,10 +43442,6 @@
      1
     ],
     [
-     "SilverOakLongbow",
-     1
-    ],
-    [
      "SuppleHideJerkin",
      1
     ],
@@ -43878,7 +43736,7 @@
      3
     ],
     [
-     "Shimmering_Gnawed_Bone",
+     "Shimmering_Gnawed_Bone_165l12",
      90
     ]
    ]
@@ -44068,7 +43926,7 @@
    "drop_count": 1,
    "items": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l21",
      1
     ]
    ]
@@ -45739,10 +45597,6 @@
      5
     ],
     [
-     "FootmansChainSleeves",
-     4
-    ],
-    [
      "BonecharmAmulet",
      3
     ],
@@ -46497,16 +46351,7 @@
   },
   "svartalf": {
    "drop_count": 1,
-   "items": [
-    [
-     "Cloak_of_the_Bloodwolf",
-     11
-    ],
-    [
-     "Vest_of_the_Bloodwolf",
-     3
-    ]
-   ]
+   "items": []
   },
   "svartalf arbetare": {
    "drop_count": 2,
@@ -49436,10 +49281,6 @@
     ],
     [
      "Bright_Miscreant's_Sleeves",
-     3
-    ],
-    [
-     "Icebound_Bracer3",
      3
     ],
     [
@@ -52886,12 +52727,7 @@
   },
   "venomspitter": {
    "drop_count": 1,
-   "items": [
-    [
-     "Eir_Blessed_Tunic",
-     3
-    ]
-   ]
+   "items": []
   },
   "Veviel": {
    "drop_count": 2,
@@ -54900,10 +54736,6 @@
      4
     ],
     [
-     "Icebound_Bracer3",
-     3
-    ],
-    [
      "Pillager's_Vest",
      3
     ],
@@ -55694,10 +55526,6 @@
     ],
     [
      "Faded_Leggings",
-     1
-    ],
-    [
-     "p165_drop_1709",
      1
     ],
     [
@@ -56633,12 +56461,7 @@
   },
   "Leildolf": {
    "drop_count": 2,
-   "items": [
-    [
-     "Mystical_Golden_Scale_Belt",
-     30
-    ]
-   ]
+   "items": []
   },
   "Lydsyg": {
    "drop_count": 2,
@@ -56718,7 +56541,7 @@
    "drop_count": 1,
    "items": [
     [
-     "Shimmering_Gnawed_Bone",
+     "Shimmering_Gnawed_Bone_165l3",
      35
     ]
    ]
@@ -61658,7 +61481,7 @@
    "drop_count": 1,
    "items": [
     [
-     "ice_water",
+     "ice_water_165l31",
      4
     ]
    ]

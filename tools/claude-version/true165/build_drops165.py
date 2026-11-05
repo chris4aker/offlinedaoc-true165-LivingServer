@@ -16,6 +16,9 @@ Rules:
   at least 20 (one drop in 3 kills is 5 %, not 33 %).
 - Each monster keeps its current loot rows (seals, quest drops, named drops); the Uthgard items join the same
   template, and the per-kill item cap (MobXLootTemplate.DropCount) is raised to fit them.
+- AFTER A REBUILD run build_dropfix165.py (2026-11-05): a name can match only a template far above the monster (level-3
+  phantom hounds dropped the level-49 "Gnawed Bone" hammer, worth ~3.8 gold a piece); it turns such loot junk into a
+  junk item of the monster's level and removes such gear.
 """
 import collections, json, math, os, re, sqlite3, sys
 
