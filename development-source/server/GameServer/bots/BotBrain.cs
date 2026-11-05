@@ -1394,6 +1394,7 @@ namespace DOL.AI.Brain
             GameLiving nearbyPull = CompanionEngagementMode.NearbyPull(BotBody);
             if (nearbyPull != null && CanAggroTarget(nearbyPull)) AssistPlayerAttack(nearbyPull);
             AlreadyCheckedHeals = false;
+            MaintainChaseSprint();
             if (!HasAggro && GameLoop.GameLoopTime >= _nextPoisonSupplyTick)
             {
                 _nextPoisonSupplyTick = GameLoop.GameLoopTime + 2_000;
@@ -4291,6 +4292,25 @@ namespace DOL.AI.Brain
         /// player-like enemy, two or more monsters on the bot, or the bot below 60% health. Before 2026-11-05 Berserk went
         /// off on the first swing at anything, a grey rabbit included, and was then down for seven minutes.
         /// </summary>
+        /// <summary>
+        /// A melee bot sprints after its target when the monster runs at low health, as a player does so a runner does not
+        /// bring friends; it stops once in reach, out of the chase, or at a third of its endurance (the styles need it).
+        /// Before 2026-11-05 no bot ever sprinted (class audit, all realms).
+        /// </summary>
+        private void MaintainChaseSprint()
+        {
+            GameBot bot = BotBody;
+            if (bot == null || !Classic165Mode.IsOn)
+                return;
+            bool want = bot.IsAlive && bot.InCombat && !PrefersCurrentSpellRange() && !bot.IsStealthed &&
+                        bot.TargetObject is GameNPC runner and not GameBot && runner.IsAlive && runner.IsMoving &&
+                        runner.HealthPercent < 30 && runner.TargetObject != bot &&
+                        !bot.IsWithinRadius(runner, bot.MeleeAttackRange + 150) && bot.IsWithinRadius(runner, 2_000) &&
+                        bot.EndurancePercent > (bot.IsSprinting ? 33 : 50);
+            if (want != bot.IsSprinting && bot.Sprint(want))
+                bot.StartEnduranceRegeneration();   // the drain runs on the regeneration timer
+        }
+
         private bool HardFight(GameLiving target)
         {
             if (target is GamePlayer or GameBot || target.Level >= Body.Level || Body.HealthPercent < 60)

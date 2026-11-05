@@ -102,6 +102,9 @@ namespace DOL.GS.PropertyCalc
 
                 speedIncrease *= horseSpeed;
             }
+            // True 1.65 Mode: a bot moving by player rules sprints as a player does (+30%, paid in endurance)
+            else if (living is GameBot sprintingBot && PlayerRules165.IsPlayerRulesBot(sprintingBot) && sprintingBot.IsSprinting)
+                speedIncrease *= SPRINT;
             else if (living is GameNPC npc && !PlayerRules165.IsPlayerRulesBot(npc))   // True 1.65 Mode: bots move by player rules (no catch-up, no low-health slow)
             {
                 // Special handling for pets.

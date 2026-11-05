@@ -15,7 +15,8 @@ namespace DOL.GS
         private int _idleTicks = 0;
 
         public override ushort Icon => 0x199;
-        public override string Name => LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.SprintEffect.Name");
+        // a sprinting bot has no client (True 1.65 Mode bots sprint after runners, 2026-11-05)
+        public override string Name => OwnerPlayer != null ? LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.SprintEffect.Name") : "Sprint";
         public override bool HasPositiveEffect => true;
 
         public override long GetRemainingTimeForClient()

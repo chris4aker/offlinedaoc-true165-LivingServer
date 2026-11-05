@@ -545,14 +545,27 @@ namespace DOL.GS
             // GameBots have lightweight free-running travel. Endurance is a
             // combat resource for styles/abilities and is never consumed merely
             // because a persistent bot or /spawn companion is moving quickly.
+            // Sprint is the exception: it costs a bot what it costs a player (GamePlayer's callback, without Long Wind).
+            bool sprinting = IsSprinting && IsMoving;
             if (Endurance >= maxEndurance)
             {
                 Endurance = maxEndurance;
-                return 0;
+                if (!sprinting)
+                    return 0;
             }
 
             int regen = GetModified(eProperty.EnduranceRegenerationAmount);
             if (IsEnhancedResting) regen = BotRestRecovery.RecoveryAmount(regen, maxEndurance);
+            if (sprinting && EffectListService.GetEffectOnTarget(this, eEffect.Charge) == null)
+            {
+                const int longWind = 5;
+                regen -= longWind;
+                int endChant = GetModified(eProperty.FatigueConsumption);
+                if (endChant > 1)
+                    regen = (int)Math.Ceiling(regen * endChant * 0.01);
+                if (Endurance + regen > maxEndurance - longWind)
+                    regen -= Endurance + regen - (maxEndurance - longWind);
+            }
             if (regen != 0)
                 ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 
