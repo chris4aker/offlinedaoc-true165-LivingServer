@@ -28,6 +28,15 @@ namespace DOL.GS.Commands
                 return;
             }
 
+            // A world gamebot of the realm by name, wherever it is (owner 2026-11-05: regrouping with the bots you leveled
+            // with meant hunting them down). Invited, it walks to its new leader (BotGroupInvite).
+            if (args.Length >= 2 && ClientService.Instance.GetPlayerByExactName(targetName) == null &&
+                AutonomousBotRegistry.TryGetByName(targetName, out GameBot worldBot) && worldBot.Realm == client.Player.Realm)
+            {
+                BotGroupInvite.TryInvite(client.Player, worldBot);
+                return;
+            }
+
             if (args.Length < 2)
             {
                 // Inviting by target
