@@ -1290,7 +1290,10 @@ namespace DOL.GS
         }
 
         private static bool IsServiceCandidate(GameBot bot, GameNPC npc) =>
-            npc.ObjectState is GameObject.eObjectState.Active && npc.CurrentZone != null && IsZoneAccessible(bot.Realm, npc.CurrentZone);
+            npc.ObjectState is GameObject.eObjectState.Active && npc.CurrentZone != null && IsZoneAccessible(bot.Realm, npc.CurrentZone) &&
+            // not a merchant, healer or trainer near or straight past a spot where bots of its level keep dying (AutonomousRoadHotspots)
+            !AutonomousRoadHotspots.Blocks(bot.CurrentRegionID, bot.X, bot.Y, bot.Level, npc.CurrentRegionID, npc.X, npc.Y,
+                GameLoop.GameLoopTime);
 
         private bool HandlePendingTraining(GameBot bot)
         {
@@ -3555,7 +3558,7 @@ namespace DOL.GS
                 legalCells = legalCells.Where(camp => camp.RegionId != AutonomousDarknessFallsPolicy.RegionId)
                     .Concat(df).ToArray();
             }
-            legalCells = AvoidNoGo(legalCells, destinations);
+            legalCells = AvoidNoGo(bot, legalCells, destinations);
             // Less competition first: crowded camps only when every camp is crowded (AutonomousCampCompetition).
             // A low-level solo bot looks near itself first (owner 2026-10-31: level-1 bots walked a median 72,600 units
             // across the realm and 518 of 609 deaths happened on the way): the quiet camps within 15,000 in its own
@@ -3586,7 +3589,7 @@ namespace DOL.GS
                         // the nearest camps, but not crowded ones while a quiet one is near (owner 2026-11-05: bots back
                         // from a death all went to the same nearest green camp)
                         AutonomousCampCompetition.PreferQuiet(
-                            NearbyFirst(bot, AvoidNoGo(camps.Where(camp => camp.TypicalCon <= naturalMaximumTargetCon).ToArray(), destinations),
+                            NearbyFirst(bot, AvoidNoGo(bot, camps.Where(camp => camp.TypicalCon <= naturalMaximumTargetCon).ToArray(), destinations),
                                 destinations, planningLevel).ToArray(),
                             camp => camp.Id, camp => camp.LiveMobCount, bot.PersistentRecord?.CurrentCampId, 1),
                         _recentFailedSoloTargets, GameLoop.GameLoopTime),
@@ -4054,6 +4057,10 @@ namespace DOL.GS
                          $"bots={AutonomousCampDangerBench.DistinctBotsToBench} hours={bench.TotalHours:0}");
             if (!diedAtCamp && bot.LastDeathSpot is { Region: > 0 } deathSpot)
                 RememberNoGo(deathSpot.Region, deathSpot.X, deathSpot.Y);
+            // died on the way to a merchant, healer or trainer: that one is skipped for a while (2026-11-05: low bots walked
+            // to the same merchant past the same monsters ten times an hour)
+            if (!diedAtCamp && _serviceNpc != null)
+                AutonomousServiceReachability.SkipForBot(AutonomousServiceReachability.Key(_serviceNpc), bot.DatabaseID, nowTick);
             if (diedAtCamp && _recentSoloDeathsWithoutExperience >= 2 && !string.IsNullOrWhiteSpace(_camp.MonsterName))
                 _recentFailedSoloTargets[_camp.MonsterName] = nowTick + AutonomousDeathRecoveryPolicy.FailureMemoryMilliseconds;
             _camp = null;
@@ -5646,15 +5653,17 @@ namespace DOL.GS
         }
 
         /// <summary>The camps not near a remembered no-go spot (all of them when every one is).</summary>
-        private AutonomousBotDecisionEngine.Camp[] AvoidNoGo(AutonomousBotDecisionEngine.Camp[] camps,
+        private AutonomousBotDecisionEngine.Camp[] AvoidNoGo(GameBot bot, AutonomousBotDecisionEngine.Camp[] camps,
             Dictionary<string, CampDestination> destinations)
         {
             long now = GameLoop.GameLoopTime;
             _noGo.RemoveAll(p => p.Until <= now);
-            if (_noGo.Count == 0 || camps.Length <= 1)
+            if (camps.Length <= 1)
                 return camps;
+            // the bot's own no-go spots, and the shared spots where bots of its level keep dying (AutonomousRoadHotspots)
             AutonomousBotDecisionEngine.Camp[] clear = camps.Where(camp => !destinations.TryGetValue(camp.Id, out CampDestination d) ||
-                !_noGo.Any(p => p.Region == d.RegionId && Distance(p.X, p.Y, d.X, d.Y) <= NoGoRadius)).ToArray();
+                !_noGo.Any(p => p.Region == d.RegionId && Distance(p.X, p.Y, d.X, d.Y) <= NoGoRadius) &&
+                !AutonomousRoadHotspots.Blocks(bot.CurrentRegionID, bot.X, bot.Y, bot.Level, d.RegionId, d.X, d.Y, now)).ToArray();
             return clear.Length > 0 ? clear : camps;
         }
 

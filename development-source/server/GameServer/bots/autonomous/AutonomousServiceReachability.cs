@@ -37,6 +37,14 @@ namespace DOL.GS
             return false;
         }
 
+        /// <summary>This bot skips the service for <see cref="SkipMilliseconds"/> (it died on the way there; 2026-11-05).</summary>
+        public static void SkipForBot(string service, long bot, long now)
+        {
+            if (string.IsNullOrEmpty(service)) return;
+            if (BotSkips.Count > 8_192) BotSkips.Clear();
+            BotSkips[(service, bot)] = now + SkipMilliseconds;
+        }
+
         public static bool IsSkipped(string service, long bot, long now) =>
             !string.IsNullOrEmpty(service) &&
             (SharedSkips.TryGetValue(service, out long shared) && now < shared ||

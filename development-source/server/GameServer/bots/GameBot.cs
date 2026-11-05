@@ -1172,6 +1172,11 @@ namespace DOL.GS
             _deathLocation = new Point3D(X, Y, Z);
             (_lastDeathRvR165, _pendingConLoss165) = DeathPenalty165.OnDeath(this, killer, ref _deathsLevel165, ref _deathsThisLevel165);
             LogDeath165(killer);
+            if (Classic165Mode.IsOn && IsAutonomousWorldBot && killer is GameLiving deathSource &&
+                AutonomousRoadHotspots.RecordDeath(CurrentRegionID, X, Y, DatabaseID, Level, deathSource.Level, GameLoop.GameLoopTime,
+                    out bool newHotspot) is { } hotspot && newHotspot)
+                log.Warn($"AUTONOMOUS_ROAD_HOTSPOT region={hotspot.Region} at={hotspot.X},{hotspot.Y} killer=\"{deathSource.Name}\" " +
+                         $"killer_level={hotspot.KillerLevel} - bots below level {hotspot.KillerLevel - AutonomousRoadHotspots.KillerLevelsAbove + 1} avoid it");
             IsReturningAfterRelease = false;
             _stableReturnPlan = null;
             CompleteStableMasterRoute();
