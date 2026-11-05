@@ -300,7 +300,8 @@ namespace DOL.GS
         // see it too, or it queues the same refused buff every 1.75 s (audit 2026-11-03)
         public bool CanAffordConcentration(Spell spell) => spell != null &&
             (spell.Concentration == 0 || spell.Concentration <= Concentration &&
-             !(Classic165Mode.IsOn && effectListComponent.GetConcentrationEffects().Count >= DOL.GS.Spells.SpellHandler.MAX_CONC_SPELLS));
+             !(Classic165Mode.IsOn && effectListComponent.GetConcentrationEffects().Count +
+               (castingComponent?.SpellHandler?.Spell is { Concentration: > 0 } ? 1 : 0) >= DOL.GS.Spells.SpellHandler.MAX_CONC_SPELLS));
 
         public override int Endurance
         {

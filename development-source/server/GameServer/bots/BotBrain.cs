@@ -613,6 +613,36 @@ namespace DOL.AI.Brain
         private long _nextDeployablePetTick;
         private long _nextCombatProgressTick;
         private long _nextMaintenanceBuffTick;
+        private readonly Dictionary<(GameLiving Target, int Spell), (int Tries, long Since)> _buffAttempts = new();
+
+        /// <summary>
+        /// A buff cast on someone who still lacks it after two tries in two minutes is left alone for the rest of those
+        /// two minutes (owner 2026-11-05, player report: buffers spun from member to member with "20 concentration
+        /// spells" in the log, which broke sitting; the effect was refused when it landed and the bot kept retrying).
+        /// </summary>
+        private bool BuffKeepsFailing(GameLiving target, Spell spell)
+        {
+            long now = GameLoop.GameLoopTime;
+            if (!_buffAttempts.TryGetValue((target, spell.ID), out var tries))
+                return false;
+            if (now - tries.Since > 120_000)
+            {
+                _buffAttempts.Remove((target, spell.ID));
+                return false;
+            }
+            return tries.Tries >= 2;
+        }
+
+        private void NoteBuffAttempt(GameLiving target, Spell spell)
+        {
+            long now = GameLoop.GameLoopTime;
+            if (_buffAttempts.Count > 64)
+                foreach (var stale in _buffAttempts.Where(entry => now - entry.Value.Since > 120_000).Select(entry => entry.Key).ToList())
+                    _buffAttempts.Remove(stale);
+            _buffAttempts[(target, spell.ID)] = _buffAttempts.TryGetValue((target, spell.ID), out var tries) && now - tries.Since <= 120_000
+                ? (tries.Tries + 1, tries.Since)
+                : (1, now);
+        }
         private int _groupAliveCount;
         private long _nextSongTwistTick;
         private bool _companionPerformerBuffBatch;
@@ -2229,6 +2259,8 @@ namespace DOL.AI.Brain
                     outOfRangeBuffTarget ??= FindOutOfRangeBuffTarget(spell);
                     continue;
                 }
+                if (BuffKeepsFailing(target, spell))
+                    continue;
                 // A pet buff just cast whose effect has not shown up yet keeps its
                 // old bounded retry window; other missing buffs may go next.
                 if (target == bot.ControlledBrain?.Body && spell.ID == _pendingMaintenancePetBuffId &&
@@ -2247,6 +2279,8 @@ namespace DOL.AI.Brain
                 bot.TargetObject = target;
                 bool cast = CastCoordinatedBuff(spell, false);
                 bot.TargetObject = previousTarget;
+                if (cast)
+                    NoteBuffAttempt(target, spell);
                 if (cast && companionPerformerBuff)
                     _companionPerformerBuffBatch = true;
                 bool isMainPetTarget = target == bot.ControlledBrain?.Body;
