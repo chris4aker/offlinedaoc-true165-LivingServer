@@ -75,10 +75,13 @@ namespace DOL.GS
                 record = new OfflineTrue165RelistRecord { InventoryId = item.ObjectId, OriginalPrice = (int)item.SellPrice };
                 GameServer.Database.AddObject(record);
             }
-            if (record.Tries < 2)
+            // One relist only, at a real discount but never under what a merchant pays for it (owner 2026-11-05, reset-day
+            // S26: relisting twice kept items up for three days, so new stock was hard to see).
+            if (record.Tries < 1)
             {
                 record.Tries++;
-                int price = Math.Max(1, (int)(record.OriginalPrice * (record.Tries == 1 ? 0.9 : 0.8)));
+                long vendor = AutonomousBotEconomy.CalculateStandardVendorSaleCopper(item);
+                int price = (int)Math.Clamp(Math.Max(vendor + 1, (long)(record.OriginalPrice * 0.6)), 1, int.MaxValue);
                 record.Dirty = true;
                 GameServer.Database.SaveObject(record);
                 MarketCache.UpdateItem(item, static (listed, value) => listed.SellPrice = value, price);
@@ -87,7 +90,7 @@ namespace DOL.GS
                 GameServer.Database.SaveObject(item);
                 return true;
             }
-            // third time unsold: back to the bot
+            // unsold again: back to the bot
             GameServer.Database.DeleteObject(record);
             string ownerId = AutonomousBotEconomy.GetOwnerId(botId);
             if (AutonomousBotRegistry.TryGet(botId, out GameBot live) && live.Inventory != null)

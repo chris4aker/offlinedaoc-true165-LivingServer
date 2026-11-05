@@ -167,7 +167,13 @@ namespace DOL.GS;
 
         eInventorySlot equipSlot = ResolveEquipmentSlot(bot, item);
         bool isPlayerListing = IsPlayerListing(item.OwnerID);
-        int playerPreference = isPlayerListing ? 650 : 0;
+        // Bots prefer a player's goods over another bot's when the price is fair (owner 2026-11-05, reset-day S26): within
+        // 25% of what a bot would ask for it. A player's listing at three times that or more is not bought at all, so
+        // nobody can dump an item on the bots for a fortune.
+        int fairPrice = isPlayerListing ? RecommendListingPrice(item) : 0;
+        if (isPlayerListing && item.SellPrice > fairPrice * 3L)
+            return null;
+        int playerPreference = isPlayerListing && item.SellPrice <= fairPrice * 1.25 ? 650 : 0;
         if (equipSlot != eInventorySlot.Invalid)
         {
             DbInventoryItem equipped = bot.Inventory.GetItem(equipSlot);
