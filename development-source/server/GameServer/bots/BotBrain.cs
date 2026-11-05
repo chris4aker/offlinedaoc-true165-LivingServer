@@ -613,6 +613,7 @@ namespace DOL.AI.Brain
         private long _nextDeployablePetTick;
         private long _nextCombatProgressTick;
         private long _nextMaintenanceBuffTick;
+        private int _groupAliveCount;
         private long _nextSongTwistTick;
         private bool _companionPerformerBuffBatch;
         private long _lastPerformerFollowTick = long.MinValue;
@@ -1347,6 +1348,12 @@ namespace DOL.AI.Brain
             // immediately instead of waiting for that idle-scan backoff.
             if (nativeSpeedTravelStarted)
                 _nextMaintenanceBuffTick = 0;
+            // Someone in the group came back to life: re-buff now, not after the idle-scan wait (owner 2026-11-05: a
+            // cleric finished buffing a revived player only after the player moved and stopped again).
+            int alive = BotBody?.IsPlayerLedGroup == true ? Body.Group?.GetMembersInTheGroup().Count(member => member.IsAlive) ?? 0 : 0;
+            if (alive > _groupAliveCount)
+                _nextMaintenanceBuffTick = 0;
+            _groupAliveCount = alive;
             EnforceCompanionEngagementRange();
             GameLiving nearbyPull = CompanionEngagementMode.NearbyPull(BotBody);
             if (nearbyPull != null && CanAggroTarget(nearbyPull)) AssistPlayerAttack(nearbyPull);
@@ -2195,12 +2202,17 @@ namespace DOL.AI.Brain
                 .ThenByDescending(spell => spell.Level);
 
             GameLiving outOfRangeBuffTarget = null;
+            bool waitingForPower = false;
             foreach (Spell spell in candidates)
             {
                 if (spell.HasRecastDelay && bot.GetSkillDisabledDuration(spell) > 0)
                     continue;
                 if (bot.Mana < bot.PowerCost(spell))
+                {
+                    // a buff someone is missing, only short of power (just after a resurrection): look again soon
+                    waitingForPower |= !waitingForPower && FindMissingMaintenanceTarget(spell) != null;
                     continue;
+                }
                 if (!bot.CanAffordConcentration(spell))
                     continue;
                 if (spell.NeedInstrument && !TryEquipRealInstrument(bot, spell.InstrumentRequirement))
@@ -2267,8 +2279,8 @@ namespace DOL.AI.Brain
             }
 
             // A complete scan found nothing missing. Avoid rescanning the whole
-            // spellbook on every lightweight AI tick.
-            _nextMaintenanceBuffTick = GameLoop.GameLoopTime + 8_000;
+            // spellbook on every lightweight AI tick. A buff that only waits for power is looked at again in 2 s.
+            _nextMaintenanceBuffTick = GameLoop.GameLoopTime + (waitingForPower ? 2_000 : 8_000);
             CompleteCompanionPerformerBuffBatch(bot);
             return false;
         }
