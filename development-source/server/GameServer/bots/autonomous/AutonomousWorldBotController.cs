@@ -2819,6 +2819,8 @@ namespace DOL.GS
             _nextTargetSearchTick = GameLoop.GameLoopTime + 900 + bot.ObjectID % 500;
 
             GameNPC target = FindCampTarget(bot);
+            if (target != null)
+                AutonomousMobClaims.Take(bot, target);   // this side's monster now (AutonomousMobClaims)
             // A level-up can turn a whole low-level camp grey. Those kills give no
             // experience, so a solo bot fought on in place until the stuck watchdog
             // rescued it fifteen minutes later. Targets are sorted by con, so a grey
@@ -3215,6 +3217,9 @@ namespace DOL.GS
                 // it (2026-10-31: ~15 bots shared Silvermine feccan; Champions' and Bards' openers landed on others' fights).
                 .Where(npc => !Classic165Mode.IsOn || !npc.InCombat || npc.TargetObject == bot ||
                               npc.TargetObject is GameLiving fighting && bot.Group != null && fighting.Group == bot.Group)
+                // ... and one another bot (or player) outside its group has pulled or hit, even before it turns on them
+                // (owner 2026-11-05: bots shared monsters and their XP)
+                .Where(npc => !AutonomousMobClaims.TakenByOther(bot, npc))
                 // A solo bot with no ranged attack can't reach a flying monster (owner 2026-10-31 run: 122 of 193 pull
                 // timeouts were melee bots standing under a mygga). Groups keep their flying-target handoff.
                 .Where(npc => bot.Group != null || (npc.Flags & GameNPC.eFlags.FLYING) == 0 || soloRanged)
