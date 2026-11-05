@@ -34,8 +34,11 @@ namespace DOL.AI.Brain
             GameBot bot = BotBody;
             Group group = bot?.Group;
             long now = GameLoop.GameLoopTime;
-            if (bot?.CharacterClass == null || bot.CharacterClass.ID == (int)eCharacterClass.Bard || group == null ||
-                group.MemberCount < 2 || bot.IsIncapacitated || bot.IsCasting && !IsChannellingPetShield ||
+            // Solo with a pet counts too (class audit 2026-11-05; Prima: a Sorcerer or Minstrel with a charmed pet mezzes
+            // the extra monsters, even solo): the pet holds the kill target, the bot keeps the adds asleep.
+            GameLiving ownPet = bot?.ControlledBrain?.Body is GameLiving petBody && petBody.IsAlive ? petBody : null;
+            if (bot?.CharacterClass == null || bot.CharacterClass.ID == (int)eCharacterClass.Bard ||
+                (group == null || group.MemberCount < 2) && ownPet == null || bot.IsIncapacitated || bot.IsCasting && !IsChannellingPetShield ||
                 bot.castingComponent?.HasPendingSkillRequests == true || now < _nextPveAddControlLook ||
                 BotPartyRoles.IsHealingClass((eCharacterClass)bot.CharacterClass.ID) && bot.ManaPercent < HealerControlPowerPercent)
                 return false;
@@ -48,8 +51,10 @@ namespace DOL.AI.Brain
             if (control == null || control.Length == 0)
                 return false;
 
-            GameLiving[] members = group.GetMembersInTheGroup()
+            GameLiving[] members = (group?.GetMembersInTheGroup() ?? [bot])
                 .Where(member => member?.IsAlive == true && member.CurrentRegion == bot.CurrentRegion)
+                .Concat(ownPet != null ? [ownPet] : [])
+                .Distinct()
                 .ToArray();
             HashSet<GameLiving> selectedTargets = new();
             HashSet<GameLiving> activeTargets = new();
