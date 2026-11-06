@@ -49248,6 +49248,18 @@
   {
    "sql": "UPDATE Door SET Realm = 3, Health = 10000 WHERE InternalID IN (206016801, 206016802, 207156901, 207156902, 214000101, 214000102, 214000103, 214000104, 214000201, 214000202, 214000203, 214000204) AND Realm <> 3",
    "reason": "True 1.65 gates: Hibernia's milegates and border keep doors belong to Hibernia (GameRealmGate: its realm passes, enemies break them): Druim Cain; Druim Ligen; Emain Macha, northern gate fort; Emain Macha, southern gate fort"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET IsTradable = 1 WHERE IsTradable = 0 AND Id_nb NOT LIKE 'bot!_starter!_%' ESCAPE '!' AND Id_nb NOT IN (SELECT TemplateID FROM StarterEquipment)",
+   "reason": "owner 2026-11-06: every item is tradable and can be listed on the Realm Exchange, by players and bots (quest items too: fine on a single-player server; a multiplayer version would need to revisit this). The class starting equipment keeps its own flags."
+  },
+  {
+   "sql": "UPDATE ItemUnique SET IsTradable = 1 WHERE IsTradable = 0 AND Id_nb NOT LIKE 'bot!_starter!_%' ESCAPE '!'",
+   "reason": "owner 2026-11-06: every unique item is tradable too, except bot training gear"
+  },
+  {
+   "sql": "UPDATE ItemUnique SET Price = 1, IsDropable = 1 WHERE Id_nb LIKE 'bot!_starter!_%' ESCAPE '!' AND (Price <> 1 OR IsDropable = 0)",
+   "reason": "owner 2026-11-06: bot training gear (training bows, throwing weapons, instruments) stays locked from trade and the exchange but a vendor takes it for 1 copper, so it leaves the bag after the first upgrade"
   }
  ]
 }

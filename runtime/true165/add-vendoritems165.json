@@ -8350,7 +8350,7 @@
    "IsPickable": 1,
    "IsDropable": 1,
    "CanDropAsLoot": 0,
-   "IsTradable": 0,
+   "IsTradable": 1,
    "Price": 28,
    "MaxCount": 1,
    "IsIndestructible": 0,
