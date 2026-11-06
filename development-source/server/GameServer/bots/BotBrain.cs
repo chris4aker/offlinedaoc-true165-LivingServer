@@ -5650,17 +5650,22 @@ namespace DOL.AI.Brain
         /// (cast-time, then instant when it has no long recast), else the spread heal (Prima: a Healer has an instant heal
         /// and a group heal going in every fight; Shaman group regeneration).
         /// </summary>
-        private Spell GroupHealChoice(GameLiving patient)
+        /// <param name="burst">False: only a group heal-over-time (True 1.65: two hurt, or the fight has just begun).</param>
+        private Spell GroupHealChoice(GameLiving patient, bool burst = true)
         {
             foreach (Spell regen in new[] { BotBody.HealOverTimeInstantGroup, BotBody.HealOverTimeGroup })
                 if (CheckHealSpell(regen) && patient != null && !LivingHasEffect(patient, regen))
                     return regen;
+            if (!burst)
+                return null;
             if (CheckHealSpell(BotBody.HealGroup))
                 return BotBody.HealGroup;
             if (CheckHealSpell(BotBody.HealSpread))
                 return BotBody.HealSpread;
             return null;
         }
+
+        private long _healFightSince;   // when the group's current fight began, as this healer saw it (0: no fight)
 
         bool CheckHealSpell(Spell spell)
         {
@@ -5760,6 +5765,8 @@ namespace DOL.AI.Brain
             Spell spellToCast = null;
             GameLiving spellTarget = null;
             bool startedCasting = false;
+            int numGroupHurt = 0;   // members under the heal line (a group heal's count)
+            bool groupInFight = false;
 
             // Check group health
             if (Body.Group != null)
@@ -5769,6 +5776,7 @@ namespace DOL.AI.Brain
                     if (!member.IsAlive || !InSupportReach(member))
                         continue;
 
+                    groupInFight |= member.InCombat;
                     int deficit = member.MaxHealth - member.Health;
 
                     if (deficit > 0)
@@ -5777,6 +5785,7 @@ namespace DOL.AI.Brain
 
                         if (member.HealthPercent < needAt)
                         {
+                            numGroupHurt++;
                             numNeedHealing++;
 
                             if (member.HealthPercent < 40)
@@ -5798,6 +5807,10 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
+                if (!groupInFight)
+                    _healFightSince = 0;
+                else if (_healFightSince == 0)
+                    _healFightSince = GameLoop.GameLoopTime;
 
                 // A temporary companion treats the exact player-led party's
                 // pets as party-adjacent heal targets. Attached pets are walked as a
@@ -6048,7 +6061,10 @@ namespace DOL.AI.Brain
             {
                 if (!BotBody.IsCasting || (numEmergency > 0 && !isCastingHeal))
                 {
-                    if (Body.Group != null && numNeedHealing >= 2 && GroupHealChoice(spellTarget) is Spell groupHeal)
+                    // True 1.65: a group heal only for three or more hurt, not on the pull (group heal-over-time still on two)
+                    bool burstGroupHeal = !classic165 || BotHealTriage165.GroupHealWorthwhile(numGroupHurt, groupInFight,
+                        _healFightSince == 0 ? 0 : GameLoop.GameLoopTime - _healFightSince);
+                    if (Body.Group != null && numNeedHealing >= 2 && GroupHealChoice(spellTarget, burstGroupHeal) is Spell groupHeal)
                         spellToCast = groupHeal;
                     else if (CheckHealSpell(BotBody.HealOverTime) && !LivingHasEffect(spellTarget, BotBody.HealOverTime))
                         spellToCast = BotBody.HealOverTime;
