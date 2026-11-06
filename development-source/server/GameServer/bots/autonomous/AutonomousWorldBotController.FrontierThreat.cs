@@ -259,9 +259,11 @@ public sealed partial class AutonomousWorldBotController
             if (fightingEnemy) AutonomousRvrAssist.CallTarget(bot.Group, current, now);
             return;
         }
-        // Healers keep healing; a member already on someone else's player switches to the call when it is close.
+        // Healers keep healing; a member already on someone else's player switches to the call when it is close
+        // (not mid-cast or mid-draw: the next cast or shot goes to the call).
         GameLiving called = AutonomousRvrAssist.CalledTarget(bot.Group, now);
-        if (!fightingEnemy || called == null || called == current || BotPartyRoles.IsSupport(bot) ||
+        if (!fightingEnemy || called == null || called == current || BotPartyRoles.IsSupport(bot) || bot.IsCasting ||
+            bot.ActiveWeaponSlot == eActiveWeaponSlot.Distance && bot.attackComponent?.AttackState == true ||
             !MainAssistNearby(bot, mainAssist) || !bot.IsWithinRadius(called, AssistSwitchRadius) || !EligibleRvrTarget(bot, called))
             return;
         brain.AddToAggroList(called, Math.Max(1, brain.GetBaseAggroAmount(current) - brain.GetBaseAggroAmount(called) + 1));
