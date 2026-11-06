@@ -149,10 +149,10 @@ namespace DOL.GS
                             Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, WIDE_DOOR_SEARCH_DISTANCE, pathBuffer.Doors[node]);
                     }
 
-                    // True 1.65 Mode: milegates the navmesh has no door polygons for are found on the walk itself.
-                    GameRealmGate[] offMesh = GameRealmGate.OffMeshInRegion(Owner.CurrentRegionID);
-                    if (offMesh.Length > 0)
-                        MarkGatesOffMesh(pathBuffer.Nodes, pathBuffer.Doors, position, offMesh);
+                    // True 1.65 Mode: border keep doors are also found on the walk itself (beside or without door polygons).
+                    GameRealmGate[] walkChecked = GameRealmGate.WalkCheckedInRegion(Owner.CurrentRegionID);
+                    if (walkChecked.Length > 0)
+                        MarkGatesOffMesh(pathBuffer.Nodes, pathBuffer.Doors, position, walkChecked);
                 }
 
                 return pathfindingResult.Status;
@@ -341,15 +341,16 @@ namespace DOL.GS
             List<(int Segment, float Stop, GameRealmGate Gate)> crossings = null;
             foreach (GameRealmGate gate in gates)
             {
-                if (gate == null || gate.X < minX - GameRealmGate.CrossingRadius || gate.X > maxX + GameRealmGate.CrossingRadius ||
-                    gate.Y < minY - GameRealmGate.CrossingRadius || gate.Y > maxY + GameRealmGate.CrossingRadius)
+                if (gate == null || gate.X < minX - GameRealmGate.DoorwayHalfWidth || gate.X > maxX + GameRealmGate.DoorwayHalfWidth ||
+                    gate.Y < minY - GameRealmGate.DoorwayHalfWidth || gate.Y > maxY + GameRealmGate.DoorwayHalfWidth)
                     continue;
                 Vector3 door = new(gate.X, gate.Y, gate.Z);
                 Vector3 from = origin;
                 for (int i = 0; i < nodes.Count; i++)
                 {
                     Vector3 to = nodes.Peek(i).Position;
-                    if (GameRealmGate.TryCrossing(from, to, door, out float stop))
+                    if (GameRealmGate.TryCrossing(from, to, door, out float stop,
+                        gate.IsBorderKeep ? GameRealmGate.DoorwayHalfWidth : GameRealmGate.CrossingRadius))
                     {
                         (crossings ??= new()).Add((i, stop, gate));
                         break;

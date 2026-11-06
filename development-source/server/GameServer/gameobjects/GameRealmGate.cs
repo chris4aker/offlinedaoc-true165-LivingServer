@@ -39,9 +39,10 @@ namespace DOL.GS
         public const int EnemiesNearRadius = 3_000;
 
         private static readonly ConcurrentDictionary<ushort, GameRealmGate[]> ByRegion = new();
-        private static readonly ConcurrentDictionary<ushort, GameRealmGate[]> OffMeshByRegion = new();
+        private static readonly ConcurrentDictionary<ushort, GameRealmGate[]> WalkCheckedByRegion = new();
 
-        /// <summary>A walk this close to a gate off the navmesh (2D, within <see cref="CrossingHeight"/>) runs through it.</summary>
+        /// <summary>A walk this close to a gate (2D, within <see cref="CrossingHeight"/>) runs through it; a border keep door
+        /// uses its whole doorway (<see cref="DoorwayHalfWidth"/>).</summary>
         public const float CrossingRadius = 140;
         public const float CrossingHeight = 260;
         /// <summary>The navmesh box a registered gate (a border keep door) takes its door polygons from
@@ -92,16 +93,17 @@ namespace DOL.GS
             });
 
         /// <summary>
-        /// The region's border keep doors that have no door polygons on the navmesh (RegisterDoor found none). The mesh cannot
-        /// shut them, so the mover checks its walk against them (Pathfinder.MarkGatesOffMesh). Milegates are never here: they
-        /// open for everyone and are not registered.
+        /// The region's border keep doors, which the mover also checks its walk against (Pathfinder.MarkGatesOffMesh): a mesh
+        /// can leave walkable polygons beside a door's own (1.64 Druim Ligen, 2026-11-06: a walk past both shut doors ran 87
+        /// beside their rows on plain floor), and a door without door polygons is not on the mesh at all. Milegates are never
+        /// here: they open for everyone.
         /// </summary>
-        public static GameRealmGate[] OffMeshInRegion(ushort regionId) =>
-            OffMeshByRegion.GetOrAdd(regionId, static id =>
+        public static GameRealmGate[] WalkCheckedInRegion(ushort regionId) =>
+            WalkCheckedByRegion.GetOrAdd(regionId, static id =>
             {
                 var gates = new List<GameRealmGate>();
                 foreach (GameRealmGate gate in InRegion(id))
-                    if (DoorMgr.IsUnregisteredInNavmesh(gate.DoorId))
+                    if (gate.IsBorderKeep)
                         gates.Add(gate);
                 return gates.ToArray();
             });
@@ -109,7 +111,7 @@ namespace DOL.GS
         public static void ForgetRegions()
         {
             ByRegion.Clear();
-            OffMeshByRegion.Clear();
+            WalkCheckedByRegion.Clear();
         }
 
         /// <summary>
@@ -117,7 +119,8 @@ namespace DOL.GS
         /// the fraction of the segment where it comes within <see cref="CrossingRadius"/> of the gate (2D, at a height
         /// within <see cref="CrossingHeight"/>), in front of it. False when the segment does not run through the gate.
         /// </summary>
-        public static bool TryCrossing(System.Numerics.Vector3 a, System.Numerics.Vector3 b, System.Numerics.Vector3 door, out float stop)
+        public static bool TryCrossing(System.Numerics.Vector3 a, System.Numerics.Vector3 b, System.Numerics.Vector3 door, out float stop,
+            float radius = CrossingRadius)
         {
             stop = 0;
             System.Numerics.Vector2 a2 = new(a.X, a.Y), ab = new(b.X - a.X, b.Y - a.Y), point = new(door.X, door.Y);
@@ -125,9 +128,9 @@ namespace DOL.GS
             float t = length2 < 1 ? 0 : Math.Clamp(System.Numerics.Vector2.Dot(point - a2, ab) / length2, 0, 1);
             float distance2 = System.Numerics.Vector2.DistanceSquared(a2 + ab * t, point);
             float z = a.Z + (b.Z - a.Z) * t;
-            if (distance2 > CrossingRadius * CrossingRadius || Math.Abs(z - door.Z) > CrossingHeight)
+            if (distance2 > radius * radius || Math.Abs(z - door.Z) > CrossingHeight)
                 return false;
-            float back = length2 < 1 ? 0 : MathF.Sqrt(CrossingRadius * CrossingRadius - distance2) / MathF.Sqrt(length2);
+            float back = length2 < 1 ? 0 : MathF.Sqrt(radius * radius - distance2) / MathF.Sqrt(length2);
             stop = Math.Max(0, t - back);
             return true;
         }

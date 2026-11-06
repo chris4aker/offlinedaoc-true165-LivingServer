@@ -16,7 +16,7 @@ namespace DOL.GS.Tests;
 ///   never shuts it);
 /// - every border keep door is shut by the mesh (registered) or found on the walk (off the mesh): its realm's bots walk
 ///   through, an enemy bot is held, and a sealed walk past its shut doors is reported.
-/// OFFLINE_DAOC_NAV_ROOT = a folder with lib\Detour.dll and navmesh\zoneNNN.nav, OFFLINE_DAOC_DB_PATH = a 1.65 database with
+/// OFFLINE_DAOC_NAV_ROOT = a folder with lib\Detour.dll and navmesh(-165)\zoneNNN.nav, OFFLINE_DAOC_DB_PATH = a 1.65 database with
 /// the gates content (build_gates165.py) applied.
 /// </summary>
 [TestFixture, Explicit("Read-only installed navmesh check for the True 1.65 gates"), NonParallelizable]
@@ -54,6 +54,8 @@ public class UT_GateNavmeshInstalled165
         var previousServer = GameServer.Instance;
         var previousNav = PathfindingProvider.Instance;
         GameServer.LoadTestDouble((Server)RuntimeHelpers.GetUninitializedObject(typeof(Server)));
+        bool mode = DOL.GS.ServerProperties.Properties.CLASSIC165_MODE;
+        DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = true; // the True 1.65 meshes (navmesh-165) where installed
         try
         {
             Environment.CurrentDirectory = Environment.GetEnvironmentVariable("OFFLINE_DAOC_NAV_ROOT");
@@ -100,7 +102,7 @@ public class UT_GateNavmeshInstalled165
                 gate.DoorId = row.Id;
                 // As DoorMgr.RegisterDoor: only a door nobody opens by interaction (a border keep door) is registered.
                 bool registered = !gate.CanBeOpenedViaInteraction && nav.RegisterDoor(gate);
-                if (!gate.CanBeOpenedViaInteraction && !registered) offMesh.Add(gate);
+                if (gate.IsBorderKeep) offMesh.Add(gate); // GameRealmGate.WalkCheckedInRegion
                 TestContext.WriteLine($"DOOR {row.Id} {(eRealm)row.Realm} border={gate.IsBorderKeep} doorPolygons={registered}");
                 gates[row.Id] = gate;
             }
@@ -135,7 +137,25 @@ public class UT_GateNavmeshInstalled165
                 var enemy = (Walker)RuntimeHelpers.GetUninitializedObject(typeof(Walker)); enemy.Realm = a.Realm == eRealm.Albion ? eRealm.Midgard : eRealm.Albion;
                 bool friendBlocked = doors.Values.Any(list => list.Any(door => Pathfinder.BlocksActor(friend, door)));
                 bool enemyBlocked = doors.Values.Any(list => list.Any(door => Pathfinder.BlocksActor(enemy, door)));
-                var sealedWalk = nav.GetPathStraight(zone, start.Value, end.Value, nav.BlockingDoorAvoidanceFilters, new WrappedPathfindingNode[512]);
+                var sealedNodes = new WrappedPathfindingNode[512];
+                var sealedWalk = nav.GetPathStraight(zone, start.Value, end.Value, nav.BlockingDoorAvoidanceFilters, sealedNodes);
+                if (a.IsBorderKeep && sealedWalk.Status == PathfindingStatus.PathFound)
+                {
+                    // The mover's detour check (Pathfinder.CrossesShutGate) must still find the shut doors on that walk.
+                    var roundQueue = new RingQueue<WrappedPathfindingNode>();
+                    var roundDoors = new Dictionary<WrappedPathfindingNode, List<GameDoorBase>>();
+                    for (int i = 1; i < sealedWalk.NodeCount; i++) roundQueue.Enqueue(sealedNodes[i]);
+                    Pathfinder.MarkGatesOffMesh(roundQueue, roundDoors, start.Value, offMesh);
+                    var outsider = (Walker)RuntimeHelpers.GetUninitializedObject(typeof(Walker));
+                    outsider.Realm = a.Realm == eRealm.Albion ? eRealm.Midgard : eRealm.Albion;
+                    if (!Pathfinder.CrossesShutGate(outsider, roundDoors)) failures.Add($"{first}: an enemy walks round its shut doors");
+                    var sealedDoors = sealedNodes.Take(sealedWalk.NodeCount).Where(n => (n.Flags & EDtPolyFlags.AnyDoor) != 0)
+                        .Select(n => gates.Values.Where(g => g.CurrentRegion == a.CurrentRegion)
+                            .Min(g => Vector3.Distance(new(g.X, g.Y, g.Z), n.Position))).ToArray();
+                    TestContext.WriteLine($"GATE {first}: walk round its shut doors " + string.Join(" ", sealedNodes.Take(sealedWalk.NodeCount)
+                        .Select(n => $"{n.Position.X:0},{n.Position.Y:0},{n.Position.Z:0}/{n.Flags}")) +
+                        $" doorNodesToNearestDoorRow={string.Join(",", sealedDoors.Select(d => d.ToString("0")))}");
+                }
                 TestContext.WriteLine($"GATE {first} {a.Realm} border={a.IsBorderKeep}: walk={walk.Status}/{walk.NodeCount} doorsOnWalk={doors.Count} " +
                                       $"friendBlocked={friendBlocked} enemyBlocked={enemyBlocked} sealedByMesh={sealedWalk.Status != PathfindingStatus.PathFound}");
                 if (walk.Status != PathfindingStatus.PathFound) failures.Add($"{first}: no walk through");
@@ -149,6 +169,7 @@ public class UT_GateNavmeshInstalled165
             foreach (Zone zone in loaded) LocalPathfindingMgr.UnloadNavMesh(zone);
             Environment.CurrentDirectory = previous;
             GameServer.LoadTestDouble(previousServer);
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = mode;
             PathfindingProvider.SetPathfindingMgr(previousNav);
         }
         Assert.That(failures, Is.Empty, string.Join("\n", failures));

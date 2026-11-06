@@ -28,7 +28,7 @@ public sealed class AutonomousKeepApproachNavigation : PathfindingMgrBase
             .Select(d => new Vector3(d.X,d.Y,d.Z)).ToArray() ?? [];
         // True 1.65 Mode (owner 2026-11-06, period rules): a milegate opens for everyone, so the navmesh never shuts it and
         // nothing here needs it. A border keep door is its realm's: its realm plans through it (or anyone while it stands
-        // open); for every other realm it is a wall, also where the navmesh has no door polygons for it (below).
+        // open); for every other realm it is a wall, its walk also checked against it (below: beside or without door polygons).
         GameRealmGate[] gates = GameRealmGate.InRegion(region.ID);
         doors = doors.Concat(gates.Where(gate => gate.IsBorderKeep && gate.MayPass(realm))
             .Select(gate => new Vector3(gate.X, gate.Y, gate.Z))).ToArray();
@@ -40,7 +40,7 @@ public sealed class AutonomousKeepApproachNavigation : PathfindingMgrBase
             .Where(d => d.CurrentRegionID == region.ID && d.IsAlive && d.State == eDoorState.Closed &&
                         d.Component?.Keep is { } keep && keep.Realm != realm)
             .Select(d => new Vector3(d.X,d.Y,d.Z))
-            .Concat(GameRealmGate.OffMeshInRegion(region.ID).Where(gate => gate.IsBorderKeep && !gate.MayPass(realm))
+            .Concat(GameRealmGate.WalkCheckedInRegion(region.ID).Where(gate => !gate.MayPass(realm))
                 .Select(gate => new Vector3(gate.X, gate.Y, gate.Z)))
             .ToArray();
         return new AutonomousKeepApproachNavigation(nav, doors, unregistered);

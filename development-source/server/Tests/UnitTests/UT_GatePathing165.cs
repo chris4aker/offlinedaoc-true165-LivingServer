@@ -113,6 +113,22 @@ public class UT_GatePathing165 : RealmGateFixture
     }
 
     [Test]
+    public void AWalkBesideAWideBorderKeepDoorStillRunsThroughIt()
+    {
+        var door = new Vector3(500, 0, 0);
+        Assert.That(GameRealmGate.TryCrossing(new(0, 250, 0), new(1000, 250, 0), door, out _), Is.False, "beside a milegate");
+        Assert.That(GameRealmGate.TryCrossing(new(0, 250, 0), new(1000, 250, 0), door, out _, GameRealmGate.DoorwayHalfWidth), Is.True,
+            "the side of a 619-wide border keep doorway");
+        Gate border = NewGate(eRealm.Hibernia, 500, 0, 0, BorderKeepId);
+        var nodes = new RingQueue<WrappedPathfindingNode>();
+        var doors = new Dictionary<WrappedPathfindingNode, List<GameDoorBase>>();
+        nodes.Enqueue(new(new Vector3(1000, 250, 0), EDtPolyFlags.Walk));
+        Assert.That(Pathfinder.MarkGatesOffMesh(nodes, doors, new Vector3(0, 250, 0), new GameRealmGate[] { border }), Is.EqualTo(1));
+        Assert.That(Pathfinder.CrossesShutGate(NewBot(eRealm.Albion), doors), Is.True, "an enemy cannot slip past beside the doors");
+        Assert.That(Pathfinder.CrossesShutGate(NewBot(eRealm.Hibernia), doors), Is.False);
+    }
+
+    [Test]
     public void BorderKeepDoorsOffTheNavmeshAreFoundOnTheWalk()
     {
         Gate outer = NewGate(eRealm.Albion, 500, 0, 0, BorderKeepId), inner = NewGate(eRealm.Albion, 930, 0, 0, BorderKeepId + 1);
@@ -126,7 +142,8 @@ public class UT_GatePathing165 : RealmGateFixture
 
         Assert.That(marked, Is.EqualTo(2), "both doors on the walk, not the one far away");
         Assert.That(nodes.Count, Is.EqualTo(4));
-        Assert.That(nodes.Peek(0).Position.X, Is.EqualTo(360).Within(1), "a stop in front of the outer door first");
+        Assert.That(nodes.Peek(0).Position.X, Is.EqualTo(500 - GameRealmGate.DoorwayHalfWidth).Within(1),
+            "a stop in front of the outer door's doorway first");
         Assert.That(doors[nodes.Peek(0)], Is.EqualTo(new List<GameDoorBase> { outer }));
         Assert.That(doors[nodes.Peek(1)], Is.EqualTo(new List<GameDoorBase> { inner }));
         Assert.That(Pathfinder.CrossesShutGate(NewBot(eRealm.Midgard), doors), Is.True, "an enemy cannot take that walk as a way round");
