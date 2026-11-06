@@ -416,7 +416,180 @@ namespace DOL.GS
 		public void Load(int ammo)
 		{
 			AmmoSlot = (ushort)ammo;
+			// True 1.65 Mode: LOAD puts the selected piece from the engine's ammunition into the firing position
+			// (Prima: "select the specific material to load for the next shot"); about five seconds (FH 105630).
+			if (!SiegeAmmo165.UsesAmmo(this) || !CanUse()) return;
+			if (SiegeWeaponTimer.IsAlive || IsMoving)
+			{
+				OwnerOut?.SendMessage(GetName(0, true) + " isn't ready to be loaded yet!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			DbItemTemplate pick = AmmoAt(ammo);
+			if (pick == null)
+			{
+				OwnerOut?.SendMessage("There is no ammunition in the " + Name + ". Drag a piece from your backpack onto the " + Name + " (or type /load).", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (LoadedAmmo != null)
+			{
+				if (LoadedAmmo.Id_nb == pick.Id_nb)
+				{
+					OwnerOut?.SendMessage("The " + Name + " is already loaded with " + LoadedAmmo.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				UnloadToStore();
+			}
+			_loadingAmmo = pick;
+			SiegeWeaponTimer.CurrentAction = SiegeTimer.eAction.Loading;
+			PreAction();
+			OwnerOut?.SendMessage("You begin loading " + pick.Name + " into the " + Name + ". (" + (GetActionDelay(SiegeTimer.eAction.Loading) / 1000).ToString("N") + "s)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
+
+		#region ammunition (True 1.65 Mode, SiegeAmmo165)
+		private DbItemTemplate _loadingAmmo;
+
+		/// <summary>The piece in the firing position; the next shot spends it.</summary>
+		public DbItemTemplate LoadedAmmo { get; private set; }
+
+		/// <summary>The ammunition of the shot in flight (None: the engine's own numbers, as in normal mode).</summary>
+		public SiegeAmmoKind ShotAmmo { get; private set; }
+
+		/// <summary>Pieces held in the engine besides the loaded one.</summary>
+		public int StoredAmmo
+		{
+			get
+			{
+				lock (m_ammo)
+				{
+					int count = 0;
+					foreach (DbInventoryItem item in m_ammo)
+						if (item != null) count += item.Count;
+					return count;
+				}
+			}
+		}
+
+		public bool HasAmmo => LoadedAmmo != null || StoredAmmo > 0;
+
+		/// <summary>Free places for ammunition (the loaded piece counts).</summary>
+		public int AmmoRoom => Math.Max(0, SiegeAmmo165.EngineCapacity - StoredAmmo - (LoadedAmmo != null ? 1 : 0));
+
+		/// <summary>Puts up to count pieces of fitting ammunition into the engine; returns how many went in.</summary>
+		public int StoreAmmo(DbItemTemplate template, int count)
+		{
+			if (template == null || count <= 0 || !SiegeAmmo165.Fits(this, SiegeAmmo165.KindOf(template.Id_nb))) return 0;
+			lock (m_ammo)
+			{
+				int n = Math.Min(count, AmmoRoom);
+				if (n <= 0) return 0;
+				DbInventoryItem stack = m_ammo.OfType<DbInventoryItem>().FirstOrDefault(i => i.Id_nb == template.Id_nb);
+				if (stack != null) stack.Count += n;
+				else m_ammo.Add(new GameInventoryItem(template) { Count = n });
+				return n;
+			}
+		}
+
+		/// <summary>The ammunition in the engine's list at this index (the siege window's selection), else the first.</summary>
+		public DbItemTemplate AmmoAt(int index)
+		{
+			lock (m_ammo)
+			{
+				var stacks = m_ammo.OfType<DbInventoryItem>().Where(i => i.Count > 0).ToArray();
+				if (stacks.Length == 0) return null;
+				DbInventoryItem chosen = index >= 0 && index < m_ammo.Count && m_ammo[index] is DbInventoryItem { Count: > 0 } at ? at : stacks[0];
+				return chosen.Template;
+			}
+		}
+
+		private bool TakeFromStore(string idNb)
+		{
+			lock (m_ammo)
+			{
+				DbInventoryItem stack = m_ammo.OfType<DbInventoryItem>().FirstOrDefault(i => i.Id_nb == idNb && i.Count > 0);
+				if (stack == null) return false;
+				if (--stack.Count <= 0) m_ammo.Remove(stack);
+				return true;
+			}
+		}
+
+		private void UnloadToStore()
+		{
+			DbItemTemplate loaded = LoadedAmmo;
+			if (loaded == null) return;
+			LoadedAmmo = null;
+			StoreAmmo(loaded, 1);
+		}
+
+		/// <summary>The loading timer ran out: the selected piece goes into the firing position.</summary>
+		public void AmmoLoaded()
+		{
+			DbItemTemplate pick = _loadingAmmo;
+			_loadingAmmo = null;
+			if (pick == null || LoadedAmmo != null || !TakeFromStore(pick.Id_nb)) return;
+			LoadedAmmo = pick;
+			OwnerOut?.SendMessage("The " + Name + " is loaded with " + pick.Name + " and ready.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
+
+		/// <summary>
+		/// A shot leaves: in True 1.65 Mode it spends the loaded piece (false, no shot, when none is loaded); otherwise it
+		/// fires without ammunition as before. Sets ShotAmmo for the damage.
+		/// </summary>
+		public bool SpendLoadedRound()
+		{
+			if (!SiegeAmmo165.UsesAmmo(this)) { ShotAmmo = SiegeAmmoKind.None; return true; }
+			DbItemTemplate loaded = LoadedAmmo;
+			if (loaded == null) return false;
+			LoadedAmmo = null;
+			ShotAmmo = SiegeAmmo165.KindOf(loaded.Id_nb);
+			return true;
+		}
+
+		/// <summary>One piece of ammunition from a player's (or bot's) backpack into the engine, the period way.</summary>
+		private bool PutAmmoFrom(GameLiving source, DbInventoryItem item)
+		{
+			IPacketLib to = (source as GamePlayer)?.Out;
+			if (Realm != eRealm.None && source.Realm != Realm)
+			{
+				to?.SendMessage("This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (!SiegeAmmo165.Fits(this, SiegeAmmo165.KindOf(item.Id_nb)))
+			{
+				to?.SendMessage("The " + item.Name + " doesn't fit the " + Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			if (AmmoRoom <= 0)
+			{
+				to?.SendMessage("The " + Name + " can't hold any more ammunition.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+			DbItemTemplate template = item.Template;
+			if (source.Inventory == null || !source.Inventory.RemoveCountFromStack(item, 1)) return false;
+			StoreAmmo(template, 1);
+			to?.SendMessage("You put the " + template.Name + " into the " + Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (Owner is GamePlayer controller)
+				controller.Out.SendSiegeWeaponInterface(this, SiegeWeaponTimer.TimeUntilElapsed / 100);
+			return true;
+		}
+
+		/// <summary>/load: one fitting piece from the backpack into the engine (none is in it yet), then LOAD.</summary>
+		public void LoadFromBackpack(GamePlayer player)
+		{
+			if (player == null || !SiegeAmmo165.UsesAmmo(this)) return;
+			if (StoredAmmo == 0)
+			{
+				DbInventoryItem piece = player.Inventory?.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack)
+					.FirstOrDefault(i => i != null && i.Count > 0 && SiegeAmmo165.Fits(this, SiegeAmmo165.KindOf(i.Id_nb)));
+				if (piece == null)
+				{
+					player.Out.SendMessage("You have no ammunition for the " + Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}
+				if (!PutAmmoFrom(player, piece)) return;
+			}
+			Load(AmmoSlot);
+		}
+		#endregion
 		public void Aimed()
 		{
 			if (!CanUse()) return;
@@ -463,9 +636,16 @@ namespace DOL.GS
 				return;
 			}
 
+			// True 1.65 Mode: no ammunition loaded, no shot.
+			if (SiegeAmmo165.UsesAmmo(this) && LoadedAmmo == null)
+			{
+				OwnerOut?.SendMessage("The " + Name + " has no ammunition loaded!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			if (Owner is GameBot bot)
 			{
-				if (SiegeWeaponTimer.IsAlive || !BotSiegeRuntime.CanDamage(this, TargetObject as GameLiving)) return;
+				if (SiegeWeaponTimer.IsAlive || !BotSiegeRuntime.CanDamage(this, TargetObject as GameLiving) || !SpendLoadedRound()) return;
 				GameObject firedTarget = TargetObject;
 				int generation = _botShotGeneration;
 				ShotsFired++;
@@ -476,7 +656,9 @@ namespace DOL.GS
 					return 0;
 				}, Math.Max(1, GetActionDelay(SiegeTimer.eAction.Fire)));
 			}
-			else new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
+			else if (SpendLoadedRound())
+				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
+			else return;
 			BroadcastFireAnimation(GetActionDelay(SiegeTimer.eAction.Fire));
 			if (Owner != null)
 				OwnerOut?.SendMessage("You fire " + GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -597,6 +779,8 @@ namespace DOL.GS
                 return (int)( ActionDelay[(int)action] + this.GetDistanceTo( GroundTarget ) );
 			
 			int delay = ActionDelay[(int)action];
+			if (action == SiegeTimer.eAction.Loading && delay <= 0 && SiegeAmmo165.UsesAmmo(this))
+				delay = SiegeAmmo165.LoadMilliseconds;
 			//TODO: better to use a property here - discuss to implement one? dunnow if siegespeed is used at another place.
 			if (Owner != null && Owner.EffectList.CountOfType<BannerOfBesiegingEffect>() > 0)
 			{
@@ -717,7 +901,9 @@ namespace DOL.GS
 		#region override function
 		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
 		{
-			//todo check if bullet
+			// True 1.65 Mode: ammunition dropped on the engine goes into it, one piece at a time.
+			if (source != null && item != null && SiegeAmmo165.UsesAmmo(this) && SiegeAmmo165.KindOf(item.Id_nb) != SiegeAmmoKind.None)
+				return PutAmmoFrom(source, item);
 			return base.ReceiveItem(source, item);
 		}
 
@@ -878,7 +1064,7 @@ namespace DOL.GS
 					}
 				case eAction.Loading:
 					{
-						//todo set ammo
+						SiegeWeapon.AmmoLoaded();
 						break;
 					}
 				case eAction.Fire:

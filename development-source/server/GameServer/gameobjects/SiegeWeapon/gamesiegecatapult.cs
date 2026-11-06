@@ -49,6 +49,9 @@ namespace DOL.GS
 		
 		public int AttackRadius;
 
+		/// <summary>The splash of the shot in flight: the engine's own, or its True 1.65 ammunition's (SiegeAmmo165).</summary>
+		public int ShotRadius => SiegeAmmo165.ShotRadius(AttackRadius, ShotAmmo);
+
 		private GameNPC tempLOSSkyChecker;
 		private GameNPC tempLOSGTChecker;
 		private int loschecks;
@@ -101,7 +104,7 @@ namespace DOL.GS
 		{
 			ArrayList list = new ArrayList(20);
 
-			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(CurrentRegionID, GroundTarget, (ushort) AttackRadius))
+			foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(CurrentRegionID, GroundTarget, (ushort) ShotRadius))
 			{
 				if (Owner != null && GameServer.ServerRules.IsAllowedToAttack(Owner, player, true))
 				{
@@ -113,7 +116,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameDoorBase door in CurrentRegion.GetDoorsInRadius(GroundTarget, (ushort) AttackRadius))
+			foreach (GameDoorBase door in CurrentRegion.GetDoorsInRadius(GroundTarget, (ushort) ShotRadius))
 			{
 				if (Owner != null && door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(Owner, (GameKeepDoor)door, true))
 				{
@@ -125,7 +128,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(CurrentRegionID, GroundTarget, (ushort) AttackRadius))
+			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(CurrentRegionID, GroundTarget, (ushort) ShotRadius))
 			{
 				if (Owner != null &&GameServer.ServerRules.IsAllowedToAttack(Owner, npc, true))
 				{
@@ -162,21 +165,21 @@ namespace DOL.GS
 				if (Owner is GameBot && (living == null || !BotSiegeRuntime.LegalEnemy(Owner, living) || BotPvpCrowdControl.Protected(Owner, living))) continue;
 				if(living == null)
 					continue;
-				int damageAmount = CalcDamageToTarget(living) + Util.Random(50);
+				int damageAmount = SiegeAmmo165.ShotDamage(CalcDamageToTarget(living), ShotAmmo) + Util.Random(50);
 
 				AttackData ad = new AttackData();
 				ad.Target = living;
 				ad.AttackType = AttackData.eAttackType.Ranged;
 				ad.AttackResult = eAttackResult.HitUnstyled;
 				ad.Damage = damageAmount;
-				ad.DamageType = MeleeDamageType;
+				ad.DamageType = SiegeAmmo165.ShotDamageType(MeleeDamageType, ShotAmmo);
 				
 
 				if(Owner != null)
 				{
 					ad.Attacker = Owner;
 					int before = living.Health;
-					living.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
+					living.TakeDamage(Owner, SiegeAmmo165.ShotDamageType(eDamageType.Crush, ShotAmmo), damageAmount, 0);
 					RecordBotHit(before, living);
 					living.OnAttackedByEnemy(ad);
 	
@@ -186,7 +189,7 @@ namespace DOL.GS
 				else
 				{
 					ad.Attacker = this;
-					living.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+					living.TakeDamage(this, SiegeAmmo165.ShotDamageType(eDamageType.Crush, ShotAmmo), damageAmount, 0);
 					living.OnAttackedByEnemy(ad);
 				}
 
