@@ -2834,11 +2834,10 @@ namespace DOL.GS
             // experience, so a solo bot fought on in place until the stuck watchdog
             // rescued it fifteen minutes later. Targets are sorted by con, so a grey
             // pick means nothing better is near: plan a camp for the new level.
-            if (target != null && bot.Group == null && !_camp.IsDungeon &&
-                ConLevels.GetConColor(bot.GetConLevel(target)) == ConColor.GREY)
+            if (target == null && _campOnlyGrey && bot.Group == null && !_camp.IsDungeon)
             {
                 Log.Info($"AUTONOMOUS_CAMP_OUTLEVELED bot={bot.Name} id={bot.DatabaseID} level={bot.Level} " +
-                         $"class=\"{bot.ClassName}\" camp=\"{_camp.Id}\" target=\"{target.Name}\" targetLevel={target.Level}");
+                         $"class=\"{bot.ClassName}\" camp=\"{_camp.Id}\" target=\"{_camp.MonsterName}\"");
                 // Many monsters roll their level at each respawn (hill toads 5-7), so the camp list's levels can promise
                 // more than the live ones give. The bot leaves this monster's camps alone for 30 minutes (owner 2026-10-31
                 // runs: ~2,100 outleveled abandons an hour, bots going from one hill toad camp to the next).
@@ -3199,6 +3198,7 @@ namespace DOL.GS
                     _failedSoloPullRoutes.Remove(id);
                 _nextFailedSoloPullRoutePruneTick = nowTick + 10_000;
             }
+            bool sawGrey = false;
             GameNPC FindWithin(ushort radius) => bot.GetNPCsInRadius(radius)
                 .Where(npc => IsExperienceMonster(npc) && npc.IsAlive && npc.CurrentRegionID == _camp.RegionId &&
                     !AutonomousAuditedCampPolicy.IsBotExcludedNpc(npc) &&
@@ -3240,11 +3240,17 @@ namespace DOL.GS
                 .Where(npc => _groupDirective?.IsDynamic == true ||
                     ConLevels.GetConColor(bot.GetConLevel(npc)) <=
                     (_camp.FallbackMaximumCon is ConColor fallback && fallback > ConColor.YELLOW ? fallback : SoloCeiling(bot)))
-                // A grey only when nothing else is there: a camp's nearest monster being grey made a solo bot give up a
-                // camp full of good targets as "outleveled" (owner 2026-10-31 runs: 2,263 such abandons an hour).
-                .OrderBy(npc => _groupDirective?.IsDynamic != true &&
-                                ConLevels.GetConColor(bot.GetConLevel(npc)) == ConColor.GREY ? 1 : 0)
-                .ThenByDescending(npc => _groupDirective?.IsDynamic == true ? npc.EffectiveLevel : 0)
+                // Never a grey on purpose, at a mixed camp too: a grey is only fought when it attacks (owner 2026-11-06:
+                // "they should only defend against grey not attack on purpose"). A camp with only greys left for this bot
+                // is left by this bot alone (_campOnlyGrey, the outleveled check in the camp loop).
+                .Where(npc =>
+                {
+                    if (ConLevels.GetConColor(bot.GetConLevel(npc)) != ConColor.GREY)
+                        return true;
+                    sawGrey = true;
+                    return false;
+                })
+                .OrderByDescending(npc => _groupDirective?.IsDynamic == true ? npc.EffectiveLevel : 0)
                 .ThenBy(npc => bot.GetDistanceTo(npc) + Math.Abs((int)ConLevels.GetConColor(bot.GetConLevel(npc))) * 220)
                 // Run native checks only after cheap filters and sorting, and
                 // stop at the first reachable target. Self-defense is handled
@@ -3293,8 +3299,23 @@ namespace DOL.GS
 
             // Preserve the old cheap local lookup for ordinary pulls. Only an
             // empty local ring pays for the requested 5,000-unit expansion.
-            return FindWithin(ImmediateTargetSearchRadius) ?? FindWithin(TargetSearchRadius);
+            GameNPC found = FindWithin(ImmediateTargetSearchRadius) ?? FindWithin(TargetSearchRadius);
+            // only greys free for this bot: the camp is grey to it once that has lasted 3 minutes (a mixed camp's other
+            // monsters may only be respawning or taken just now)
+            if (found != null || !sawGrey || !string.Equals(_campOnlyGreyCampId, _camp?.Id, StringComparison.Ordinal))
+                _campOnlyGreySinceTick = 0;
+            _campOnlyGreyCampId = _camp?.Id;
+            if (found == null && sawGrey && _campOnlyGreySinceTick == 0)
+                _campOnlyGreySinceTick = nowTick;
+            _campOnlyGrey = _campOnlyGreySinceTick > 0 && nowTick - _campOnlyGreySinceTick >= CampOnlyGreyMilliseconds;
+            return found;
         }
+
+        /// <summary>The last camp target search found only monsters that con grey to this bot.</summary>
+        private bool _campOnlyGrey;
+        private long _campOnlyGreySinceTick;
+        private const long CampOnlyGreyMilliseconds = 3 * 60_000;   // owner 2026-11-06: 3 minutes
+        private string _campOnlyGreyCampId;
 
         private void PatrolCamp(GameBot bot)
         {
