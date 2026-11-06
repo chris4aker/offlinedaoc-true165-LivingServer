@@ -56,7 +56,8 @@
    "DOL.GS.UnnaturalStormController": "Atlas event controller",
    "DOL.GS.BlightController": "Atlas event controller",
    "DOL.GS.RealmExchangeBroker": "Realm Exchange moves to the traveler's inns",
-   "DOL.GS.Cronker": "True 1.65 reset day (S12): freeshard scripted monster (turns invisible but keeps fighting)"
+   "DOL.GS.Cronker": "True 1.65 reset day (S12): freeshard scripted monster (turns invisible but keeps fighting)",
+   "DOL.GS.Scripts.RPTradeInMerchant": "True 1.65 BG spawns: Atlas realm point trade-in merchant (Void Merchant <Realm Point Trade-In>, freeshard; owner 2026-11-06)"
   },
   "mob_packages": {
    "QuestWorld": "custom quest-world helper spawn",
