@@ -34,6 +34,7 @@ from texture_index import TextureIndex
 import nif_static
 import alpha_bleed
 import tone_restore
+import add_fixture_uids
 
 M = nif_static.UNITS_TO_METRES
 ESRGAN = ROOT / 'tools/realesrgan/realesrgan-ncnn-vulkan.exe'
@@ -1057,6 +1058,9 @@ def build(zone_id, upscale=True):
         placements.append({'m': model_index[nif_id], 'name': r[2].strip(), 'pos': [x * M, gy * M, y * M],
                            'yaw': -a, 'scale': scale / 100.0, 'collide': r[8].strip() not in ('', '0'),
                            'radius': fixture_radius(r), 'id': int(r[0])})
+        uid = add_fixture_uids.unique_id(r)                # the door ids' fixture number (add_fixture_uids.py)
+        if uid != int(r[0]):
+            placements[-1]['uid'] = uid
 
     lights = zone_lights(dat)
 

@@ -20,6 +20,7 @@ from assets_pipeline import CLIENT, ROOT
 import nif_static
 from texture_index import TextureIndex
 from build_zone import zone_local_npks, read_mpk, read_csv, ambient_only, fixture_radius, save_if_changed
+import add_fixture_uids
 
 def _lightdef():
     path = next((p for p in (CLIENT / 'zones/textures').iterdir() if p.name.lower() == 'lightdef.csv'), None)
@@ -136,6 +137,8 @@ def build(layout_path):
                          'yaw': -float(row[6] or 0), 'scale': float(row[7] or 100) / 100.0,
                          'collide': row[8].strip() not in ('', '0'), 'radius': fixture_radius(row),
                          'ground_follow': on_ground, 'id': int(row[0]), 'source': 'inn_165'})
+        if add_fixture_uids.unique_id(row) != int(row[0]):            # the door ids' fixture number (add_fixture_uids)
+            fixtures[-1]['uid'] = add_fixture_uids.unique_id(row)
     splat_patches, terrain_sets = roads(zone_id, out, tex_names)
     idx = TextureIndex()
     idx.first = [f'zones/zone{zone_id:03d}/nifs', 'phousing/nifs']

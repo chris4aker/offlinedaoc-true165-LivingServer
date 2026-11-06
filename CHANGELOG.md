@@ -106,6 +106,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Doors: the healer doors and round doors of Jordheim open again in the server's game - clicking them never reached the server.
 - Crafting: the 80 metalworking recipes that can never be made in a 1.65 world (tempered metal studs, wire, strapping and scales - their old components were retired in 1.65) are gone from the recipe list. Tempered saddlebags stay.
 - Battlegrounds: the central keeps of Caledon, Murdaigean, Thidranki and Abermenai stand where the 1.65 client put them - turned and placed from its own tables, with Caledon's and Thidranki's second keep models. Their lords and guards no longer float beside the walls, and the keep doors line up with the server's.
+- Doors: keep, house and inn doors in almost every zone now reach the server's own door - the client numbered them by the fixture's row instead of its Unique Id, as the original client and the server's door table do. Doors the server keeps shut or open now show it.
 
 ## 0.2 (2026-11-01)
 

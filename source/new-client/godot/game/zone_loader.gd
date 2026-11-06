@@ -670,7 +670,11 @@ func _build_fixtures() -> void:
 						add_child(ps), "zone particles")
 		if not parts.doors.is_empty():
 			for i in xforms.size():
-				var fid := int((per_model[m][i] as Dictionary).get("id", -1))
+				# the fixture's Unique Id where it has one apart from its row ID (pipeline/add_fixture_uids.py): the
+				# number the client and the server's door table use (owner 2026-11-06: the battleground keeps' doors
+				# and every keep / house door of a zone whose two columns differ asked about doors the server lacks)
+				var fx := per_model[m][i] as Dictionary
+				var fid := int(fx.get("uid", fx.get("id", -1)))
 				_make_doors(parts, xforms[i], int(info.get("id", 0)) * 1000000 + fid * 100 if fid > 0 else -1)
 		for part in parts.meshes:
 			for c in cells:
