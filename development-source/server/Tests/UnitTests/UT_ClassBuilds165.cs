@@ -77,5 +77,13 @@ namespace DOL.UnitTests
                 Assert.That(Cap(plan, SkillBase.ObjectTypeToSpec(plan.WeaponOneType)), Is.InRange(29u, 44u));
             }
         }
+
+        [Test]
+        public void ArmsmanTwoHanderIsMostlyPolearmAndCrushIsRare()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Armsman);
+            Assert.That(Share(plans, p => p.WeaponTwoType == eObjectType.PolearmWeapon), Is.EqualTo(0.85).Within(0.03));
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.CrushingWeapon), Is.EqualTo(0.05).Within(0.02));
+        }
     }
 }

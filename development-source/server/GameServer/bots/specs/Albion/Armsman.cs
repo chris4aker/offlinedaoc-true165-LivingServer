@@ -6,9 +6,8 @@ namespace DOL.GS
         {
             SpecName = "ArmsmanBotSpec";
 
-            int randBaseWeap = Util.Random(2);
-
-            switch (randBaseWeap)
+            // Period Armsmen: slash and thrust, crush only about 1 in 20.
+            switch (Pick(50, 45, 5))
             {
                 case 0:
                 WeaponOneType = eObjectType.SlashingWeapon;
@@ -26,9 +25,8 @@ namespace DOL.GS
                 break;
             }
 
-            bool rand2H = Util.Random(1) == 0;
-
-            if (rand2H)
+            // About 85% of period Armsmen trained polearm, 15% two-handed.
+            if (Util.Random(19) < 17)
                 WeaponTwoType = eObjectType.PolearmWeapon;
             else
                 WeaponTwoType = eObjectType.TwoHandedWeapon;
