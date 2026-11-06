@@ -48,18 +48,19 @@ namespace DOL.GS
                 Add(Specs.Smite, 4, 0.0f);
                 break;
 
+                // Period smite Clerics: Smite 44-48, Rejuvenation about 23 for heals, the rest Enhancement.
                 case 6:
                 SpecType = eSpecType.SmiteCleric;
-                Add(Specs.Rejuvenation, 6, 0.0f);
-                Add(Specs.Enhancement, 29, 0.5f);
-                Add(Specs.Smite, 45, 0.8f);
+                Add(Specs.Rejuvenation, 23, 0.5f);
+                Add(Specs.Enhancement, 16, 0.1f);
+                Add(Specs.Smite, 46, 0.8f);
                 break;
 
                 case 7:
                 SpecType = eSpecType.SmiteCleric;
-                Add(Specs.Rejuvenation, 4, 0.0f);
-                Add(Specs.Enhancement, 36, 0.5f);
-                Add(Specs.Smite, 40, 0.8f);
+                Add(Specs.Rejuvenation, 23, 0.5f);
+                Add(Specs.Enhancement, 20, 0.1f);
+                Add(Specs.Smite, 44, 0.8f);
                 break;
             }
         }

@@ -110,5 +110,18 @@ namespace DOL.UnitTests
             Assert.That(new[] { at50[Specs.Enhancement], at50[Specs.Staff], at50[Specs.Rejuvenation], at50[Specs.Parry] },
                 Is.EqualTo(new[] { 49, 39, 15, 13 }));
         }
+
+        [Test]
+        public void SmiteClericTakesRejuvenationSecond()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Cleric, eSpecType.SmiteCleric);
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Cleric, 50);
+                Assert.That(at50[Specs.Smite], Is.InRange(44, 48));
+                Assert.That(at50[Specs.Rejuvenation], Is.EqualTo(23));
+                Assert.That(at50[Specs.Enhancement], Is.InRange(12, 20));
+            }
+        }
     }
 }
