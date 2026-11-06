@@ -5,6 +5,9 @@ namespace DOL.GS
     /// <summary>Proactive pulls require a walkable return route, not visibility alone.</summary>
     public static class AutonomousDungeonTargetRoute
     {
+        /// <summary>Melee-range points the fallback tests, nearest to the bot first (each costs up to two corridor searches).</summary>
+        public const int FallbackCandidates = 4;
+
         public static bool CanReach(IPathfindingMgr nav, Zone zone, Vector3 from, Vector3 target)
         {
             if (!AutonomousNavigationSurface.TryFloor(nav, zone, from, out Vector3 start)) return false;
@@ -25,7 +28,7 @@ namespace DOL.GS
             return AutonomousZonePointApproach.TryResolve(nav, zone, start, target, 112, out _,
                 approach => Vector3.DistanceSquared(approach, target) <= 112 * 112 &&
                     nav.HasLineOfSight(zone, approach, target, nav.DefaultFilters) &&
-                    AutonomousZoneItinerary.HasCompleteCorridor(nav, zone, approach, start));
+                    AutonomousZoneItinerary.HasCompleteCorridor(nav, zone, approach, start), FallbackCandidates);
         }
     }
 }

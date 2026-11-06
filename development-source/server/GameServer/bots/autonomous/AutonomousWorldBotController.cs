@@ -59,6 +59,7 @@ namespace DOL.GS
         private long _nextTargetSearchTick;
         private long _nextFailedSoloPullRoutePruneTick;
         private readonly Dictionary<ushort, SavageBotCombatPolicy.FailedSoloPullRoute> _failedSoloPullRoutes = new();
+        private readonly AutonomousCampTargetRouteChecks.UnreachableTargets _unreachableCampTargets = new();
         private long _nextFailedSavageMeleePullPruneTick;
         private readonly Dictionary<ushort, long> _failedSavageMeleePullTargets = new();
         private GameNPC _savageMeleePullTarget;
@@ -3228,6 +3229,9 @@ namespace DOL.GS
                 _nextFailedSoloPullRoutePruneTick = nowTick + 10_000;
             }
             bool sawGrey = false;
+            // at most a few route checks per search, and none again soon for a target that failed (AutonomousCampTargetRouteChecks)
+            AutonomousCampTargetRouteChecks routeChecks = default;
+            _unreachableCampTargets.Prune(nowTick);
             GameNPC FindWithin(ushort radius) => bot.GetNPCsInRadius(radius)
                 .Where(npc => IsExperienceMonster(npc) && npc.IsAlive && npc.CurrentRegionID == _camp.RegionId &&
                     !AutonomousAuditedCampPolicy.IsBotExcludedNpc(npc) &&
@@ -3310,12 +3314,26 @@ namespace DOL.GS
                         SavageBotCombatPolicy.ShouldDelayFailedSoloPullRetry(failure,
                             nowTick, bot.CurrentRegionID, originZoneId, targetZoneId, origin, target))
                         return false;
+                    if (_unreachableCampTargets.IsCached(npc.ObjectID, origin, target, nowTick) || !routeChecks.TryBegin())
+                        return false;
 
                     bool reachable = AutonomousDungeonTargetRoute.CanReach(
                         PathfindingProvider.Instance, bot.CurrentZone, origin, target);
                     if (!reachable && (npc.Flags & GameNPC.eFlags.FLYING) != 0 &&
                         AutonomousDefensivePull.CanAttemptFlyingHandoff(bot, npc))
                         reachable = true;
+                    if (reachable)
+                    {
+                        routeChecks.Succeeded();
+                        _unreachableCampTargets.Remove(npc.ObjectID);
+                    }
+                    else
+                    {
+                        _unreachableCampTargets.Add(npc.ObjectID, origin, target, nowTick);
+                        // the first few all failed: the bot itself is likely off the mesh; repair its floor and stop here
+                        if (routeChecks.Failed())
+                            TryRepairNavigationFloor(bot);
+                    }
                     if (soloSavage)
                     {
                         if (reachable)

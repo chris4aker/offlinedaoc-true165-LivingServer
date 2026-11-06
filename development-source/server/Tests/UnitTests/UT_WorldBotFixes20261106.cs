@@ -52,5 +52,45 @@ namespace DOL.UnitTests
             Assert.That(AutonomousWorldBotController.FailedApproachCached(null, merchant, there, 4_000, null, merchant, moved, 2_000), Is.False);
             Assert.That(AutonomousWorldBotController.FailedApproachCached("service:x", merchant, there, until, null, merchant, there, 2_000), Is.False);
         }
+
+        [Test]
+        public void ACampTargetSearchChecksAFewRoutesAndStopsWhenTheFirstFail()
+        {
+            AutonomousCampTargetRouteChecks checks = default;
+            for (int i = 0; i < AutonomousCampTargetRouteChecks.FailuresBeforeStop - 1; i++)
+            {
+                Assert.That(checks.TryBegin(), Is.True);
+                Assert.That(checks.Failed(), Is.False);
+            }
+            Assert.That(checks.TryBegin(), Is.True);
+            Assert.That(checks.Failed(), Is.True, "the third failure in a row repairs the floor once and stops");
+            Assert.That(checks.TryBegin(), Is.False);
+            Assert.That(checks.Failed(), Is.False, "the repair runs only once");
+
+            // successes in between: still at most six checks
+            AutonomousCampTargetRouteChecks capped = default;
+            int ran = 0;
+            while (capped.TryBegin())
+            {
+                ran++;
+                capped.Succeeded();
+            }
+            Assert.That(ran, Is.EqualTo(AutonomousCampTargetRouteChecks.MaxChecks));
+        }
+
+        [Test]
+        public void AnUnreachableCampTargetIsSkippedForAWhileUnlessTheBotOrMonsterMoved()
+        {
+            var cache = new AutonomousCampTargetRouteChecks.UnreachableTargets();
+            Vector3 bot = new(100_000, 100_000, 0), wolf = new(101_000, 100_000, 0);
+            cache.Add(7, bot, wolf, 1_000);
+            Assert.That(cache.IsCached(7, bot, wolf, 30_000), Is.True);
+            Assert.That(cache.IsCached(7, bot + new Vector3(600, 0, 0), wolf, 30_000), Is.False, "the bot walked away");
+            Assert.That(cache.IsCached(7, bot, wolf + new Vector3(100, 0, 0), 30_000), Is.False, "the monster moved");
+            Assert.That(cache.IsCached(7, bot, wolf, 1_000 + AutonomousCampTargetRouteChecks.UnreachableTargets.Milliseconds), Is.False);
+            Assert.That(cache.IsCached(8, bot, wolf, 30_000), Is.False);
+            cache.Prune(100_000);
+            Assert.That(cache.Count, Is.Zero);
+        }
     }
 }
