@@ -464,6 +464,9 @@ namespace DOL.GS
                 want = eActiveWeaponSlot.Standard;
             else if (want == eActiveWeaponSlot.Standard && !oneHand && twoHand)
                 want = eActiveWeaponSlot.TwoHanded;
+            // a two-hander it isn't trained in goes on its back: it keeps its trained weapon set (owner 2026-11-06)
+            if (want == eActiveWeaponSlot.TwoHanded && oneHand && BotWeaponSetPolicy.UntrainedTwoHander(bot))
+                want = eActiveWeaponSlot.Standard;
             if (changed != eInventorySlot.DistanceWeapon)
             {
                 bot.SwitchWeapon(want);
