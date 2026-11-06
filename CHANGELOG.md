@@ -58,7 +58,8 @@ hold). Its changelog has the history of everything this version inherits.
 - Sound: new option MUTE WHEN NOT FOCUSED (Options > Audio, on by default) - the game goes quiet while you are in another window.
 - NPC dialogue: the words you can answer with show bold and in [brackets], as in the 1.64 client, and long ones are never dropped (Kaere's "[Will you gather the components ...]" in Protecting Anniogel was missing).
 - Monsters: a body no longer plays its death again when you right-click its loot or it is sent again, and a body whose removal never arrived (an untargetable dead wolf in Avalon Marsh) sinks away after 45 seconds.
-- Looting (a small quality-of-life addition, not in 1.64): a right click on a loot bag or an item on the ground picks it up even when a monster's body or an NPC stands on the same spot, and the new Pick Up Loot key (Shift+G) takes the nearest loot within reach, one item a press, without pointing at it or targeting it. No autoloot.
+- Looting (a small quality-of-life addition, not in 1.64): a right click on a loot bag or an item on the ground picks it up even when a monster's body or an NPC stands on the same spot, and the new Pick Up Loot key (Shift+G) takes the nearest loot within reach, one item a press, without pointing at it or targeting it.
+- Looting (a small quality-of-life addition, not in 1.65): AUTO LOOT is back as an option (Options > Interface > Loot, off by default) - on, coins and items from your kills go straight into your backpack.
 - World: Avalon Marsh's water no longer shows dark squares and steps where its pools meet.
 - Quickbars: a weapon or instrument on a quickbar switches to it again (a Minstrel's instrument and weapon), as in the 1.64 client.
 - Movement: going up and down stairs, your character, the camera and NPCs glide over the steps instead of jerking up and down; climbing itself is unchanged.

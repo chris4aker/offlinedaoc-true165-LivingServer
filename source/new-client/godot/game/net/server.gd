@@ -657,6 +657,7 @@ func zone_ready() -> void:
 		init_at = Time.get_ticks_msec()
 		client.call("PlayerInit")
 		client.call("GameOpen")
+		Loot.tell_server()                                # (autoloot is the server's per session: told at every entry)
 	playing = true
 	var lines := _backlog
 	_backlog = []

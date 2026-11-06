@@ -37,19 +37,31 @@ static func item(id: String) -> Dictionary:
 	return (data().get("items", {}) as Dictionary).get(id, {})
 
 
+## Autoloot (owner 2026-11-05: "add an autoloot option like old repo had with a toggle on and off in settings (default
+## off)" - a small quality-of-life addition, not in 1.65): Options > INTERFACE > AUTO LOOT, saved in settings [player]
+## autoloot, OFF by default. The server keeps it for the session only, so the client tells it at every world entry
+## (Server.zone_ready) and on every change: "/autoloot on quiet" / "/autoloot off quiet" (no chat line).
 static func autoloot() -> bool:
-	return bool(PlayerData.character.get("autoloot", true))
+	var cfg := ConfigFile.new()
+	cfg.load(UiArt.settings_path)
+	return bool(cfg.get_value("player", "autoloot", false))
 
 
-## The options toggle (the old server's messages).
+## The server's word for the setting ("quiet": no chat line) - at world entry and on a change.
+static func tell_server() -> void:
+	if Server.active:
+		Server.command("/autoloot %s quiet" % ("on" if autoloot() else "off"))
+
+
+## The options toggle.
 static func set_autoloot(on: bool) -> void:
-	if on and Server.world_mode == "1.65":             # (True 1.65 Mode: the server has no autoloot - owner 2026-10-30)
-		return
+	var cfg := ConfigFile.new()
+	cfg.load(UiArt.settings_path)
+	cfg.set_value("player", "autoloot", on)
+	cfg.save(UiArt.settings_path)
 	PlayerData.character["autoloot"] = on
 	if Server.active:
-		# the server's own autoloot (its &autoloot command: GamePlayer.Autoloot) - the toggle only changed ours, which
-		# the server game doesn't use (owner 2026-10-15 UI audit); the server answers with its message
-		Server.command("/autoloot %s" % ("on" if on else "off"))
+		tell_server()
 		return
 	PlayerData.save_character()
 	PlayerData.message.emit("Your autoloot is on. You will now attempt to automatically loot anything that drops in your area." if on
