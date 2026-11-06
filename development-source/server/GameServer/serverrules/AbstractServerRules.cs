@@ -1118,6 +1118,9 @@ namespace DOL.GS.ServerRules
                     AutonomousGoalDiagnostics.Reward(bot, killedNpc, 0);
                 }
 
+            // A gamebot party moves on once its camp bonus runs dry (True 1.65 Mode): the fraction this kill paid.
+            NoteGamebotPartyCampBonus(killedNpc, botCountAndDamage.Keys);
+
             // Camp bonus drops by 2% per kill.
             if (killedNpc.CampBonus > 0)
                 killedNpc.CampBonus -= 0.02;
@@ -2233,6 +2236,21 @@ namespace DOL.GS.ServerRules
             bool fifty = zone?.IsDungeon == true || zone?.IsRvR == true || killedNpc.CurrentRegion?.IsRvR == true ||
                          killedNpc.IsUnderwater;
             return fifty ? PeriodCampBonusSpecial : PeriodCampBonusNormal;
+        }
+
+        /// <summary>Once per gamebot party that took part in the kill (AutonomousBotGroupCoordinator.NoteCampBonus).</summary>
+        private static void NoteGamebotPartyCampBonus(GameNPC killedNpc, IEnumerable<GameBot> bots)
+        {
+            if (!Classic165Mode.IsOn)
+                return;
+            HashSet<Group> noted = null;
+            foreach (GameBot bot in bots)
+            {
+                if (bot is not { IsAutonomousWorldBot: true, IsPlayerLedGroup: false, Group: { } group } ||
+                    !(noted ??= new()).Add(group))
+                    continue;
+                AutonomousBotGroupCoordinator.NoteCampBonus(group, killedNpc.Name, killedNpc.CampBonus);
+            }
         }
 
         public const double PeriodCampBonusNormal = 0.30;
