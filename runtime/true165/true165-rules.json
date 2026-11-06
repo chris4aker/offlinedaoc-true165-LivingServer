@@ -35,10 +35,8 @@
    "DOL.GS.Scripts.InlandTeleporter": "click teleporter (freeshard)",
    "DOL.GS.SimpleTeleporter": "click teleporter (freeshard)",
    "DOL.GS.Scripts.BGTeleporter": "click teleporter (freeshard)",
-   "DOL.GS.GameHastener": "town hastener (patch 1.70)",
-   "DOL.GS.Keeps.FrontierHastener": "frontier hastener (New Frontiers)",
    "DOL.GS.Scripts.AtlasTrainer": "Atlas master trainer",
-   "DOL.GS.MarketExplorer": "market explorer (2004)",
+   "DOL.GS.MarketExplorer": "market explorer (1.64 housing; off: no consignment merchants, owner 2026-11-02)",
    "DOL.GS.EffectNPC": "freeshard cosmetic NPC",
    "DOL.GS.ItemModel": "freeshard reskin NPC",
    "DOL.GS.RoyalTreasuryClerk": "freeshard bind recall clerk",
@@ -272,6 +270,24 @@
     "key": "Mob_ID",
     "where": "Mob_ID = '5a652f64-2f24-42db-897e-3f2e74ef32f2'",
     "reason": "True 1.65 reset day (S6): the second Lord Urqhart at the freeshard spot in Camelot; the vault keeper upstairs at the vault stays"
+   },
+   {
+    "table": "Mob",
+    "key": "Mob_ID",
+    "where": "ClassType = 'DOL.GS.GameHastener' AND Region NOT IN (2,102,202) AND Mob_ID NOT IN ('11777336-1b8b-42eb-9122-7876d9224b5d','1935cd41-8c50-4899-a286-5e2403f82bdd','1d41a716-ca62-4db2-ac19-7c86437acde7','3ca81fd9-abdf-427c-bbc0-e45c9378b513','436737f1-95bc-4250-b997-8ad31517a20d','7c14f6f0-4df1-40d0-a149-e78668bad2b0','86945a6f-e302-4e37-901a-ea028a358ec4','88c728d0-583d-4720-aeed-0da39b19e226','9a2c73dc-65fe-46b8-a384-61a5384478ee','bacc22fa-385e-4727-b800-e52404fdc387','c4f1caae-9a27-4145-bd88-27560b8ea214','ee1145cc-ea2d-4d0a-8bfc-2597a789e05a','ef9a0f40-d8be-4340-abc2-44c1dd6f5cb0')",
+    "reason": "town hastener (not in 1.65: hasteners stood only at frontier, border and portal keeps and in the housing zones)"
+   },
+   {
+    "table": "Mob",
+    "key": "Mob_ID",
+    "where": "ClassType = 'DOL.GS.Keeps.FrontierHastener' AND Mob_ID NOT IN ('017b77ed-60de-402d-8acb-830233b50818','0487e0e1-b89b-4757-a995-345cce4f17eb','0bea66f8-12f4-4e9c-af4c-d8f68a211bd4','0ca8ba59-0c4e-4b80-83e6-11b53dd18eb9','0e6a80ab-014d-4c00-a2a4-f0ae2889a6cd','19a2d2c6-33d5-4dc7-ae26-cee7670fced8','213793ba-6149-4679-aa3f-0cd134cfd4b2','24549f4f-06b6-441a-879e-0953373b6530','308b0ded-0cd2-46c1-8e44-d68b94bfe88d','36da2032-d7e0-4755-91f5-61d8e4524993','3717d6d1-9f6d-4a1f-80b0-f0f2647146c1','39912f1b-c9b8-44a4-b63d-b0cb4f325d3f','445fce00-2929-4bb2-b25e-74212d4feb38','446cd78f-1831-403a-b68c-7ae81d4b2caa','4aee12e4-64e0-44dd-8547-2cdd0cb214d4','4d0d620f-e7b2-416f-8aa2-f69110f0dae2','4d10912b-7775-4531-a08d-9358a7577e75','5667939e-92aa-4480-8d53-6648da64ecf2','6adc8bac-1ad3-4511-b724-3f5fbacf1331','6eb0590e-8b1a-44a2-81bf-df1ff246af54','874508aa-5487-4ada-94aa-0846f9f0959c','8e64f75d-613d-4884-b751-02301ce42f60','9ffe7c05-56a1-41d5-b551-945cabacc298','ae2808bc-1f7a-4961-a674-14564b56b1c0','af2aacb8-5cfc-4dba-8120-81ede709e80b','da5a7135-d64c-4d5f-892b-f2658bb16aed','e80e912a-11c5-4998-b9d1-ff0b83d6976b','ea218598-0cdf-4d36-854e-997c3e0a7249','ea5c613e-5c67-4c07-af34-48de55c03c42','f208f8ec-efd5-4e13-9332-cea027200779','f866960f-9272-4af8-a9de-5560a54c5266')",
+    "reason": "frontier hastener away from the old frontier keeps (New Frontiers and battleground placements)"
+   },
+   {
+    "table": "MerchantItem",
+    "key": "MerchantItem_ID",
+    "where": "MerchantItem_ID IN ('36bc14cfc-4050-46c2-8134-68db06c6b537','614f386c1-ef60-4560-9a40-9a7d50135b2d','6f6538cb4-b4ce-4558-8bb7-94be3347b933','8e31acb0e-d4b8-40e3-b173-7c4957fec0e5','d593528cd-0e25-4401-a730-fc0c5daec9ac','e8113bd05-9617-480b-95e4-b9b3ce685051')",
+    "reason": "1.65 arrows: another realm's arrow in a list that already sells its own realm's copy"
    },
    {
     "table": "CraftedItem",
@@ -48022,6 +48038,874 @@
   {
    "sql": "DELETE FROM CraftedXItem WHERE CraftedItemId_nb IN ('large_bed3','large_black_cushioned_chair3','large_black_oval-back_cushioned_chair3','large_card_table3','large_chess_table3','large_four_poster_bed3','large_gilded_marble_desk3','large_green_cushioned_chair3','large_green_oval-back_cushioned_chair3','large_marble-topped_round_table3','large_marble_bench3','large_marble_chair3','large_marble_throne3','large_padded_bench3','large_plain_wooden_bench3','large_plain_wooden_desk3','large_plain_wooden_table3','large_purple_cushioned_chair3','large_purple_oval-back_cushioned_chair3','large_red_cushioned_chair3','large_red_oval-back_cushioned_chair3','large_simple_cot3','large_solid_oak_desk3','large_teal_cushioned_chair3','large_teal_oval-back_cushioned_chair3','large_teal_rectangular-back_cushioned_chair3','large_wooden_chair3','large_wooden_round_table3','large_wooden_stool3','large_yellow_cushioned_chair3','large_yellow_oval-back_cushioned_chair3','small_bed3','small_black_cushioned_chair3','small_black_oval-back_cushioned_chair3','small_card_table3','small_chess_table3','small_four_poster_bed3','small_gilded_marble_desk3','small_green_cushioned_chair3','small_green_oval-back_cushioned_chair3','small_marble-topped_round_table3','small_marble_bench3','small_marble_chair3','small_marble_throne3','small_padded_bench3','small_plain_wooden_bench3','small_plain_wooden_desk3','small_plain_wooden_table3','small_purple_cushioned_chair3','small_purple_oval-back_cushioned_chair3','small_red_cushioned_chair3','small_red_oval-back_cushioned_chair3','small_simple_cot3','small_solid_oak_desk3','small_teal_cushioned_chair3','small_teal_oval-back_cushioned_chair3','small_teal_rectangular-back_cushioned_chair3','small_wooden_chair3','small_wooden_round_table3','small_wooden_stool3','small_yellow_cushioned_chair3','small_yellow_oval-back_cushioned_chair3') AND CraftedXItem_ID NOT LIKE 't165rcp-%'",
    "reason": "True 1.65 recipes: Hibernia Woodworking ingredients replaced by the 1.64 client tdl.irf ones (62 products; the new rows are in add-recipes165-craftedxitem.json)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows3' WHERE MerchantItem_ID = '001843dc-835c-482a-90f2-51755ba69922' AND ItemTemplateID = 'rough_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's rough flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows3' WHERE MerchantItem_ID = '6745d4a7-d7fa-4ac6-b5b1-09e2e118e437' AND ItemTemplateID = 'flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '82581785-7ebb-4b00-a84f-39559cd1fa35' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's keen footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows3' WHERE MerchantItem_ID = '8734d592-0a86-4003-9774-922d9ac91529' AND ItemTemplateID = 'broadhead_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows3' WHERE MerchantItem_ID = '8edce22f-50b5-4a81-aa3d-f2507785939f' AND ItemTemplateID = 'footed_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's footed clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows3' WHERE MerchantItem_ID = '91beb221-43b1-44e5-9ccf-50b909d013f5' AND ItemTemplateID = 'flight_blunt_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_blunt_arrows3' WHERE MerchantItem_ID = '9ca4d8eb-5eb4-4bfd-b55d-fc49694c342e' AND ItemTemplateID = 'rough_flight_blunt_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's rough flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows3' WHERE MerchantItem_ID = 'a3216c17-ef49-4399-9544-cc62457c0591' AND ItemTemplateID = 'rough_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's rough bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows3' WHERE MerchantItem_ID = 'b6bd74b2-f1bb-430a-a149-8bd6c6664843' AND ItemTemplateID = 'footed_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's footed broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows3' WHERE MerchantItem_ID = 'bd25198c-11aa-4fff-b3e2-e41468be72f1' AND ItemTemplateID = 'footed_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's footed flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows3' WHERE MerchantItem_ID = 'c49140ba-a121-4c3b-80a4-36a357769888' AND ItemTemplateID = 'rough_blunt_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's rough blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows3' WHERE MerchantItem_ID = 'db25f7bb-54a3-457d-8f32-91b8ed1eb527' AND ItemTemplateID = 'bodkin_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows3' WHERE MerchantItem_ID = 'deaf188b-2bdc-40b8-875f-b9ea01e9a839' AND ItemTemplateID = 'rough_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's rough clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows3' WHERE MerchantItem_ID = 'e63772f0-fff5-43bb-b77e-70268b48018b' AND ItemTemplateID = 'clout_blunt_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_blunt_arrows3' WHERE MerchantItem_ID = 'f9acb3fb-512d-458a-bf28-c96b3eecac5c' AND ItemTemplateID = 'footed_clout_blunt_arrows'",
+   "reason": "True 1.65 arrows: 442c2a84-8755-40ff-8bd3-934805a445df sold another realm's footed clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows3' WHERE MerchantItem_ID = '00008000-bdb2-49a5-94f2-3b1ad4e9eb8c' AND ItemTemplateID = 'blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows3' WHERE MerchantItem_ID = '01d97a70-dc58-4b70-99a0-9417f3aa2122' AND ItemTemplateID = 'flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows3' WHERE MerchantItem_ID = '035c9d37-15e4-4ab6-82f7-53a69bab615f' AND ItemTemplateID = 'rough_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows3' WHERE MerchantItem_ID = '05b5a57d-5962-4b27-8031-080e9f5dcbcf' AND ItemTemplateID = 'footed_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows3' WHERE MerchantItem_ID = '05db1d0a-cfcd-48ff-b1a3-ebeda72582f4' AND ItemTemplateID = 'clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows3' WHERE MerchantItem_ID = '0c91a6ab-e2b6-4df6-830b-b4b8bbb0c0f9' AND ItemTemplateID = 'footed_flight_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows3' WHERE MerchantItem_ID = '251258eb-92dd-46e1-9e40-7dd4de2782bf' AND ItemTemplateID = 'bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows3' WHERE MerchantItem_ID = '5549863e-6693-4693-98c3-8a575a00f276' AND ItemTemplateID = 'flight_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '57b3bfa0-4989-4146-a1e4-e56beda0c145' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's barbed footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows3' WHERE MerchantItem_ID = '613176a5-abd1-418c-8806-686ea379daae' AND ItemTemplateID = 'clout_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows3' WHERE MerchantItem_ID = '687565d5-a238-40f9-b39e-f0d9784c868b' AND ItemTemplateID = 'rough_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_blunt_arrows3' WHERE MerchantItem_ID = '6c364ebf-32e7-4e80-92f3-6a17e73e3339' AND ItemTemplateID = 'footed_clout_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows3' WHERE MerchantItem_ID = '6d242a7e-2bbf-4424-bdea-0a9e4d5485b8' AND ItemTemplateID = 'rough_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows3' WHERE MerchantItem_ID = '78778bc6-99ae-49ed-a6c1-d81c7f198f43' AND ItemTemplateID = 'footed_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_blunt_arrows3' WHERE MerchantItem_ID = '7b90da2c-6045-4312-bf05-d08bb7b9c5ec' AND ItemTemplateID = 'rough_flight_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '84ccc5d1-d684-40ba-861e-2984c7df8a1c' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's keen footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'a4d40614-4ee7-492d-ad0d-2426e87327a6' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = 'b0814251-dcf4-48bf-a225-9627c7b61c42' AND ItemTemplateID = 'footed_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows3' WHERE MerchantItem_ID = 'c387018c-8c40-453d-9f5a-11a062e37a48' AND ItemTemplateID = 'rough_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows3' WHERE MerchantItem_ID = 'c7c55845-7f03-44a2-916b-21e1d82a1c3f' AND ItemTemplateID = 'footed_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows3' WHERE MerchantItem_ID = 'c8a66d35-9171-40e7-9110-06ebc3bb9ca6' AND ItemTemplateID = 'rough_blunt_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows3' WHERE MerchantItem_ID = 'd00ab9be-421f-466e-b40e-7ce8989870f0' AND ItemTemplateID = 'flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows3' WHERE MerchantItem_ID = 'd06495f5-7214-47ea-86c2-42e382c9d121' AND ItemTemplateID = 'footed_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows3' WHERE MerchantItem_ID = 'e8106f77-51d5-40c7-9acc-aaaf1f4e376a' AND ItemTemplateID = 'footed_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's footed clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = 'e99985f7-93e2-49bc-9652-71800e77baea' AND ItemTemplateID = 'clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'f1fab9fb-4145-4bff-9dd1-27ffb3cd458a' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's blunt footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = 'f58832d9-dc52-49b7-b920-51dc30fc40b1' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows3' WHERE MerchantItem_ID = 'f7b22cec-49c1-40d7-a4d8-660812ff1d0f' AND ItemTemplateID = 'broadhead_arrows'",
+   "reason": "True 1.65 arrows: 6326d1cf-744d-475b-aa4f-5ccc9c664b09 sold another realm's broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '70f38415-9242-4a50-86c5-3f9bfd7b51ac' AND ItemsListTemplateID = '77793001'",
+   "reason": "True 1.65 arrows: Braenwyn Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = '99993631' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 77793001 sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = '99994099' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 77793001 sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = '99996327' AND ItemTemplateID = 'clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 77793001 sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = '99998715' AND ItemTemplateID = 'footed_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 77793001 sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows2' WHERE MerchantItem_ID = '203608b0-4cde-4812-b727-b22ad055db8b' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 8a082bdb-9e6e-4f1d-8392-c0dfbc6025db sold another realm's rough flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows2' WHERE MerchantItem_ID = '9e61b7cc-bad6-4fbf-9e60-381700ef7433' AND ItemTemplateID = 'footed_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 8a082bdb-9e6e-4f1d-8392-c0dfbc6025db sold another realm's footed flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows2' WHERE MerchantItem_ID = 'c02e16ff-6698-45c3-83b9-4e1a63ff2cc8' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: 8a082bdb-9e6e-4f1d-8392-c0dfbc6025db sold another realm's keen footed flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows2' WHERE MerchantItem_ID = 'e953e078-fc8d-4d62-a919-20ceb4af5a79' AND ItemTemplateID = 'flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: 8a082bdb-9e6e-4f1d-8392-c0dfbc6025db sold another realm's flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'MidArrows' WHERE Mob_ID = '1cd70659-4edd-4aba-901d-baac6f0ecce9' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Inga (region 100) shared a Hibernia arrow list; now sells the Midgard arrows (MidArrows)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '1fd0d921-ce2c-41a4-baf2-8f196c2dc7a0' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Allia Fletcher (region 330) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '331906f1-4043-42a7-b03c-48dfa4b60f1a' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Falin Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '399ee2f0-d9a1-46f5-8a95-d2db4e5cd5b4' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Duncan Curan (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '472621f0-85b3-4396-8d83-42f2466704c3' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Edrea Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'MidArrows' WHERE Mob_ID = '5de7004b-a5d8-4aab-aa5b-d502ae709451' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Takker (region 27) shared a Hibernia arrow list; now sells the Midgard arrows (MidArrows)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '6fd4f373-1571-4f8a-af63-a723d65377ba' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Lenia Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = '70c242f9-5f4d-49fa-8179-22708105ae03' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Allia Fletcher (region 27) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = 'b7347f3a-23fd-4c95-a00f-ac498c80e57f' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Meran Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'MidArrows' WHERE Mob_ID = 'c1f5bf43-fd78-4f48-b7f9-91223ae40172' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Takker (region 334) shared a Hibernia arrow list; now sells the Midgard arrows (MidArrows)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = 'cba3bc8f-027c-48cc-803a-62bf6c6e72b3' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Iohannes Aldar (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = 'cvalb4' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Allia Fletcher (region 165) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'MidArrows' WHERE Mob_ID = 'cvmid16' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Takker (region 165) shared a Hibernia arrow list; now sells the Midgard arrows (MidArrows)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'AlbArrowsOnly' WHERE Mob_ID = 'f119c1cb-27c0-4670-840c-22732209ae7e' AND ItemsListTemplateID = 'ad273152-ace5-4faf-b805-ac52fa59b9a1'",
+   "reason": "True 1.65 arrows: Agrakor Fletcher (region 1) shared a Hibernia arrow list; now sells the Albion arrows (AlbArrowsOnly)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = '288a0723-be77-4f66-82eb-df600f238b9e' AND ItemTemplateID = 'footed_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: ad273152-ace5-4faf-b805-ac52fa59b9a1 sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = 'd2856833-ad5d-427b-8b16-72182590e338' AND ItemTemplateID = 'clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: ad273152-ace5-4faf-b805-ac52fa59b9a1 sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = 'ed0b4164-1418-4385-b94f-07db1390b5d3' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: ad273152-ace5-4faf-b805-ac52fa59b9a1 sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'fae455ca-5390-41d3-b651-b52b41d94c6e' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: ad273152-ace5-4faf-b805-ac52fa59b9a1 sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows' WHERE MerchantItem_ID = '7bab8e71-cf9d-40d6-b35f-6b334bcd311e' AND ItemTemplateID = 'blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbArrowsOnly sold another realm's blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows' WHERE MerchantItem_ID = '7e1d73a9-c80b-4e16-a77c-446209109de5' AND ItemTemplateID = 'footed_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbArrowsOnly sold another realm's footed blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows' WHERE MerchantItem_ID = '7fdb1c12-433a-41ec-99a5-6bd592153556' AND ItemTemplateID = 'bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbArrowsOnly sold another realm's bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows' WHERE MerchantItem_ID = 'a1a0287b-9dd8-4125-a79a-af36586edc59' AND ItemTemplateID = 'broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbArrowsOnly sold another realm's broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows' WHERE MerchantItem_ID = 'd5d9e544-562b-4e45-bcb5-4b43d3732b3e' AND ItemTemplateID = 'rough_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbArrowsOnly sold another realm's rough bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows' WHERE MerchantItem_ID = '0505835e-5e49-4c0f-82e2-ab2021d93f241' AND ItemTemplateID = 'rough_flight_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough flight bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows' WHERE MerchantItem_ID = '1358d456-d191-42e1-9778-e8080016dffe1' AND ItemTemplateID = 'footed_flight_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed flight bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows' WHERE MerchantItem_ID = '1aa927dc-7380-430c-a2ca-a1dca8601ab11' AND ItemTemplateID = 'rough_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows' WHERE MerchantItem_ID = '1d4e5bfc-054c-402e-ba31-20bd97d2fed31' AND ItemTemplateID = 'rough_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows' WHERE MerchantItem_ID = '45470d37-acc5-4846-8c2a-a98c76936bc61' AND ItemTemplateID = 'clout_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's clout bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows' WHERE MerchantItem_ID = '47b70c12-aba8-4367-855c-7559da09ec101' AND ItemTemplateID = 'footed_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows' WHERE MerchantItem_ID = '49a1bd86-c5d4-4786-81d0-fe78f540f3031' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's blunt footed flight broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_blunt_arrows' WHERE MerchantItem_ID = '51ffd4b9-c012-4fda-a8a1-4e589c84901d1' AND ItemTemplateID = 'footed_clout_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed clout blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows' WHERE MerchantItem_ID = '7a7e394f-50cd-44d2-b962-4f59d18231b91' AND ItemTemplateID = 'flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's flight blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows' WHERE MerchantItem_ID = '7bab8e71-cf9d-40d6-b35f-6b334bcd311e1' AND ItemTemplateID = 'blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows' WHERE MerchantItem_ID = '7e1d73a9-c80b-4e16-a77c-446209109de51' AND ItemTemplateID = 'footed_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows' WHERE MerchantItem_ID = '7fdb1c12-433a-41ec-99a5-6bd5921535561' AND ItemTemplateID = 'bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows' WHERE MerchantItem_ID = '807d29f2-67cd-4784-9a98-eaa68760920f1' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's keen footed flight broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows' WHERE MerchantItem_ID = '9d897997-d332-4369-93bb-09ee3a65e07e1' AND ItemTemplateID = 'footed_clout_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed clout bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows' WHERE MerchantItem_ID = 'a1a0287b-9dd8-4125-a79a-af36586edc591' AND ItemTemplateID = 'broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows' WHERE MerchantItem_ID = 'a7b785d4-2aaf-4d36-9d28-0baaa19897781' AND ItemTemplateID = 'footed_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows' WHERE MerchantItem_ID = 'acca9a59-bc67-42c2-8a46-603883e708ee1' AND ItemTemplateID = 'flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's flight broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows' WHERE MerchantItem_ID = 'cd8b91c1-49bf-4d6e-9154-bfd1ed5144a81' AND ItemTemplateID = 'footed_flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's footed flight blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows' WHERE MerchantItem_ID = 'd5d9e544-562b-4e45-bcb5-4b43d3732b3e1' AND ItemTemplateID = 'rough_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows' WHERE MerchantItem_ID = 'd601c03c-3615-4dfd-9a7f-70abd1481f8e1' AND ItemTemplateID = 'clout_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's clout blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows' WHERE MerchantItem_ID = 'd6f981e2-a4f4-47ce-91b4-9028dd248a911' AND ItemTemplateID = 'rough_clout_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough clout broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows' WHERE MerchantItem_ID = 'de78f6fa-9588-43b0-8b7c-060ac67e3f3d1' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's barbed footed flight broadhead arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows' WHERE MerchantItem_ID = 'e0375ce7-7062-4ed6-9543-b71e87f283a71' AND ItemTemplateID = 'flight_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's flight bodkin arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_blunt_arrows' WHERE MerchantItem_ID = 'f4c00cd3-d0bf-41e5-aee9-7cdaba221f181' AND ItemTemplateID = 'rough_flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: AlbBowsArrows sold another realm's rough flight blunt arrows; now the Albion copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows2' WHERE MerchantItem_ID = '6461f14e-94cd-46ac-b3e7-cc3e7b554695' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: b309e5ee-0c51-4f6b-980c-c50b4f808a5c sold another realm's rough flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows3' WHERE MerchantItem_ID = '06c013d9-1e4b-4a6d-a200-004edb2c9bc1' AND ItemTemplateID = 'footed_clout_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = '1e7a80a3-94db-44b0-bae4-f814c1ec663a' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = '1f848d15-cd37-4af1-b65c-590cecbb2e8d' AND ItemTemplateID = 'clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '2432452c-b5fb-4690-aee7-6207b38b8946' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's blunt footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows3' WHERE MerchantItem_ID = '54feae0b-ef7e-4f92-9582-a6a7276c7796' AND ItemTemplateID = 'broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows3' WHERE MerchantItem_ID = '61761e8c-fe91-4971-ae11-353e7fe1bba7' AND ItemTemplateID = 'rough_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows3' WHERE MerchantItem_ID = '62be8442-9173-4142-9820-6827957457ab' AND ItemTemplateID = 'rough_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows3' WHERE MerchantItem_ID = '6346fca2-77e4-4ca6-b68e-4f363bb7e101' AND ItemTemplateID = 'flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '66f069c3-f615-4b3e-9126-af2beb35919c' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's keen footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows3' WHERE MerchantItem_ID = '71629e0f-cd01-4751-b1b5-d6dedee2eb8a' AND ItemTemplateID = 'clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows3' WHERE MerchantItem_ID = '760374c4-0192-4d42-8c6f-8207ffec4a12' AND ItemTemplateID = 'footed_flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows3' WHERE MerchantItem_ID = '7a18fc44-1a50-4a6d-b9aa-7031a996954d' AND ItemTemplateID = 'rough_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows3' WHERE MerchantItem_ID = '7df2e44c-bad4-41a4-acb0-6011316fab86' AND ItemTemplateID = 'clout_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows3' WHERE MerchantItem_ID = '8901ca36-f4a5-46f0-a1bc-191420d07677' AND ItemTemplateID = 'footed_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = '8d5791a1-1505-476e-a4b8-c4e31d433bcd' AND ItemTemplateID = 'footed_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows3' WHERE MerchantItem_ID = '8e900577-0c82-493d-93e8-0610775cc222' AND ItemTemplateID = 'footed_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows3' WHERE MerchantItem_ID = '9abe15e7-abda-443f-be88-21512c9613e5' AND ItemTemplateID = 'footed_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows3' WHERE MerchantItem_ID = '9d6b4048-6cb0-4c8b-9e14-82afdabddb3e' AND ItemTemplateID = 'flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = 'a8a3085c-157f-457e-83cf-4dd66f30ccdd' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows3' WHERE MerchantItem_ID = 'c2611ab9-2550-4763-babb-8a9830ae81d7' AND ItemTemplateID = 'blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows3' WHERE MerchantItem_ID = 'c762cce1-210d-404b-8d3b-704ba25e0a5d' AND ItemTemplateID = 'flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows3' WHERE MerchantItem_ID = 'c78e7235-13b8-4e3f-9615-0663cae89e77' AND ItemTemplateID = 'rough_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows3' WHERE MerchantItem_ID = 'd78d80dc-26f1-4e9f-b82c-b282cfe7dfd5' AND ItemTemplateID = 'rough_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's rough flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows3' WHERE MerchantItem_ID = 'e346c4ba-04e9-4b36-9727-fff9acc36c91' AND ItemTemplateID = 'bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows3' WHERE MerchantItem_ID = 'ebf273eb-de56-4f33-be31-6ea1b63b59dd' AND ItemTemplateID = 'footed_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's footed broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'fbe273eb-db90-430e-b16c-0a667fe717d7' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowArrowPiercingMerchant sold another realm's barbed footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows3' WHERE MerchantItem_ID = '0c39e7ce-55ee-40b5-abae-febee41a0ed5' AND ItemTemplateID = 'rough_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows3' WHERE MerchantItem_ID = '1fa0083d-9d9c-4854-b0a8-23e740b220aa' AND ItemTemplateID = 'clout_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = '2dc7d109-01b6-4267-9a3b-cfb0ec0533c3' AND ItemTemplateID = 'clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows3' WHERE MerchantItem_ID = '36fe141b-b392-4af8-a448-0253a0452749' AND ItemTemplateID = 'flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows3' WHERE MerchantItem_ID = '38217553-f9af-43ce-bc50-283d05db104b' AND ItemTemplateID = 'footed_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows3' WHERE MerchantItem_ID = '38de2f02-de89-4e7d-b36c-81a1b8c3df49' AND ItemTemplateID = 'footed_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows3' WHERE MerchantItem_ID = '47a16f19-99d4-4589-9f20-9ad63024a515' AND ItemTemplateID = 'rough_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = '4c05d85b-e2ae-4ce5-b496-6560ea5ffb0a' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows3' WHERE MerchantItem_ID = '568c517d-e619-4539-9b24-48a8cf4dc2b8' AND ItemTemplateID = 'blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows3' WHERE MerchantItem_ID = '7a597edd-2cfd-4b98-8392-476cf2049a6d' AND ItemTemplateID = 'clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '7eb82f93-70a8-4168-b33c-dbdab1821ea1' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's blunt footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows3' WHERE MerchantItem_ID = '917cb45d-7f4b-46ae-af3d-6d67bf4d97eb' AND ItemTemplateID = 'rough_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows3' WHERE MerchantItem_ID = '92d461ac-6fed-4b89-b548-f4de13c32005' AND ItemTemplateID = 'footed_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'a90da6bf-d122-410c-84ec-e97a02875ec9' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's barbed footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows3' WHERE MerchantItem_ID = 'ac2c5dad-af81-4db3-9edb-9bfcba4807d5' AND ItemTemplateID = 'broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = 'b395c807-d85f-4135-bb24-6b6fd5f28059' AND ItemTemplateID = 'footed_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows3' WHERE MerchantItem_ID = 'bd552547-1571-4299-9ac8-8985d6debd74' AND ItemTemplateID = 'rough_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows3' WHERE MerchantItem_ID = 'cd5eed5c-f4cd-49a3-8313-691fb6358500' AND ItemTemplateID = 'flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows3' WHERE MerchantItem_ID = 'dacf4782-91a7-4109-a0da-2dd6cc70d892' AND ItemTemplateID = 'bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows3' WHERE MerchantItem_ID = 'dc37bf6f-ce4e-4146-9ff7-9c1b484b436a' AND ItemTemplateID = 'footed_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows3' WHERE MerchantItem_ID = 'f2c23d1b-8231-4dac-81e1-7684e64e6c75' AND ItemTemplateID = 'rough_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'f3a9fb36-f802-4bd4-89eb-f64f752c9583' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's keen footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows3' WHERE MerchantItem_ID = 'f7f6a7ad-2a0d-4264-9c7b-f16365093e92' AND ItemTemplateID = 'footed_clout_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows3' WHERE MerchantItem_ID = 'f7f6dd59-9ff1-43a2-94e7-0f8d02404929' AND ItemTemplateID = 'flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows3' WHERE MerchantItem_ID = 'fc5502ed-26f1-4a9d-90ff-8adb1e6bc898' AND ItemTemplateID = 'footed_flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's footed flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'ff7d33bf-7844-47f3-ba3d-615b089afd9c' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: HibBowPiercingMerchant sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows3' WHERE MerchantItem_ID = '10df7d7e-a901-4d6b-b3bf-9d323caf5312' AND ItemTemplateID = 'footed_clout_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = '287cee4d-c354-4c70-b302-f6c8a077b538' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows3' WHERE MerchantItem_ID = '2af79e3e-7039-4ecc-a416-d690443de7be' AND ItemTemplateID = 'flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = '345a5e38-268c-4c13-a7d2-114fe45ef326' AND ItemTemplateID = 'clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '4d7f5783-c23e-4f84-bf17-956e3647bf9c' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's barbed footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows3' WHERE MerchantItem_ID = '51e09ee3-2e94-4384-9d30-bb16dff33e18' AND ItemTemplateID = 'bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows3' WHERE MerchantItem_ID = '6247037a-1228-48b6-b885-21eca1ab8609' AND ItemTemplateID = 'footed_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows3' WHERE MerchantItem_ID = '6bbdba0c-49c6-4bf4-9e0b-ba252075e03c' AND ItemTemplateID = 'footed_flight_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed flight blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = '6c236932-5772-48a7-9928-e28fa512a827' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's keen footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows3' WHERE MerchantItem_ID = '79082a3d-7a8d-4b10-8caa-506ffcbb4948' AND ItemTemplateID = 'footed_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows3' WHERE MerchantItem_ID = '8a6d57f3-0460-4729-b0e0-0dab6a229aa0' AND ItemTemplateID = 'footed_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows3' WHERE MerchantItem_ID = '8c3e95eb-56bc-499f-b77c-76f2ce75ff63' AND ItemTemplateID = 'rough_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = '96a86453-e8fa-4109-bcda-84802a5fe5d7' AND ItemTemplateID = 'footed_clout_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = '98178142-7b40-4303-afce-779572dcac27' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows3' WHERE MerchantItem_ID = 'a1074b41-fb32-404e-805f-860d51ab35ea' AND ItemTemplateID = 'rough_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows3' WHERE MerchantItem_ID = 'b042234a-381f-4bf6-8461-78358ffa67cf' AND ItemTemplateID = 'blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'b8b92e96-a887-4ea7-a9e0-6630879f117c' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's blunt footed flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows3' WHERE MerchantItem_ID = 'c1528a64-399b-48da-b80c-96df402afea9' AND ItemTemplateID = 'rough_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows3' WHERE MerchantItem_ID = 'c3d793bc-2084-480b-9ab2-a79fb1e4cd67' AND ItemTemplateID = 'flight_broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows3' WHERE MerchantItem_ID = 'c68c4954-74b0-4fe4-a457-13054d1c2089' AND ItemTemplateID = 'footed_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's footed blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows3' WHERE MerchantItem_ID = 'ca991d8d-307d-4430-9dff-d77143c51e7e' AND ItemTemplateID = 'clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows3' WHERE MerchantItem_ID = 'd8dfdc0f-8257-48c6-872b-b98d526bca4b' AND ItemTemplateID = 'broadhead_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows3' WHERE MerchantItem_ID = 'da52328f-1337-424a-bf3e-d4dd257c0b8a' AND ItemTemplateID = 'rough_flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows3' WHERE MerchantItem_ID = 'ec514f74-a36d-4278-98ee-919bdd9a8658' AND ItemTemplateID = 'clout_blunt_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's clout blunt arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows3' WHERE MerchantItem_ID = 'fd8b4e39-d078-4ba8-a0f9-2e204076af3d' AND ItemTemplateID = 'rough_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's rough bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows3' WHERE MerchantItem_ID = 'fe1fdff7-154c-41f9-941c-7260ab2fd13d' AND ItemTemplateID = 'flight_bodkin_arrows2'",
+   "reason": "True 1.65 arrows: HibWeaponMerchant sold another realm's flight bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows3' WHERE MerchantItem_ID = '0dd70a44-81da-4415-bcad-af58d8acb0ab' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: Kelsi sold another realm's rough clout bodkin arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows3' WHERE MerchantItem_ID = '7037fa44-202e-471b-9b99-48df04dcd14d' AND ItemTemplateID = 'footed_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: Kelsi sold another realm's footed clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows3' WHERE MerchantItem_ID = 'b1fadac2-59f1-49eb-b96c-1bfaafb7a5c2' AND ItemTemplateID = 'clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: Kelsi sold another realm's clout broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows3' WHERE MerchantItem_ID = 'd0924f56-f307-4a84-9de7-929089c40bd3' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: Kelsi sold another realm's rough flight broadhead arrows; now the Hibernia copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows2' WHERE MerchantItem_ID = '0953e7d94-cf14-4ba3-9bb9-015eaa5eb043' AND ItemTemplateID = 'flight_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_blunt_arrows2' WHERE MerchantItem_ID = '0e293a901-2d2c-4594-bec1-7c2f9621723f' AND ItemTemplateID = 'flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's flight blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows2' WHERE MerchantItem_ID = '2021b4efc-47a7-4d7a-9879-a6b7e1c05323' AND ItemTemplateID = 'footed_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_footed_flight_broadhead_arrows2' WHERE MerchantItem_ID = '289ae3bda-b92c-4ac4-9834-d78da04add69' AND ItemTemplateID = 'blunt_footed_flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's blunt footed flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_blunt_arrows2' WHERE MerchantItem_ID = '2d83ece59-d860-447c-8515-d070f176e389' AND ItemTemplateID = 'footed_flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed flight blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows2' WHERE MerchantItem_ID = '391f1dabe-24e2-410b-8da0-5c3019df39df' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's keen footed flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_blunt_arrows2' WHERE MerchantItem_ID = '5fb463bbf-948b-4997-8063-b92736147914' AND ItemTemplateID = 'footed_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_broadhead_arrows2' WHERE MerchantItem_ID = '6413adfdc-b1bf-4ba6-b100-c94fd569cc1d' AND ItemTemplateID = 'flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'broadhead_arrows2' WHERE MerchantItem_ID = '6b1635c24-30a6-477e-a397-17a3be4d737d' AND ItemTemplateID = 'broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_broadhead_arrows2' WHERE MerchantItem_ID = '6c1f73348-9c9e-4c81-9918-447d0894ba67' AND ItemTemplateID = 'footed_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blunt_arrows2' WHERE MerchantItem_ID = '705f5f839-2127-4214-a609-1ccb3da2f942' AND ItemTemplateID = 'blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'bodkin_arrows2' WHERE MerchantItem_ID = '710c44360-1c2b-4294-95b0-8ffbb5e578d8' AND ItemTemplateID = 'bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows2' WHERE MerchantItem_ID = '78df174b6-c47e-4b4f-884e-4e6518ada1aa' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'barbed_footed_flight_broadhead_arrows2' WHERE MerchantItem_ID = '79c2833b7-a13c-4341-a8fc-35f543c6d2cb' AND ItemTemplateID = 'barbed_footed_flight_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's barbed footed flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_bodkin_arrows2' WHERE MerchantItem_ID = '7a6d78378-408b-4a71-86c6-7a8f3c235262' AND ItemTemplateID = 'footed_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_bodkin_arrows2' WHERE MerchantItem_ID = '7eec3cde9-bbc0-49e9-abd3-8bb689ea8894' AND ItemTemplateID = 'footed_clout_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed clout bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_blunt_arrows2' WHERE MerchantItem_ID = '7f7d6f3b4-fabb-4bf1-9210-baf907a06dee' AND ItemTemplateID = 'rough_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows2' WHERE MerchantItem_ID = '823d34ab8-639d-4768-ad58-9947e74b4a0d' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough clout bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_bodkin_arrows2' WHERE MerchantItem_ID = '8f3f33e5e-1dfb-4d44-a131-1cd37e088ffd' AND ItemTemplateID = 'rough_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_blunt_arrows2' WHERE MerchantItem_ID = '9e2309b49-1eb2-4fcf-b5bb-99eb26f2b12f' AND ItemTemplateID = 'clout_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's clout blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows2' WHERE MerchantItem_ID = 'b8f937da1-0a74-49ac-84ef-99662f1bee60' AND ItemTemplateID = 'clout_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's clout bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_broadhead_arrows2' WHERE MerchantItem_ID = 'bb0334d48-9254-4eb1-a7dd-290036c34a7e' AND ItemTemplateID = 'footed_clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's footed clout broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_broadhead_arrows2' WHERE MerchantItem_ID = 'c23b6faa8-e764-4de3-ac3a-96e5809b7491' AND ItemTemplateID = 'rough_clout_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough clout broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_bodkin_arrows2' WHERE MerchantItem_ID = 'd02f31966-2d16-4b0b-94f7-385fcb1e4732' AND ItemTemplateID = 'rough_flight_bodkin_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_broadhead_arrows2' WHERE MerchantItem_ID = 'e3213a840-cb5d-49a1-ae34-60f5c6ccc045' AND ItemTemplateID = 'rough_broadhead_arrows3'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's rough broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_broadhead_arrows2' WHERE MerchantItem_ID = 'e613f225e-500a-42d0-b35e-ebed1c27a667' AND ItemTemplateID = 'clout_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidSpearsBowsArrows sold another realm's clout broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_blunt_arrows2' WHERE MerchantItem_ID = '099246f7-049b-4208-8e7a-8c786b672c45' AND ItemTemplateID = 'rough_flight_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidThrowingArrowsPoisons sold another realm's rough flight blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_clout_bodkin_arrows2' WHERE MerchantItem_ID = '3139a177-161f-4611-a70c-e56db76fc473' AND ItemTemplateID = 'rough_clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidThrowingArrowsPoisons sold another realm's rough clout bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows2' WHERE MerchantItem_ID = '75dca8ad-1b63-462b-9ba5-7a4b4e7c14de' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidThrowingArrowsPoisons sold another realm's rough flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'clout_bodkin_arrows2' WHERE MerchantItem_ID = '9e3ac365-fab6-468e-b2e7-0ec409c9a42c' AND ItemTemplateID = 'clout_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidThrowingArrowsPoisons sold another realm's clout bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_clout_blunt_arrows2' WHERE MerchantItem_ID = 'b4fd06fb-cf93-4344-8a99-d8b694a15e0e' AND ItemTemplateID = 'footed_clout_blunt_arrows3'",
+   "reason": "True 1.65 arrows: MidThrowingArrowsPoisons sold another realm's footed clout blunt arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'footed_flight_bodkin_arrows2' WHERE MerchantItem_ID = '62678403-a63c-4466-8fbf-735cd9cdda9f' AND ItemTemplateID = 'footed_flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidWeaponMerchant7 sold another realm's footed flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rough_flight_broadhead_arrows2' WHERE MerchantItem_ID = '94700cb1-60ef-49e1-8c93-645e88e837e5' AND ItemTemplateID = 'rough_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidWeaponMerchant7 sold another realm's rough flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'keen_footed_flight_broadhead_arrows2' WHERE MerchantItem_ID = 'aa442593-97d5-4569-9dc7-0e03c6f0ca08' AND ItemTemplateID = 'keen_footed_flight_broadhead_arrows'",
+   "reason": "True 1.65 arrows: MidWeaponMerchant7 sold another realm's keen footed flight broadhead arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows2' WHERE MerchantItem_ID = 'e10884db-264c-492a-9610-958fc8f0a4b3' AND ItemTemplateID = 'flight_bodkin_arrows'",
+   "reason": "True 1.65 arrows: MidWeaponMerchant7 sold another realm's flight bodkin arrows; now the Midgard copy"
   }
  ]
 }
