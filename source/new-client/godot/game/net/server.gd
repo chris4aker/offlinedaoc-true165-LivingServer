@@ -1298,18 +1298,37 @@ func take_detail(d: Dictionary) -> bool:
 	return true
 
 
-## The server's map markers (your realm's bots, region units) -> the map's dots: those in the zone you are in, in its
-## metres, as WorldLink.bot_dots gave the game's own bots.
+## The server's map markers (your realm's bots, region units) -> the map's dots: those in a zone, in its metres, as
+## WorldLink.bot_dots gave the game's own bots. The server sends every bot of your realm, wherever it is (owner
+## 2026-11-05: the dots on any zone picked from the map list and on the realm maps).
 var map_markers := {}                    # marker id -> Vector4(region, x, y, z)
 
 
 func bot_dots() -> PackedVector3Array:
+	return bot_dots_in(current_zone_id())
+
+
+## The server's bot markers in any zone, in that zone's metres (the map showing a zone you are not in - owner
+## 2026-11-05: "show them in all zones too as I move between the map list same as the quest markers").
+func bot_dots_in(zid: int) -> PackedVector3Array:
 	var out := PackedVector3Array()
+	var box := zone_box(zid)
+	if box.is_empty():
+		return out
 	for id in map_markers:
 		if int(id) < GIVER_MARKERS:
-			var p := _marker_here(map_markers[id])
-			if p != Vector3.INF:
-				out.append(p)
+			var v: Vector4 = map_markers[id]
+			if in_box(box, v):
+				out.append(to_local(zid, v.y, v.z, v.w))
+	return out
+
+
+## Every bot marker (Vector4 region, x, y, z in region units), for the realm maps' dots (owner 2026-11-05).
+func bot_markers() -> Array:
+	var out := []
+	for id in map_markers:
+		if int(id) < GIVER_MARKERS:
+			out.append(map_markers[id])
 	return out
 
 
@@ -1333,36 +1352,42 @@ static func _marker_kind(id: int) -> String:
 
 
 func quest_map_marks() -> Array:
-	var out := []
-	for id in map_markers:
-		if int(id) >= GIVER_MARKERS:
-			var p := _marker_here(map_markers[id])
-			if p != Vector3.INF:
-				out.append({"at": Vector2(p.x, p.z), "kind": _marker_kind(int(id))})
-	return out
+	return quest_map_marks_in(current_zone_id())
 
 
 ## The server's quest / turn-in markers in another zone (the map showing a zone you are not in: the inn's turn-in seen
 ## from your starting zone).
 func quest_map_marks_in(zid: int) -> Array:
 	var out := []
-	var region := int(zone_info(zid).get("region", -1))
+	var box := zone_box(zid)
+	if box.is_empty():
+		return out
 	for id in map_markers:
-		var v: Vector4 = map_markers[id]
-		if int(id) < GIVER_MARKERS or int(v.x) != region or zone_at(region, v.y, v.z) != zid:
-			continue
-		var p := to_local(zid, v.y, v.z, v.w)
-		out.append({"at": Vector2(p.x, p.z), "kind": _marker_kind(int(id))})
+		if int(id) >= GIVER_MARKERS:
+			var v: Vector4 = map_markers[id]
+			if in_box(box, v):
+				var p := to_local(zid, v.y, v.z, v.w)
+				out.append({"at": Vector2(p.x, p.z), "kind": _marker_kind(int(id))})
 	return out
 
 
-## A marker (region units) in the zone you are in -> its metres, else INF.
-func _marker_here(v: Vector4) -> Vector3:
-	var zid := current_zone_id()
-	var region := int(zone_info(zid).get("region", -1))
-	if int(v.x) != region or zone_at(region, v.y, v.z) != zid:
-		return Vector3.INF
-	return to_local(zid, v.y, v.z, v.w)
+## A zone's square in region units [region, left, top, right, bottom] (its zones.dat offsets in 8192-unit blocks), to
+## test many markers against one zone: zone_at walks every zone of the game for each, too slow for thousands of bot
+## markers a frame (owner 2026-11-05: 1,000-2,000 bots a realm).
+func zone_box(zid: int) -> Array:
+	var z := zone_info(zid)
+	if z.is_empty():
+		return []
+	var x0 := float(z.get("x", 0)) * 8192.0
+	var y0 := float(z.get("y", 0)) * 8192.0
+	return [int(z.get("region", -1)), x0, y0, x0 + float(z.get("w", 0)) * 8192.0, y0 + float(z.get("h", 0)) * 8192.0]
+
+
+## A marker (Vector4 region, x, y, z) inside a zone_box.
+static func in_box(box: Array, v: Vector4) -> bool:
+	if int(v.x) != int(box[0]):
+		return false
+	return v.y >= float(box[1]) and v.y < float(box[3]) and v.z >= float(box[2]) and v.z < float(box[4])
 
 
 func effects_list() -> Array:

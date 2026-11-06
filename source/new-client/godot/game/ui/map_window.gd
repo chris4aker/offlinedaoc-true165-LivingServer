@@ -6,7 +6,8 @@ extends ClassicWindow
 ##     maps (r###) with each zone's square on them - click a square to open that zone;
 ##   - the dropdown finds any map (realm overview, its zones, their areas);
 ##   - FOLLOW keeps the map on where you are (the zone, or the area map you stand in); picking a map turns it off.
-## The player's arrow shows on any map that holds the spot; quest marks on zone / area maps.
+## The player's arrow shows on any map that holds the spot; quest marks on zone / area maps; your realm's bots as green
+## dots on every zone / area map and, small, on the realm maps (owner 2026-11-05).
 
 const MAP_SIZE := 260.0
 const TOP := 43.0                         # title + dropdown row above the picture
@@ -351,6 +352,7 @@ func _add_entry(text: String, what: Dictionary, header: bool) -> void:
 var _zone_npcs := {}                       # zone -> [[name, x, z], ...] its realm NPCs (from its npcs.json)
 var _quest_cache := {}                     # zone -> [{at, kind}] (rebuilt when your quests / level change)
 var _quest_key := []
+var _zone_sizes := {}                      # zone -> its size in metres (its zone.json, read once)
 
 
 ## Quest marks for any zone (owner: see the quests you can take in a zone without being there). The current zone uses
@@ -359,9 +361,13 @@ var _quest_key := []
 func _zone_size_of(z: int) -> float:
 	if z == current_zone:
 		return zone_size
-	var info := "res://content/zones/zone%03d/zone.json" % z
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(info)) if FileAccess.file_exists(info) else null
-	return float((parsed as Dictionary).get("size_m", 1638.4)) if parsed is Dictionary else 1638.4
+	# read once per zone (2026-11-05: the map asks for every mark and bot dot; parsing zone.json each time took a zone
+	# map with 200 bots to 2.8 s a refresh)
+	if not _zone_sizes.has(z):
+		var info := "res://content/zones/zone%03d/zone.json" % z
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(info)) if FileAccess.file_exists(info) else null
+		_zone_sizes[z] = float((parsed as Dictionary).get("size_m", 1638.4)) if parsed is Dictionary else 1638.4
+	return float(_zone_sizes[z])
 
 
 func zone_quest_marks(z: int) -> Array:
@@ -508,6 +514,43 @@ class MapView extends Control:
 		else:
 			ci.draw_circle(at, r * 0.36, st[3])                                       # a heart in the sign's colour
 
+	## Your realm's bots on the map shown, as fractions (0..1) across it: any zone of the list wherever you are, and on
+	## the realm maps every bot on its zone's block (owner 2026-11-05). Worked out at most every 0.3 s: the map redraws
+	## every frame, a realm can hold thousands of bots, and the server moves each at most every 4 s (your zone) or 12 s.
+	var _bots_for := {}
+	var _bots_at := -1000000
+	var _bots := PackedVector2Array()
+
+	func _bot_fracs() -> PackedVector2Array:
+		var w := window
+		var now := Time.get_ticks_msec()
+		if w.shown == _bots_for and now - _bots_at < 300:
+			return _bots
+		_bots_for = w.shown.duplicate()
+		_bots_at = now
+		_bots = PackedVector2Array()
+		var id := int(w.shown.get("id", -1))
+		if String(w.shown.get("kind", "")) == "region":
+			var blocks := []                                 # [zone box (region units), its square on the picture]
+			for q in w._region(id).get("zones", []):
+				var box: Array = Server.zone_box(int(q.zone))
+				if not box.is_empty():
+					blocks.append([box, Rect2(float(q.left), float(q.top), float(q.width), float(q.height))])
+			for v in WorldLink.bot_markers():
+				for b in blocks:
+					var box: Array = b[0]
+					if Server.in_box(box, v):
+						var sq: Rect2 = b[1]
+						var rel := Vector2((float(v.y) - float(box[1])) / (float(box[3]) - float(box[1])),
+								(float(v.z) - float(box[2])) / (float(box[4]) - float(box[2])))
+						_bots.append((sq.position + rel * sq.size) / 256.0)
+						break
+			return _bots
+		var pts: PackedVector3Array = WorldLink.bot_dots() if id == w.current_zone else WorldLink.bot_dots_in(id)
+		for b in pts:
+			_bots.append(_mark_frac(Vector2(b.x, b.z) / 0.025))
+		return _bots
+
 	## The mark under the pointer, its words (the hover text), else "".
 	func mark_words_at(p: Vector2) -> String:
 		for d in _drawn_marks:
@@ -642,16 +685,16 @@ class MapView extends Control:
 					continue
 				draw_mark(self, mp, String(m.kind))
 				_drawn_marks.append([mp, String(m.kind)])
-			# your realm's gamebots and companions in this zone as green dots (bot plan phase 3, owner: also in
-			# dungeons; enemy bots never; Options > BOTS > REALM BOTS ON MAP)
+			# your realm's gamebots as green dots on any zone's map, wherever you are (bot plan phase 3, owner: also in
+			# dungeons; enemy bots never; owner 2026-11-05: every zone of the list, not only yours; Options > BOTS >
+			# REALM BOTS ON MAP)
+			for bf in _bot_fracs():
+				var bp: Vector2 = bf * size
+				if bp.x < 0 or not Rect2(Vector2.ZERO, size).has_point(bp):
+					continue
+				draw_circle(bp, 2.8, Color(0.02, 0.08, 0.02))
+				draw_circle(bp, 2.0, Color(0.3, 0.95, 0.3))
 			if int(w.shown.get("id", -1)) == w.current_zone:
-				for b in WorldLink.bot_dots():
-					var bf := _mark_frac(Vector2(b.x, b.z) / 0.025)
-					var bp := bf * size
-					if bf.x < 0 or not Rect2(Vector2.ZERO, size).has_point(bp):
-						continue
-					draw_circle(bp, 2.8, Color(0.02, 0.08, 0.02))
-					draw_circle(bp, 2.0, Color(0.3, 0.95, 0.3))
 				# your companions in blue - their own colour (owner 2026-10-11: the orange looked like an in-progress quest
 				# mark; blue is used for nothing else on the map)
 				for c in WorldLink.companion_dots():
@@ -661,6 +704,15 @@ class MapView extends Control:
 						continue
 					draw_circle(cpt, 3.0, Color(0.0, 0.03, 0.1))
 					draw_circle(cpt, 2.2, Color8(70, 150, 255))
+		else:
+			# the realm maps: every bot of your realm as a small dot on its zone's block (owner 2026-11-05: "little green
+			# dots all over the game world on that large realm map"); no quest marks here (owner 2026-11-05). Squares,
+			# not circles: thousands of them a frame.
+			var d := clampf(size.x / 200.0, 1.0, 2.0)
+			for bf in _bot_fracs():
+				var bp: Vector2 = bf * size
+				draw_rect(Rect2(bp - Vector2(d, d), Vector2(d, d) * 2.0), Color(0.02, 0.08, 0.02))
+				draw_rect(Rect2(bp - Vector2(d, d) * 0.55, Vector2(d, d) * 1.1), Color(0.3, 0.95, 0.3))
 		# the roadside inns are shelved (owner 2026-10-11: 0.36c is the Claude version's world 1:1 - no inns on Avalon
 		# Marsh / Myrkwood / Shannon Estuary); the drawing stays for if they come back ("INNS AND CUSTOM SYSTEMS (SHELVED).md")
 		if SHOW_INNS and String(w.shown.get("kind", "")) == "zone":

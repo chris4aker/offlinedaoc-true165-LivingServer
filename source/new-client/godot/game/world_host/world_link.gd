@@ -88,6 +88,21 @@ func bot_dots() -> PackedVector3Array:
 	return PackedVector3Array(bots.call("FriendlyDots", PlayerData.realm_key()))
 
 
+## Your realm's bots in any zone (the map showing another zone than yours - owner 2026-11-05), in that zone's metres;
+## none offline (the game's own bots are drawn in your zone only) or with REALM BOTS ON MAP off.
+func bot_dots_in(zone_id: int) -> PackedVector3Array:
+	if Server.active and BotView.option("map_dots"):
+		return Server.bot_dots_in(zone_id)
+	return PackedVector3Array()
+
+
+## Every bot of your realm the server marks (Vector4 region, x, y, z) - the realm maps' dots (owner 2026-11-05).
+func bot_markers() -> Array:
+	if Server.active and BotView.option("map_dots"):
+		return Server.bot_markers()
+	return []
+
+
 ## Your companions in your zone, for the map (their own colour - owner 2026-10-11).
 func companion_dots() -> PackedVector3Array:
 	return PackedVector3Array(bots.call("CompanionDots")) if bots else PackedVector3Array()
