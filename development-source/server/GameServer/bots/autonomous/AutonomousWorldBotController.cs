@@ -3433,9 +3433,8 @@ namespace DOL.GS
                 bool IsValidCampLevel(int level)
                     {
                         if (sharedGroup)
-                            return level >= planningLevel + 3 &&
-                                level <= planningLevel + _groupDirective.PreferredLevelBonus &&
-                                ConLevels.GetConColor(ConLevels.GetConLevel(highestMemberLevel, level)) > ConColor.GREY;
+                            return AutonomousGroupTargetPolicy.IsGroupCampLevel(level, planningLevel,
+                                _groupDirective.PreferredLevelBonus, highestMemberLevel, groupSize);
                         ConColor con = ConLevels.GetConColor(ConLevels.GetConLevel(bot.EffectiveLevel, level));
                         // Retain every naturally valid non-grey option in the
                         // catalog. The requested death ceiling is applied below,

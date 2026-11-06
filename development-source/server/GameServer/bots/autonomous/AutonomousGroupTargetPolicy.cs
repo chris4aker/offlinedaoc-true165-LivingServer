@@ -54,7 +54,7 @@ namespace DOL.GS
             // the highest level that fits; level 10 and up keep the +3..+10 rule unchanged.
             if (averageLevel < 10)
             {
-                ConColor cap = groupSize >= 8 ? ConColor.RED : groupSize >= 4 ? ConColor.ORANGE : ConColor.YELLOW;
+                ConColor cap = LowLevelGroupCap(groupSize);
                 ConColor Con(int level) => ConLevels.GetConColor(ConLevels.GetConLevel(averageLevel, level));
                 int capped = 0;
                 foreach (int level in all)
@@ -73,5 +73,26 @@ namespace DOL.GS
             return best;
         }
 
+        /// <summary>The group challenge colour a party below level 10 aims for (2-3 yellow, 4-7 orange, 8 red).</summary>
+        public static ConColor LowLevelGroupCap(int groupSize) =>
+            groupSize >= 8 ? ConColor.RED : groupSize >= 4 ? ConColor.ORANGE : ConColor.YELLOW;
+
+        /// <summary>
+        /// A camp level a party may plan for: never grey to its highest member, and inside the window
+        /// SelectFixedEightManLevel picks from. Below level 10 that is yellow up to the group cap; the old +3 floor
+        /// there kept only purple levels, so the selector found none and low-level parties got no camp or a
+        /// level-0 target (2026-11-06 run: 13 of 17 low-level group tasks ended "No reachable non-grey group camp").
+        /// </summary>
+        public static bool IsGroupCampLevel(int level, int averageLevel, int rolledBonus, int highestMemberLevel, int groupSize)
+        {
+            if (ConLevels.GetConColor(ConLevels.GetConLevel(highestMemberLevel, level)) <= ConColor.GREY)
+                return false;
+            if (averageLevel < 10)
+            {
+                ConColor con = ConLevels.GetConColor(ConLevels.GetConLevel(averageLevel, level));
+                return con >= ConColor.YELLOW && con <= LowLevelGroupCap(groupSize);
+            }
+            return level >= averageLevel + 3 && level <= averageLevel + rolledBonus;
+        }
     }
 }

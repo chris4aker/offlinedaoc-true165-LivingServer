@@ -81,6 +81,40 @@ namespace DOL.UnitTests
                 Assert.That(AutonomousPveTargetPolicy.IsAssignedTarget(shared.MonsterName, "frog", level), Is.True);
         }
 
+        [Test] public void LowLevelPartiesFindACampTheSelectorAccepts()
+        {
+            // 2026-11-06 run: the camp filter kept only +3 levels (purple below 10), the selector capped at orange,
+            // so low-level parties got no camp or a level-0 target.
+            for (int average = 1; average <= 9; average++)
+            for (int size = 2; size <= 8; size++)
+            for (int highest = average; highest <= average + 2; highest++)
+            for (int bonus = 3; bonus <= 10; bonus++)
+            {
+                int[] kept = Enumerable.Range(0, 60).Where(level =>
+                    AutonomousGroupTargetPolicy.IsGroupCampLevel(level, average, bonus, highest, size)).ToArray();
+                Assert.That(kept, Is.Not.Empty, $"average {average} size {size} highest {highest}");
+                int selected = AutonomousGroupTargetPolicy.SelectFixedEightManLevel(kept, average, bonus, size);
+                Assert.That(selected, Is.GreaterThan(0));
+                Assert.That(kept, Does.Contain(selected));
+                ConColor con = ConLevels.GetConColor(ConLevels.GetConLevel(average, selected));
+                Assert.That(con, Is.InRange(ConColor.YELLOW, AutonomousGroupTargetPolicy.LowLevelGroupCap(size)));
+            }
+        }
+
+        [Test] public void GroupCampLevelKeepsTheOldWindowFromLevelTen()
+        {
+            for (int average = 10; average <= 49; average++)
+            for (int bonus = 3; bonus <= 10; bonus++)
+            for (int level = 1; level <= 70; level++)
+            {
+                bool old = level >= average + 3 && level <= average + bonus &&
+                    ConLevels.GetConColor(ConLevels.GetConLevel(average + 2, level)) > ConColor.GREY;
+                Assert.That(AutonomousGroupTargetPolicy.IsGroupCampLevel(level, average, bonus, average + 2, 8), Is.EqualTo(old));
+            }
+            // grey to the highest member is never a camp, low levels included
+            Assert.That(AutonomousGroupTargetPolicy.IsGroupCampLevel(4, 4, 3, 9, 5), Is.False);
+        }
+
         [Test] public void AllLevelsAndGroupSizesStepDownUntilOnlyNonGreyFloorRemains()
         {
             for (int average = 1; average <= 50; average++)
