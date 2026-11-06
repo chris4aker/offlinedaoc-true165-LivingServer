@@ -92,6 +92,8 @@ namespace DOL.GS
             // Not in the 1.64 client's command list or the DAoC manual (owner 2026-11-01: "if these were period accurate
             // leave them in"; /transfercorpse is in both and stays): weapon slot swap, bag selling, crafting macro, chat.
             "&switch", "&sell", "&craftmacro", "&faction",
+            // Battlegroups and battlegroup chat (/bg, /bc) came with patch 1.66j (Oct 2003), after 1.65.
+            "&battlegroup", "&battlechat",
         ];
 
         private static readonly Logging.Logger ClickLog = Logging.LoggerManager.Create(typeof(Classic165Mode));

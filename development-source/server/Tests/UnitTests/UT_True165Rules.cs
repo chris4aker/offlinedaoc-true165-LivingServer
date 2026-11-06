@@ -42,6 +42,19 @@ namespace DOL.UnitTests
             Assert.That(Classic165Mode.IsGmOnlyCommand(command), Is.False, "normal mode keeps every command");
         }
 
+        // Battlegroups came with 1.66j (Oct 2003). /bg and /bc are aliases, so the check sees the canonical names.
+        [TestCase(typeof(DOL.GS.Commands.BattleGroupSetupCommandHandler), "&bg")]
+        [TestCase(typeof(DOL.GS.Commands.BattleGroupCommandHandler), "&bc")]
+        public void BattlegroupCommandsAreGmOnlyIn165Mode(System.Type handler, string alias)
+        {
+            var attrib = (DOL.GS.CmdAttribute) System.Attribute.GetCustomAttribute(handler, typeof(DOL.GS.CmdAttribute));
+            Assert.That(attrib.Aliases, Does.Contain(alias));
+            Properties.CLASSIC165_MODE = true;
+            Assert.That(Classic165Mode.IsGmOnlyCommand(attrib.Cmd), Is.True);
+            Properties.CLASSIC165_MODE = false;
+            Assert.That(Classic165Mode.IsGmOnlyCommand(attrib.Cmd), Is.False, "normal mode keeps battlegroups");
+        }
+
         [TestCase("&say")]
         [TestCase("&AUTOLOOT")]   // a player option again (Autoloot165, owner 2026-11-05)
         [TestCase("&stuck")]
