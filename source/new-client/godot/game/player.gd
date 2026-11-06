@@ -37,6 +37,8 @@ const CLASSIC_BACK_SPEED := 75.0 * 0.025
 #   sees); 3. walls: the collider is tested against collision geometry only, contact normals flattened (pure walls);
 #   4. second pick: floor within 1 unit below -> stand on it, else airborne and gravity takes over (no step-down snap).
 const PICK_LIFT := 64.0 * 0.025
+const FLOOR_MAX_SLOPE := 60.0                      # degrees: a steeper face (a wall, a keep's sloped wall) is no floor
+const FLOOR_MIN_NORMAL_Y := 0.5                  # cos(FLOOR_MAX_SLOPE)
 const FLOOR_SNAP := 1.0 * 0.025
 const FALL_HEIGHT := 16.0 * 0.025       # client: only more than 16 units above the floor counts as falling (fall flags at
                                        # game.dll 0x4369e0); smaller drops while walking (downhill, off a step) follow the
@@ -1278,12 +1280,27 @@ func _floor_below(p: Vector3, feet_before: float) -> float:
 		var t := _ground_h(p.x, p.z)
 		if t <= start:
 			best = t
-	var q := PhysicsRayQueryParameters3D.create(Vector3(p.x, start, p.z), Vector3(p.x, start - 500.0, p.z),
-			ZoneLoader.LAYER_FLOOR)
-	q.hit_back_faces = false
-	var hit := get_world_3d().direct_space_state.intersect_ray(q)
-	if hit and hit.position.y > best:
-		best = hit.position.y
+	# a face steeper than FLOOR_MAX_SLOPE is no floor: the pick goes on below it (owner 2026-11-06: a caster climbed a
+	# keep wall - every visible face of an object is on the floor layer, and the slightly sloped faces, ledges and
+	# battlements of a keep wall each lifted you up to 64 units onto the next. Period: patches 2001-09-17 "You can no
+	# longer jump into the corner of an object (like a keep or a castle) and "climb" the wall", 2001-10-04 / 12-18 the
+	# Midgard and Hibernian keep walls; from 1.42 only assassins with the Climb ability climb keeps, at their climb
+	# points.) Stairs, ramps and ground stay floors.
+	var space := get_world_3d().direct_space_state
+	var from_y := start
+	for _i in 6:
+		var q := PhysicsRayQueryParameters3D.create(Vector3(p.x, from_y, p.z), Vector3(p.x, start - 500.0, p.z),
+				ZoneLoader.LAYER_FLOOR)
+		q.hit_back_faces = false
+		var hit := space.intersect_ray(q)
+		if hit.is_empty():
+			break
+		if (hit.normal as Vector3).y < FLOOR_MIN_NORMAL_Y:
+			from_y = float(hit.position.y) - 0.01            # (too steep to stand on: look below it)
+			continue
+		if hit.position.y > best:
+			best = hit.position.y
+		break
 	return best
 
 

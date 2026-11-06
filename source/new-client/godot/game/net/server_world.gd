@@ -1191,6 +1191,10 @@ func _move_ridden(s: NpcState, mv: Dictionary, step: float, delta: float) -> voi
 			var srv := Vector3(sin(float(mv.heading)), 0.0, cos(float(mv.heading)))
 			if to.normalized().dot(srv) > 0.5:
 				aim = atan2(to.x, to.z)
+	# still turning (more than 25 degrees to go - a sharp bend of the route): the gap to the side is left to the turn,
+	# not slid off sideways (owner 2026-11-06: Mularn -> Svasud Faste, the horse overshot a 90-degree bend and slid
+	# sideways back onto the route); once it faces its way the gap is ahead of it and paced off
+	var turning := absf(angle_difference(s.yaw, aim)) > deg_to_rad(25.0)
 	s.yaw = lerp_angle(s.yaw, aim, minf(1.0, delta * 6.0))
 	# the gap to the server's place (_move keeps it): the part along its way is paced off (step + up to 1 s of it per
 	# second, never below 0 or above 1.5 steps), the part to the side eased in
@@ -1200,7 +1204,7 @@ func _move_ridden(s: NpcState, mv: Dictionary, step: float, delta: float) -> voi
 	var along := err.dot(ahead)
 	var side := err - ahead * along
 	var adv := clampf(step + along * minf(1.0, delta), 0.0, step * 1.5)
-	var fix_side := side * minf(1.0, delta * 3.0)
+	var fix_side := Vector3.ZERO if turning else side * minf(1.0, delta * 3.0)
 	s.pos += ahead * adv + fix_side
 	mv["err"] = ahead * (along - (adv - step)) + (side - fix_side)
 	if String(s.info.get("figure", "")).to_lower() in FLIER_FIGURES:

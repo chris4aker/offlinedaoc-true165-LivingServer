@@ -101,6 +101,8 @@ hold). Its changelog has the history of everything this version inherits.
 - Raids: a realm raid's high-end boss loot is shared out again - a quarter straight to the players' bags, the rest to the raid's gamebots; in True 1.65 it had stayed on the ground.
 - Gamebots: your hired companions no longer take gamebots' places - with three companions out, three gamebots stayed offline ("queued") because the companions were counted toward the gamebot population.
 - Trainers: hovering a realm ability in the trainer window shows what it does, from the server's own description (the window never asked for it before).
+- Movement: you can no longer walk up a keep wall step by step: a face steeper than 60 degrees no longer counts as ground (period: climbing keep walls was removed in 2001; from 1.42 only assassins with the Climb ability climb keeps, at their climb points).
+- Horses: at a sharp bend of a stable route (Mularn to Svasud Faste) the horse turns into the new leg instead of sliding sideways back onto it.
 
 ## 0.2 (2026-11-01)
 
