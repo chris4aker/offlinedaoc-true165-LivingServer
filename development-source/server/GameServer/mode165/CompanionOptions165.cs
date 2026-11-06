@@ -128,7 +128,17 @@ namespace DOL.GS
         public static bool CharmAllowed(GameBot bot) => Get(bot, "charm") != "0";
 
         /// <summary>The spell line of the pet the player chose (Cabalist, Enchanter), or null for the bot's own choice.</summary>
-        public static string PetLine(GameBot bot) => Get(bot, "pet");
+        public static string PetLine(GameBot bot) => HasPetChoice(bot) ? Get(bot, "pet") : null;
+
+        /// <summary>
+        /// The classes whose pets are a real choice (owner 2026-11-05): the Cabalist's simulacrums and the Enchanter's
+        /// Underhill pets each have their own perks, the Theurgist picks an element. A Bonedancer's commander, a
+        /// Spiritmaster's or a Necromancer's pet is always the best rank - no choice (a choice stored by the build that
+        /// offered one is ignored).
+        /// </summary>
+        public static bool HasPetChoice(GameBot bot) =>
+            bot?.CharacterClass != null &&
+            (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Cabalist or eCharacterClass.Enchanter or eCharacterClass.Theurgist;
 
         /// <summary>The song or chant type chosen for a situation (1 fight, 2 standing around, 3 travelling), or null.</summary>
         public static eSpellType? Song(GameBot bot, int slot) =>
@@ -152,10 +162,10 @@ namespace DOL.GS
              (eCharacterClass)bot.CharacterClass.ID != eCharacterClass.Hunter && Charm165.LearnedCharm(bot) != null);
 
         /// <summary>
-        /// The pets the player can choose (AI Options pet row; stored as the choice key). Cabalist, Enchanter and Bonedancer:
-        /// every summon the companion knows - each is its own pet with its own creature and perks (owner 2026-11-05: Amber,
-        /// Ruby, Sapphire... simulacrums; Underhill Friend ... Zealot; Bone Boss ... Bone Master commanders), keyed
-        /// "spell:&lt;id&gt;". Theurgist: one choice per element line (earth, ice, air), keyed by the line.
+        /// The pets the player can choose (AI Options pet row; stored as the choice key). Cabalist and Enchanter: every
+        /// summon the companion has learned - each is its own pet with its own creature and perks (owner 2026-11-05: Amber,
+        /// Ruby, Sapphire... simulacrums; Underhill Friend ... Zealot), keyed "spell:&lt;id&gt;". Theurgist: one choice
+        /// per element line (earth, ice, air), keyed by the line.
         /// </summary>
         private static List<(string Line, string Name)> PetLines(GameBot bot)
         {
@@ -217,7 +227,7 @@ namespace DOL.GS
             var cls = (eCharacterClass)bot.CharacterClass.ID;
             if (CanCharm(bot))
                 rows.Add(new Row(KindCharm, 0, CharmAllowed(bot) ? 1 : 0, ["Off", "On"], 0, 0));
-            if (cls is eCharacterClass.Cabalist or eCharacterClass.Enchanter or eCharacterClass.Theurgist or eCharacterClass.Bonedancer)
+            if (HasPetChoice(bot))
             {
                 var pets = PetLines(bot);
                 if (pets.Count > 1)

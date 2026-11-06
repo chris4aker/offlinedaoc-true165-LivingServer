@@ -2079,9 +2079,7 @@ public static class AutonomousPetSupport
 
         (Spell Spell, SpellLine Line) strongest = knownSpells
             .Where(entry => entry.Spell?.SpellType == eSpellType.SummonCommander &&
-                            CanCast(owner, entry.Spell) &&
-                            // a hired Bonedancer keeps the commander its player chose (AI Options pet row)
-                            (CompanionOptions165.PetLine(owner) is not string chosen || IsChosenPet(entry, chosen)))
+                            CanCast(owner, entry.Spell))
             .OrderByDescending(entry => entry.Spell.Level)
             .FirstOrDefault();
 
