@@ -2929,10 +2929,33 @@ namespace DOL.AI.Brain
             IEnumerable<GameLiving> members = spell.Target == eSpellTarget.REALM ? AutonomousRealmRaid.SupportMembers(BotBody) : group?.GetMembersInTheGroup() ?? [Body];
             // One pool: players, companions, world bots and valid attached pets.
             // Do not leave pets until every humanoid has been processed first.
-            return BotBuffReservations<GameLiving>.Choose(
-                members.Concat(BotGroupPetBuffTargets.Enumerate(BotBody, spell)),
-                target => target.IsAlive && Body.IsWithinRadius(target, range) && BuffHelps(target, spell) &&
-                    !LivingHasEffect(target, spell) && !(claims?.IsReserved(target, family, now) ?? false));
+            IEnumerable<GameLiving> pool = members.Concat(BotGroupPetBuffTargets.Enumerate(BotBody, spell));
+            bool Eligible(GameLiving target) => target.IsAlive && Body.IsWithinRadius(target, range) && BuffHelps(target, spell) &&
+                !LivingHasEffect(target, spell) && !(claims?.IsReserved(target, family, now) ?? false);
+            // True 1.65: the tanks first, then melee, healers, casters (period groups buffed the tanks first)
+            return Classic165Mode.IsOn
+                ? BotBuffReservations<GameLiving>.ChooseBest(pool, Eligible, target => BuffTargetRank(ClassOf(target)))
+                : BotBuffReservations<GameLiving>.Choose(pool, Eligible);
+        }
+
+        private static ICharacterClass ClassOf(GameLiving living) =>
+            living switch { GamePlayer p => p.CharacterClass, GameBot b => b.CharacterClass, _ => null };
+
+        /// <summary>
+        /// The order a realm buff goes out in True 1.65: tanks (0), melee and pets (1), healers (2), casters (3). Period
+        /// groups: "casters get acuity/regen buffs, tanks get str/haste", the tank buffed first.
+        /// </summary>
+        public static int BuffTargetRank(ICharacterClass cls)
+        {
+            if (cls == null)
+                return 1;   // a pet fights in melee
+            var id = (eCharacterClass)cls.ID;
+            return BotPartyRoles.For(id) switch
+            {
+                BotPartyRole.Tank => 0,
+                BotPartyRole.Support => 2,
+                _ => cls.ClassType == eClassType.ListCaster ? 3 : 1,
+            };
         }
 
         /// <summary>
@@ -2941,15 +2964,22 @@ namespace DOL.AI.Brain
         /// the tanks). Strength buffs skip pure casters; acuity buffs go only to classes that cast from a mana stat.
         /// Pets and every other buff: always.
         /// </summary>
-        internal static bool BuffHelps(GameLiving target, Spell spell)
+        internal static bool BuffHelps(GameLiving target, Spell spell) => BuffHelps(ClassOf(target), spell, Classic165Mode.IsOn);
+
+        /// <summary>
+        /// <see cref="BuffHelps(GameLiving, Spell)"/> by class. True 1.65 also: haste (the attack speed buff) skips pure
+        /// casters, who do not swing, and the single-target power regeneration buff goes only to classes that use power.
+        /// </summary>
+        public static bool BuffHelps(ICharacterClass cls, Spell spell, bool classic165)
         {
-            ICharacterClass cls = target switch { GamePlayer p => p.CharacterClass, GameBot b => b.CharacterClass, _ => null };
             if (cls == null || spell == null)
                 return true;
             return spell.SpellType switch
             {
                 eSpellType.StrengthBuff or eSpellType.StrengthConstitutionBuff => cls.ClassType != eClassType.ListCaster,
                 eSpellType.AcuityBuff => cls.ManaStat is not eStat.UNDEFINED,
+                eSpellType.CombatSpeedBuff when classic165 => cls.ClassType != eClassType.ListCaster,
+                eSpellType.PowerRegenBuff when classic165 => cls.ManaStat is not eStat.UNDEFINED,
                 _ => true,
             };
         }

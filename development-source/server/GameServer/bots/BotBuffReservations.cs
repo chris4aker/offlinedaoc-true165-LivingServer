@@ -44,5 +44,31 @@ namespace DOL.GS
                     result = candidate;
             return result;
         }
+
+        /// <summary>
+        /// The eligible candidate with the lowest rank, at random among equals. The rank is read first, so a worse-ranked
+        /// candidate is never checked for eligibility once a better one was found.
+        /// </summary>
+        public static T ChooseBest(IEnumerable<T> candidates, Func<T, bool> eligible, Func<T, int> rank, Func<int, int> roll = null)
+        {
+            T result = null;
+            int best = int.MaxValue, count = 0;
+            foreach (T candidate in candidates)
+            {
+                if (candidate == null)
+                    continue;
+                int candidateRank = rank(candidate);
+                if (candidateRank > best || !eligible(candidate))
+                    continue;
+                if (candidateRank < best)
+                {
+                    best = candidateRank;
+                    count = 0;
+                }
+                if ((roll ?? Random.Shared.Next)(++count) == 0)
+                    result = candidate;
+            }
+            return result;
+        }
     }
 }

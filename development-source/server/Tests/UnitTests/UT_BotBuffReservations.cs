@@ -53,5 +53,16 @@ namespace DOL.UnitTests
             Assert.That(BotBuffReservations<object>.Choose(pool, x => x != buffed, n => n - 1), Is.SameAs(first));
             Assert.That(BotBuffReservations<object>.Choose(pool, _ => false), Is.Null);
         }
+
+        [Test]
+        public void TheBestRankedEligibleMemberIsChosen()
+        {
+            object caster = new(), tank = new(), buffedTank = new(), melee = new();
+            object[] pool = [caster, buffedTank, melee, tank];
+            int Rank(object x) => x == caster ? 3 : x == melee ? 1 : 0;
+            Assert.That(BotBuffReservations<object>.ChooseBest(pool, x => x != buffedTank, Rank, _ => 0), Is.SameAs(tank));
+            Assert.That(BotBuffReservations<object>.ChooseBest(pool, x => x != buffedTank && x != tank, Rank, _ => 0), Is.SameAs(melee));
+            Assert.That(BotBuffReservations<object>.ChooseBest(pool, _ => false, Rank), Is.Null);
+        }
     }
 }
