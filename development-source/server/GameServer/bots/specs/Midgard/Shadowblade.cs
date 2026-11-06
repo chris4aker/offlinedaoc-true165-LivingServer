@@ -20,9 +20,9 @@ namespace DOL.GS
             {
                 eSpecType.DualWield => Util.Random(0, 3),
                 eSpecType.LeftAxe => Util.Random(0, 3),
-                eSpecType.TwoHanded => 4,
-                eSpecType.Mid => 4,
-                _ => Util.Random(4),
+                eSpecType.TwoHanded => Util.Random(4, 5),
+                eSpecType.Mid => Util.Random(4, 5),
+                _ => Util.Random(1) == 0 ? Util.Random(0, 3) : Util.Random(4, 5),
             };
 
             switch (randVariance)
@@ -38,7 +38,6 @@ namespace DOL.GS
                 break;
 
                 case 2:
-                case 3:
                 SpecType = eSpecType.LeftAxe;
                 Add(ObjToSpec(WeaponOneType), 34, 0.6f);
                 Add(Specs.Left_Axe, 50, 0.8f);
@@ -47,13 +46,32 @@ namespace DOL.GS
                 Add(Specs.Envenom, 36, 0.5f);
                 break;
 
+                // Period: weapon 50 / left axe 44, the rest stealth and envenom.
+                case 3:
+                SpecType = eSpecType.LeftAxe;
+                Add(ObjToSpec(WeaponOneType), 50, 0.8f);
+                Add(Specs.Left_Axe, 44, 0.7f);
+                Add(Specs.Stealth, 32, 0.3f);
+                Add(Specs.Envenom, 29, 0.5f);
+                break;
+
+                // Critblade (period): weapon 50 / CS 39 or 44 / 44, the rest stealth and envenom.
                 case 4:
                 Is2H = true;
                 SpecType = eSpecType.Mid;
-                Add(ObjToSpec(WeaponOneType), 39, 0.8f);
+                Add(ObjToSpec(WeaponOneType), 50, 0.9f);
+                Add(Specs.Critical_Strike, 39, 0.8f);
+                Add(Specs.Stealth, 34, 0.3f);
+                Add(Specs.Envenom, 34, 0.5f);
+                break;
+
+                case 5:
+                Is2H = true;
+                SpecType = eSpecType.Mid;
+                Add(ObjToSpec(WeaponOneType), 44, 0.8f);
                 Add(Specs.Critical_Strike, 44, 0.9f);
-                Add(Specs.Stealth, 38, 0.3f);
-                Add(Specs.Envenom, 38, 0.5f);
+                Add(Specs.Stealth, 35, 0.3f);
+                Add(Specs.Envenom, 35, 0.5f);
                 break;
             }
         }

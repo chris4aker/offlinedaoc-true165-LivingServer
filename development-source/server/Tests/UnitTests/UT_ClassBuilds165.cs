@@ -273,5 +273,18 @@ namespace DOL.UnitTests
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Spear), Is.EqualTo(0.9).Within(0.03));
             Assert.That(plans.All(p => Cap(p, Specs.Beastcraft) <= 40), Is.True, "no Beastcraft 50 build");
         }
+
+        [Test]
+        public void ShadowbladeCritbladesArePeriodWeapon50Cs39OrBoth44()
+        {
+            HashSet<(int, int)> seen = new();
+            for (int i = 0; i < 60; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Shadowblade, eSpecType.TwoHanded);
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Shadowblade, 50);
+                seen.Add((at50[SkillBase.ObjectTypeToSpec(plan.WeaponOneType)], at50[Specs.Critical_Strike]));
+            }
+            Assert.That(seen, Is.EquivalentTo(new[] { (50, 39), (44, 44) }));
+        }
     }
 }
