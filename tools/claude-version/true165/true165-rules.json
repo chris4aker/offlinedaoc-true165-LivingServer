@@ -46995,6 +46995,14 @@
   {
    "sql": "DELETE FROM Inventory WHERE OwnerID LIKE 'offlinebot:%' AND lower(substr(ITemplate_Id, 1, 3)) = 'cq_'",
    "reason": "True 1.65 quest loot: gamebots and companions carry no classic quest items (owner 2026-11-06: bots got stuck with quest items they can neither use, sell nor trade; quest items now drop only for a player on the quest, QuestLootGate165)"
+  },
+  {
+   "sql": "UPDATE Mob SET X = 32296, Y = 38267, Z = 4592, Heading = 1068 WHERE Mob_ID = 'true165-thidranki-lord'",
+   "reason": "True 1.65 BG keeps: Thidranki lord to Thidranki's own lord spot on the keep tower top (the archived Atlas lord), not Abermenai's spot where it floated 1,217 over the ground"
+  },
+  {
+   "sql": "UPDATE Mob SET X = 33217 WHERE Mob_ID = 'caledon-guard-25' AND Region = 250 AND X = 33185",
+   "reason": "True 1.65 BG keeps: Caledon's keep Wizard stood about 30 units inside a wall of the keep (navmesh floor starts at X 33217)"
   }
  ]
 }
