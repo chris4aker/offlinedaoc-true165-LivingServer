@@ -11835,12 +11835,23 @@ namespace DOL.GS
         /// </summary>
         public virtual void CraftItem(ushort itemID)
         {
-            var recipe = RecipeDB.FindBy(itemID);
+            Recipe recipe = null;
+            try
+            {
+                recipe = RecipeDB.FindBy(itemID);
+            }
+            catch (KeyNotFoundException)
+            {
+                // a recipe already found invalid this session
+            }
 
-            if (recipe == null)
+            if (recipe?.Product == null)
             {
                 if (log.IsWarnEnabled)
                     log.Warn("[CRAFTING] Item " + itemID + " not found in recipe database!");
+                // the player is told instead of the craft silently doing nothing (2026-11-06: client recipes the server
+                // didn't know, e.g. Midgard spellcraft runes, failed without a word)
+                Out.SendMessage("That recipe is not known here.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
