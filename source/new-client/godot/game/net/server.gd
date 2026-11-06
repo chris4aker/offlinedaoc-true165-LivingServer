@@ -627,7 +627,8 @@ func enter_world(c: Dictionary) -> void:
 	skills = []
 	spell_lines = []
 	quests = {}
-	_entering = true
+	map_markers = {}                                      # (a new login: the server sends every marker again - the
+	_entering = true                                      # last character's quest givers and bots are not this one's)
 	playing = false
 	client.call("RequestCharacters", int(REALM_IDS[String(c.realm)]))   # (the server enters from the realm last asked)
 	client.call("EnterWorld", int(REALM_IDS[String(c.realm)]), int(c.slot), String(c.name))
