@@ -21,6 +21,17 @@ namespace DOL.GS.Tests
             Assert.That(BotBrain.BuffTargetRank(new ClassWizard()), Is.EqualTo(3));
         });
 
+        // Companions buff through the same path (FindRandomMissingRealmBuffTarget): the player is ranked by their class,
+        // pets (the player's and the companions') as melee.
+        [Test]
+        public void ThePlayerIsRankedByClassLikeAnyMember() => Assert.Multiple(() =>
+        {
+            Assert.That(BotBrain.BuffTargetRank(new ClassHero()), Is.EqualTo(0), "a Hero player: tank");
+            Assert.That(BotBrain.BuffTargetRank(new ClassFriar()), Is.EqualTo(1), "a Friar player: melee");
+            Assert.That(BotBrain.BuffTargetRank(new ClassDruid()), Is.EqualTo(2), "a Druid player: healer");
+            Assert.That(BotBrain.BuffTargetRank(new ClassTheurgist()), Is.EqualTo(3), "a Theurgist player: caster");
+        });
+
         [Test]
         public void HasteSkipsCastersInTrue165() => Assert.Multiple(() =>
         {
