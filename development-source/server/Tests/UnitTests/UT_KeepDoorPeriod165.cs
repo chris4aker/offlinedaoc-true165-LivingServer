@@ -39,4 +39,19 @@ public class UT_KeepDoorPeriod165 : RealmGateFixture
         Properties.CLASSIC165_MODE = false;
         Assert.That(door.IsAttackableDoor, Is.True, "normal mode unchanged");
     }
+
+    [Test]
+    public void FightersReachAnAttackableDoorFromItsDoorway()
+    {
+        // Client live test 2026-11-06: "too far away to attack" ~2 m out from a big double gate (128 reach to the row's point).
+        Properties.CLASSIC165_MODE = true;
+        Assert.That(GameDoorBase.MeleeReachBonus(NewKeepDoor(2), classic165: true), Is.EqualTo(GameDoorBase.DoorwayReach), "keep door");
+        Assert.That(GameDoorBase.MeleeReachBonus(NewGate(eRealm.Albion), classic165: true), Is.EqualTo(GameDoorBase.DoorwayReach), "milegate");
+        Assert.That(GameDoorBase.MeleeReachBonus(NewGate(eRealm.Albion, doorId: BorderKeepId), classic165: true), Is.Zero,
+            "a border keep door is never attacked");
+        Assert.That(GameDoorBase.MeleeReachBonus(NewKeepDoor(3, portalKeep: true), classic165: true), Is.Zero, "nor a portal keep door");
+        Assert.That(GameDoorBase.MeleeReachBonus(NewBot(eRealm.Albion), classic165: true), Is.Zero, "door targets only");
+        Assert.That(GameDoorBase.MeleeReachBonus(NewKeepDoor(2), classic165: false), Is.Zero, "normal mode unchanged");
+        Assert.That(128 + GameDoorBase.DoorwayReach, Is.GreaterThan(117 + 80), "half a 234-wide gate plus 2 m");
+    }
 }

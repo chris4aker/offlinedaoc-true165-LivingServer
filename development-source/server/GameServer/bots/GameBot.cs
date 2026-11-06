@@ -379,6 +379,8 @@ namespace DOL.GS
                 int range = 128;
                 if (TargetObject is DOL.GS.Keeps.GameKeepComponent)
                     range += 150;
+                else if (GameDoorBase.MeleeReachBonus(TargetObject, true) is > 0 and var doorway)
+                    range += doorway;
                 else
                 {
                     if (TargetObject is GameLiving target && target.IsMoving)

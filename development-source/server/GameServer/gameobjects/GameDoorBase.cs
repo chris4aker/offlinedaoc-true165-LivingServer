@@ -20,6 +20,17 @@ namespace DOL.GS
         protected readonly Lock _stateLock = new();
 
         public DbDoor DbDoor { get; set; }
+
+        /// <summary>
+        /// True 1.65 Mode: melee reach added against an attackable door (a keep door, or a milegate), as against a keep wall
+        /// (+150). The door object stands at its row's floor point in the middle of a big double gate, so a fighter at the
+        /// doorway (~2 m out) was "too far away to attack" with the 128 reach (client live test 2026-11-06, Emain 214000101
+        /// and Hadrian's 15000401); period players meleed keep doors and gates normally.
+        /// </summary>
+        public const int DoorwayReach = 150;
+
+        public static int MeleeReachBonus(GameObject target, bool classic165) =>
+            classic165 && target is GameDoorBase { IsAttackableDoor: true } door && door.Realm is not eRealm.Door ? DoorwayReach : 0;
         public virtual bool CanBeOpenedViaInteraction => false;
 
         public virtual int DoorId
