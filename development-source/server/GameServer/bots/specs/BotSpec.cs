@@ -126,6 +126,7 @@ namespace DOL.GS
             eCharacterClass.Paladin => [(eSpecType.OneHandAndShield, 17), (eSpecType.TwoHandHybrid, 3)],
             eCharacterClass.Theurgist => [(eSpecType.EarthTheur, 1), (eSpecType.IceTheur, 1), (eSpecType.AirTheur, 2)],
             eCharacterClass.Friar => [(eSpecType.RejuvFriar, 1), (eSpecType.EnhanceFriar, 6), (eSpecType.StaffFriar, 3)],
+            eCharacterClass.Sorcerer => [(eSpecType.MatterSorc, 1), (eSpecType.BodySorc, 1), (eSpecType.MindSorc, 2)],
             _ => [.. GetSpecializationChoices(charClass).Select(spec => (spec, 1))],
         };
 

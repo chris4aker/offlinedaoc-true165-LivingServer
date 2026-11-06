@@ -123,5 +123,14 @@ namespace DOL.UnitTests
                 Assert.That(at50[Specs.Enhancement], Is.InRange(12, 20));
             }
         }
+
+        [Test]
+        public void SorcererIsHalfMindAndOtherBuildsTakeMindSecond()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Sorcerer);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.MindSorc), Is.EqualTo(0.5).Within(0.03));
+            foreach (BotSpec plan in plans.Where(p => p.SpecType != eSpecType.MindSorc).Take(100))
+                Assert.That(At(plan, eCharacterClass.Sorcerer, 50)[Specs.Mind_Magic], Is.InRange(20, 24));
+        }
     }
 }
