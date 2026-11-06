@@ -42,7 +42,7 @@ public static partial class AutonomousRvrEventLayer
         bool CanSupplySiege = true, bool RoamingReserve = false, long[] MemberIds = null, int MinimumMemberLevel = 50);
     public sealed record LiveObjective(string Id, string Name, Intent Kind, eRealm OwningRealm, ushort RegionId,
         int X, int Y, int Z, bool IsRelicKeep, int EnemyCount, int FriendlyCount, int GuardStrength, int ClosedDoors,
-        bool IsRelicCarrier = false, bool IsPortalKeep = false, bool UnderAttack = false);
+        bool IsRelicCarrier = false, bool IsPortalKeep = false, bool UnderAttack = false, int Weight = 1);
     public sealed record Plan(Intent Intent, string TargetId, string Name, ushort RegionId, int X, int Y, int Z,
         bool IsSharedEvent, string Reason);
 
@@ -594,7 +594,7 @@ public static partial class AutonomousRvrEventLayer
                 Intent.AssaultKeep => keep,
                 Intent.HuntEnemy => objectives.Where(objective => objective.Kind == Intent.HuntEnemy && objective.EnemyCount > 0)
                     .OrderBy(objective => Math.Abs(objective.EnemyCount - force.MemberCount)).FirstOrDefault(),
-                _ => objectives.Where(objective => objective.Kind == Intent.Roam).OrderBy(_ => Random.Shared.Next()).FirstOrDefault() ??
+                _ => PickRoam(objectives, Random.Shared.NextDouble()) ??
                      objectives.Where(objective => objective.Kind == Intent.HuntEnemy).OrderBy(_ => Random.Shared.Next()).FirstOrDefault(),
             };
             if (selected == null)
@@ -637,13 +637,30 @@ public static partial class AutonomousRvrEventLayer
         }
     }
 
+    /// <summary>
+    /// A roaming objective, each as likely as its weight (1 unless a caller marks a frontier hotspot heavier, True 1.65
+    /// Mode: AutonomousFrontierHotspots). Null when there is none.
+    /// </summary>
+    public static LiveObjective PickRoam(IEnumerable<LiveObjective> objectives, double roll)
+    {
+        LiveObjective[] roams = objectives.Where(objective => objective.Kind == Intent.Roam).ToArray();
+        int total = roams.Sum(objective => Math.Max(1, objective.Weight));
+        if (total == 0) return null;
+        double point = Math.Clamp(roll, 0d, Math.BitDecrement(1d)) * total;
+        foreach (LiveObjective objective in roams)
+        {
+            point -= Math.Max(1, objective.Weight);
+            if (point < 0) return objective;
+        }
+        return roams[^1];
+    }
+
     private static Plan ToPlan(Intent Intent, LiveObjective target, bool shared, string reason) =>
         new(Intent, target.Id, target.Name, target.RegionId, target.X, target.Y, target.Z, shared, reason);
 
     private static Plan ReservePlan(Force force, IReadOnlyCollection<LiveObjective> objectives)
     {
-        LiveObjective target = objectives.Where(objective => objective.Kind == Intent.Roam)
-            .OrderBy(_ => Random.Shared.Next()).FirstOrDefault()
+        LiveObjective target = PickRoam(objectives, Random.Shared.NextDouble())
             ?? objectives.Where(objective => objective.Kind == Intent.HuntEnemy && !objective.IsRelicCarrier && objective.EnemyCount > 0)
                 .OrderBy(_ => Random.Shared.Next()).FirstOrDefault();
         return target == null ? null : ToPlan(target.Kind == Intent.HuntEnemy ? Intent.HuntEnemy : Intent.Roam, target, false,

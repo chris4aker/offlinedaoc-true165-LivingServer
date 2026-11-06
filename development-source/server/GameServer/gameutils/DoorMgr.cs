@@ -148,6 +148,13 @@ namespace DOL.GS
 		/// This function get the door object by door index
 		/// </summary>
 		/// <returns>return the door with the index</returns>
+		/// <summary>A copy of every registered door (built once by callers that cache what they derive from it).</summary>
+		public static GameDoorBase[] Snapshot()
+		{
+			lock (Lock)
+				return new List<GameDoorBase>(m_doors.Values).ToArray();
+		}
+
 		public static GameDoorBase GetDoorByID(int id)
 		{
 			return m_doors.TryGetValue(id, out GameDoorBase value) ? value : null;

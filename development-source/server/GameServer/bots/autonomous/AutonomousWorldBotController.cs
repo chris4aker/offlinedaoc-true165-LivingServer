@@ -2462,6 +2462,19 @@ namespace DOL.GS
                 }
             }
 
+            // True 1.65 Mode: the old-frontier fights centred on the milegates and outside the enemy portal keeps
+            // (installed door and keep data); they weigh more than a keep's surroundings or a clearing.
+            if (Classic165Mode.IsOn)
+                foreach (ushort regionId in local)
+                    foreach (AutonomousFrontierHotspots.Anchor anchor in AutonomousFrontierHotspots.For(regionId))
+                    {
+                        if (!AutonomousFrontierHotspots.TryFloor(anchor, out Vector3 floor)) continue;
+                        int x = (int)floor.X, y = (int)floor.Y, z = (int)floor.Z;
+                        choices.Add(new(anchor.Id, anchor.Name, anchor.Name, regionId, x, y, z, 1, false, true));
+                        objectives.Add(new(anchor.Id, anchor.Name, AutonomousRvrEventLayer.Intent.Roam, eRealm.None, regionId,
+                            x, y, z, false, 0, 0, 0, 0, Weight: AutonomousFrontierHotspots.RoamWeight));
+                    }
+
             if (choices.Count == 0)
                 return null;
 
@@ -5499,7 +5512,7 @@ namespace DOL.GS
             return eRealm.None;
         }
 
-        private static bool IsFrontierZone(ushort regionId, ushort zoneId) =>
+        internal static bool IsFrontierZone(ushort regionId, ushort zoneId) =>
             AutonomousDungeonPolicy.IsSharedFrontierDungeon(regionId) ||
             regionId == 1 && zoneId is 11 or 12 or 14 or 15 ||
             regionId == 100 && zoneId is 111 or 112 or 113 or 115 ||
