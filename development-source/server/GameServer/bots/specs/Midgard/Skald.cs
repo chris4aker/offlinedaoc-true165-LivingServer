@@ -24,7 +24,7 @@ namespace DOL.GS
                 case 2: WeaponOneType = eObjectType.Hammer; break;
             }
 
-            int randVariance = spec == eSpecType.TwoHanded ? 4 : Util.Random(3);
+            int randVariance = spec == eSpecType.TwoHanded ? 4 : new[] { 0, 1, 2, 3, 5 }[Util.Random(4)];
 
             SpecType = eSpecType.Mid;
             Is2H = randVariance == 4;
@@ -54,6 +54,13 @@ namespace DOL.GS
                 Add(ObjToSpec(WeaponOneType), 44, 0.8f);
                 Add(Specs.Battlesongs, 47, 0.8f);
                 Add(Specs.Parry, 16, 0.1f);
+                break;
+
+                // Period: weapon 50 / Battlesongs 43 / parry 2.
+                case 5:
+                Add(ObjToSpec(WeaponOneType), 50, 0.8f);
+                Add(Specs.Battlesongs, 43, 0.7f);
+                Add(Specs.Parry, 2, 0.1f);
                 break;
             }
         }

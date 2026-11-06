@@ -286,5 +286,19 @@ namespace DOL.UnitTests
             }
             Assert.That(seen, Is.EquivalentTo(new[] { (50, 39), (44, 44) }));
         }
+
+        [Test]
+        public void SkaldCanRollWeapon50Battlesongs43()
+        {
+            bool found = false;
+            for (int i = 0; i < 200 && !found; i++)
+            {
+                BotSpec plan = new SkaldBotSpec(eSpecType.OneHandAndShield);
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Skald, 50);
+                found = at50[SkillBase.ObjectTypeToSpec(plan.WeaponOneType)] == 50 && at50[Specs.Battlesongs] == 43;
+                Assert.That(plan.Is2H, Is.False);
+            }
+            Assert.That(found, Is.True);
+        }
     }
 }
