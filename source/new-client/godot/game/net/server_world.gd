@@ -1892,9 +1892,40 @@ func sees(a: Vector3, b: Vector3) -> bool:
 ## Your target in view, for the position packets' action flags (the server's melee needs it: AttackComponent's
 ## "IsObjectInFront && TargetInView", set from every position update - ProcessActionFlags).
 func target_in_view(from: Vector3) -> bool:
+	if (target == null or not is_instance_valid(target)) and target_door != 0:
+		# a targeted door (keep doors and gates are attacked, by hand and by siege engines): in view when the way to
+		# its doorway is clear, up to a step short of it on this side - the leaf in the doorway is no wall to its own
+		# attacker (server chat 2026-11-06: melee on a door beyond 64 units and every siege shot at a door failed
+		# "not in view" - the flag was never set for a door)
+		var at := _door_point(int(door_oids.get(target_door, -1)), from)
+		return at != Vector3.INF and sees(from, at)
 	if target == null or not is_instance_valid(target):
 		return false
 	return sees(from, target.global_position)
+
+
+## The middle of a door's doorway (all its leaves), a step toward `from`; INF when no loaded zone has the door.
+func _door_point(door_id: int, from: Vector3) -> Vector3:
+	if door_id < 0:
+		return Vector3.INF
+	var loaders: Array = (viewer.region.zones.values() if viewer and viewer.get("region") and viewer.region else [])
+	if loaders.is_empty() and zone:
+		loaders = [zone]
+	for zl in loaders:
+		if zl and (zl as ZoneLoader).door_by_id.has(door_id):
+			var mid := Vector3.ZERO
+			var n := 0
+			for d in zl.door_by_id[door_id]:
+				var w: Vector3 = (d as ZoneDoor).doorway()
+				if w != Vector3.INF:
+					mid += w
+					n += 1
+			if n == 0:
+				return Vector3.INF
+			mid /= n
+			var toward := Vector3(from.x - mid.x, 0, from.z - mid.z)
+			return mid + (toward.normalized() * minf(1.0, toward.length()) if toward.length() > 0.01 else Vector3.ZERO)
+	return Vector3.INF
 
 
 func _view_pos(oid: int) -> Vector3:

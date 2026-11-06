@@ -21,6 +21,9 @@ var center := Vector3.INF                   # the middle of the closed leaf (zon
 var sound_flag := 0                         # cc_doors row (0: silent)
 var door_id := -1                           # the client's door id (ZoneLoader._make_doors) - what the server knows it by
 var server_driven := false                  # the server's game: it opens / closes the door (DoorState), no timer here
+var still := false                          # no open pose of its own (open = closed): open, it is hidden - _apply_still
+var _body: StaticBody3D
+var _wall_layer := 0
 static var _sounds = null                   # content/sounds/sounds.json
 static var _streams := {}
 
@@ -30,6 +33,7 @@ func setup(closed_xf: Transform3D, open_xf: Transform3D, open_seconds: float) ->
 	opened = open_xf
 	seconds = maxf(open_seconds, 0.1)
 	transform = closed
+	still = closed.is_equal_approx(open_xf)
 
 
 func add_panel(mesh: Mesh) -> void:
@@ -45,6 +49,8 @@ func add_collision(faces: PackedVector3Array, wall_layer: int) -> void:
 	body.collision_layer = wall_layer | PICK_LAYER
 	body.collision_mask = 0
 	body.set_meta("door", self)
+	_body = body
+	_wall_layer = wall_layer
 	var cs := CollisionShape3D.new()
 	var shape := ConcavePolygonShape3D.new()
 	shape.backface_collision = true
@@ -79,6 +85,7 @@ func set_server_state(open: bool) -> void:
 
 func open_door(by_partner := false) -> void:
 	is_open = true
+	_apply_still()
 	_target = 1.0
 	_timer = STAYS_OPEN
 	if not by_partner:
@@ -107,6 +114,7 @@ func hold_open() -> void:
 
 func close_door(by_partner := false) -> void:
 	is_open = false
+	_apply_still()
 	_target = 0.0
 	if not by_partner:
 		_sound("close")
@@ -147,6 +155,19 @@ func _sound(which: String) -> void:
 	p.global_position = _world(closed.origin)
 	p.finished.connect(p.queue_free)
 	p.play()
+
+
+## A door without an open pose of its own (a door group with no open animation, or a leaf whose animation ends where
+## it starts): it cannot swing, so open it is hidden and stops blocking - still clickable to close it (server chat
+## 2026-11-06: a broken door of that kind kept blocking its doorway).
+func _apply_still() -> void:
+	if not still:
+		return
+	for c in get_children():
+		if c is MeshInstance3D:
+			(c as MeshInstance3D).visible = not is_open
+	if _body:
+		_body.collision_layer = PICK_LAYER if is_open else (_wall_layer | PICK_LAYER)
 
 
 func _process(delta: float) -> void:

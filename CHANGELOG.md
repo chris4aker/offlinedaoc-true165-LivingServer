@@ -109,6 +109,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Doors: keep, house and inn doors in almost every zone now reach the server's own door - the client numbered them by the fixture's row instead of its Unique Id, as the original client and the server's door table do. Doors the server keeps shut or open now show it.
 - Siege: the 1.65 siege engines players build - trebuchet, ballista, ram and mangonel - are drawn with their own models (they shared their numbers with player figures and would have shown as a Saracen or an Elf).
 - Emain Macha: the gate forts have their big gates again - drawn, solid while shut, opening when the server opens them (the later client's gate fort model had them empty; the 1.64 client's is used).
+- Doors: a keep door or gate you target counts as in view when nothing stands between, so melee and siege engines can hit it from their full reach (they failed "not in view" beyond arm's length); a door that has no swing of its own disappears when it is opened or broken instead of still blocking.
 
 ## 0.2 (2026-11-01)
 
