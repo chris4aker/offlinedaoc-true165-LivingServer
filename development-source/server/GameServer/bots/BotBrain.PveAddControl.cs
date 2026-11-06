@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -13,9 +15,70 @@ namespace DOL.AI.Brain
     /// whoever an add is hitting while they fight something else (a healer or caster). The instant mesmerize and stun with
     /// a ten-minute reuse are kept for three or more adds. Celerity, the Augmentation Healer's 20-second group attack
     /// speed, was never cast: the buff selector bots use has no case for it (it is a fight buff, not upkeep).
+    /// True 1.65 (owner 2026-11-06: a Healer never mezzed, whatever its Pacification; Prima calls Pacification great crowd
+    /// control): an add is a monster nobody is ATTACKING that is not the group's kill target - a tank only running at it
+    /// (FindProtectionTarget targets the add on the healer at once) no longer makes it "taken". The add a mezzer is about
+    /// to mez is reserved for a moment (<see cref="BotMezReservations"/>) so tanks and their protection leave it alone,
+    /// add control goes before heals unless someone is under 40%, a single add on a healer who cannot finish a cast gets
+    /// the instant single-target mez, and an area mez is used whenever the kill target is outside its radius.
     /// </summary>
     public partial class BotBrain
     {
+        /// <summary>True 1.65: add control goes before heals unless a groupmate is below this health.</summary>
+        public const int AddControlBeforeHealsHealthPercent = 40;
+        /// <summary>How long tanks and protection leave an add alone that a mezzer has started to mez (at least).</summary>
+        public const long MezReservationMilliseconds = 3_000;
+
+        /// <summary>
+        /// Pure rule: a monster attacking the group is somebody's fight, not an add to control. Normal mode: anyone has it
+        /// targeted, or it is this bot's target. True 1.65: somebody is attacking it, or it is the group's kill target.
+        /// </summary>
+        public static bool IsHandledAdd(bool classic165, bool targeted, bool attacked, bool killTarget, bool ownTarget) =>
+            classic165 ? attacked || killTarget : targeted || ownTarget;
+
+        /// <summary>
+        /// Pure rule: the mesmerize or stun with a ten-minute reuse is kept for three or more adds. True 1.65 also: a
+        /// single-target one for a single add when this caster cannot finish a cast (the add is hitting it).
+        /// </summary>
+        public static bool AllowsLongReuseControl(bool classic165, bool emergency, bool singleTarget, bool castTimeBlocked) =>
+            emergency || classic165 && singleTarget && castTimeBlocked;
+
+        /// <summary>Pure rule: True 1.65 add control before heals while every groupmate is at 40% health or more.</summary>
+        public static bool AddControlBeforeHeals(bool classic165, int lowestMemberHealthPercent) =>
+            classic165 && lowestMemberHealthPercent >= AddControlBeforeHealsHealthPercent;
+
+        /// <summary>Whether a mezzer has just started on this add: tanks, protection and target choice leave it for a moment.</summary>
+        internal static bool IsReservedForMez(GameLiving living) => BotMezReservations.IsReserved(living, GameLoop.GameLoopTime);
+
+        /// <summary>The group's kill target: the player's target in a player-led group, else the gamebot party's main assist.</summary>
+        private GameLiving GroupKillTarget()
+        {
+            if (BotBody?.IsPlayerLedGroup == true)
+                return AssistedPlayer?.TargetObject as GameLiving;
+            return Body.Group is { } group && KillTargets.TryGetValue(group, out KillTargetHolder holder) &&
+                GameLoop.GameLoopTime - holder.Tick <= KillTargetStaleMilliseconds ? holder.Target : null;
+        }
+
+        /// <summary>A member (or pet) hitting this monster now: swinging within reach of it, or casting a harmful spell at it.</summary>
+        private static bool AttacksTarget(GameLiving member, GameLiving target) =>
+            member.TargetObject == target &&
+            (member.IsAttacking && member.attackComponent != null &&
+                member.IsWithinRadius(target, member.attackComponent.AttackRange + 50) ||
+             member.IsCasting && member.castingComponent?.SpellHandler is { Spell.IsHarmful: true } handler &&
+                handler.Target == target);
+
+        /// <summary>The lowest health of the living groupmates in support reach (the bot's own when solo).</summary>
+        private int LowestGroupHealthPercent()
+        {
+            if (Body.Group == null)
+                return Body.HealthPercent;
+            int lowest = 100;
+            foreach (GameLiving member in Body.Group.GetMembersInTheGroup())
+                if (member?.IsAlive == true && member.HealthPercent < lowest && InSupportReach(member))
+                    lowest = member.HealthPercent;
+            return lowest;
+        }
+
         private const long PveAddControlRetryMilliseconds = 15_000;
         private const long EmergencyRecastMilliseconds = 60_000;
         private const int EmergencyAddCount = 3;
@@ -58,6 +121,7 @@ namespace DOL.AI.Brain
                 .ToArray();
             HashSet<GameLiving> selectedTargets = new();
             HashSet<GameLiving> activeTargets = new();
+            HashSet<GameLiving> attackedTargets = new();   // True 1.65: what somebody is hitting right now
             foreach (GameLiving member in members)
             {
                 if (member.TargetObject is GameLiving target && target.IsAlive)
@@ -65,12 +129,16 @@ namespace DOL.AI.Brain
                     selectedTargets.Add(target);
                     if ((member.IsAttacking || member.InCombat) && target is GameNPC)
                         activeTargets.Add(target);
+                    if (AttacksTarget(member, target))
+                        attackedTargets.Add(target);
                 }
-                if (member.ControlledBrain?.Body?.TargetObject is GameLiving petTarget && petTarget.IsAlive)
+                if (member.ControlledBrain?.Body is GameLiving pet && pet.TargetObject is GameLiving petTarget && petTarget.IsAlive)
                 {
                     selectedTargets.Add(petTarget);
                     if (petTarget is GameNPC)
                         activeTargets.Add(petTarget);
+                    if (AttacksTarget(pet, petTarget))
+                        attackedTargets.Add(petTarget);
                 }
             }
             if (activeTargets.Count == 0)
@@ -81,11 +149,15 @@ namespace DOL.AI.Brain
                          .Select(pair => pair.Key).ToArray())
                 _pveAddControlRetryUntil.Remove(expired);
 
+            bool classic165 = Classic165Mode.IsOn;
+            GameLiving killTarget = classic165 ? GroupKillTarget() : null;
             List<GameNPC> adds = bot.GetNPCsInRadius(1800)
                 .Where(npc => npc?.IsAlive == true && npc.Realm == eRealm.None && !BotPvpCrowdControl.PlayerLike(npc) &&
                     !IsUntargetable(npc) && CanDefendAgainst(npc) &&
                     npc.TargetObject is GameLiving victim && members.Contains(victim) &&
-                    !selectedTargets.Contains(npc) && npc != Body.TargetObject &&
+                    !IsHandledAdd(classic165, selectedTargets.Contains(npc), attackedTargets.Contains(npc), npc == killTarget,
+                        npc == Body.TargetObject) &&
+                    !(classic165 && IsReservedForMez(npc)) &&   // another mezzer is on it
                     !npc.IsMezzed && !npc.IsStunned && now >= _pveAddControlRetryUntil.GetValueOrDefault(npc))
                 .OrderBy(bot.GetDistanceTo).Take(16).ToList();
             if (adds.Count == 0)
@@ -109,7 +181,9 @@ namespace DOL.AI.Brain
                     bool isMez = spell.SpellType != eSpellType.Stun;
                     if (isMez ? mezImmune : (stunImmune || !protects))
                         continue;
-                    if (spell.HasRecastDelay && spell.RecastDelay >= EmergencyRecastMilliseconds && !emergency)
+                    if (spell.HasRecastDelay && spell.RecastDelay >= EmergencyRecastMilliseconds &&
+                        !AllowsLongReuseControl(classic165, emergency, spell.Radius <= 0,
+                            bot.IsBeingInterrupted || !CastTimeControlReady(control, isMez)))
                         continue;
                     if (spell.CastTime > 0 && !spell.Uninterruptible && bot.IsBeingInterrupted ||
                         !bot.IsWithinRadius(add, spell.CalculateEffectiveRange(bot)) ||
@@ -119,8 +193,12 @@ namespace DOL.AI.Brain
                     if (spell.Radius > 0)
                     {
                         // An area mez must not reach a monster the group is killing; neither may wake or pull anything.
-                        if (isMez && activeTargets.Concat(selectedTargets).Any(target =>
-                                target is GameObject killTarget && add.IsWithinRadius(killTarget, spell.Radius + BotAoePolicy.SafetyMargin)))
+                        // True 1.65: the monsters being hit and the kill target (a tank only running at one is no kill).
+                        IEnumerable<GameLiving> killed = classic165
+                            ? killTarget != null ? attackedTargets.Append(killTarget) : attackedTargets
+                            : activeTargets.Concat(selectedTargets);
+                        if (isMez && killed.Any(target =>
+                                target is GameObject kill && add.IsWithinRadius(kill, spell.Radius + BotAoePolicy.SafetyMargin)))
                             continue;
                         if (EvaluateBlast(add, spell).Vetoed)
                             continue;
@@ -129,6 +207,10 @@ namespace DOL.AI.Brain
                     if (_pveAddControlRetryUntil.Count >= 32)
                         _pveAddControlRetryUntil.Remove(_pveAddControlRetryUntil.OrderBy(pair => pair.Value).First().Key);
                     _pveAddControlRetryUntil[add] = now + PveAddControlRetryMilliseconds;
+                    // True 1.65: tanks and protection leave the add alone while the mez goes off
+                    bool reserve = classic165 && isMez;
+                    if (reserve)
+                        BotMezReservations.Reserve(add, now + Math.Max(MezReservationMilliseconds, spell.CastTime + 1_000));
                     GameObject previous = bot.TargetObject;
                     bot.TargetObject = add;
                     try
@@ -139,7 +221,11 @@ namespace DOL.AI.Brain
                             bot.StopMoving();
                         }
                         if (!CheckOffensiveSpells(spell))
+                        {
+                            if (reserve)
+                                BotMezReservations.Release(add);
                             continue;
+                        }
                         ReportAddControl(spell, add, adds.Count);
                         return true;
                     }
@@ -151,6 +237,11 @@ namespace DOL.AI.Brain
             }
             return false;
         }
+
+        /// <summary>Whether a castable add-control spell of this kind with a cast time and no long reuse is on hand.</summary>
+        private static bool CastTimeControlReady(Spell[] control, bool mez) =>
+            control.Any(spell => (spell.SpellType != eSpellType.Stun) == mez && spell.CastTime > 0 && spell.Radius <= 0 &&
+                !(spell.HasRecastDelay && spell.RecastDelay >= EmergencyRecastMilliseconds));
 
         private long _nextAddControlReport;
 
@@ -211,5 +302,43 @@ namespace DOL.AI.Brain
                 bot.TargetObject = previous;
             }
         }
+    }
+
+    /// <summary>
+    /// The add each mezzer has just started to mez (True 1.65), so a tank's protection and every bot's target choice
+    /// leave it alone for about three seconds instead of breaking the mez before it lands. Lock-free: one small holder
+    /// per monster, written only by mezzers; a global "latest end" lets every other bot skip the lookup when none is live.
+    /// </summary>
+    public static class BotMezReservations
+    {
+        private sealed class Holder
+        {
+            public long Until;
+        }
+
+        private static readonly ConditionalWeakTable<object, Holder> Reservations = new();
+        private static long _latestUntil;
+
+        public static void Reserve(object add, long until)
+        {
+            if (add == null)
+                return;
+            Volatile.Write(ref Reservations.GetValue(add, _ => new Holder()).Until, until);
+            long latest;
+            while (until > (latest = Volatile.Read(ref _latestUntil)) &&
+                   Interlocked.CompareExchange(ref _latestUntil, until, latest) != latest)
+            {
+            }
+        }
+
+        public static void Release(object add)
+        {
+            if (add != null && Reservations.TryGetValue(add, out Holder holder))
+                Volatile.Write(ref holder.Until, 0);
+        }
+
+        public static bool IsReserved(object add, long now) =>
+            add != null && now < Volatile.Read(ref _latestUntil) &&
+            Reservations.TryGetValue(add, out Holder holder) && now < Volatile.Read(ref holder.Until);
     }
 }

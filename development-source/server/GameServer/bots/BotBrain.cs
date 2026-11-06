@@ -320,7 +320,8 @@ namespace DOL.AI.Brain
             GameLiving leaderHeld = PlayerLedPullCoordinator.LeaderControlTarget(AssistedPlayer);
             foreach (GameLiving candidate in AggroList.Keys)
             {
-                if (candidate is { IsAlive: true } && !ShouldBeIgnoredFromAggroList(candidate) && !IsBreakablyControlled(candidate))
+                if (candidate is { IsAlive: true } && !ShouldBeIgnoredFromAggroList(candidate) && !IsBreakablyControlled(candidate) &&
+                    !IsReservedForMez(candidate))   // a mezzer's add waits too (BotBrain.PveAddControl)
                 {
                     uncontrolledAvailable = true;
                     break;
@@ -340,7 +341,7 @@ namespace DOL.AI.Brain
                 if (ShouldBeIgnoredFromAggroList(living))
                     continue;
 
-                if (PassOverControlled(IsBreakablyControlled(living), uncontrolledAvailable) ||
+                if (PassOverControlled(IsBreakablyControlled(living) || IsReservedForMez(living), uncontrolledAvailable) ||
                     living == leaderHeld || LeavesHeldForPlayer(living))
                     continue;
 
@@ -4150,6 +4151,11 @@ namespace DOL.AI.Brain
                 return null;
             }
 
+            // True 1.65: an add on this bot that a groupmate mezzed (or is mezzing) is not hit back - that broke the mez
+            // at once; the target choice finishes it when nothing else is left (BotBrain.CrowdControlRespect)
+            if (Classic165Mode.IsOn && (IsBreakablyControlled(attacker) || IsReservedForMez(attacker)))
+                return null;
+
             return attacker;
         }
 
@@ -4242,7 +4248,13 @@ namespace DOL.AI.Brain
             if (CompanionFollowPolicy.SendsDruidPet(BotBody))
                 TryCommandCompanionDruidPet(CalculateNextAttackTarget());
             HoldSupportCombat();
-            if (!CheckHeals() && !TryPvpCrowdControl() && !TryPveAddControl() && !TryGroupCelerity())
+            // True 1.65: an add is mezzed before a top-up heal; a groupmate under 40% is healed first
+            if (Classic165Mode.IsOn && AddControlBeforeHeals(true, LowestGroupHealthPercent()))
+            {
+                if (!TryPvpCrowdControl() && !TryPveAddControl() && !CheckHeals() && !TryGroupCelerity())
+                    CheckSpells(eCheckSpellType.Defensive);
+            }
+            else if (!CheckHeals() && !TryPvpCrowdControl() && !TryPveAddControl() && !TryGroupCelerity())
                 CheckSpells(eCheckSpellType.Defensive);
             if (BotBody.IsPlayerLedGroup)
             {
@@ -4344,7 +4356,8 @@ namespace DOL.AI.Brain
             return candidates
                 .Where(candidate => candidate?.IsAlive == true &&
                                     candidate.TargetObject is GameLiving victim &&
-                                    IsProtectionThreat(protectedMembers.Contains(victim), IsBreakablyControlled(candidate)) &&
+                                    IsProtectionThreat(protectedMembers.Contains(victim),
+                                        IsBreakablyControlled(candidate) || IsReservedForMez(candidate)) &&
                                     !(mainTankRules != null && victim == mainTankRules &&
                                       BotMeleeStylePolicy.PlayerIsMainTank(mainTankRules, candidate)) &&
                                     CanAggroTarget(candidate))
