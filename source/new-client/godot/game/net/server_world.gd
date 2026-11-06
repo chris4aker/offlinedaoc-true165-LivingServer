@@ -387,7 +387,12 @@ func write_bot_report(from: Vector3) -> String:
 			problems.size(), n_unknown]
 
 
-func _model_info(model: int) -> Dictionary:
+func _model_info(model: int, moving_object := false) -> Dictionary:
+	# a moving object (MovingObjectCreate: a siege weapon) is an objects.csv row, never a monster: the 1.65 siege engines
+	# players craft are 482 trebuchet / 561 ballista / 562 ram / 563 mangonel, which monsters.csv has as player figures
+	# (482 Saracen Male, 561-563 Elves) - owner 2026-11-06 via the server chat
+	if moving_object and not WeaponModels.info(model).is_empty():
+		return {"object_model": model, "name": String(WeaponModels.info(model).get("name", ""))}
 	var info: Dictionary = models.get(str(model), {})
 	if info.is_empty():
 		# a player-race look the table has no row for (259 classic looks: Sylvan 702 / 850 / 852 / 855 / 856, Valkyn,
@@ -513,7 +518,7 @@ func _add_npc(d: Dictionary) -> void:
 			"heading": int(d.heading), "pos": [p.x, p.y, p.z], "equipment": "srv%d" % oid, "aggro_level": 0,
 			"aggro_range": 0, "roam": 0, "pet": (f2 & 0x80) != 0, "temp": true}
 	spawn["quest"] = _quest_indicator(d)
-	var st := NpcState.new(states.size(), spawn, _model_info(int(d.model) & 0x7FFF))
+	var st := NpcState.new(states.size(), spawn, _model_info(int(d.model) & 0x7FFF, bool(d.get("moving_object", false))))
 	st.level = int(d.level) & 0x7F
 	st.yaw = Server.yaw_of(int(d.heading))
 	st.stealthed = _is_hire_preview(oid)                        # (the server only sends what you can see)

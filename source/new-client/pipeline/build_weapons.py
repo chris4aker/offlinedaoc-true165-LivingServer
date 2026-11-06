@@ -64,7 +64,10 @@ KEEP_MODELS = {630: 'Albion Relic Staff', 631: 'Albion Relic Scabbard', 632: 'Hi
                633: 'Hibernian Relic Spear', 634: 'Norse Relic Hammer', 635: 'Norse Relic Horn',
                2598: 'Ranged Catapult', 2599: 'Frontiers Ranged Trebuchet', 2600: 'Light Siege Ram',
                2601: 'Medium Siege Ram', 2602: 'Heavy Siege Ram', 2604: 'Frontiers Scorpion', 2605: 'Frontiers Mini Ram',
-               2606: 'Frontiers Mounted Trebuchet', 2607: 'Frontiers Boiling Oil', 2645: 'Frontiers Ranged Scorpion'}
+               2606: 'Frontiers Mounted Trebuchet', 2607: 'Frontiers Boiling Oil', 2645: 'Frontiers Ranged Scorpion',
+               # the 1.65 siege engines players craft (owner 2026-11-06 via the server chat: a deployed engine takes its
+               # item's model - trebuchet.nif, SBallista_ani, SRam_ani, SMangonel_ani; siege.csv rows 1-4)
+               482: 'Trebuchet', 561: 'Ballista', 562: 'Ram', 563: 'Mangonel'}
 
 
 # Custom weapons built by hand (CLAUDE VERSION tools/pet-art) whose art sits the other way round in its frame than the
