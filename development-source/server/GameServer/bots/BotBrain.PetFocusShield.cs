@@ -13,6 +13,16 @@ namespace DOL.AI.Brain
         private long _petShieldUntankedSince;
         /// <summary>A monster swapping targets for a moment does not end the shield; two seconds without one does.</summary>
         private const long PetShieldUntankedGraceMilliseconds = 2_000;
+        // True 1.65 opener: the monster first seen on the pet, since when, and whether this channel is an opener
+        private GameLiving _petTankedTarget;
+        private long _petTankedSince;
+        private bool _petShieldOpener;
+
+        /// <summary>A pet shield class with its pet out (cheap test before the full shield check).</summary>
+        private bool MayOpenWithPetShield =>
+            Classic165Mode.IsOn && Body.ControlledBrain != null &&
+            (eCharacterClass?)BotBody?.CharacterClass?.ID is eCharacterClass.Cabalist or eCharacterClass.Enchanter or
+                eCharacterClass.Spiritmaster;
 
         private bool IsChannellingPetShield =>
             Body.castingComponent is { IsFocusChanneling: true } casting &&
@@ -24,6 +34,7 @@ namespace DOL.AI.Brain
             if (_petShieldChannelling && !IsChannellingPetShield)
             {
                 _petShieldChannelling = false;
+                _petShieldOpener = false;
                 _petShieldBackoffUntil = GameLoop.GameLoopTime + BotPetFocusShieldPolicy.BackoffMilliseconds;
             }
         }
@@ -74,9 +85,15 @@ namespace DOL.AI.Brain
             if (shield == null || !PetTanking(out GameNPC pet, out GameLiving target))
                 return false;
             long now = GameLoop.GameLoopTime;
+            if (target != _petTankedTarget)
+            {
+                _petTankedTarget = target;
+                _petTankedSince = now;
+            }
+            bool opener = Classic165Mode.IsOn && BotPetFocusShieldPolicy.InOpenerWindow(now - _petTankedSince);
             if (!BotPetFocusShieldPolicy.ShouldStart(true, target.HealthPercent, PetShieldCasterUnderAttack(), HasBlastPlayerLike(),
                     PetShieldCasterMustMove(), Body.ManaPercent, nothingElseToCast, LivingHasEffect(pet, shield), now,
-                    _petShieldBackoffUntil) ||
+                    _petShieldBackoffUntil, opener) ||
                 !Body.IsWithinRadius(pet, shield.CalculateEffectiveRange(Body)))
                 return false;
 
@@ -103,6 +120,7 @@ namespace DOL.AI.Brain
             }
             _petShieldChannelling = true;
             _petShieldChannelStart = now;
+            _petShieldOpener = opener && !nothingElseToCast && Body.ManaPercent > BotPetFocusShieldPolicy.MaxPowerPercent;
             if (now >= _nextPetShieldReport)
             {
                 _nextPetShieldReport = now + 60_000;
@@ -144,7 +162,8 @@ namespace DOL.AI.Brain
             pet ??= Body.ControlledBrain?.Body;
             bool inRange = pet is { IsAlive: true } && shield != null && Body.IsWithinRadius(pet, shield.CalculateEffectiveRange(Body));
             if (BotPetFocusShieldPolicy.ShouldKeep(stillTanked && inRange, PetShieldCasterUnderAttack(),
-                    Body.IsMoving || PetShieldCasterMustMove(), Body.ManaPercent, now - _petShieldChannelStart))
+                    Body.IsMoving || PetShieldCasterMustMove(), Body.ManaPercent, now - _petShieldChannelStart) &&
+                !BotPetFocusShieldPolicy.OpenerDone(_petShieldOpener, Body.ManaPercent, now - _petShieldChannelStart))
                 return true;
             DropPetFocusShield();
             return false;
@@ -176,6 +195,7 @@ namespace DOL.AI.Brain
                     Body.castingComponent.ClearSpellHandlers();
             }
             _petShieldChannelling = false;
+            _petShieldOpener = false;
             _petShieldUntankedSince = 0;
             _petShieldBackoffUntil = GameLoop.GameLoopTime + BotPetFocusShieldPolicy.BackoffMilliseconds;
         }

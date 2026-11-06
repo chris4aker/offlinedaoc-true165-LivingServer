@@ -4648,7 +4648,9 @@ namespace DOL.AI.Brain
                     return true;
 
                 // A pet being hit, power to save: the pet focus shield instead of nukes (BotPetFocusShieldPolicy).
-                if (Body.ManaPercent <= BotPetFocusShieldPolicy.MaxPowerPercent && TryStartPetFocusShield(false))
+                // True 1.65: also as the opener of a fight on the pet, at any power.
+                if ((Body.ManaPercent <= BotPetFocusShieldPolicy.MaxPowerPercent || MayOpenWithPetShield) &&
+                    TryStartPetFocusShield(false))
                     return true;
 
                 // Melee hybrids prefer melee when in range

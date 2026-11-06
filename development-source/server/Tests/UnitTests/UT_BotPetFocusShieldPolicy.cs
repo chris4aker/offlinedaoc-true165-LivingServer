@@ -40,6 +40,29 @@ namespace DOL.GS.Tests
         });
 
         [Test]
+        public void True165OpenerShieldsThePetAtAnyPowerEarlyInTheFight() => Assert.Multiple(() =>
+        {
+            Assert.That(ShouldStart(true, 100, false, false, false, 100, false, false, 20_000, 0, opener: true), Is.True,
+                "full power: the shield first so the pet holds the monster");
+            Assert.That(ShouldStart(false, 100, false, false, false, 100, false, false, 20_000, 0, opener: true), Is.False,
+                "not while a real tank holds it");
+            Assert.That(ShouldStart(true, 100, false, false, false, 10, false, false, 20_000, 0, opener: true), Is.False,
+                "still not under 20% power");
+            Assert.That(InOpenerWindow(0), Is.True);
+            Assert.That(InOpenerWindow(OpenerMilliseconds), Is.True);
+            Assert.That(InOpenerWindow(OpenerMilliseconds + 1), Is.False, "later in the fight the caster nukes");
+        });
+
+        [Test]
+        public void AnOpenerWithPowerToSpareIsBrokenForNukes() => Assert.Multiple(() =>
+        {
+            Assert.That(OpenerDone(true, 90, OpenerChannelMilliseconds), Is.True);
+            Assert.That(OpenerDone(true, 90, OpenerChannelMilliseconds - 1), Is.False, "the pet takes the monster first");
+            Assert.That(OpenerDone(true, MaxPowerPercent, 30_000), Is.False, "power to save now: keep channelling");
+            Assert.That(OpenerDone(false, 90, 30_000), Is.False, "an ordinary channel");
+        });
+
+        [Test]
         public void TheChannelIsDroppedWhenItDoesNothingOrMustEnd() => Assert.Multiple(() =>
         {
             Assert.That(ShouldKeep(true, false, false, 40, 30_000), Is.True);
