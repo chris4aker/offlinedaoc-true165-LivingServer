@@ -209,5 +209,21 @@ namespace DOL.UnitTests
             Assert.That(AutonomousCampRouteQuarantine.StallBlamesCamp(true, 120, 150), Is.False, "in reach: the bot stalled itself");
             Assert.That(AutonomousCampRouteQuarantine.StallBlamesCamp(false, 900, 150), Is.False, "a caster may just be out of power");
         }
+
+        [Test]
+        public void UncoveredSpawnsOfMixedLevelsInOneCampCellBecomeACamp()
+        {
+            // 19 level 4-5 spraggons spread over 1,500-unit cells: one ordinary 4,200-unit cell holds four of them
+            var spawns = new (ushort Zone, ushort Region, int X, int Y, string Name)[]
+            {
+                (201, 200, 340_300, 551_000, "spraggon"), (201, 200, 341_900, 552_100, "spraggon"),
+                (201, 200, 343_500, 553_900, "spraggon"), (201, 200, 344_300, 554_000, "spraggon"),
+                (201, 200, 340_400, 551_200, "eirebug"), (201, 200, 341_000, 551_500, "eirebug"),
+                (201, 200, 360_000, 551_000, "spraggon"),
+            };
+            var clusters = AutonomousWorldBotController.MixedLevelClusters(spawns, 4_200, 3);
+            Assert.That(clusters, Has.Count.EqualTo(1));
+            Assert.That(clusters[0], Is.EquivalentTo(new[] { 0, 1, 2, 3 }));
+        }
     }
 }

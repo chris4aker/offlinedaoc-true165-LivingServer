@@ -3953,6 +3953,9 @@ namespace DOL.GS
         /// cluster of at least three outdoor spawns of one name and level, with no camp of that name within 5,000 units,
         /// becomes a camp at the live spawn nearest its centre. No monster is added or moved; routes to these camps are
         /// verified like the other live camps (IsSourceEmptyCamp).
+        /// A second pass takes the spawns still uncovered in clusters of mixed levels: at least three of one name in an
+        /// ordinary 4,200-unit camp cell (2026-11-06 audit: 208 of Hibernia's 1,958 level 3-6 spawns had no camp, e.g. 19
+        /// level-5 spraggons in Silvermine, spread over cells and levels so that no 1,500-unit cell of one level held three).
         /// </summary>
         private static void AddUncoveredLiveCamps(List<CampCatalogCell> cells, CampMonster[] snapshot)
         {
@@ -3964,14 +3967,15 @@ namespace DOL.GS
                 covered.TryGetValue((npc.CurrentRegionID, npc.Name.Trim().ToLowerInvariant()), out var spots) &&
                 spots.Any(spot => DistanceSquared(npc.X, npc.Y, spot.X, spot.Y) <= reach);
             var added = new List<CampCatalogCell>();
+            bool Eligible(CampMonster npc) =>
+                npc.CurrentZone != null && npc.CurrentZone.IsDungeon != true &&
+                npc.CurrentZone.ZoneRegion?.IsDungeon != true &&
+                npc.CurrentZone.ZoneRegion != null &&
+                AutonomousCapnBryGoalCatalog.IsClassicOrShroudedIslesExpansion(npc.CurrentZone.ZoneRegion.Expansion) &&
+                !BattlegroundBrackets.IsBattlegroundRegion(npc.CurrentRegionID) &&
+                !AutonomousAuditedCampPolicy.UsesLiveAnchor(npc.CurrentRegionID, npc.Name);
             foreach (var group in snapshot
-                         .Where(npc => npc.CurrentZone != null && npc.CurrentZone.IsDungeon != true &&
-                                       npc.CurrentZone.ZoneRegion?.IsDungeon != true &&
-                                       npc.CurrentZone.ZoneRegion != null &&
-                                       AutonomousCapnBryGoalCatalog.IsClassicOrShroudedIslesExpansion(npc.CurrentZone.ZoneRegion.Expansion) &&
-                                       !BattlegroundBrackets.IsBattlegroundRegion(npc.CurrentRegionID) &&
-                                       !AutonomousAuditedCampPolicy.UsesLiveAnchor(npc.CurrentRegionID, npc.Name) &&
-                                       !Covered(npc))
+                         .Where(npc => Eligible(npc) && !Covered(npc))
                          .GroupBy(npc => (npc.CurrentZone.ID, npc.CurrentRegionID,
                              CellX: npc.X / SourceEmptyCampCellSize, CellY: npc.Y / SourceEmptyCampCellSize,
                              Name: npc.Name.Trim().ToLowerInvariant(), npc.EffectiveLevel)))
@@ -3994,7 +3998,56 @@ namespace DOL.GS
                     members.Length, representative.CurrentZone, false,
                     IsFrontierZone(representative.CurrentRegionID, representative.CurrentZone.ID)));
             }
+
+            // second pass: what is still uncovered, in mixed-level clusters of one name per ordinary camp cell
+            foreach (CampCatalogCell cell in added)
+            {
+                var key = (cell.RegionId, Name: cell.MonsterName.Trim().ToLowerInvariant());
+                covered[key] = covered.TryGetValue(key, out var spots) ? [.. spots, (cell.X, cell.Y)] : [(cell.X, cell.Y)];
+            }
+            CampMonster[] rest = snapshot.Where(npc => Eligible(npc) && !Covered(npc)).ToArray();
+            foreach (int[] cluster in MixedLevelClusters(
+                         rest.Select(npc => (npc.CurrentZone.ID, npc.CurrentRegionID, npc.X, npc.Y, npc.Name.Trim().ToLowerInvariant())).ToArray(),
+                         CampCellSize, MinimumSpawns))
+            {
+                CampMonster[] members = cluster.Select(index => rest[index]).ToArray();
+                float averageX = (float)members.Average(npc => npc.X);
+                float averageY = (float)members.Average(npc => npc.Y);
+                CampMonster representative = members
+                    .OrderBy(npc => Math.Abs(npc.X - averageX) + Math.Abs(npc.Y - averageY))
+                    .ThenBy(npc => npc.InternalId, StringComparer.Ordinal)
+                    .First();
+                string name = representative.Name.Trim().ToLowerInvariant();
+                added.Add(new CampCatalogCell(
+                    $"live-uncovered:{representative.CurrentZone.ID}:{representative.CurrentRegionID}:" +
+                    $"{members[0].X / CampCellSize}:{members[0].Y / CampCellSize}:{name}:mixed",
+                    representative.Name,
+                    representative.CurrentZone.Description ?? representative.CurrentZone.ZoneRegion?.Description ?? $"region {representative.CurrentRegionID}",
+                    representative.CurrentRegionID, representative.X, representative.Y, representative.Z,
+                    members.Select(npc => npc.EffectiveLevel).OrderBy(level => level).ToArray(),
+                    members.Length, representative.CurrentZone, false,
+                    IsFrontierZone(representative.CurrentRegionID, representative.CurrentZone.ID)));
+            }
             cells.AddRange(added);
+        }
+
+        /// <summary>
+        /// Spawns grouped by zone, region, name and <paramref name="cellSize"/> cell, any level: the index lists of the
+        /// groups with at least <paramref name="minimum"/> spawns.
+        /// </summary>
+        public static List<int[]> MixedLevelClusters(IReadOnlyList<(ushort Zone, ushort Region, int X, int Y, string Name)> spawns,
+            int cellSize, int minimum)
+        {
+            var groups = new Dictionary<(ushort, ushort, int, int, string), List<int>>();
+            for (int i = 0; i < spawns.Count; i++)
+            {
+                var spawn = spawns[i];
+                var key = (spawn.Zone, spawn.Region, spawn.X / cellSize, spawn.Y / cellSize, spawn.Name);
+                if (!groups.TryGetValue(key, out List<int> members))
+                    groups[key] = members = new();
+                members.Add(i);
+            }
+            return groups.Values.Where(members => members.Count >= minimum).Select(members => members.ToArray()).ToList();
         }
 
         private static bool IsSourceEmptyCamp(string campId) =>
