@@ -46847,6 +46847,150 @@
   {
    "sql": "DELETE FROM LootTemplate WHERE lower(TemplateName) = lower('snow giant') AND lower(ItemTemplateID) = lower('ice_water')",
    "reason": "True 1.65 dropfix: snow giant (level 30-35) no longer drops the level 50 'Vial of Ice Water' (period drop: now the level 31 loot item ice_water_165l31)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60157714 AND ifnull(GuildName, '') = 'Arrow Merchant'",
+   "reason": "True 1.65 merchant titles: Alden Fletcher (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Arrow Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bow Merchant' WHERE TemplateId = 60157715 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Aldrin Collyer (region 1) shows <Bow Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bows Merchant' WHERE TemplateId = 60158024 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Argus Bowman (region 1) shows <Bows Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60158237 AND ifnull(GuildName, '') = 'Armor Merchant'",
+   "reason": "True 1.65 merchant titles: Balthazar Encambrion (region 1) shows <Weapon Merchant> as its Mob row says (its template said <Armor Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60158674 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Brach Leof (region 10) shows <Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Armor Merchant' WHERE TemplateId = 60158868 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Calldir Edyn (region 1) shows <Armor Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60159663 AND ifnull(GuildName, '') = 'Armor Merchant'",
+   "reason": "True 1.65 merchant titles: Daodel (region 181) shows <Merchant> as its Mob row says (its template said <Armor Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60160369 AND ifnull(GuildName, '') = 'Arrow Merchant'",
+   "reason": "True 1.65 merchant titles: Eiddin Walelden (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Arrow Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60160412 AND ifnull(GuildName, '') = 'Armor Merchant'",
+   "reason": "True 1.65 merchant titles: Elga Wyman (region 1) shows <Weapon Merchant> as its Mob row says (its template said <Armor Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bow Merchant' WHERE TemplateId = 60160413 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Elger Leafblade (region 1) shows <Bow Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Armor Merchant' WHERE TemplateId = 60160442 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Eluned (region 200) shows <Armor Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60160683 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Falla Hemingr (region 101) shows <Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Armor Merchant' WHERE TemplateId = 60160729 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Farl Dalston (region 1) shows <Armor Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bows Merchant' WHERE TemplateId = 60160806 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Feren Erimen (region 1) shows <Bows Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60161202 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Gardowen Egesa (region 10) shows <Weapon Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Armor Merchant' WHERE TemplateId = 60161257 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Geofram Hael (region 1) shows <Armor Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Crossbow Merchant' WHERE TemplateId = 60161263 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Gerb (region 1) shows <Crossbow Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60161396 AND ifnull(GuildName, '') = 'Arrow Merchant'",
+   "reason": "True 1.65 merchant titles: Gleda Fletcher (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Arrow Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60161544 AND ifnull(GuildName, '') = 'Shield Merchant'",
+   "reason": "True 1.65 merchant titles: Graeme Dalston (region 1) shows <Weapon Merchant> as its Mob row says (its template said <Shield Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60161992 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Haskis Mordoo (region 1) shows <Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60162108 AND ifnull(GuildName, '') = 'Arrow Merchant'",
+   "reason": "True 1.65 merchant titles: Heylyn Aldar (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Arrow Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Crossbow Merchant' WHERE TemplateId = 60162553 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Ither (region 1) shows <Crossbow Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60162901 AND ifnull(GuildName, '') = 'Arrow Merchant'",
+   "reason": "True 1.65 merchant titles: Kimmy Glaze (region 51) shows <Bolts Merchant> as its Mob row says (its template said <Arrow Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60163043 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Lachlan (region 200) shows <Weapon Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Crossbows Merchant' WHERE TemplateId = 60163177 AND ifnull(GuildName, '') = 'Shield Merchant'",
+   "reason": "True 1.65 merchant titles: Laudine (region 1) shows <Crossbows Merchant> as its Mob row says (its template said <Shield Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Arrows Merchant' WHERE TemplateId = 60164432 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Nelda Fletcher (region 1) shows <Arrows Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60164556 AND ifnull(GuildName, '') = 'Armor Merchant'",
+   "reason": "True 1.65 merchant titles: Nulb Pew (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Armor Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Arrow Merchant' WHERE TemplateId = 60164889 AND ifnull(GuildName, '') = 'Fletching Merchant'",
+   "reason": "True 1.65 merchant titles: Perry (region 242) shows <Arrow Merchant> as its Mob row says (its template said <Fletching Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bolts Merchant' WHERE TemplateId = 60165112 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Radella Fletcher (region 1) shows <Bolts Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60165610 AND ifnull(GuildName, '') = 'Merchant'",
+   "reason": "True 1.65 merchant titles: Sasha Fletcher (region 10) shows <Weapon Merchant> as its Mob row says (its template said <Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60165942 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Shayly Parke (region 10) shows <Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Armor Merchant' WHERE TemplateId = 60166080 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Siom Felanis (region 1) shows <Armor Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Bow Merchant' WHERE TemplateId = 60166517 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Staeven Bowman (region 1) shows <Bow Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Instrument Merchant' WHERE TemplateId = 60167264 AND ifnull(GuildName, '') = 'Weapon Merchant'",
+   "reason": "True 1.65 merchant titles: Trill (region 1) shows <Instrument Merchant> as its Mob row says (its template said <Weapon Merchant> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Merchant' WHERE TemplateId = 60167954 AND ifnull(GuildName, '') = ''",
+   "reason": "True 1.65 merchant titles: Willa Dalston (region 10) shows <Merchant> as its Mob row says (its template said <> and replaces the Mob's values)"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET GuildName = 'Weapon Merchant' WHERE TemplateId = 60168063 AND ifnull(GuildName, '') = 'Armor Merchant'",
+   "reason": "True 1.65 merchant titles: Wylie Edyn (region 1) shows <Weapon Merchant> as its Mob row says (its template said <Armor Merchant> and replaces the Mob's values)"
   }
  ]
 }

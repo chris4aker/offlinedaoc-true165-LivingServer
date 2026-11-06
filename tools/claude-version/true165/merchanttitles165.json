@@ -1,0 +1,329 @@
+{
+ "rule": "Rule: for every NpcTemplate with ReplaceMobValues = 1 whose users are all merchants (merchant class, a \"...Merchant\"\ntitle on the Mob row) with one and the same title, the template takes that title. Guards, trainers and templates\nshared by NPCs with different titles are left alone. Rerunnable: the rules updates carry the TAG and are replaced.",
+ "changes": [
+  {
+   "template": 60157714,
+   "template_name": "Alden Fletcher",
+   "was": "Arrow Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Alden Fletcher (region 1)"
+   ]
+  },
+  {
+   "template": 60157715,
+   "template_name": "Aldrin Collyer",
+   "was": "Weapon Merchant",
+   "now": "Bow Merchant",
+   "mobs": [
+    "Aldrin Collyer (region 1)"
+   ]
+  },
+  {
+   "template": 60158024,
+   "template_name": "Argus Bowman",
+   "was": "Weapon Merchant",
+   "now": "Bows Merchant",
+   "mobs": [
+    "Argus Bowman (region 1)"
+   ]
+  },
+  {
+   "template": 60158237,
+   "template_name": "Balthazar Encambrion",
+   "was": "Armor Merchant",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Balthazar Encambrion (region 1)"
+   ]
+  },
+  {
+   "template": 60158674,
+   "template_name": "Brach Leof",
+   "was": "",
+   "now": "Merchant",
+   "mobs": [
+    "Brach Leof (region 10)"
+   ]
+  },
+  {
+   "template": 60158868,
+   "template_name": "Calldir Edyn",
+   "was": "Weapon Merchant",
+   "now": "Armor Merchant",
+   "mobs": [
+    "Calldir Edyn (region 1)"
+   ]
+  },
+  {
+   "template": 60159663,
+   "template_name": "Daodel",
+   "was": "Armor Merchant",
+   "now": "Merchant",
+   "mobs": [
+    "Daodel (region 181)"
+   ]
+  },
+  {
+   "template": 60160369,
+   "template_name": "Eiddin Walelden",
+   "was": "Arrow Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Eiddin Walelden (region 1)"
+   ]
+  },
+  {
+   "template": 60160412,
+   "template_name": "Elga Wyman",
+   "was": "Armor Merchant",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Elga Wyman (region 1)"
+   ]
+  },
+  {
+   "template": 60160413,
+   "template_name": "Elger Leafblade",
+   "was": "Weapon Merchant",
+   "now": "Bow Merchant",
+   "mobs": [
+    "Elger Leafblade (region 1)"
+   ]
+  },
+  {
+   "template": 60160442,
+   "template_name": "Eluned",
+   "was": "",
+   "now": "Armor Merchant",
+   "mobs": [
+    "Eluned (region 200)"
+   ]
+  },
+  {
+   "template": 60160683,
+   "template_name": "Falla Hemingr",
+   "was": null,
+   "now": "Merchant",
+   "mobs": [
+    "Falla Hemingr (region 101)"
+   ]
+  },
+  {
+   "template": 60160729,
+   "template_name": "Farl Dalston",
+   "was": "Weapon Merchant",
+   "now": "Armor Merchant",
+   "mobs": [
+    "Farl Dalston (region 1)"
+   ]
+  },
+  {
+   "template": 60160806,
+   "template_name": "Feren Erimen",
+   "was": "Weapon Merchant",
+   "now": "Bows Merchant",
+   "mobs": [
+    "Feren Erimen (region 1)"
+   ]
+  },
+  {
+   "template": 60161202,
+   "template_name": "Gardowen Egesa",
+   "was": "",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Gardowen Egesa (region 10)"
+   ]
+  },
+  {
+   "template": 60161257,
+   "template_name": "Geofram Hael",
+   "was": "",
+   "now": "Armor Merchant",
+   "mobs": [
+    "Geofram Hael (region 1)"
+   ]
+  },
+  {
+   "template": 60161263,
+   "template_name": "Gerb",
+   "was": "Weapon Merchant",
+   "now": "Crossbow Merchant",
+   "mobs": [
+    "Gerb (region 1)"
+   ]
+  },
+  {
+   "template": 60161396,
+   "template_name": "Gleda Fletcher",
+   "was": "Arrow Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Gleda Fletcher (region 1)"
+   ]
+  },
+  {
+   "template": 60161544,
+   "template_name": "Graeme Dalston",
+   "was": "Shield Merchant",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Graeme Dalston (region 1)"
+   ]
+  },
+  {
+   "template": 60161992,
+   "template_name": "Haskis Mordoo",
+   "was": "",
+   "now": "Merchant",
+   "mobs": [
+    "Haskis Mordoo (region 1)"
+   ]
+  },
+  {
+   "template": 60162108,
+   "template_name": "Heylyn Aldar",
+   "was": "Arrow Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Heylyn Aldar (region 1)"
+   ]
+  },
+  {
+   "template": 60162553,
+   "template_name": "Ither",
+   "was": "Weapon Merchant",
+   "now": "Crossbow Merchant",
+   "mobs": [
+    "Ither (region 1)"
+   ]
+  },
+  {
+   "template": 60162901,
+   "template_name": "Kimmy Glaze",
+   "was": "Arrow Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Kimmy Glaze (region 51)"
+   ]
+  },
+  {
+   "template": 60163043,
+   "template_name": "Lachlan",
+   "was": "",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Lachlan (region 200)"
+   ]
+  },
+  {
+   "template": 60163177,
+   "template_name": "Laudine",
+   "was": "Shield Merchant",
+   "now": "Crossbows Merchant",
+   "mobs": [
+    "Laudine (region 1)"
+   ]
+  },
+  {
+   "template": 60164432,
+   "template_name": "Nelda Fletcher",
+   "was": "Weapon Merchant",
+   "now": "Arrows Merchant",
+   "mobs": [
+    "Nelda Fletcher (region 1)"
+   ]
+  },
+  {
+   "template": 60164556,
+   "template_name": "Nulb Pew",
+   "was": "Armor Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Nulb Pew (region 1)"
+   ]
+  },
+  {
+   "template": 60164889,
+   "template_name": "Perry",
+   "was": "Fletching Merchant",
+   "now": "Arrow Merchant",
+   "mobs": [
+    "Perry (region 242)"
+   ]
+  },
+  {
+   "template": 60165112,
+   "template_name": "Radella Fletcher",
+   "was": "Weapon Merchant",
+   "now": "Bolts Merchant",
+   "mobs": [
+    "Radella Fletcher (region 1)"
+   ]
+  },
+  {
+   "template": 60165610,
+   "template_name": "Sasha Fletcher",
+   "was": "Merchant",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Sasha Fletcher (region 10)"
+   ]
+  },
+  {
+   "template": 60165942,
+   "template_name": "Shayly Parke",
+   "was": "",
+   "now": "Merchant",
+   "mobs": [
+    "Shayly Parke (region 10)"
+   ]
+  },
+  {
+   "template": 60166080,
+   "template_name": "Siom Felanis",
+   "was": "Weapon Merchant",
+   "now": "Armor Merchant",
+   "mobs": [
+    "Siom Felanis (region 1)"
+   ]
+  },
+  {
+   "template": 60166517,
+   "template_name": "Staeven Bowman",
+   "was": "Weapon Merchant",
+   "now": "Bow Merchant",
+   "mobs": [
+    "Staeven Bowman (region 1)"
+   ]
+  },
+  {
+   "template": 60167264,
+   "template_name": "Trill",
+   "was": "Weapon Merchant",
+   "now": "Instrument Merchant",
+   "mobs": [
+    "Trill (region 1)"
+   ]
+  },
+  {
+   "template": 60167954,
+   "template_name": "Willa Dalston",
+   "was": "",
+   "now": "Merchant",
+   "mobs": [
+    "Willa Dalston (region 10)"
+   ]
+  },
+  {
+   "template": 60168063,
+   "template_name": "Wylie Edyn",
+   "was": "Armor Merchant",
+   "now": "Weapon Merchant",
+   "mobs": [
+    "Wylie Edyn (region 1)"
+   ]
+  }
+ ]
+}
