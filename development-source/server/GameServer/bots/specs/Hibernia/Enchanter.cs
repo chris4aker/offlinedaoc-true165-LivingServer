@@ -9,12 +9,13 @@ namespace DOL.GS
             WeaponOneType = eObjectType.Staff;
             Is2H = true;
 
+            // Enchantments first was rare in period templates (family weights in BotSpec).
             var randVariance = spec switch
             {
-                eSpecType.ManaEnchanter => Util.Random(0, 1),
+                eSpecType.ManaEnchanter => new[] { 0, 1, 5 }[Util.Random(2)],
                 eSpecType.LightEnchanter => Util.Random(2, 3),
                 eSpecType.EnchantmentEnchanter => 4,
-                _ => Util.Random(4),
+                _ => Pick(2, 2, 3, 3, 1, 2),
             };
 
             switch (randVariance)
@@ -52,6 +53,14 @@ namespace DOL.GS
                     Add(Specs.Mana, 20, 0.1f);
                     Add(Specs.Light, 4, 0.0f);
                     Add(Specs.Enchantments, 50, 1.0f);
+                    break;
+
+                // Period: Mana 50 / Enchantments about 20.
+                case 5:
+                    SpecType = eSpecType.ManaEnchanter;
+                    Add(Specs.Mana, 50, 1.0f);
+                    Add(Specs.Light, 3, 0.0f);
+                    Add(Specs.Enchantments, 20, 0.1f);
                     break;
             }
         }

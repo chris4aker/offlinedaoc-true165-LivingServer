@@ -338,5 +338,16 @@ namespace DOL.UnitTests
                     Assert.That(At(plan, eCharacterClass.Mentalist, 30)[Specs.Mentalism], Is.GreaterThanOrEqualTo(14));
             }
         }
+
+        [Test]
+        public void EnchanterEnchantmentsFirstIsRareAndManaCanTakeEnchantments20()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Enchanter);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.EnchantmentEnchanter), Is.InRange(0.05, 0.1));
+            Assert.That(plans.Any(p => p.SpecType == eSpecType.ManaEnchanter && Cap(p, Specs.Enchantments) == 20), Is.True);
+            BotSpec plan = plans.First(p => p.SpecType == eSpecType.ManaEnchanter && Cap(p, Specs.Enchantments) == 20);
+            Dictionary<string, int> at50 = At(plan, eCharacterClass.Enchanter, 50);
+            Assert.That((at50[Specs.Mana], at50[Specs.Enchantments]), Is.EqualTo((50, 20)));
+        }
     }
 }
