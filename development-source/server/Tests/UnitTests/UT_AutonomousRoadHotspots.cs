@@ -39,5 +39,25 @@ namespace DOL.UnitTests
             Assert.That(AutonomousRoadHotspots.Blocks(200, 345_000, 520_000, 5, 200, 344_400, 490_000,
                 1_000 + AutonomousRoadHotspots.ActiveMilliseconds + 1), Is.False);
         }
+
+        [Test]
+        public void PlanningReadsAFilteredSnapshotWithoutTheLock()
+        {
+            Assert.That(AutonomousRoadHotspots.DangerousTo(5, 1_000), Is.Empty);
+            for (int bot = 1; bot <= 4; bot++)
+                AutonomousRoadHotspots.RecordDeath(200, 345_000, 505_000, bot, 4, 9, 1_000, out _);
+            AutonomousRoadHotspots.Hotspot[] forLow = AutonomousRoadHotspots.DangerousTo(5, 2_000);
+            Assert.That(forLow, Has.Length.EqualTo(1));
+            Assert.That(AutonomousRoadHotspots.DangerousTo(7, 2_000), Is.Empty);
+            Assert.That(AutonomousRoadHotspots.Blocks(forLow, 200, 345_000, 560_000, 200, 345_500, 505_500), Is.True);
+            Assert.That(AutonomousRoadHotspots.Blocks(forLow, 200, 345_000, 560_000, 200, 344_400, 530_000), Is.False);
+
+            // a fifth death renews the same spot (same place, later end) and publishes a new snapshot
+            AutonomousRoadHotspots.Hotspot renewed = AutonomousRoadHotspots.RecordDeath(200, 345_300, 505_300, 5, 4, 10, 50_000, out bool created);
+            Assert.That(created, Is.False);
+            Assert.That((renewed.X, renewed.Y, renewed.KillerLevel), Is.EqualTo((345_000, 505_000, 10)));
+            Assert.That(forLow[0].Until, Is.LessThan(renewed.Until), "the old snapshot is never changed");
+            Assert.That(AutonomousRoadHotspots.DangerousTo(6, 60_000), Has.Length.EqualTo(1));
+        }
     }
 }

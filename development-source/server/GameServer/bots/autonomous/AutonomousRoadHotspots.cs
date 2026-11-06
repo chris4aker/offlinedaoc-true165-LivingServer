@@ -21,19 +21,18 @@ namespace DOL.GS
         public const long ActiveMilliseconds = 2 * 60 * 60_000;
         private const int MaxDeaths = 4_000;
 
-        private readonly record struct Death(ushort Region, int X, int Y, long Bot, int KillerLevel, long Tick);
+        private readonly record struct Death(int X, int Y, long Bot, int KillerLevel, long Tick);
 
-        public sealed class Hotspot
-        {
-            public ushort Region;
-            public int X, Y;
-            public int KillerLevel;
-            public long Until;
-        }
+        /// <summary>A hotspot; replaced, never changed, so readers need no lock.</summary>
+        public sealed record Hotspot(ushort Region, int X, int Y, int KillerLevel, long Until);
 
         private static readonly object Sync = new();
-        private static readonly List<Death> Deaths = new();
-        private static readonly List<Hotspot> Hotspots = new();
+        // deaths per region, so a new death only scans its own region's list
+        private static readonly Dictionary<ushort, List<Death>> Deaths = new();
+        private static int _deathCount;
+        // the current hotspots, published as a new array on every change and read without the lock (camp and service
+        // planning check it for every candidate)
+        private static volatile Hotspot[] _hotspots = [];
 
         /// <summary>Records a bot's death; returns the hotspot it made or renewed, if any.</summary>
         public static Hotspot RecordDeath(ushort region, int x, int y, long bot, int botLevel, int killerLevel, long now,
@@ -44,31 +43,73 @@ namespace DOL.GS
                 return null;
             lock (Sync)
             {
-                Deaths.RemoveAll(d => now - d.Tick > WindowMilliseconds);
-                if (Deaths.Count >= MaxDeaths)
-                    Deaths.RemoveAt(0);
-                Deaths.Add(new Death(region, x, y, bot, killerLevel, now));
+                if (!Deaths.TryGetValue(region, out List<Death> deaths))
+                    Deaths[region] = deaths = new();
+                _deathCount -= deaths.RemoveAll(d => now - d.Tick > WindowMilliseconds);
+                if (_deathCount >= MaxDeaths)
+                {
+                    foreach (List<Death> other in Deaths.Values)
+                        _deathCount -= other.RemoveAll(d => now - d.Tick > WindowMilliseconds);
+                    if (_deathCount >= MaxDeaths && deaths.Count > 0)
+                    {
+                        deaths.RemoveAt(0);
+                        _deathCount--;
+                    }
+                }
+                deaths.Add(new Death(x, y, bot, killerLevel, now));
+                _deathCount++;
                 HashSet<long> bots = new();
                 int maxKiller = 0;
-                foreach (Death d in Deaths)
-                    if (d.Region == region && Near(d.X, d.Y, x, y, Radius))
+                foreach (Death d in deaths)
+                    if (Near(d.X, d.Y, x, y, Radius))
                     {
                         bots.Add(d.Bot);
                         maxKiller = Math.Max(maxKiller, d.KillerLevel);
                     }
                 if (bots.Count < DistinctBots)
                     return null;
-                Hotspots.RemoveAll(h => h.Until <= now);
-                Hotspot spot = Hotspots.Find(h => h.Region == region && Near(h.X, h.Y, x, y, Radius));
-                if (spot == null)
+                List<Hotspot> next = new(_hotspots.Length + 1);
+                Hotspot old = null;
+                foreach (Hotspot h in _hotspots)
                 {
-                    Hotspots.Add(spot = new Hotspot { Region = region, X = x, Y = y });
-                    created = true;
+                    if (h.Until <= now)
+                        continue;
+                    if (old == null && h.Region == region && Near(h.X, h.Y, x, y, Radius))
+                        old = h;
+                    else
+                        next.Add(h);
                 }
-                spot.KillerLevel = Math.Max(spot.KillerLevel, maxKiller);
-                spot.Until = now + ActiveMilliseconds;
+                created = old == null;
+                Hotspot spot = new(region, old?.X ?? x, old?.Y ?? y, Math.Max(old?.KillerLevel ?? 0, maxKiller), now + ActiveMilliseconds);
+                next.Add(spot);
+                _hotspots = next.ToArray();
                 return spot;
             }
+        }
+
+        /// <summary>
+        /// The live hotspots dangerous to a bot of this level (an empty array when none), read once per planning pass and
+        /// handed to <see cref="Blocks(Hotspot[], ushort, int, int, ushort, int, int)"/> for each candidate.
+        /// </summary>
+        public static Hotspot[] DangerousTo(int botLevel, long now)
+        {
+            Hotspot[] all = _hotspots;
+            if (all.Length == 0)
+                return all;
+            int count = 0;
+            foreach (Hotspot h in all)
+                if (Dangerous(h, botLevel, now))
+                    count++;
+            if (count == 0)
+                return [];
+            if (count == all.Length)
+                return all;
+            Hotspot[] result = new Hotspot[count];
+            int i = 0;
+            foreach (Hotspot h in all)
+                if (Dangerous(h, botLevel, now))
+                    result[i++] = h;
+            return result;
         }
 
         /// <summary>
@@ -78,22 +119,36 @@ namespace DOL.GS
         /// </summary>
         public static bool Blocks(ushort fromRegion, int fromX, int fromY, int botLevel, ushort toRegion, int toX, int toY, long now)
         {
-            lock (Sync)
-            {
-                if (Hotspots.Count == 0)
-                    return false;
-                foreach (Hotspot h in Hotspots)
-                {
-                    if (h.Until <= now || botLevel > h.KillerLevel - KillerLevelsAbove || h.Region != toRegion)
-                        continue;
-                    if (Near(h.X, h.Y, toX, toY, Radius))
-                        return true;
-                    // already inside it: only destinations near it are refused, so the bot can still choose its way out
-                    if (fromRegion == toRegion && !Near(h.X, h.Y, fromX, fromY, Radius) && SegmentDistanceSquared(fromX, fromY, toX, toY, h.X, h.Y) <= (double)Radius * Radius)
-                        return true;
-                }
+            Hotspot[] all = _hotspots;
+            if (all.Length == 0)
                 return false;
-            }
+            foreach (Hotspot h in all)
+                if (Dangerous(h, botLevel, now) && Blocks(h, fromRegion, fromX, fromY, toRegion, toX, toY))
+                    return true;
+            return false;
+        }
+
+        /// <summary>The same check against hotspots already filtered by <see cref="DangerousTo"/>.</summary>
+        public static bool Blocks(Hotspot[] dangerous, ushort fromRegion, int fromX, int fromY, ushort toRegion, int toX, int toY)
+        {
+            foreach (Hotspot h in dangerous)
+                if (Blocks(h, fromRegion, fromX, fromY, toRegion, toX, toY))
+                    return true;
+            return false;
+        }
+
+        private static bool Dangerous(Hotspot h, int botLevel, long now) =>
+            h.Until > now && botLevel <= h.KillerLevel - KillerLevelsAbove;
+
+        private static bool Blocks(Hotspot h, ushort fromRegion, int fromX, int fromY, ushort toRegion, int toX, int toY)
+        {
+            if (h.Region != toRegion)
+                return false;
+            if (Near(h.X, h.Y, toX, toY, Radius))
+                return true;
+            // already inside it: only destinations near it are refused, so the bot can still choose its way out
+            return fromRegion == toRegion && !Near(h.X, h.Y, fromX, fromY, Radius) &&
+                SegmentDistanceSquared(fromX, fromY, toX, toY, h.X, h.Y) <= (double)Radius * Radius;
         }
 
         public static void Clear()
@@ -101,7 +156,8 @@ namespace DOL.GS
             lock (Sync)
             {
                 Deaths.Clear();
-                Hotspots.Clear();
+                _deathCount = 0;
+                _hotspots = [];
             }
         }
 

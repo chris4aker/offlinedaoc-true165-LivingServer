@@ -5700,10 +5700,14 @@ namespace DOL.GS
             _noGo.RemoveAll(p => p.Until <= now);
             if (camps.Length <= 1)
                 return camps;
-            // the bot's own no-go spots, and the shared spots where bots of its level keep dying (AutonomousRoadHotspots)
+            // the bot's own no-go spots, and the shared spots where bots of its level keep dying (AutonomousRoadHotspots,
+            // filtered once here and read without a lock)
+            AutonomousRoadHotspots.Hotspot[] hotspots = AutonomousRoadHotspots.DangerousTo(bot.Level, now);
+            if (_noGo.Count == 0 && hotspots.Length == 0)
+                return camps;
             AutonomousBotDecisionEngine.Camp[] clear = camps.Where(camp => !destinations.TryGetValue(camp.Id, out CampDestination d) ||
                 !_noGo.Any(p => p.Region == d.RegionId && Distance(p.X, p.Y, d.X, d.Y) <= NoGoRadius) &&
-                !AutonomousRoadHotspots.Blocks(bot.CurrentRegionID, bot.X, bot.Y, bot.Level, d.RegionId, d.X, d.Y, now)).ToArray();
+                !AutonomousRoadHotspots.Blocks(hotspots, bot.CurrentRegionID, bot.X, bot.Y, d.RegionId, d.X, d.Y)).ToArray();
             return clear.Length > 0 ? clear : camps;
         }
 
