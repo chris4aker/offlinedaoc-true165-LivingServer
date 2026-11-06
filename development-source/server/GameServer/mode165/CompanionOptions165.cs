@@ -25,6 +25,8 @@ namespace DOL.GS
     public static class CompanionOptions165
     {
         public const byte KindCharm = 1, KindPet = 2, KindSubPet = 3, KindSong = 4;
+        public const byte KindMainShroom = 19, KindShroomDamage = 20, KindShroomVents = 21, KindShroomAblative = 22,
+            KindShroomSpore = 23, KindShroomBurst = 24, KindShroomHeal = 25;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
             KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
             KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18;
@@ -70,6 +72,22 @@ namespace DOL.GS
             // Performers (Prima: a Bard's group role is to prevent downtime - the endurance song in battle, mez every add,
             // heal the Druid; a Minstrel plays a "passive game" of songs and shouts or an "active game" in melee; period
             // forums: the "Battlebard" melee build)
+            // Animist shrooms (owner 2026-11-05): which main shroom, and each kind of field shroom on or off - only the
+            // kinds this Animist knows are offered (BotAnimistPolicy.KnownKinds)
+            new(KindMainShroom, "mainshroom", "Main shroom", ["Automatic", "Damage", "Taunt"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("damagemain") && BotAnimistPolicy.KnownKinds(bot).Contains("tauntmain")),
+            new(KindShroomDamage, "shroomdamage", "Damage shrooms", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("damage")),
+            new(KindShroomVents, "shroomvents", "Resist vents", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("vents")),
+            new(KindShroomAblative, "shroomablative", "Ablative shrooms", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("ablative")),
+            new(KindShroomSpore, "shroomspore", "Debuff spores", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("spore")),
+            new(KindShroomBurst, "shroomburst", "Shroom burst", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("burst")),
+            new(KindShroomHeal, "shroomheal", "Heal the main shroom", ["Automatic (on)", "Off"],
+                bot => BotAnimistPolicy.KnownKinds(bot).Contains("healmain")),
             new(KindPerform, "perform", "Fight", ["Automatic", "Support (stay back: songs, spells, no melee)", "Melee"],
                 bot => (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Bard or eCharacterClass.Minstrel or
                     eCharacterClass.Skald),

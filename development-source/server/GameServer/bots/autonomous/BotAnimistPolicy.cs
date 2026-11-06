@@ -179,6 +179,7 @@ namespace DOL.GS
             if (!encounter || IsInTown(bot)) return false;
             // Enumerate learned spells only when a cast can actually be attempted.
             Kit kit = ReadKit(bot, allowed);
+            ApplyPlayerChoices(bot, kit);
             main = bot.ControlledBrain?.Body as TurretPet;
             bool hasMain = main?.IsAlive == true && main.ObjectState == GameObject.eObjectState.Active;
 
@@ -300,6 +301,38 @@ namespace DOL.GS
                 _ => $"Planting field turret: {used.Name}"
             };
             return true;
+        }
+
+        /// <summary>The kinds of shroom this Animist knows now (for the AI Options rows).</summary>
+        public static HashSet<string> KnownKinds(GameBot bot)
+        {
+            var kinds = new HashSet<string>();
+            if (bot?.CharacterClass?.ID != (int)eCharacterClass.Animist)
+                return kinds;
+            Kit kit = ReadKit(bot, null);
+            if (kit.DamageMain.Spell != null) kinds.Add("damagemain");
+            if (kit.TauntMain.Spell != null) kinds.Add("tauntmain");
+            if (kit.DamageField.Spell != null) kinds.Add("damage");
+            if (kit.Vents.Count > 0) kinds.Add("vents");
+            if (kit.Ablative.Spell != null) kinds.Add("ablative");
+            if (kit.Spore.Spell != null) kinds.Add("spore");
+            if (kit.Burst.Spell != null) kinds.Add("burst");
+            if (kit.HealMain.Spell != null) kinds.Add("healmain");
+            return kinds;
+        }
+
+        /// <summary>A hired Animist's AI Options (owner 2026-11-05): the main shroom it summons and the kinds it plants.</summary>
+        private static void ApplyPlayerChoices(GameBot bot, Kit kit)
+        {
+            int main = CompanionOptions165.Choice(bot, "mainshroom");
+            if (main == 1 && kit.DamageMain.Spell != null) kit.TauntMain = default;
+            if (main == 2 && kit.TauntMain.Spell != null) kit.DamageMain = default;
+            if (CompanionOptions165.Choice(bot, "shroomdamage") == 1) kit.DamageField = default;
+            if (CompanionOptions165.Choice(bot, "shroomvents") == 1) kit.Vents.Clear();
+            if (CompanionOptions165.Choice(bot, "shroomablative") == 1) kit.Ablative = default;
+            if (CompanionOptions165.Choice(bot, "shroomspore") == 1) kit.Spore = default;
+            if (CompanionOptions165.Choice(bot, "shroomburst") == 1) kit.Burst = default;
+            if (CompanionOptions165.Choice(bot, "shroomheal") == 1) kit.HealMain = default;
         }
 
         private static Kit ReadKit(GameBot bot, Func<Spell, bool> allowed)
