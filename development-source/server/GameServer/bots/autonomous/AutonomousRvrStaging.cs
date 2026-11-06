@@ -161,6 +161,49 @@ public static class AutonomousRvrStaging
     }
 
     /// <summary>
+    /// True 1.65 Mode warband size, two to the maximum and leaning toward the maximum (about 38% full eights,
+    /// 7% pairs at a maximum of eight); never one, so every rolled leader forms a group.
+    /// </summary>
+    public static int RollClassicWarbandSize(int maximumSize, double roll)
+    {
+        int maximum = Math.Clamp(maximumSize, 1, 8);
+        if (maximum <= 2) return maximum;
+        double bounded = Math.Clamp(roll, 0d, Math.BitDecrement(1d));
+        return maximum - (int)(bounded * bounded * (maximum - 1));
+    }
+
+    /// <summary>The 1.65 group speed classes: Minstrel, Skald and Bard songs/chants of speed.</summary>
+    public static bool IsSpeedClass(eCharacterClass characterClass) => characterClass is
+        eCharacterClass.Minstrel or eCharacterClass.Skald or eCharacterClass.Bard;
+
+    /// <summary>
+    /// Members for a True 1.65 warband of <paramref name="size"/> (leader included), from a pool already ordered by
+    /// level gap then distance: a healer unless the leader is one, a speed class and a crowd-control class when the
+    /// pool has them, then the pool order. Without a healer in the pool the warband still forms.
+    /// </summary>
+    public static List<T> ChooseWarbandMembers<T>(T leader, IReadOnlyList<T> pool, int size, Func<T, bool> healer,
+        Func<T, bool> speed, Func<T, bool> crowdControl) where T : class
+    {
+        var chosen = new List<T>(Math.Max(0, size - 1));
+        int wanted = Math.Min(Math.Max(0, size - 1), pool.Count);
+        void TakeFirst(Func<T, bool> role)
+        {
+            if (chosen.Count >= wanted || role(leader) || chosen.Any(role)) return;
+            T first = pool.FirstOrDefault(member => !chosen.Contains(member) && role(member));
+            if (first != null) chosen.Add(first);
+        }
+        TakeFirst(healer);
+        TakeFirst(speed);
+        TakeFirst(crowdControl);
+        foreach (T member in pool)
+        {
+            if (chosen.Count >= wanted) break;
+            if (!chosen.Contains(member)) chosen.Add(member);
+        }
+        return chosen;
+    }
+
+    /// <summary>
     /// Spreads a warband deterministically across the closest visible enemies.
     /// Limiting the window to party size keeps the force converged instead of
     /// sending one member after a distant target.

@@ -1587,8 +1587,12 @@ public static partial class AutonomousBotGroupCoordinator
             // through eight create an actual warband. The realm-local reserve
             // below still guarantees that grouping pressure cannot consume
             // every solo RvR character.
+            // True 1.65 Mode: warbands lean toward a full eight (period groups were full groups).
+            bool classicWarband = objectiveKind == eAutonomousObjectiveKind.RvR && Classic165Mode.IsOn;
             int rolledSize = objectiveKind == eAutonomousObjectiveKind.RvR
-                ? AutonomousRvrStaging.RollWarbandSize(largestAllowed, Random.Shared.NextDouble())
+                ? classicWarband
+                    ? AutonomousRvrStaging.RollClassicWarbandSize(largestAllowed, Random.Shared.NextDouble())
+                    : AutonomousRvrStaging.RollWarbandSize(largestAllowed, Random.Shared.NextDouble())
                 : 8;
             if (rolledSize == 1)
                 continue;
@@ -1611,6 +1615,18 @@ public static partial class AutonomousBotGroupCoordinator
             {
                 if (!TryBuildPveRoster(leader, compatiblePool, out compatible, out pveRoles,
                         MinimumPveFormationSize, largestAllowed))
+                    continue;
+                rolledSize = compatible.Length + 1;
+            }
+            else if (classicWarband)
+            {
+                // A healer first, then a speed class and a crowd-control class, then the closest levels;
+                // a short pool forms a smaller warband rather than none.
+                compatible = AutonomousRvrStaging.ChooseWarbandMembers(leader, compatiblePool, rolledSize,
+                    member => member.CharacterClass != null && BotPartyRoles.IsHealingClass((eCharacterClass)member.CharacterClass.ID),
+                    member => member.CharacterClass != null && AutonomousRvrStaging.IsSpeedClass((eCharacterClass)member.CharacterClass.ID),
+                    member => member.CanCastCrowdControlSpells).ToArray();
+                if (compatible.Length == 0)
                     continue;
                 rolledSize = compatible.Length + 1;
             }
