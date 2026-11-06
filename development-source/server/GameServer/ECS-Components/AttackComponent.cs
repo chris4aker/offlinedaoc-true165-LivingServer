@@ -883,7 +883,7 @@ namespace DOL.GS
                     case eAttackResult.HitUnstyled:
                     {
                         // Keep component.
-                        if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameSiegeWeapon) &&
+                        if ((ad.Target is GameKeepComponent || ad.Target is GameKeepDoor || ad.Target is GameRealmGate || ad.Target is GameSiegeWeapon) &&
                             ad.Attacker is GamePlayer && ad.Attacker.GetModified(eProperty.KeepDamage) > 0)
                         {
                             int keepdamage = (int) Math.Floor(ad.Damage * ((double) ad.Attacker.GetModified(eProperty.KeepDamage) / 100));
@@ -894,7 +894,7 @@ namespace DOL.GS
 
                         // Vampiir.
                         if (playerOwner.CharacterClass is PlayerClass.ClassVampiir &&
-                            target is not GameKeepComponent and not GameKeepDoor and not GameSiegeWeapon)
+                            target is not GameKeepComponent and not GameKeepDoor and not GameRealmGate and not GameSiegeWeapon)
                         {
                             int perc = Convert.ToInt32((double) (ad.Damage + ad.CriticalDamage) / 100 * (55 - playerOwner.Level));
                             perc = (perc < 1) ? 1 : ((perc > 15) ? 15 : perc);

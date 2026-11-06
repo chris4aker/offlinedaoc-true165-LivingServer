@@ -97,7 +97,8 @@ namespace DOL.GS
 			//if the door is not a keep door, create a standard door
 			if (mydoor == null)
 			{
-				mydoor = new GameDoor();
+				// True 1.65 Mode: a realm-owned door outside every keep is a milegate or border keep door (GameRealmGate).
+				mydoor = GameRealmGate.LoadsAsGate(Classic165Mode.IsOn, false, (eRealm) door.Realm) ? new GameRealmGate() : new GameDoor();
 				mydoor.LoadFromDatabase(door);
 			}
 
@@ -136,6 +137,8 @@ namespace DOL.GS
 				}
 
 				m_doors[door.DoorId] = door;
+				if (door is GameRealmGate)
+					GameRealmGate.ForgetRegions();
 			}
 		}
 

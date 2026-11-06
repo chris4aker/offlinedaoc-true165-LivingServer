@@ -408,7 +408,7 @@ namespace DOL.AI.Brain
 
             // An enemy keep's doors and walls are fought whatever their con (owner 2026-10-29: companions would not help
             // the player break a battleground keep's door).
-            if (realTarget is DOL.GS.Keeps.GameKeepDoor or DOL.GS.Keeps.GameKeepComponent && realTarget.Realm != Body.Realm)
+            if (realTarget is DOL.GS.Keeps.GameKeepDoor or DOL.GS.Keeps.GameKeepComponent or GameRealmGate && realTarget.Realm != Body.Realm)
                 return true;
 
             // Evaluate the monster from the character's perspective, not the

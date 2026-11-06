@@ -148,7 +148,7 @@ namespace DOL.GS.Spells
             if (target == null ||
                 target.ObjectState is not GameObject.eObjectState.Active ||
                 !target.IsAlive ||
-                target is GameKeepComponent or GameKeepDoor)
+                target is GameKeepComponent or GameKeepDoor or GameRealmGate)
             {
                 return false;
             }

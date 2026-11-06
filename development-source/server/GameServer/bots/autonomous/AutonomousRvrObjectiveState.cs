@@ -17,7 +17,7 @@ public static class AutonomousRvrObjectiveState
 {
     public static eAutonomousRvrPhase ForTarget(GameLiving target) => target switch
     {
-        DOL.GS.Keeps.GameKeepDoor => eAutonomousRvrPhase.BreachingDoor,
+        DOL.GS.Keeps.GameKeepDoor or GameRealmGate => eAutonomousRvrPhase.BreachingDoor,
         DOL.GS.Keeps.GuardLord => eAutonomousRvrPhase.AssaultingLord,
         DOL.GS.Keeps.GameKeepGuard => eAutonomousRvrPhase.ClearingKeep,
         GameBot => eAutonomousRvrPhase.HuntingEnemy,

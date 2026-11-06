@@ -56,7 +56,7 @@ namespace DOL.GS
 		public override int CalcDamageToTarget(GameLiving target)
 		{
 			//Trebs are better against doors but lower damage against players/npcs/other objects
-			if(target is GameKeepDoor || target is GameRelicDoor)
+			if(target is GameKeepDoor || target is GameRelicDoor || target is GameRealmGate)
 				return BaseDamage * 3;
 			else
 				return BaseDamage;

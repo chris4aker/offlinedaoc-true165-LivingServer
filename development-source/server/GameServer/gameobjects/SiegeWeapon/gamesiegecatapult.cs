@@ -118,11 +118,11 @@ namespace DOL.GS
 
 			foreach (GameDoorBase door in CurrentRegion.GetDoorsInRadius(GroundTarget, (ushort) ShotRadius))
 			{
-				if (Owner != null && door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(Owner, (GameKeepDoor)door, true))
+				if (Owner != null && door is GameKeepDoor or GameRealmGate && GameServer.ServerRules.IsAllowedToAttack(Owner, door, true))
 				{
 					list.Add(door);
 				}
-				else if (door is GameKeepDoor && GameServer.ServerRules.IsAllowedToAttack(this, (GameKeepDoor)door, true)) //use this siege as attacker if Owner is null
+				else if (door is GameKeepDoor or GameRealmGate && GameServer.ServerRules.IsAllowedToAttack(this, door, true)) //use this siege as attacker if Owner is null
 				{
 					list.Add(door);
 				}

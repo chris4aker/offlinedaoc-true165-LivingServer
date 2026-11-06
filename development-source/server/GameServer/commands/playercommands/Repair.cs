@@ -55,6 +55,14 @@ namespace DOL.GS.Commands
 				StartRepair(client.Player, door);
 			}
 
+			// True 1.65 Mode: milegates and border keep doors are repaired by their realm like keep doors.
+			if (client.Player.TargetObject is GameRealmGate gate)
+			{
+				if (!PreFireChecks(client.Player, gate))
+					return;
+				StartRepair(client.Player, gate);
+			}
+
 			GameKeepComponent component = client.Player.TargetObject as GameKeepComponent;
 			if (component != null)
 			{
@@ -230,6 +238,8 @@ namespace DOL.GS.Commands
 					GameKeepDoor door = obj as GameKeepDoor;
 					door.Repair((int)(door.MaxHealth * 0.05));
 				}
+				else if (obj is GameRealmGate gate)
+					gate.Repair((int)(gate.MaxHealth * 0.05));
 				else if (obj is GameKeepComponent)
 				{
 					GameKeepComponent component = obj as GameKeepComponent;

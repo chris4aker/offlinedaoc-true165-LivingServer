@@ -27,6 +27,8 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepDoor:
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
+                case GameRealmGate:
+                    return GameRealmGate.GateArmorFactor;
                 case IGameEpicNpc epicNpc:
                     return CalculateLivingArmorFactor(living, property, 12.5 * epicNpc.ArmorFactorScalingFactor, 50);
                 case NecromancerPet:

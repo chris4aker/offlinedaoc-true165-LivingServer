@@ -394,7 +394,7 @@ namespace DOL.GS
 			//let's check if we are trying to move too close to a door, if we are, don't move
 			foreach (GameDoorBase door in Owner.CurrentRegion.GetDoorsInRadius(Owner.GroundTarget, (ushort)(attackComponent.AttackRange - 50)))
 			{
-				if (door is GameKeepDoor)
+				if (door is GameKeepDoor or GameRealmGate)
 				{
 					OwnerOut?.SendMessage("You can't move a ram that close to a door!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;

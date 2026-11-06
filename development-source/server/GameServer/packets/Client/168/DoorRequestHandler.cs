@@ -111,6 +111,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 UseDoor();
                                 return;
                             }
+
+                            // True 1.65 Mode: an enemy's milegate stays shut (it says so); it has to be broken.
+                            if (door is GameRealmGate)
+                                door.Open(client.Player);
                         }
                     }
                 }

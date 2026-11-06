@@ -49,7 +49,7 @@ public static class AutonomousFrontierHotspots
         Region region = WorldMgr.GetRegion(regionId);
         if (region == null) return [];
         var doors = DoorMgr.Snapshot()
-            .Where(door => door is GameDoor && door.CurrentRegionID == regionId)
+            .Where(door => door is GameDoor or GameRealmGate && door.CurrentRegionID == regionId)
             .Select(door => (door, zone: region.GetZone(door.X, door.Y)))
             .Where(entry => entry.zone != null && AutonomousWorldBotController.IsFrontierZone(regionId, entry.zone.ID))
             .Select(entry => new DoorPoint(new(entry.door.X, entry.door.Y, entry.door.Z), entry.zone.Description));

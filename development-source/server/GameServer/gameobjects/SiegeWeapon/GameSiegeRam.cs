@@ -64,7 +64,7 @@ namespace DOL.GS
 		{
 			if (Owner?.TargetObject == null) return;
 			//Only allow rams to attack keep or relic doors 
-			if (!(Owner.TargetObject is GameKeepDoor) && !(Owner.TargetObject is GameRelicDoor))
+			if (!(Owner.TargetObject is GameKeepDoor) && !(Owner.TargetObject is GameRelicDoor) && !(Owner.TargetObject is GameRealmGate))
 			{
 				OwnerOut?.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
@@ -126,7 +126,7 @@ namespace DOL.GS
 			}
 
 			//Only allow rams to attack keep or relic doors 
-			if (!(target is GameKeepDoor) && !(target is GameRelicDoor))
+			if (!(target is GameKeepDoor) && !(target is GameRelicDoor) && !(target is GameRealmGate))
 			{
 				if(Owner != null)
 					OwnerOut?.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

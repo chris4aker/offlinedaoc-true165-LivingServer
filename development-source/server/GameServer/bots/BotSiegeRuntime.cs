@@ -116,7 +116,7 @@ namespace DOL.GS
                 weapon.IsMoving || !weapon.CanUse() || !LegalEnemy(bot, target) || BotPvpCrowdControl.Protected(bot, target)) return false;
             int range = weapon.GetDistanceTo(target);
             if (weapon is GameSiegeRam)
-                return target is GameKeepDoor { State: eDoorState.Closed } && range <= weapon.attackComponent.AttackRange;
+                return target is GameKeepDoor { State: eDoorState.Closed } or GameRealmGate { State: eDoorState.Closed } && range <= weapon.attackComponent.AttackRange;
             if (range < weapon.MinAttackRange || range > weapon.MaxAttackRange) return false;
             // Catapults and trebuchets lob onto a ground target in an arc, as players used them: no line of sight.
             // A ballista fires directly: it needs a clear shot, or a target standing up on a wall.
