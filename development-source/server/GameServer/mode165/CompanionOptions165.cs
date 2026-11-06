@@ -37,8 +37,10 @@ namespace DOL.GS
 
         private static readonly Generic[] Generics =
         [
-            // melee: taunt styles to hold a monster, or detaunt styles to give it back to the tank
-            new(KindAggro, "aggro", "Aggro", ["Automatic", "Hold it (taunt)", "Shed it (detaunt)"],
+            // melee: taunt styles to hold a monster, or detaunt styles to give it back to the tank (owner 2026-11-06: the
+            // "Aggro" row renamed "Taunt"; stored values unchanged - 1 was "Hold it", 2 "Shed it"). Automatic: only the
+            // tank-class companion taunts, never off the player as main tank, never under 40% (BotMeleeStylePolicy.MayTaunt).
+            new(KindAggro, "aggro", "Taunt", ["Automatic", "Always", "Never (detaunt)"],
                 bot => bot.StylesTaunt?.Count > 0 || bot.StylesDetaunt?.Count > 0),
             new(KindHealAt, "healat", "Heal at", ["Automatic", "Early (90%)", "Late (50%)"], bot => bot.CanCastHealSpells),
             new(KindDebuff, "debuff", "Debuff before nuking", ["Automatic", "Always", "Never"],
@@ -100,6 +102,9 @@ namespace DOL.GS
         /// <summary>A generic AI option's stored key and choices (choice 0 Automatic), or null for an unknown kind.</summary>
         public static (string Key, string[] Choices)? Option(byte kind) =>
             Generics.FirstOrDefault(g => g.Kind == kind) is { } option ? (option.Key, option.Choices) : null;
+
+        /// <summary>A generic AI option's caption (the row's name in the AI Options tab), or null for an unknown kind.</summary>
+        public static string Caption(byte kind) => Generics.FirstOrDefault(g => g.Kind == kind)?.Caption;
 
         /// <summary>Whether a spell list holds a damage spell (the "Save power" row is offered then).</summary>
         public static bool HasDamageSpell(IEnumerable<Spell> spells) => spells.Any(BotCasterPriority.IsDamage);

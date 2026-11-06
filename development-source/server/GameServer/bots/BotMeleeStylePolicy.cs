@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Styles;
 
@@ -28,13 +30,111 @@ namespace DOL.GS
         /// melee bot taunted on every swing, because the taunt style is the highest-growth anytime style of nearly every
         /// weapon line.
         /// </summary>
-        public static bool MayTaunt(GameBot bot) => bot.TargetObject is GamePlayer or GameBot
-            ? false   // players have no aggro: taunt styles only waste endurance in RvR (period forums, Jun 2003)
-            : CompanionOptions165.Choice(bot, "aggro") switch
+        public static bool MayTaunt(GameBot bot) => MayTaunt(bot, bot?.TargetObject as GameLiving);
+
+        /// <summary>
+        /// <see cref="MayTaunt(GameBot)"/> for a given monster. True 1.65 Mode, a player's companion (owner 2026-11-06: "they
+        /// can have like zero hps and they will still use a taunt style to taunt off you"): its "Taunt" AI Option decides -
+        /// Always taunts, Never (detaunt) never does, and Automatic taunts only for a tank-class companion that is the main
+        /// tank (the player is not: see <see cref="PlayerIsMainTank"/>) at or above 40% health.
+        /// </summary>
+        public static bool MayTaunt(GameBot bot, GameLiving target)
         {
-            1 => true,    // the player chose: hold the monster
-            2 => false,   // the player chose: shed it
-            _ => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot),
+            if (bot == null || target is GamePlayer or GameBot)
+                return false;   // players have no aggro: taunt styles only waste endurance in RvR (period forums, Jun 2003)
+            int choice = CompanionOptions165.Choice(bot, "aggro");
+            if (TauntRulesPlayer(bot) is GamePlayer player)
+                return CompanionMayTaunt(choice, BotPartyRoles.IsTank(bot), PlayerIsMainTank(player, target), bot.HealthPercent);
+            return choice switch
+            {
+                1 => true,    // the player chose: hold the monster
+                2 => false,   // the player chose: shed it
+                _ => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot),
+            };
+        }
+
+        /// <summary>On Automatic a companion tank stops taunting under this health (it would only die holding the monster).</summary>
+        public const int AutomaticTauntMinHealthPercent = 40;
+
+        /// <summary>
+        /// Pure rule for a player's companion: the "Taunt" option (0 Automatic, 1 Always, 2 Never (detaunt)). Automatic: only
+        /// a tank-class companion taunts, never while the player is the main tank, never under 40% health.
+        /// </summary>
+        public static bool CompanionMayTaunt(int choice, bool tankClass, bool playerMainTank, int healthPercent) => choice switch
+        {
+            1 => true,
+            2 => false,
+            _ => tankClass && !playerMainTank && healthPercent >= AutomaticTauntMinHealthPercent,
+        };
+
+        /// <summary>Pure rule for a player's companion with the monster on it: give it back (detaunt styles).</summary>
+        public static bool CompanionDetaunts(int choice, bool tankClass, bool hasTankPartner, bool playerMainTank) => choice switch
+        {
+            1 => false,
+            2 => true,
+            _ => playerMainTank || !tankClass && hasTankPartner,
+        };
+
+        /// <summary>The companion's player whose taunt rules apply (True 1.65 Mode), or null for a gamebot.</summary>
+        public static GamePlayer TauntRulesPlayer(GameBot bot) => Classic165Mode.IsOn ? bot?.CompanionPlayer : null;
+
+        private sealed class FightStart
+        {
+            public GamePlayer Player;
+            public bool PlayerTanks;
+            public long Seen;
+        }
+
+        // one small entry per monster a companion fights; weak keys, so a despawned monster takes its entry with it
+        private static readonly ConditionalWeakTable<GameLiving, FightStart> FightStarts = new();
+
+        /// <summary>A fight not looked at for this long starts afresh (the monster reset or was pulled again later).</summary>
+        public const long FightStartMemoryMilliseconds = 15_000;
+
+        /// <summary>
+        /// Pure rule: the player is the main tank when a tank class, or when the monster was on them at the start of the
+        /// fight while they fight in melee (a Berserker, Blademaster, Mercenary or Savage tanking). A caster the monster ran
+        /// to after a nuke is not tanking: its companions still taunt the monster off it.
+        /// </summary>
+        public static bool MainTankAtStart(bool playerTankClass, bool monsterOnPlayer, bool playerCaster) =>
+            playerTankClass || monsterOnPlayer && !playerCaster;
+
+        /// <summary>
+        /// True 1.65 Mode: whether the player is the main tank against this monster. Decided once per fight, when the monster
+        /// first has a target (undecided before: false), and kept while companions keep looking at that fight.
+        /// </summary>
+        public static bool PlayerIsMainTank(GamePlayer player, GameLiving monster)
+        {
+            if (player?.CharacterClass == null)
+                return false;
+            if (BotHealTriage165.IsTank(player))
+                return true;
+            if (monster is not GameNPC || monster is GameBot)
+                return false;
+            long now = GameLoop.GameLoopTime;
+            if (FightStarts.TryGetValue(monster, out FightStart start) && start.Player == player &&
+                now - start.Seen <= FightStartMemoryMilliseconds)
+            {
+                start.Seen = now;
+                return start.PlayerTanks;
+            }
+            if (monster.TargetObject is not GameLiving victim)
+                return false;
+            bool tanks = MainTankAtStart(false, victim == player,
+                BotBrain.PrefersSpellRange(player.CharacterClass));
+            FightStarts.AddOrUpdate(monster, new FightStart { Player = player, PlayerTanks = tanks, Seen = now });
+            return tanks;
+        }
+
+        /// <summary>
+        /// The main tank holding this monster: a tank-class bot, or a player who is the main tank (True 1.65 Mode). A stun
+        /// style on that monster is not a peel (it would only waste the stun and the endurance).
+        /// </summary>
+        public static bool IsMainTankOn(GameLiving victim, GameLiving monster) => victim switch
+        {
+            GameBot tank => BotPartyRoles.IsTank(tank),
+            GamePlayer player => Classic165Mode.IsOn && PlayerIsMainTank(player, monster),
+            _ => false,
         };
 
         /// <summary>A style that stuns (Slam and the like).</summary>
@@ -51,11 +151,13 @@ namespace DOL.GS
         /// <summary>
         /// A stun style (Slam: a long stun for a lot of endurance) is used on purpose, as players did: to stop a cast, to
         /// peel the target off a realm mate, or to open on an enemy player. Not as a filler: its growth beats every anytime
-        /// weapon style, so tanks slammed on every swing the stun allowed.
+        /// weapon style, so tanks slammed on every swing the stun allowed. True 1.65 Mode: a monster the main tank holds (a
+        /// tank-class bot, or the player as main tank) is not peeled.
         /// </summary>
         public static bool StunWanted(GameLiving bot, GameLiving target, AttackData lastAttack) =>
             bot != null && target != null && (target.IsCasting ||
-            target.TargetObject is GameLiving victim && victim != bot && victim.Realm == bot.Realm ||
+            target.TargetObject is GameLiving victim && victim != bot && victim.Realm == bot.Realm &&
+                !(Classic165Mode.IsOn && target is GameNPC and not GameBot && IsMainTankOn(victim, target)) ||
             target is GamePlayer or GameBot && lastAttack?.Target != target);
 
         /// <summary>A non-tank the monster has turned on, with a living tank (bot tank class or player) in its group: detaunt.</summary>
@@ -64,6 +166,9 @@ namespace DOL.GS
             int aggro = CompanionOptions165.Choice(bot, "aggro");
             if (aggro == 1 || bot.TargetObject is not GameLiving target || target.TargetObject != bot)
                 return false;
+            // True 1.65 Mode, a player's companion: also when the player is the main tank (BotMeleeStylePolicy.MayTaunt)
+            if (TauntRulesPlayer(bot) is GamePlayer player)
+                return CompanionDetaunts(aggro, BotPartyRoles.IsTank(bot), HasTankPartner(bot), PlayerIsMainTank(player, target));
             return aggro == 2 || !BotPartyRoles.IsTank(bot) && HasTankPartner(bot);
         }
 

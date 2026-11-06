@@ -4331,10 +4331,14 @@ namespace DOL.AI.Brain
                 .Concat(Body.GetPlayersInRadius(2600).Cast<GameLiving>())
                 .Distinct();
             // A mesmerized monster still points at its last victim: never protect against it (that broke the mez).
+            // True 1.65 Mode: nor against a monster on the player who is the main tank (BotMeleeStylePolicy.MayTaunt).
+            GamePlayer mainTankRules = BotMeleeStylePolicy.TauntRulesPlayer(BotBody);
             return candidates
                 .Where(candidate => candidate?.IsAlive == true &&
                                     candidate.TargetObject is GameLiving victim &&
                                     IsProtectionThreat(protectedMembers.Contains(victim), IsBreakablyControlled(candidate)) &&
+                                    !(mainTankRules != null && victim == mainTankRules &&
+                                      BotMeleeStylePolicy.PlayerIsMainTank(mainTankRules, candidate)) &&
                                     CanAggroTarget(candidate))
                 .OrderByDescending(candidate => candidate.TargetObject == leader)
                 .ThenByDescending(candidate => candidate.TargetObject is GameBot bot && bot.Brain is BotBrain { IsHealer: true })
@@ -4353,6 +4357,9 @@ namespace DOL.AI.Brain
                 victim.Group != Body.Group || !Body.Group.IsInTheGroup(victim) ||
                 victim.CurrentRegionID != Body.CurrentRegionID ||
                 !Body.IsWithinRadius(victim, GROUP_DEFENSE_ASSIST_RADIUS))
+                return false;
+            // the taunt spell too follows the "Taunt" choice and the main tank (owner 2026-11-06: no taunting off the player)
+            if (BotMeleeStylePolicy.TauntRulesPlayer(BotBody) != null && !BotMeleeStylePolicy.MayTaunt(BotBody, target))
                 return false;
 
             if (GameLoop.GameLoopTime >= _nextPriorityTauntTick)

@@ -50,7 +50,12 @@ namespace DOL.AI.Brain
                 2 => healer,
                 _ => null,
             };
-            if (protect && (chosen ?? healer ?? threatened) is GameLiving protectTarget)
+            // True 1.65 Mode: Protect never goes on the player who is the main tank (it would pull their monster off them)
+            GameLiving protectThreatened = threatened != null && IsMainTankPlayer(threatened)
+                ? squishies.Where(member => member != threatened && BeingHitInMelee(member))
+                    .OrderBy(member => member.HealthPercent).FirstOrDefault()
+                : threatened;
+            if (protect && (chosen ?? healer ?? protectThreatened) is GameLiving protectTarget)
                 Apply(eEffect.Protect, protectTarget);
             // Guard blocks only within 256 of the guarded member: the member being hit within reach first, else the
             // healer or another squishy member within reach (Prima: guarded healers stick close; the tank never left its
@@ -74,6 +79,11 @@ namespace DOL.AI.Brain
                 }
             }
         }
+
+        /// <summary>The companion's player, being the main tank against the monster they fight (BotMeleeStylePolicy).</summary>
+        private bool IsMainTankPlayer(GameLiving member) =>
+            member is GamePlayer player && player == BotMeleeStylePolicy.TauntRulesPlayer(BotBody) &&
+            BotMeleeStylePolicy.PlayerIsMainTank(player, player.TargetObject as GameLiving ?? Body.TargetObject as GameLiving);
 
         private void Apply(eEffect kind, GameLiving target)
         {
