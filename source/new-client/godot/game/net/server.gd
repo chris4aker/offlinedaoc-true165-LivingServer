@@ -1908,8 +1908,9 @@ func _exchange_text(text: String) -> void:
 		market_count = int(text.get_slice(" ", 3))
 	elif text.begins_with("Your listings - page "):
 		listing_page = maxi(int(text.get_slice(" ", 4).trim_suffix(".")) - 1, 0)
-	elif text == "That item cannot be traded." or text.begins_with("Your 100 listing slots"):
-		exchange_refusal = text                    # (RealmExchangeBroker: a drop onto the listings refused)
+	elif text == "That item cannot be traded." or text.begins_with("Your 100 listing slots") \
+			or text.begins_with("The Realm Exchange could not"):
+		exchange_refusal = text                    # (RealmExchangeBroker: a drop refused - every refusal has its reason)
 		exchange_refusal_at = Time.get_ticks_msec()
 	else:
 		return

@@ -69,6 +69,11 @@ func _ready() -> void:
 	print("[exui] refused + money waiting: status '%s', proceeds '%s', claim '%s'  %s" % [ex._status.text,
 			ex._proceeds.text, ex._claim.text, "OK" if c3 else "WRONG"])
 	await _shot("exui_refused")
+	Server._exchange_text("The Realm Exchange could not do that: you are too far from the broker.")
+	await get_tree().process_frame
+	var c5: bool = ex._status.text == "THE REALM EXCHANGE COULD NOT DO THAT: YOU ARE TOO FAR FROM THE BROKER."
+	ok = ok and c5
+	print("[exui] a refusal with its reason: '%s'  %s" % [ex._status.text, "OK" if c5 else "WRONG"])
 	Server.listing_page = 1                                   # left on chest page 2 before the cap
 	ex.refresh()
 	await get_tree().process_frame
