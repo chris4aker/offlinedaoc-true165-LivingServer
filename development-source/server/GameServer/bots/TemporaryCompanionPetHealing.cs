@@ -115,8 +115,12 @@ namespace DOL.GS
             if (candidateEmergency)
                 return candidate.HealthPercent < current.HealthPercent ||
                        candidate.HealthPercent == current.HealthPercent && candidatePriority < currentPriority;
+            // among equals the lower health first; True 1.65: a companion tank counts 10 points lower (BotHealTriage165)
             return candidatePriority < currentPriority ||
-                   candidatePriority == currentPriority && candidate.HealthPercent < current.HealthPercent;
+                   candidatePriority == currentPriority && (Classic165Mode.IsOn
+                       ? BotHealTriage165.Prefer(candidate.HealthPercent, BotHealTriage165.IsTank(candidate),
+                           current.HealthPercent, BotHealTriage165.IsTank(current))
+                       : candidate.HealthPercent < current.HealthPercent);
         }
 
         public static IReadOnlyList<GameNPC> TriageTargets(GameBot companion, int fieldPetSearchRadius)

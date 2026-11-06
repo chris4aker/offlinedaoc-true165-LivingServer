@@ -5667,6 +5667,12 @@ namespace DOL.AI.Brain
 
         private long _healFightSince;   // when the group's current fight began, as this healer saw it (0: no fight)
 
+        /// <summary>The heal order between two members: the lower health first; in True 1.65 a tank counts 10 points lower.</summary>
+        private static bool PreferHealTarget(GameLiving candidate, bool candidateTank, GameLiving current, bool classic165) =>
+            classic165
+                ? BotHealTriage165.Prefer(candidate.HealthPercent, candidateTank, current.HealthPercent, BotHealTriage165.IsTank(current))
+                : candidate.HealthPercent < current.HealthPercent;
+
         bool CheckHealSpell(Spell spell)
         {
             return spell != null
@@ -5765,7 +5771,7 @@ namespace DOL.AI.Brain
             Spell spellToCast = null;
             GameLiving spellTarget = null;
             bool startedCasting = false;
-            int numGroupHurt = 0;   // members under the heal line (a group heal's count)
+            int numGroupHurt = 0;   // members under the heal line by their real health (a group heal's count)
             bool groupInFight = false;
 
             // Check group health
@@ -5782,26 +5788,30 @@ namespace DOL.AI.Brain
                     if (deficit > 0)
                     {
                         amountToHeal += deficit;
-
+                        // True 1.65: the main tank first - outside an emergency a tank counts 10 points lower
+                        bool tank = classic165 && BotHealTriage165.IsTank(member);
+                        int triage = BotHealTriage165.TriageHealth(member.HealthPercent, tank);
                         if (member.HealthPercent < needAt)
-                        {
                             numGroupHurt++;
+
+                        if (triage < needAt)
+                        {
                             numNeedHealing++;
 
                             if (member.HealthPercent < 40)
                                 numEmergency++;
 
                             if (!BotBody.IsPlayerCompanion
-                                    ? spellTarget == null || member.HealthPercent < spellTarget.HealthPercent
+                                    ? spellTarget == null || PreferHealTarget(member, tank, spellTarget, classic165)
                                     : TemporaryCompanionPetHealing.PreferHealingTarget(BotBody, member, spellTarget))
                                 spellTarget = member;
                         }
-                        else if (IsHealer && member.HealthPercent < healerNeedAt)
+                        else if (IsHealer && triage < healerNeedAt)
                         {
                             numNeedHealing++;
 
                             if (!BotBody.IsPlayerCompanion
-                                    ? spellTarget == null || member.HealthPercent < spellTarget.HealthPercent
+                                    ? spellTarget == null || PreferHealTarget(member, tank, spellTarget, classic165)
                                     : TemporaryCompanionPetHealing.PreferHealingTarget(BotBody, member, spellTarget))
                                 spellTarget = member;
                         }
