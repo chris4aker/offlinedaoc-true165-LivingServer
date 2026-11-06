@@ -1034,6 +1034,16 @@ namespace DOL.GS
                 return false;
             }
 
+            // A shopping trip whose plan moved to another merchant (SkipShoppingAt, a death on the way, a new plan) goes
+            // there at once: it used to keep the old merchant and stand at it 90 s before giving it up (2026-11-06 log:
+            // SHOP_ABANDONED with plan= naming another merchant, ten times more per bot than before)
+            if (_serviceKind == needed && needed == eWorldServiceKind.Shop &&
+                ShopTripMovedOn(needed, _serviceNpc, ShoppingPlanFor(bot)?.Merchant) is { } movedTo)
+            {
+                _serviceNpc = movedTo;
+                _readyAtService = null;
+                _nextServiceSearchTick = 0;
+            }
             if (_serviceNpc?.ObjectState is not GameObject.eObjectState.Active || _serviceKind != needed)
             {
                 // A failed search is repeated at most every ten seconds for the
@@ -1194,6 +1204,10 @@ namespace DOL.GS
             }
             return true;
         }
+
+        /// <summary>The merchant a shopping trip should walk to instead of its current one, or null when it stays.</summary>
+        public static T ShopTripMovedOn<T>(eWorldServiceKind? needed, T current, T planned) where T : class =>
+            needed == eWorldServiceKind.Shop && current != null && planned != null && !ReferenceEquals(current, planned) ? planned : null;
 
         private static GameNPC FindReachableService(GameBot bot, eWorldServiceKind kind)
         {
