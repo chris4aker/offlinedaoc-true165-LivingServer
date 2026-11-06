@@ -216,5 +216,21 @@ namespace DOL.UnitTests
                 Assert.That((at50[Specs.Darkness], at50[Specs.Suppression]), Is.EqualTo((47, 26)));
             }
         }
+
+        [Test]
+        public void RunemasterWithSuppression26TakesItWhileLevelling()
+        {
+            int checkedPlans = 0;
+            for (int i = 0; i < 60; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Runemaster, eSpecType.None);
+                if (Cap(plan, Specs.Suppression) != 26)
+                    continue;
+                checkedPlans++;
+                Assert.That(At(plan, eCharacterClass.Runemaster, 30)[Specs.Suppression], Is.InRange(14, 18));
+                Assert.That(At(plan, eCharacterClass.Runemaster, 50)[Specs.Suppression], Is.EqualTo(26));
+            }
+            Assert.That(checkedPlans, Is.GreaterThan(0));
+        }
     }
 }

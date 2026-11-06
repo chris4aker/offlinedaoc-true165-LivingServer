@@ -19,11 +19,12 @@ namespace DOL.GS
 
             switch (randVariance)
             {
+                // Period Runemasters took Suppression early (about 0.6 of the level until 26) for its shields.
                 case 0:
                 case 1:
                 SpecType = eSpecType.DarkRune;
-                Add(Specs.Darkness, 47, 1.0f);
-                Add(Specs.Suppression, 26, 0.1f);
+                Add(Specs.Darkness, 47, 0.85f);
+                Add(Specs.Suppression, 26, 0.6f);
                 Add(Specs.Runecarving, 5, 0.0f);
                 break;
 
@@ -38,8 +39,8 @@ namespace DOL.GS
                 case 4:
                 SpecType = eSpecType.RuneRune;
                 Add(Specs.Darkness, 5, 0.0f);
-                Add(Specs.Suppression, 26, 0.1f);
-                Add(Specs.Runecarving, 47, 1.0f);
+                Add(Specs.Suppression, 26, 0.6f);
+                Add(Specs.Runecarving, 47, 0.85f);
                 break;
 
                 case 5:
