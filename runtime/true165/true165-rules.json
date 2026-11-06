@@ -49236,6 +49236,18 @@
   {
    "sql": "UPDATE Mob SET \"ClassType\" = 'DOL.GS.GameNPC', \"TranslationId\" = '', \"Name\" = 'Bowman', \"Suffix\" = '', \"Guild\" = '', \"ExamineArticle\" = '', \"MessageArticle\" = '', \"Speed\" = 0, \"Model\" = 35, \"Size\" = 50, \"Strength\" = 284, \"Constitution\" = 284, \"Dexterity\" = 284, \"Quickness\" = 284, \"Intelligence\" = 284, \"Piety\" = 284, \"Empathy\" = 284, \"Charisma\" = 284, \"Level\" = 255, \"Realm\" = 1, \"EquipmentTemplateID\" = 'PortalKeepArcherAlb', \"ItemsListTemplateID\" = NULL, \"NPCTemplateID\" = -1, \"Race\" = 0, \"Flags\" = 0, \"AggroLevel\" = 200, \"AggroRange\" = 500, \"MeleeDamageType\" = 3, \"RespawnInterval\" = 531, \"FactionID\" = 0, \"BodyType\" = 0, \"Brain\" = '', \"IsCloakHoodUp\" = 0, \"Gender\" = 0, \"VisibleWeaponSlots\" = 34 WHERE Mob_ID = '02edae1a-78be-47d1-92b7-f46656bab090' AND Name = 'Master Wizard'",
    "reason": "True 1.65 keep guards: Snowdonia Fortress (Albion border keep): our Master Wizard 02edae1a-78be-47d1-92b7-f46656bab090 stands 1 from a CapnBry radar \"Bowman\" spot: it becomes that 1.65 guard (Bowman Commander template 60157484 look (no period appearance)), position and heading kept"
+  },
+  {
+   "sql": "UPDATE Door SET Realm = 1, Health = 10000 WHERE InternalID IN (11020501, 11020502, 12000101, 12000102, 15000401, 15000402, 15000403, 15000404, 15000501, 15000502, 15000503, 15000504) AND Realm <> 1",
+   "reason": "True 1.65 gates: Albion's milegates and border keep doors belong to Albion (GameRealmGate: its realm passes, enemies break them): Castle Sauvage; Hadrian's Wall, Hibernia's milegate; Hadrian's Wall, Midgard's milegate; Snowdonia Fortress"
+  },
+  {
+   "sql": "UPDATE Door SET Realm = 2, Health = 10000 WHERE InternalID IN (102093501, 102093502, 111161301, 111161302, 115000101, 115000102, 115000103, 115000104, 115154301, 115154302, 115154303, 115154304) AND Realm <> 2",
+   "reason": "True 1.65 gates: Midgard's milegates and border keep doors belong to Midgard (GameRealmGate: its realm passes, enemies break them): Odin's Gate, northern gate fort; Odin's Gate, southern gate fort; Svasud Faste; Vindsaul Faste"
+  },
+  {
+   "sql": "UPDATE Door SET Realm = 3, Health = 10000 WHERE InternalID IN (206016801, 206016802, 207156901, 207156902, 214000101, 214000102, 214000103, 214000104, 214000201, 214000202, 214000203, 214000204) AND Realm <> 3",
+   "reason": "True 1.65 gates: Hibernia's milegates and border keep doors belong to Hibernia (GameRealmGate: its realm passes, enemies break them): Druim Cain; Druim Ligen; Emain Macha, northern gate fort; Emain Macha, southern gate fort"
   }
  ]
 }
