@@ -213,7 +213,7 @@ func _show(what: Dictionary, picked: bool) -> void:
 	match String(what.get("kind", "")):
 		"region":
 			var r := _region(int(what.id))
-			title = String(r.get("name", ""))
+			title = _realm_map_name(int(what.id), String(r.get("name", "")))
 			pic = String(r.get("map", ""))
 		"area":
 			var a: Dictionary = (_zone(int(what.id)).get("areas", []) as Array)[int(what.area)]
@@ -283,10 +283,15 @@ func _dropdown() -> OptionButton:
 	return o
 
 
-## Your realm only (owner 2026-10-09): its capital city at the very top, then its classic and Shrouded Isles open
-## world zones in alphabetical order. No dungeons, no other realms. Inside a dungeon: that dungeon's maps only.
+## Your realm only (owner 2026-10-09): its realm maps at the very top (owner 2026-11-05: every zone as connected
+## blocks, click one to open it - the realm and its Shrouded Isles: "is there not a shrouded isles equivalent too for each
+## realm?"), then its capital city, then its classic and Shrouded Isles open world zones in alphabetical order. No
+## dungeons, no other realms. Inside a dungeon: that dungeon's maps only.
 const REALM_REGIONS := {1: [1, 51], 2: [100, 151], 3: [200, 181]}
 const CAPITALS := {1: 26, 2: 120, 3: 209}
+const REALM_MAPS := {1: [[1, "ALBION"], [51, "AVALON (SHROUDED ISLES)"]],
+		2: [[100, "MIDGARD"], [151, "AEGIR (SHROUDED ISLES)"]],
+		3: [[200, "HIBERNIA"], [181, "HY BRASIL (SHROUDED ISLES)"]]}
 
 
 func _fill_dropdown() -> void:
@@ -297,9 +302,16 @@ func _fill_dropdown() -> void:
 	if not here.is_empty() and int(here.get("type", 0)) == 2:
 		_add_zone(current_zone)                              # in a dungeon: its own maps, nothing else
 		return
+	var top := false
+	for rm in REALM_MAPS.get(realm, []):
+		if String(_region(int(rm[0])).get("map", "")) != "":
+			_add_entry(String(rm[1]), {"kind": "region", "id": int(rm[0])}, true)
+			top = true
 	var cap := int(CAPITALS.get(realm, -1))
 	if String(_zone(cap).get("map", "")) != "":
 		_add_entry(String(_zone(cap).name).to_upper(), {"kind": "zone", "id": cap}, false)
+		top = true
+	if top:
 		_pick.add_separator("")
 		_entries.append({})
 	var open: Array = []
@@ -310,6 +322,15 @@ func _fill_dropdown() -> void:
 	open.sort_custom(func(a, b): return String(_zone(a).name) < String(_zone(b).name))
 	for z in open:
 		_add_entry(String(_zone(z).name).to_upper(), {"kind": "zone", "id": z}, false)
+
+
+## A realm map's name in the list ("AVALON (SHROUDED ISLES)"), else the map's own.
+func _realm_map_name(rid: int, fallback: String) -> String:
+	for realm in REALM_MAPS:
+		for rm in REALM_MAPS[realm]:
+			if int(rm[0]) == rid:
+				return String(rm[1])
+	return fallback
 
 
 func _add_zone(z: int) -> void:
