@@ -27,6 +27,16 @@ namespace DOL.GS.RealmAbilities
 		/// <param name="living"></param>
 		public override void Execute(GameLiving living)
 		{
+			if (living is GameBot bot)
+			{
+				// A gamebot (True 1.65 bot realm abilities): the same pulsing group heal.
+				if (CheckPreconditions(bot, DEAD | SITTING | STUNNED | MEZZED)) return;
+				EffectListService.TryCancelFirstEffectOfTypeOnTarget(bot, eEffect.AmelioratingMelodies);
+				SendCasterSpellEffectAndCastMessage(bot, 3021, true);
+				ECSGameEffectFactory.Create(new(bot, 30000, GetHealAmountPerTick()), static (in i) => new AmelioratingMelodiesECSEffect(i));
+				DisableSkill(bot);
+				return;
+			}
 			GamePlayer player = living as GamePlayer;
 			if (player == null) return;
 			if (CheckPreconditions(living, DEAD | SITTING | STUNNED | MEZZED )) return;

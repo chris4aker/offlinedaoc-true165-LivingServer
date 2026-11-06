@@ -13,44 +13,55 @@ namespace DOL.GS.Effects
 
         public override bool HasPositiveEffect => true;
 
+        // The player, or a gamebot in a gamebot's group (True 1.65 bot realm abilities); a pet is left as before.
+        private GameLiving Target => OwnerPlayer != null ? OwnerPlayer : Owner as GameBot;
+
         public override void OnStartEffect()
         {
-            if (OwnerPlayer == null)
+            GameLiving owner = Target;
+            if (owner == null)
                 return;
 
-            foreach (ECSGameSpellEffect speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            foreach (ECSGameSpellEffect speedBuff in owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
             {
                 if (speedBuff.GetType() != typeof(SpeedOfSoundECSEffect))
                     speedBuff.Disable();
             }
 
-            foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            foreach (ECSGameSpellEffect root in owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
                 root.Disable();
 
-            foreach (ECSGameSpellEffect ichor in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Ichor))
+            foreach (ECSGameSpellEffect ichor in owner.effectListComponent.GetSpellEffects(eEffect.Ichor))
                 ichor.Disable();
 
-            OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED4);
-            OwnerPlayer.Out.SendUpdateMaxSpeed();
+            owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED4);
+            if (OwnerPlayer != null)
+                OwnerPlayer.Out.SendUpdateMaxSpeed();
+            else
+                owner.OnMaxSpeedChange();
         }
 
         public override void OnStopEffect()
         {
-            if (OwnerPlayer == null)
+            GameLiving owner = Target;
+            if (owner == null)
                 return;
 
-            OwnerPlayer.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+            owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 
-            foreach (ECSGameSpellEffect speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            foreach (ECSGameSpellEffect speedBuff in owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
                 speedBuff.Enable();
 
-            foreach (ECSGameSpellEffect root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            foreach (ECSGameSpellEffect root in owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
                 root.Enable();
 
-            foreach (ECSGameSpellEffect ichor in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Ichor))
+            foreach (ECSGameSpellEffect ichor in owner.effectListComponent.GetSpellEffects(eEffect.Ichor))
                 ichor.Enable();
 
-            OwnerPlayer.Out.SendUpdateMaxSpeed();
+            if (OwnerPlayer != null)
+                OwnerPlayer.Out.SendUpdateMaxSpeed();
+            else
+                owner.OnMaxSpeedChange();
         }
     }
 }

@@ -23,6 +23,11 @@ namespace DOL.GS.RealmAbilities
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+			if (living is GameBot bot)
+			{
+				ExecuteForBot(bot);
+				return;
+			}
 			GamePlayer player = living as GamePlayer;
 			/* if (player.IsSpeedWarped)
 			 {
@@ -64,6 +69,27 @@ namespace DOL.GS.RealmAbilities
 			}
 
 		}
+		// A gamebot (True 1.65 bot realm abilities): every living group member in range, bots and players alike.
+		private void ExecuteForBot(GameBot bot)
+		{
+			if (bot.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
+				return;
+			DisableSkill(bot);
+			var targets = new System.Collections.Generic.List<GameLiving>();
+			if (bot.Group == null)
+				targets.Add(bot);
+			else
+				foreach (GameLiving member in bot.Group.GetMembersInTheGroup())
+					if (member.IsAlive && bot.IsWithinRadius(member, m_range))
+						targets.Add(member);
+			foreach (GameLiving target in targets)
+			{
+				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					visPlayer.Out.SendSpellEffectAnimation(bot, target, 7021, 0, false, CastSuccess(true));
+				ECSGameEffectFactory.Create(new(target, m_duration, 1), static (in i) => new SpeedOfSoundECSEffect(i));
+			}
+		}
+
 		private byte CastSuccess(bool suc)
 		{
 			if (suc)

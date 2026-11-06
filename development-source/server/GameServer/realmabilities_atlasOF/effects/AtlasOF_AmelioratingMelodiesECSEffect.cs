@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 
@@ -20,10 +21,28 @@ namespace DOL.GS.Effects
         public override string Name => "Ameliorating Melodies";
         public override bool HasPositiveEffect => true;
 
+        // A gamebot's melody (True 1.65 bot realm abilities) heals every living group member in range, bots and players.
+        private void PulseForBot(GameBot bot)
+        {
+            IEnumerable<GameLiving> members = bot.Group != null ? bot.Group.GetMembersInTheGroup() : new GameLiving[] { bot };
+            foreach (GameLiving member in members)
+            {
+                if (!member.IsAlive || member.Health >= member.MaxHealth || !bot.IsWithinRadius(member, RANGE))
+                    continue;
+                int heal = Math.Min(_heal, member.MaxHealth - member.Health);
+                heal = member.ChangeHealth(bot, eHealthChangeType.Regenerate, heal);
+                (member as GamePlayer)?.Out.SendMessage($"{bot.Name} 's Ameliorating Melodies heals you for {heal} hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+            }
+        }
+
         public override void OnEffectPulse()
         {
             if (OwnerPlayer == null)
+            {
+                if (Owner is GameBot bot)
+                    PulseForBot(bot);
                 return;
+            }
 
             List<GamePlayer> playersToHeal;
 

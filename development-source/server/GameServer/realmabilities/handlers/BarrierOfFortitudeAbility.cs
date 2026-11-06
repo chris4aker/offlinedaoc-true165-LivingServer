@@ -20,6 +20,12 @@ namespace DOL.GS.RealmAbilities
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
 				return;
 
+			if (living is GameBot bot)
+			{
+				ExecuteForBot(bot);
+				return;
+			}
+
 			GamePlayer player = living as GamePlayer;
 			List<GamePlayer> playersInGroup = GameLoop.GetListForTick<GamePlayer>();;
 			bool success;
@@ -47,6 +53,25 @@ namespace DOL.GS.RealmAbilities
 			}
 
 			DisableSkill(player);
+		}
+
+		// A gamebot (True 1.65 bot realm abilities): every living group member in range, bots and players alike.
+		private void ExecuteForBot(GameBot bot)
+		{
+			SendCastMessage(bot);
+			IEnumerable<GameLiving> members = bot.Group != null
+				? bot.Group.GetMembersInTheGroup().Where(member => member.IsAlive && bot.IsWithinRadius(member, m_range))
+				: new GameLiving[] { bot };
+			foreach (GameLiving member in members)
+			{
+				bool success = !member.TempProperties.GetProperty<bool>(BofBaSb);
+				SendCasterSpellEffect(member, 7009, success);
+				SendCasterSpellEffect(member, 1486, success);
+				SendCasterSpellEffect(member, 10535, success);
+				if (success)
+					ECSGameEffectFactory.Create(new(member, m_duration, 1, CreateSpell(bot)), static (in i) => new BunkerOfFaithECSEffect(i));
+			}
+			DisableSkill(bot);
 		}
 
 		public virtual SpellHandler CreateSpell(GameLiving caster)

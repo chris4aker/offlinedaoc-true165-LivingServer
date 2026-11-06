@@ -22,7 +22,8 @@ namespace DOL.GS.RealmAbilities
 
             DisableSkill(living);
 
-            ECSGameEffectFactory.Create(new(player, m_duration, 1, CreateSpell(living)), static (in i) => new AtlasOF_VanishECSEffect(i));
+            // The player or a gamebot (True 1.65 bot realm abilities) hides at once.
+            ECSGameEffectFactory.Create(new(player ?? living, m_duration, 1, CreateSpell(living)), static (in i) => new AtlasOF_VanishECSEffect(i));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)

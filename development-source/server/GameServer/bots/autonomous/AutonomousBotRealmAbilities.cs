@@ -19,7 +19,7 @@ public static class AutonomousBotRealmAbilities
 {
     private static readonly Logging.Logger Log = Logging.LoggerManager.Create(typeof(AutonomousBotRealmAbilities));
 
-    public enum Archetype { Melee, Caster, Healer, Archer }
+    public enum Archetype { Melee, Caster, Healer, Archer, Tank }
 
     public readonly record struct Step(string Key, int Level);
 
@@ -27,6 +27,11 @@ public static class AutonomousBotRealmAbilities
         AugQui = "AtlasOF_AugQui", AugAcuity = "AtlasOF_AugAcuity", FirstAid = "AtlasOF_FirstAid",
         IgnorePain = "AtlasOF_IgnorePain", IgnorePainTank = "AtlasOF_IgnorePainTank", SecondWind = "AtlasOF_SecondWind",
         Purge = "AtlasOF_Purge", PurgeReduced = "AtlasOF_PurgeReduced";
+
+    // True 1.65 Mode: the class and caster actives of the Atlas OF list that bots also use.
+    public const string MasteryOfConcentration = "AtlasOF_MasteryOfConcentration", MysticCrystalLore = "AtlasOF_MCL",
+        BunkerOfFaith = "AtlasOF_BunkerOfFaith", PerfectRecovery = "AtlasOF_PerfectRecovery", SpeedOfSound = "AtlasOF_SpeedOfSound",
+        AmelioratingMelodies = "AtlasOF_AmelioratingMelodies", Vanish = "AtlasOF_Vanish";
 
     /// <summary>Prerequisites, as the Atlas handlers' CheckRequirement (written for GamePlayer only).</summary>
     public static (string Key, int Level)? Requirement(string key, int classId) => key switch
@@ -46,6 +51,12 @@ public static class AutonomousBotRealmAbilities
 
     /// <summary>The actives a bot knows how to use; every other active is never bought.</summary>
     public static readonly string[] UsableActives = { Purge, PurgeReduced, IgnorePainTank, IgnorePain, SecondWind, FirstAid };
+
+    /// <summary>True 1.65 Mode adds these (escape and rescue first, then group, then self).</summary>
+    public static readonly string[] ClassicActives =
+        { Vanish, PerfectRecovery, BunkerOfFaith, SpeedOfSound, AmelioratingMelodies, MasteryOfConcentration, MysticCrystalLore };
+
+    public static string[] UsableActivesFor(bool classic) => classic ? ClassicActives.Concat(UsableActives).ToArray() : UsableActives;
 
     // Passives with little use to a bot; bought only after everything else.
     private static readonly HashSet<string> LowValue = new(StringComparer.OrdinalIgnoreCase)
@@ -78,6 +89,47 @@ public static class AutonomousBotRealmAbilities
         ("MasteryOfArchery", 2), ("Toughness", 1), ("FalconsEye", 2), ("AugCon", 3), (SecondWind, 1),
         ("MasteryOfPain", 1), ("MasteryOfArchery", 3), ("AvoidanceOfMagic", 1), ("Determination", 1));
 
+    // True 1.65 Mode: tanks take Purge first and Determination right after (period tank builds); every build takes its
+    // class active (Vanish, Speed of Sound, Bunker of Faith, Perfect Recovery, Ameliorating Melodies) after Purge and
+    // Mastery of Concentration once its Acuity is met. Steps a class lacks are skipped.
+    private static readonly Step[] ClassActiveSteps = Build((Vanish, 1), (SpeedOfSound, 1), (BunkerOfFaith, 1),
+        (PerfectRecovery, 1), (AmelioratingMelodies, 1), (MysticCrystalLore, 1));
+
+    private static Step[] Insert(Step[] build, Step after, Step[] steps)
+    {
+        int index = Array.IndexOf(build, after);
+        return index < 0 ? build.Concat(steps).ToArray() : build.Take(index + 1).Concat(steps).Concat(build.Skip(index + 1)).ToArray();
+    }
+
+    private static readonly Step PurgeStep = new(Purge, 1), AcuityThree = new(AugAcuity, 3);
+
+    private static readonly Step[] ClassicTankBuild = Build((PurgeReduced, 1), (Purge, 1), ("Determination", 1),
+        ("DeterminationHybrid", 1), ("AugCon", 1), ("AugDex", 2), ("MasteryOfPain", 1), ("AugStr", 1), ("MasteryOfBlocking", 1),
+        ("MasteryOfParrying", 1), ("Toughness", 1), ("AugCon", 2), ("Determination", 2), ("DeterminationHybrid", 2))
+        .Concat(MeleeBuild).ToArray();
+
+    private static readonly Step[] ClassicMeleeBuild = Insert(MeleeBuild, PurgeStep, ClassActiveSteps);
+    private static readonly Step[] ClassicCasterBuild =
+        Insert(Insert(CasterBuild, PurgeStep, ClassActiveSteps), AcuityThree, Build((MasteryOfConcentration, 1)));
+    private static readonly Step[] ClassicHealerBuild =
+        Insert(Insert(HealerBuild, PurgeStep, ClassActiveSteps), AcuityThree, Build((MasteryOfConcentration, 1)));
+    private static readonly Step[] ClassicArcherBuild = Insert(ArcherBuild, PurgeStep, ClassActiveSteps);
+
+    public static bool IsTankClass(int classId) => BotPartyRoles.For((eCharacterClass)classId) == BotPartyRole.Tank;
+
+    /// <summary>The build a bot follows: the 1.65 builds (tanks apart) in True 1.65 Mode, the original ones otherwise.</summary>
+    public static Archetype BuildArchetype(Archetype archetype, int classId, bool classic) =>
+        classic && archetype == Archetype.Melee && IsTankClass(classId) ? Archetype.Tank : archetype;
+
+    private static Step[] BuildFor(Archetype archetype, bool classic) => archetype switch
+    {
+        Archetype.Tank => ClassicTankBuild,
+        Archetype.Caster => classic ? ClassicCasterBuild : CasterBuild,
+        Archetype.Healer => classic ? ClassicHealerBuild : HealerBuild,
+        Archetype.Archer => classic ? ClassicArcherBuild : ArcherBuild,
+        _ => classic ? ClassicMeleeBuild : MeleeBuild,
+    };
+
     public static Archetype ArchetypeOf(ICollection<string> available)
     {
         if (available.Contains("AtlasOF_MasteryOfArchery")) return Archetype.Archer;
@@ -95,7 +147,7 @@ public static class AutonomousBotRealmAbilities
     /// points only ever extend the result.
     /// </summary>
     public static Dictionary<string, int> Plan(IReadOnlyDictionary<string, int> available, Archetype archetype, int classId,
-        int points, Func<string, int, int> cost)
+        int points, Func<string, int, int> cost, bool classic = false)
     {
         var owned = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         int Owned(string key) => owned.TryGetValue(key, out int level) ? level : 0;
@@ -117,10 +169,7 @@ public static class AutonomousBotRealmAbilities
             return true;
         }
 
-        Step[] build = archetype switch
-        {
-            Archetype.Caster => CasterBuild, Archetype.Healer => HealerBuild, Archetype.Archer => ArcherBuild, _ => MeleeBuild,
-        };
+        Step[] build = BuildFor(archetype, classic);
         foreach (Step step in build)
         {
             if (!available.TryGetValue(step.Key, out int max) || Redundant(step.Key) || !Meets(step.Key)) continue;
@@ -158,15 +207,16 @@ public static class AutonomousBotRealmAbilities
     private sealed record Catalog(Dictionary<string, RealmAbility> ByKey, Dictionary<string, int> Available, Archetype Archetype);
 
     private static readonly ConditionalWeakTable<GameBot, State> States = new();
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, Catalog> Catalogs = new();
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<(int, bool), Catalog> Catalogs = new();
 
-    private static Catalog CatalogFor(int classId) => Catalogs.GetOrAdd(classId, id =>
+    private static Catalog CatalogFor(int classId) => Catalogs.GetOrAdd((classId, Classic165Mode.IsOn), key =>
     {
-        var byKey = SkillBase.GetClassRealmAbilities(id)
-            .Where(ra => ra is not RR5RealmAbility && (ra is not TimedRealmAbility || UsableActives.Contains(ra.KeyName)))
+        string[] usable = UsableActivesFor(key.Item2);
+        var byKey = SkillBase.GetClassRealmAbilities(key.Item1)
+            .Where(ra => ra is not RR5RealmAbility && (ra is not TimedRealmAbility || usable.Contains(ra.KeyName)))
             .GroupBy(ra => ra.KeyName).ToDictionary(g => g.Key, g => g.First());
         var available = byKey.ToDictionary(pair => pair.Key, pair => pair.Value.MaxLevel);
-        return new Catalog(byKey, available, ArchetypeOf(available.Keys));
+        return new Catalog(byKey, available, BuildArchetype(ArchetypeOf(available.Keys), key.Item1, key.Item2));
     });
 
     private static int ClassOf(GameBot bot) => bot.CharacterClass?.ID ?? bot.ClassId;
@@ -174,7 +224,8 @@ public static class AutonomousBotRealmAbilities
     private static Dictionary<string, int> PlanFor(GameBot bot, int points)
     {
         Catalog catalog = CatalogFor(ClassOf(bot));
-        return Plan(catalog.Available, catalog.Archetype, ClassOf(bot), points, (key, level) => catalog.ByKey[key].CostForUpgrade(level));
+        return Plan(catalog.Available, catalog.Archetype, ClassOf(bot), points, (key, level) => catalog.ByKey[key].CostForUpgrade(level),
+            Classic165Mode.IsOn);
     }
 
     private static bool Eligible(GameBot bot) => bot is { IsAutonomousWorldBot: true, IsTemporaryGroupHelper: false };
@@ -262,7 +313,7 @@ public static class AutonomousBotRealmAbilities
             gained.Add($"{key.Replace("AtlasOF_", "")}:{current?.Level ?? 0}->{level}");
         }
         State state = States.GetOrCreateValue(bot);
-        state.Actives = UsableActives.Select(key => bot.GetAbility(key) as TimedRealmAbility).Where(a => a != null).ToArray();
+        state.Actives = UsableActivesFor(Classic165Mode.IsOn).Select(key => bot.GetAbility(key) as TimedRealmAbility).Where(a => a != null).ToArray();
         return gained;
     }
 
@@ -272,7 +323,7 @@ public static class AutonomousBotRealmAbilities
     public static void RefreshActives(GameBot bot)
     {
         if (bot == null) return;
-        States.GetOrCreateValue(bot).Actives = UsableActives.Select(key => bot.GetAbility(key) as TimedRealmAbility).Where(a => a != null).ToArray();
+        States.GetOrCreateValue(bot).Actives = UsableActivesFor(Classic165Mode.IsOn).Select(key => bot.GetAbility(key) as TimedRealmAbility).Where(a => a != null).ToArray();
     }
 
     /// <summary>Uses a bought active when the situation calls for it. Checked at most once a second.</summary>
@@ -282,16 +333,85 @@ public static class AutonomousBotRealmAbilities
         long now = GameLoop.GameLoopTime;
         if (now < state.NextUse) return;
         state.NextUse = now + 1_000;
+        Situation? situation = null;
+        GameLiving deadMember = null;
         foreach (TimedRealmAbility ability in state.Actives)
         {
-            if (bot.GetSkillDisabledDuration(ability) > 0 || !Wanted(bot, ability.KeyName)) continue;
+            if (bot.GetSkillDisabledDuration(ability) > 0) continue;
+            if (ClassicActives.Contains(ability.KeyName))
+            {
+                situation ??= SituationOf(bot, out deadMember);
+                if (!Wants(ability.KeyName, situation.Value)) continue;
+                if (ability.KeyName == PerfectRecovery) bot.TargetObject = deadMember;
+            }
+            else if (!Wanted(bot, ability.KeyName)) continue;
             ability.Execute(bot);
+            if (ability.KeyName == Vanish && bot.IsStealthed)
+            {
+                // Vanish is the escape: drop the fight and slip away hidden.
+                bot.StopAttack();
+                (bot.Brain as DOL.AI.Brain.BotBrain)?.ClearAggroList();
+            }
             // A purge that removed nothing only blocks itself for 5 ms; log real uses (long reuse timers).
             if (bot.GetSkillDisabledDuration(ability) > 1_000 && ability.KeyName != FirstAid)
                 Log.Info($"BOT_REALM_ABILITY_USED bot={bot.Name} ability={ability.KeyName.Replace("AtlasOF_", "")} " +
                     $"health={bot.HealthPercent} endurance={bot.EndurancePercent} region={bot.CurrentRegionID}");
             return;
         }
+    }
+
+    /// <summary>What the True 1.65 actives look at, read once per check.</summary>
+    public readonly record struct Situation(bool InCombat, bool Battleground, int Health, int Mana, bool Controlled,
+        bool Sitting, bool Casting, bool Interrupted, int GroupNear, int GroupHurt, bool GroupFighting, bool DeadMemberNear);
+
+    // Group range of the group actives (Bunker of Faith, Ameliorating Melodies, Perfect Recovery 1,500; Speed of Sound 2,000).
+    private const int GroupActiveRange = 1500;
+    private const int HurtPercent = 70;
+
+    private static Situation SituationOf(GameBot bot, out GameLiving dead)
+    {
+        int near = 0, hurt = 0;
+        bool fighting = bot.InCombat;
+        dead = null;
+        if (bot.Group != null)
+            foreach (GameLiving member in bot.Group.GetMembersInTheGroup())
+            {
+                if (member == bot || member.CurrentRegionID != bot.CurrentRegionID || !bot.IsWithinRadius(member, GroupActiveRange)) continue;
+                if (!member.IsAlive)
+                {
+                    if (member.ObjectState == GameObject.eObjectState.Active) dead ??= member;
+                    continue;
+                }
+                near++;
+                if (member.HealthPercent < HurtPercent) hurt++;
+                fighting |= member.InCombat;
+            }
+        if (bot.HealthPercent < HurtPercent) hurt++;
+        return new(bot.InCombat, AutonomousWorldBotController.IsBattleground(bot), bot.HealthPercent, bot.MaxMana > 0 ? bot.ManaPercent : 100,
+            bot.IsMezzed || bot.IsStunned, bot.IsSitting, bot.IsCasting, bot.IsBeingInterruptedByOther, near + 1, hurt, fighting, dead != null);
+    }
+
+    /// <summary>
+    /// True 1.65 Mode use rules. Vanish: escape when a frontier fight is going badly. Perfect Recovery: raise a dead group
+    /// member while the group still fights. Bunker of Faith / Speed of Sound: the group taking burst damage (half the group
+    /// in range, at least two, under 70% health; Speed of Sound in the frontier). Ameliorating Melodies: two or more hurt
+    /// in a fight. Mastery of Concentration: casting while being hit in a fight. Mystic Crystal Lore: low power out of combat.
+    /// </summary>
+    public static bool Wants(string key, Situation s)
+    {
+        if (s.Controlled) return false;
+        bool burst = s.GroupFighting && s.GroupHurt >= Math.Max(2, (s.GroupNear + 1) / 2);
+        return key switch
+        {
+            Vanish => s.InCombat && s.Battleground && s.Health < 35,
+            PerfectRecovery => s.DeadMemberNear && s.GroupFighting && !s.Casting,
+            BunkerOfFaith => burst,
+            SpeedOfSound => burst && s.Battleground,
+            AmelioratingMelodies => s.GroupFighting && s.GroupHurt >= 2,
+            MasteryOfConcentration => s.InCombat && s.Interrupted && (s.Battleground || s.Health < 60),
+            MysticCrystalLore => !s.InCombat && !s.Sitting && s.Mana < 30,
+            _ => false,
+        };
     }
 
     private static bool Wanted(GameBot bot, string key) => key switch

@@ -17,7 +17,10 @@ namespace DOL.GS.Effects
 
         public override void OnStartEffect()
         {
-            OwnerPlayer.Stealth(true);
+            if (OwnerPlayer != null)
+                OwnerPlayer.Stealth(true);
+            else
+                (Owner as GameBot)?.Stealth(true);
             base.OnStartEffect();
         }
     }

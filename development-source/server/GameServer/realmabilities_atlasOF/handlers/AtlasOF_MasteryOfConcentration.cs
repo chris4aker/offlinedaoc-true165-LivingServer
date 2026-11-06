@@ -45,6 +45,15 @@ namespace DOL.GS.RealmAbilities
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
+			if (living is GameBot bot)
+			{
+				// A gamebot (True 1.65 bot realm abilities): the same effect, without the player's chat lines.
+				EffectListService.TryCancelFirstEffectOfTypeOnTarget(bot, eEffect.MasteryOfConcentration);
+				SendCasterSpellEffectAndCastMessage(bot, 7007, true);
+				DisableSkill(bot);
+				ECSGameEffectFactory.Create(new(bot, Duration, 1), static (in i) => new MasteryOfConcentrationECSEffect(i));
+				return;
+			}
 			GamePlayer caster = living as GamePlayer;
 
 			if (caster == null)

@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
         public override int CostForUpgrade(int level) { return 14; }
         public override int GetReUseDelay(int level) { return 1800; } // 30 mins
 
-        private void CreateRezSpell(GamePlayer caster)
+        private void CreateRezSpell(GameLiving caster)
         {
             m_dbspell = new DbSpell();
             m_dbspell.Name = "Perfect Recovery Rez";
@@ -48,6 +48,19 @@ namespace DOL.GS.RealmAbilities
         {
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
                 return;
+
+            if (living is GameBot bot)
+            {
+                // A gamebot (True 1.65 bot realm abilities) raises the dead group member it targets.
+                if (bot.castingComponent == null || bot.TargetObject is not GameLiving { IsAlive: false })
+                    return;
+                CreateRezSpell(bot);
+                bot.CastSpell(m_spell, m_spellline, this);
+                m_spell = null;
+                m_dbspell = null;
+                m_spellline = null;
+                return;
+            }
 
             if (living is not GamePlayer m_caster || m_caster.castingComponent == null)
                 return;
