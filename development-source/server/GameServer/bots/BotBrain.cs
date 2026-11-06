@@ -4463,14 +4463,24 @@ namespace DOL.AI.Brain
 
         /// <summary>
         /// True 1.65: a caster in a gamebot group saves its power under half while a group tank holds the monster
-        /// (BotCasterPriority.SavePowerInGroup). Hired and other player companions follow their player's fights as before.
+        /// (BotCasterPriority.SavePowerInGroup). A player's companion (hired, invited gamebot, /spawn helper; casters and
+        /// hybrids) does too unless its "Save power" AI Option is off or it is a healer set to attack (owner 2026-11-06).
+        /// The tank may be a tank-class companion, gamebot or the player.
         /// </summary>
         private bool SavePowerForGroup()
         {
-            if (!Classic165Mode.IsOn || BotBody?.IsAutonomousWorldBot != true || BotBody.IsPlayerLedGroup ||
-                BotBody.IsPlayerCompanion || Body.ManaPercent >= BotCasterPriority.SavePowerBelowPercent ||
-                Body.Group == null || Body.TargetObject is not GameNPC target || target is GameBot || !target.IsAlive ||
-                !PrefersCurrentSpellRange())
+            GameBot bot = BotBody;
+            if (!Classic165Mode.IsOn || bot == null || Body.ManaPercent >= BotCasterPriority.SavePowerBelowPercent ||
+                Body.Group == null || Body.TargetObject is not GameNPC target || target is GameBot || !target.IsAlive)
+                return false;
+            if (bot.IsPlayerCompanion)
+            {
+                bool attackingHealer = RoleChoice == 2 && bot.CharacterClass?.ID is (int)eCharacterClass.Cleric or
+                    (int)eCharacterClass.Druid or (int)eCharacterClass.Healer;
+                if (!BotCasterPriority.CompanionSavesPower(CompanionOptions165.Choice(bot, "savepower"), attackingHealer))
+                    return false;
+            }
+            else if (!bot.IsAutonomousWorldBot || bot.IsPlayerLedGroup || !PrefersCurrentSpellRange())
                 return false;
             bool tankHolds = target.TargetObject is GameLiving holder && holder != Body && holder.IsAlive &&
                              Body.Group.IsInTheGroup(holder) && BotHealTriage165.IsTank(holder);

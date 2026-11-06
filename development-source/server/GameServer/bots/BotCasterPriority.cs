@@ -47,5 +47,12 @@ namespace DOL.GS
         /// </summary>
         public static bool SavePowerInGroup(int casterPowerPercent, int targetHealthPercent, bool tankHoldsTarget) =>
             tankHoldsTarget && casterPowerPercent < SavePowerBelowPercent && targetHealthPercent >= FinishTargetBelowPercent;
+
+        /// <summary>
+        /// A player's companion saves power unless the player switched "Save power" off (AI Options choice 1) or made a
+        /// healer an attacker (role "Attack, heal only emergencies"): that companion nukes freely as before.
+        /// </summary>
+        public static bool CompanionSavesPower(int savePowerChoice, bool attackingHealer) =>
+            savePowerChoice != 1 && !attackingHealer;
     }
 }

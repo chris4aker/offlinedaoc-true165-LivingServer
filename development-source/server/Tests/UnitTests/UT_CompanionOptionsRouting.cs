@@ -14,5 +14,13 @@ namespace DOL.UnitTests
                 Assert.That(CompanionWindows165.Verbs, Does.Contain(verb), verb);
             Assert.That(CompanionWindows165.Verbs, Does.Contain("option"));
         }
+
+        [Test]
+        public void EveryGenericOptionKindIsKnown()
+        {
+            for (byte kind = 5; kind <= CompanionOptions165.KindSavePower; kind++)
+                Assert.That(CompanionOptions165.Option(kind), Is.Not.Null, $"kind {kind}");
+            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindSavePower + 1), Is.Null);
+        }
     }
 }
