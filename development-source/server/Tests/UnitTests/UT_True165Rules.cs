@@ -34,6 +34,12 @@ namespace DOL.UnitTests
         [TestCase("&spawn")]
         [TestCase("&tele")]
         [TestCase("&raid")]
+        [TestCase("&lfg")]
+        [TestCase("&combatstats")]
+        [TestCase("&xpstats")]
+        [TestCase("&checkconcolor")]
+        [TestCase("&realmtimer")]
+        [TestCase("&gtrange")]
         public void CheatCommandsAreGmOnlyIn165Mode(string command)
         {
             Properties.CLASSIC165_MODE = true;

@@ -94,6 +94,10 @@ namespace DOL.GS
             "&switch", "&sell", "&craftmacro", "&faction",
             // Battlegroups and battlegroup chat (/bg, /bc) came with patch 1.66j (Oct 2003), after 1.65.
             "&battlegroup", "&battlechat",
+            // Freeshard helpers, not in the 1.64 client's slash command list and never in period patch notes: combat and
+            // XP stat logs, a con-colour check, the realm-switch timer, ground target range. /lfg is a realm-wide LFG
+            // broadcast; in 1.65 the group window's "looking for group" checkbox and LFG window do that (1.64 help).
+            "&combatstats", "&xpstats", "&checkconcolor", "&realmtimer", "&gtrange", "&lfg",
         ];
 
         private static readonly Logging.Logger ClickLog = Logging.LoggerManager.Create(typeof(Classic165Mode));
