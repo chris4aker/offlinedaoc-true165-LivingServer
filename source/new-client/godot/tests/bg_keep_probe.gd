@@ -57,11 +57,16 @@ func _ready() -> void:
 					zone_id, id, at, near_id, near_d])
 			continue
 		var best := INF
+		var mid := Vector3.ZERO
 		for d in leaves[id]:
 			var w: Vector3 = (d as ZoneDoor).doorway()
 			if w == Vector3.INF:
 				w = (d as Node3D).global_position
+			mid += w / float(leaves[id].size())
 			best = minf(best, Vector2(w.x - at.x, w.z - at.z).length())
+		if best > 4.0:
+			print("[keep] %d door %d: the client's doorway is at zone units (%d, %d, %d)" % [zone_id, id, mid.x * 40.0,
+					mid.z * 40.0, mid.y * 40.0])
 		near += 1 if best <= 4.0 else 0
 		print("[keep] %d door %d: client door %.1f m from the server's spot" % [zone_id, id, best])
 	print("[keep] %d %s doors: %d of %d server doors have a client door within 4 m" % [zone_id, tag, near,
