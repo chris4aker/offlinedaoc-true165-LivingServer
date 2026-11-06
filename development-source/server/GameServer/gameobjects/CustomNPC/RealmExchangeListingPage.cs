@@ -6,8 +6,8 @@ namespace DOL.GS;
 
 public sealed partial class RealmExchangeBroker
 {
-    // The native client is fixed at 100 visible slots. Human listings use
-    // additional pages, while bot listing allocation retains its 100-item cap.
+    // The native client is fixed at 100 visible slots. Since 2026-11-06 a player
+    // has one 100-slot chest (page 0 only), the same cap as a bot's listings.
     // Reuse the tested inventory move/split/validation routines with a per-call
     // DB offset, never mutable shared offsets on the capital's single broker.
     private sealed class ListingPageInventory(RealmExchangeBroker broker, int page) : IGameInventoryObject

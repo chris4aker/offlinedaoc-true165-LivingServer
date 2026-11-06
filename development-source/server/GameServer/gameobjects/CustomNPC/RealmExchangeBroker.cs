@@ -45,6 +45,8 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
     }
     private const string ProceedsKeyPrefix = "RealmExchange.Proceeds.";
     private const int PageSize = 20;
+    /// <summary>Each player's one listing chest (owner 2026-11-06: "100 slot cap for players").</summary>
+    public const int ListingSlots = 100;
 
     internal static readonly Lock TransactionLock = new();
     private readonly Lock _inventoryLock = new();
@@ -94,13 +96,11 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
             return false;
 
         string command = text.Trim().ToLowerInvariant();
+        // One listing chest of 100 slots per player (owner 2026-11-06): no more chest pages. An older client's page
+        // whispers just reopen the one chest.
         if (command is "next listing page" or "previous listing page")
         {
-            int page = player.TempProperties.GetProperty<int>(ListingsPageProperty);
-            int lastUsed = GetDbItems(player).Select(item => item.SlotPosition).DefaultIfEmpty(FirstDbSlot).Max();
-            int maximumPage = Math.Max(0, (lastUsed - FirstDbSlot) / 100 + 1);
-            page = Math.Clamp(page + (command.StartsWith("next") ? 1 : -1), 0, maximumPage);
-            player.TempProperties.SetProperty(ListingsPageProperty, page);
+            player.TempProperties.SetProperty(ListingsPageProperty, 0);
             OpenListings(player);
             return true;
         }
@@ -178,14 +178,48 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
     private void OpenListings(GamePlayer player)
     {
         SetActive(player, ModeSell);
-        var slots = Enumerable.Range((int)FirstClientSlot, 100).ToDictionary(slot => slot, _ => (DbInventoryItem)null);
+        player.TempProperties.SetProperty(ListingsPageProperty, 0);
+        int waiting = MoveListingsIntoChest(player);
+        var slots = Enumerable.Range((int)FirstClientSlot, ListingSlots).ToDictionary(slot => slot, _ => (DbInventoryItem)null);
         foreach (var item in GetClientInventory(player)) slots[item.Key] = item.Value;
         player.Out.SendInventoryItemsUpdate(slots, eInventoryWindowType.ConsignmentOwner);
         player.Out.SendConsignmentMerchantMoney(0);
         player.Out.SendMessage("Drag a real item into an empty exchange slot, then set its price in copper.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
-        int page = player.TempProperties.GetProperty<int>(ListingsPageProperty);
-        player.Out.SendMessage($"Your listings - page {page + 1}. A priced listing runs 12, 24 or 48 hours (48 unless you choose); unsold, it waits here unoffered. No listing fees.\n[Previous listing page]  [Next listing page]\n[Browse the exchange]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+        player.Out.SendMessage($"Your listings: {ListingSlots} slots. A priced listing runs 12, 24 or 48 hours (48 unless you choose); unsold, it waits here unoffered. No listing fees.\n[Browse the exchange]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+        if (waiting > 0)
+            player.Out.SendMessage($"{waiting} more listing(s) wait outside your {ListingSlots} slots; they move in as slots free up and stay for sale meanwhile.", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
         SendTimeLeft(player);
+    }
+
+    /// <summary>
+    /// Listings left on an old chest page (slot 100 and up, from before the 100-slot chest) move into free slots of the
+    /// one chest. Returns how many still wait because the chest is full.
+    /// </summary>
+    public int MoveListingsIntoChest(GamePlayer player)
+    {
+        lock (TransactionLock)
+        {
+            DbInventoryItem[] mine = GetDbItems(player).ToArray();
+            var used = mine.Where(item => item.SlotPosition >= FirstDbSlot && item.SlotPosition < FirstDbSlot + ListingSlots)
+                .Select(item => item.SlotPosition).ToHashSet();
+            var outside = mine.Where(item => item.SlotPosition < FirstDbSlot || item.SlotPosition >= FirstDbSlot + ListingSlots)
+                .OrderBy(item => item.SlotPosition).ToList();
+            int waiting = 0;
+            foreach (DbInventoryItem item in outside)
+            {
+                int free = Enumerable.Range(FirstDbSlot, ListingSlots).FirstOrDefault(slot => !used.Contains(slot), -1);
+                if (free < 0)
+                {
+                    waiting++;
+                    continue;
+                }
+                used.Add(free);
+                MarketCache.UpdateItem(item, static (listed, slot) => listed.SlotPosition = slot, free);
+                if (item.IsPersisted)
+                    GameServer.Database.SaveObject(item);
+            }
+            return waiting;
+        }
     }
 
     /// <summary>
@@ -231,10 +265,9 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
 
     public Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
     {
-        int firstPageSlot = FirstDbSlot + player.TempProperties.GetProperty<int>(ListingsPageProperty) * 100;
-        int offset = (int)FirstClientSlot - firstPageSlot;
+        int offset = (int)FirstClientSlot - FirstDbSlot;
         return GetDbItems(player)
-            .Where(item => item.SlotPosition >= firstPageSlot && item.SlotPosition < firstPageSlot + 100)
+            .Where(item => item.SlotPosition >= FirstDbSlot && item.SlotPosition < FirstDbSlot + ListingSlots)
             .GroupBy(item => item.SlotPosition)
             .ToDictionary(group => group.Key + offset, group => group.First());
     }
@@ -281,7 +314,13 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
                 player.Out.SendMessage("That item cannot be traded.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-            if (GetClientInventory(player).ContainsKey((int)toClientSlot))
+            Dictionary<int, DbInventoryItem> chest = GetClientInventory(player);
+            if (chest.Count >= ListingSlots)
+            {
+                player.Out.SendMessage($"Your {ListingSlots} listing slots are full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+            if (chest.ContainsKey((int)toClientSlot))
                 return false;
         }
 
@@ -307,7 +346,7 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
 
         lock (TransactionLock)
         {
-            var page = new ListingPageInventory(this, player.TempProperties.GetProperty<int>(ListingsPageProperty));
+            var page = new ListingPageInventory(this, 0);
             IDictionary<int, DbInventoryItem> updates = GameInventoryObjectExtensions.MoveItem(page, player, fromClientSlot, toClientSlot, itemCount);
             // A broker is shared, but each customer's chest is private. Never
             // broadcast one seller's slot changes to another seller's chest.

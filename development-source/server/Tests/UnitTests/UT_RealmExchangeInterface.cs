@@ -132,32 +132,59 @@ public sealed class UT_RealmExchangeInterface
     }
 
     [Test]
-    public void GetClientInventory_OnSecondHumanListingPageMapsTheSecondHundredSlots()
+    public void GetClientInventory_ShowsTheOneHundredSlotChestWhateverPageWasSet()
+    {
+        (RealmExchangeBroker broker, GamePlayer player) = ChestOwner("human-chest-test");
+        player.TempProperties.SetProperty("OfflineRealmExchange.ListingsPage", 1);   // an old client's page stays ignored
+
+        for (int slot = (int)eInventorySlot.Consignment_First; slot <= (int)eInventorySlot.Consignment_Last + 100; slot++)
+            AddOwned(player, slot);
+
+        Dictionary<int, DbInventoryItem> chest = broker.GetClientInventory(player);
+
+        Assert.That(RealmExchangeBroker.ListingSlots, Is.EqualTo(100));
+        Assert.That(chest, Has.Count.EqualTo(100));
+        Assert.That(chest.Keys, Is.EquivalentTo(Enumerable.Range((int)eInventorySlot.HousingInventory_First, 100)));
+        Assert.That(chest[(int)eInventorySlot.HousingInventory_First].SlotPosition, Is.EqualTo((int)eInventorySlot.Consignment_First));
+        Assert.That(chest[(int)eInventorySlot.HousingInventory_Last].SlotPosition, Is.EqualTo((int)eInventorySlot.Consignment_Last));
+    }
+
+    [Test]
+    public void MoveListingsIntoChest_MovesOldPageListingsIntoFreeSlotsAndCountsTheRest()
+    {
+        (RealmExchangeBroker broker, GamePlayer player) = ChestOwner("human-move-test");
+        int first = (int)eInventorySlot.Consignment_First;
+        for (int slot = first; slot < first + 98; slot++)
+            AddOwned(player, slot);                                    // 2 free chest slots
+        DbInventoryItem[] old = Enumerable.Range(first + 100, 3).Select(slot => AddOwned(player, slot)).ToArray();
+
+        int waiting = broker.MoveListingsIntoChest(player);
+
+        Assert.That(waiting, Is.EqualTo(1));
+        Assert.That(old[0].SlotPosition, Is.EqualTo(first + 98));
+        Assert.That(old[1].SlotPosition, Is.EqualTo(first + 99));
+        Assert.That(old[2].SlotPosition, Is.EqualTo(first + 102));
+        Assert.That(broker.GetClientInventory(player), Has.Count.EqualTo(100));
+    }
+
+    private (RealmExchangeBroker, GamePlayer) ChestOwner(string id)
     {
         RealmExchangeBroker broker = (RealmExchangeBroker)RuntimeHelpers.GetUninitializedObject(typeof(RealmExchangeBroker));
         typeof(GameNPC).GetField("m_brains", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(broker, new ArrayList());
         broker.Realm = eRealm.Hibernia;
         GamePlayer player = (GamePlayer)RuntimeHelpers.GetUninitializedObject(typeof(GamePlayer));
-        player.InternalID = "human-page-test";
+        player.InternalID = id;
         SetTempProperties(player);
-        player.TempProperties.SetProperty("OfflineRealmExchange.ListingsPage", 1);
+        return (broker, player);
+    }
 
-        for (int slot = (int)eInventorySlot.Consignment_First; slot <= (int)eInventorySlot.Consignment_Last + 100; slot++)
-        {
-            DbInventoryItem item = Listing($"human listing {slot}", RealmExchangeBroker.HiberniaOwnerLot, eObjectType.Cloth, 10);
-            item.OwnerID = player.InternalID;
-            item.SlotPosition = slot;
-            Add(item);
-        }
-
-        Dictionary<int, DbInventoryItem> page = broker.GetClientInventory(player);
-
-        Assert.That(page, Has.Count.EqualTo(100));
-        Assert.That(page.Keys, Is.EquivalentTo(Enumerable.Range((int)eInventorySlot.HousingInventory_First, 100)));
-        Assert.That(page[(int)eInventorySlot.HousingInventory_First].SlotPosition,
-            Is.EqualTo((int)eInventorySlot.Consignment_First + 100));
-        Assert.That(page[(int)eInventorySlot.HousingInventory_Last].SlotPosition,
-            Is.EqualTo((int)eInventorySlot.Consignment_Last + 100));
+    private static DbInventoryItem AddOwned(GamePlayer player, int slot)
+    {
+        DbInventoryItem item = Listing($"human listing {slot}", RealmExchangeBroker.HiberniaOwnerLot, eObjectType.Cloth, 10);
+        item.OwnerID = player.InternalID;
+        item.SlotPosition = slot;
+        Add(item);
+        return item;
     }
 
     private static DbInventoryItem Listing(string name, ushort ownerLot, eObjectType objectType, int level)
