@@ -132,7 +132,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Commands: /battlegroup, /bc, /lfg, /combatstats, /xpstats, /checkconcolor, /realmtimer and /gtrange are not in 1.65 and are GM-only (the group window's "looking for group" works as in the period).
 - Performance: two causes of server freezes in the bot camp and merchant searches are fixed, and packets to your client are no longer dropped while the bot map markers update.
 - Items: every item can be traded and listed on the Realm Exchange, by you and by gamebots - quest items too. This suits a single-player server; anyone making a multiplayer version may want to revisit it. Bot training gear (training bows, throwing weapons and instruments) stays out of trade and the exchange, but a merchant buys it for 1 copper, so bots sell it once they own a real one instead of carrying it forever.
-- Realm Exchange: each player has one listing chest of 100 slots (no more chest pages); a full chest says "Your 100 listing slots are full.", and listings left on an old chest page move into free slots.
+- Realm Exchange: each player has one listing chest of 100 slots (no more chest pages); a full chest says "Your 100 listing slots are full.", and listings left on an old chest page move into free slots. The server also takes a listing whichever page the window is on, and when the exchange refuses an item it now says why (wrong realm, too far from the broker, slot taken, and so on).
 
 ## 0.2 (2026-11-01)
 
