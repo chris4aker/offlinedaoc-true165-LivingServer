@@ -87,8 +87,12 @@ namespace DOL.GS
             ClearShoppingPlan(bot);
         }
 
+        // ... or one the bot died on the way to (AutonomousServiceReachability): the cached trip used to keep its merchant
+        // anyway, so a bot walked the same deadly road to it after every release (2026-11-06: 1,353 deaths to the
+        // lunantishee south of Mag Mell on "Buy a gear upgrade" trips, one bot every 4 minutes for hours)
         private static bool ShoppingSkipped(GameBot bot, GameMerchant merchant) =>
-            ShoppingSkips.TryGetValue((bot.DatabaseID, merchant.InternalID), out long until) && GameLoop.GameLoopTime < until;
+            ShoppingSkips.TryGetValue((bot.DatabaseID, merchant.InternalID), out long until) && GameLoop.GameLoopTime < until ||
+            AutonomousServiceReachability.IsSkipped(AutonomousServiceReachability.Key(merchant), bot.DatabaseID, GameLoop.GameLoopTime);
 
         public static void ClearShoppingPlan(GameBot bot)
         {
@@ -120,15 +124,16 @@ namespace DOL.GS
                 ShoppingPlan plan = cached.Plan;
                 if (now < cached.Until && plan == null)
                     return null;
-                if (plan != null && plan.Merchant.ObjectState == GameObject.eObjectState.Active && plan.Price <= ShoppingBudget(bot))
+                if (plan != null && plan.Merchant.ObjectState == GameObject.eObjectState.Active && plan.Price <= ShoppingBudget(bot) &&
+                    !ShoppingSkipped(bot, plan.Merchant))
                 {
                     // A trip keeps its merchant until it is done there (2026-11-01 run 3: the plan was worked out again
                     // every two minutes and could name another merchant mid-trip; the bot then stood "Ready to use" at the
-                    // first one, which no longer served it, until the 15-minute watchdog - 850 times in an hour).
-                    if (now >= cached.Until && !ShoppingSkipped(bot, plan.Merchant))
+                    // first one, which no longer served it, until the 15-minute watchdog - 850 times in an hour); a
+                    // merchant it died on the way to ends the trip (ShoppingSkipped)
+                    if (now >= cached.Until)
                         ShoppingPlans[bot.DatabaseID] = (plan, now + ShoppingPlanLifetimeMilliseconds);
-                    if (now < cached.Until || !ShoppingSkipped(bot, plan.Merchant))
-                        return plan;
+                    return plan;
                 }
             }
             ShoppingPlan fresh = null;
