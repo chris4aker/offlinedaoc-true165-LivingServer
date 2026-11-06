@@ -3142,7 +3142,9 @@ namespace DOL.GS
             // companions do (owner 2026-10-31: they chain-pulled on standing regen). A solo bot first waits out its own
             // combat timer instead of pulling again; a grouped one carries on as before so it still helps its group.
             // Normal mode keeps its low-resource thresholds.
-            bool restToFull = requireFullRecovery || Classic165Mode.IsOn;
+            // A coordinated party keeps its own pace instead (AutonomousBotGroupCoordinator.ReadyForChainPull).
+            bool partyPace = Classic165Mode.IsOn && !requireFullRecovery && _groupDirective?.IsDynamic == true;
+            bool restToFull = requireFullRecovery || Classic165Mode.IsOn && !partyPace;
             if ((requireFullRecovery || Classic165Mode.IsOn && bot.Group == null) && !fullyRecovered && combatBlocked)
             {
                 bot.WakeRecoveryRest();
@@ -3152,6 +3154,9 @@ namespace DOL.GS
             // point), so an outstanding patrol is cancelled when recovery starts.
             bool shouldRest = restToFull
                 ? !combatBlocked && !fullyRecovered
+                : partyPace
+                ? !combatBlocked && !AutonomousBotGroupCoordinator.ReadyForChainPull(bot.HealthPercent, bot.ManaPercent,
+                    bot.EndurancePercent, usesPower)
                 : AutonomousRestPolicy.ShouldRest(true, false, combatBlocked, bot.IsRecoveryResting,
                     bot.HealthPercent, bot.ManaPercent, bot.EndurancePercent, usesPower);
             if (!shouldRest)

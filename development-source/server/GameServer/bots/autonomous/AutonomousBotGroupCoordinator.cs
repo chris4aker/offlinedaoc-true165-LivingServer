@@ -1123,15 +1123,26 @@ public static partial class AutonomousBotGroupCoordinator
     // passive songs, buffs and normal travel can leave a member at 99%, while
     // the puller's hold branch does not start a rest just for that last point.
     private static bool MembersReadyForPull(GameBot[] members) => members.Length >= 2 &&
-        members.All(member => ReadyForGroupPull(member.HealthPercent, member.ManaPercent,
-            member.EndurancePercent, member.MaxMana > 0));
+        members.All(member => Classic165Mode.IsOn
+            ? ReadyForChainPull(member.HealthPercent, member.ManaPercent, member.EndurancePercent, member.MaxMana > 0)
+            : ReadyForGroupPull(member.HealthPercent, member.ManaPercent, member.EndurancePercent, member.MaxMana > 0));
 
     public static bool ReadyForGroupPull(int health, int power, int endurance, bool usesPower) =>
         AutonomousGroupRecoveryState.ResourcesReady(health, power, endurance, usesPower);
 
+    /// <summary>
+    /// True 1.65 Mode: a party pulls again once every member is at 90% health and every power user at 80% power
+    /// (Prima: the puller watches the mana bars and keeps a steady pace; period groups chain-pulled). Endurance only
+    /// has to be above the ordinary rest threshold. Before 2026-11-06 the party sat to 100/100/100 after every fight.
+    /// </summary>
+    public static bool ReadyForChainPull(int health, int power, int endurance, bool usesPower) =>
+        health >= 90 && (!usesPower || power >= 80) && endurance >= AutonomousRestPolicy.EnduranceRestThreshold;
+
     public static bool ShouldRecoverAfterGroupCombat(bool alreadyRecovering,
-        int health, int power, int endurance, bool usesPower) =>
-        alreadyRecovering
+        int health, int power, int endurance, bool usesPower, bool chainPull = false) =>
+        chainPull
+            ? !ReadyForChainPull(health, power, endurance, usesPower)
+            : alreadyRecovering
             ? health < 100 || usesPower && power < 100 || endurance < 100
             : !ReadyForGroupPull(health, power, endurance, usesPower);
 
@@ -1870,7 +1881,7 @@ public static partial class AutonomousBotGroupCoordinator
             // contract before the next elective pull.
             session.RecoveringBetweenPulls = members.Any(member => ShouldRecoverAfterGroupCombat(
                 session.RecoveringBetweenPulls, member.HealthPercent, member.ManaPercent,
-                member.EndurancePercent, member.MaxMana > 0));
+                member.EndurancePercent, member.MaxMana > 0, Classic165Mode.IsOn));
             if (!session.RecoveringBetweenPulls)
                 session.CombatObserved = false;
         }
