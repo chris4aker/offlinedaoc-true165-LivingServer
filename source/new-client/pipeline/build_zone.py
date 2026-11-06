@@ -60,10 +60,16 @@ def zone_local_npks(zone_id):
 HOUSING_164_TEX = ('zones/Nifs', 'zones/textures', 'phousing/nifs', 'phousing/textures')   # TextureIndex.PREFER order
 
 
-# Zone models taken from the real 1.64 client instead of the later client: the later H-gatefort.npk (Emain Macha's
-# gate forts) has its two big gates' leaves empty - their open animation without a panel or collision, so the gates
-# were never drawn, never blocked and never opened (owner 2026-11-06). Extracted by fix_gatefort_164.py into WORK_164.
-PERIOD_164_NIFS = ('h-gatefort',)
+# Zone models taken from the real 1.64 client instead of the later client, where the later copy builds differently
+# (owner 2026-11-06: "check frontier models used in the 1.64 client vs ours"; fix_period_models_164.py extracts them
+# into WORK_164 and lists what differs):
+#   gates the later copy has without doors - h-gatefort (Emain Macha's gate forts: the big gates' leaves empty),
+#     b-milefort (Albion's milegate fort) and n-gatefort-s (Midgard's gate fort): no door at all
+#   relic keeps - b-relickeep / nrelickeep-s without their door002, h-relickeep two triangles apart
+#   hborderkeep1 (collision), hruintower (a later remodel with Catacombs-era stone), ruinedfort (collision),
+#   bhouse2 (a later remodel, 11,733 triangles for 1,295), camwall, av_outsiden, n-gianbridge1 (collision)
+PERIOD_164_NIFS = ('h-gatefort', 'b-milefort', 'n-gatefort-s', 'b-relickeep', 'nrelickeep-s', 'h-relickeep',
+                   'hborderkeep1', 'hruintower', 'ruinedfort', 'bhouse2', 'camwall', 'av_outsiden', 'n-gianbridge1')
 
 
 def period_164_npks():
@@ -1012,6 +1018,7 @@ def build(zone_id, upscale=True):
                        'triangles': info['triangles'], 'collision_triangles': info['collision_triangles'],
                        'ambient_only': ambient_only(nifs[nif_id]),
                        'warnings': [f'{base}: {w}' for w in info['warnings']]})
+    taken = add_fixture_uids.taken_ids(fixtures)        # (Unique Ids: a Unique Id 0 row's number may be one)
     # server prop objects -> world objects (models from app/items)
     item_files = {p.name.lower(): p for p in (CLIENT / 'items').iterdir()}
     wobj_models = {}
@@ -1072,7 +1079,7 @@ def build(zone_id, upscale=True):
         placements.append({'m': model_index[nif_id], 'name': r[2].strip(), 'pos': [x * M, gy * M, y * M],
                            'yaw': -a, 'scale': scale / 100.0, 'collide': r[8].strip() not in ('', '0'),
                            'radius': fixture_radius(r), 'id': int(r[0])})
-        uid = add_fixture_uids.unique_id(r)                # the door ids' fixture number (add_fixture_uids.py)
+        uid = add_fixture_uids.unique_id(r, taken)         # the door ids' fixture number (add_fixture_uids.py)
         if uid != int(r[0]):
             placements[-1]['uid'] = uid
 
