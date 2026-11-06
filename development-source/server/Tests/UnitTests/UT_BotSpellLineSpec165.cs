@@ -116,5 +116,34 @@ namespace DOL.GS.Tests
                 Is.EqualTo(CharmSpellHandler.ResistChance165(true, 30, 30, 30)), "spec 30 as a player's, not 0");
             Assert.That(CharmSpellHandler.ResistChance165(true, 30, 30, 30), Is.LessThan(CharmSpellHandler.ResistChance165(true, 30, 0, 30)));
         }
+
+        // Period (Prima; Freddyshouse 2002): a caster's spell damage varies with its spec in the line. A bot's nukes and
+        // damage over time took the Mob line's fixed 60-100% instead of the player rule.
+        [Test]
+        public void ABotsDamageVariesWithItsLearnedLinesSpecLikeAPlayers()
+        {
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = true;
+            Spell nuke = Nuke(45);
+            var target = (SpecBot)RuntimeHelpers.GetUninitializedObject(typeof(SpecBot));
+            target.Level = 50;
+
+            SpecBot specced = Bot(50, nuke), unspecced = Bot(1, nuke), unlearned = Bot(50);
+            specced.Level = unspecced.Level = unlearned.Level = 50;
+            new SpellHandler(specced, nuke, Mob).CalculateDamageVariance(target, out double min, out double max);
+            new SpellHandler(specced, nuke, Darkness).CalculateDamageVariance(target, out double playerMin, out double playerMax);
+            new SpellHandler(unspecced, nuke, Mob).CalculateDamageVariance(target, out double lowMin, out _);
+            new SpellHandler(unlearned, nuke, Mob).CalculateDamageVariance(target, out double mobMin, out double mobMax);
+            Assert.Multiple(() =>
+            {
+                Assert.That(min, Is.EqualTo(playerMin).Within(1e-9), "the player rule with its learned line's spec");
+                Assert.That(max, Is.EqualTo(playerMax).Within(1e-9));
+                Assert.That(min, Is.GreaterThan(lowMin), "more spec, tighter range");
+                Assert.That((mobMin, mobMax), Is.EqualTo((0.6, 1.0)), "no learned line: the Mob line's fixed range");
+            });
+
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = false;
+            new SpellHandler(specced, nuke, Mob).CalculateDamageVariance(target, out min, out max);
+            Assert.That((min, max), Is.EqualTo((0.6, 1.0)), "normal mode unchanged");
+        }
     }
 }

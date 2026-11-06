@@ -2967,8 +2967,13 @@ namespace DOL.GS.Spells
 		public virtual void CalculateDamageVariance(GameLiving target, out double min, out double max)
 		{
 			GameLiving casterToUse = m_caster;
+			// True 1.65 Mode: a gamebot or hired companion casts through the generic Mob Spells line, but its damage varies
+			// with the spec of its learned line, as a player's does (Prima: the closer your spec to the spell's level, the
+			// tighter the range; Freddyshouse 2002: spec in a line tightens the variance of its baseline and spec spells alike).
+			// Monsters and other NPCs keep the Mob line's fixed range.
+			SpellLine varianceLine = SpecLineOf(m_caster);
 
-			switch (m_spellLine.KeyName)
+			switch (varianceLine.KeyName)
 			{
 				// Further research should be done on these.
 				// The variance range is tied to the base damage calculation.
@@ -3006,7 +3011,7 @@ namespace DOL.GS.Spells
 					if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
 						casterToUse = brain.Owner is GameBot botOwner ? botOwner : brain.GetLivingOwner() ?? m_caster;
 
-					min = CalculateLowerVarianceBound(casterToUse.GetModifiedSpecLevel(m_spellLine.Spec), target.Level);
+					min = CalculateLowerVarianceBound(casterToUse.GetModifiedSpecLevel(varianceLine.Spec), target.Level);
 					break;
 				}
 			}
