@@ -3804,7 +3804,7 @@ namespace DOL.GS
                     // historic level does not match any present live spawn.
                     // Advertising that absent level makes a bot arrive at a
                     // populated camp yet see zero valid targets forever.
-                    int[] observedLevels = AutonomousCampLevelPolicy.ObservedAuthoredLevels(
+                    int[] observedLevels = AutonomousCampLevelPolicy.ObservedAuthoredSpawnLevels(
                         entry.Levels, members.Select(npc => npc.EffectiveLevel));
                     if (observedLevels.Length == 0)
                         continue;
