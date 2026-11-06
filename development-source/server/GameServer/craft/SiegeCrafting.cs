@@ -58,6 +58,9 @@ namespace DOL.GS
 			}
 		}
 
+		/// <summary>The engine tier of a crafted siege item: its level, 1 (light, elm) to 3 (heavy, ironwood).</summary>
+		public static byte CraftedTier(DbItemTemplate product) => (byte)Math.Clamp(product?.Level ?? 1, 1, 3);
+
 		public override void BuildCraftedItem(GamePlayer player, Recipe recipe)
 		{
 			var product = recipe.Product;
@@ -100,6 +103,10 @@ namespace DOL.GS
 			siegeweapon.ItemId = product.Id_nb;
 
 			siegeweapon.LoadFromDatabase(product);
+			// True 1.65 Mode: the 1.64 engines carry their tier as the item level (elm 1, oaken 2, ironwood 3); without it
+			// every crafted engine was a level-1 light engine (a ram's crew places, damage and reach follow Level).
+			if (Classic165Mode.IsOn)
+				siegeweapon.Level = CraftedTier(product);
 			siegeweapon.CurrentRegion = player.CurrentRegion;
 			siegeweapon.Heading = player.Heading;
 			siegeweapon.X = player.X;
