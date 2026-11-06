@@ -1290,6 +1290,15 @@ func interact(n: Npc) -> void:
 	Server.client.call("Interact", int(n.spawn.get("oid", 0)), int(r.x), int(r.y))
 
 
+## An NPC talked to again by its object id (the Realm Exchange broker, to give it back your moves - ExchangeWindow).
+func interact_oid(oid: int) -> void:
+	if oid <= 0 or Server.client == null or player == null:
+		return
+	last_interact_oid = oid
+	var r := Server.to_region(_current_zone(), player.global_position)
+	Server.client.call("Interact", oid, int(r.x), int(r.y))
+
+
 func update_views(max_build: int) -> void:
 	super.update_views(max_build)
 	var now := Time.get_ticks_msec()

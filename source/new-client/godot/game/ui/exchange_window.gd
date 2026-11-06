@@ -77,6 +77,7 @@ var _bonus_pick: OptionButton
 var _bonus_amount: LineEdit
 var _scroll: VScrollBar                            # MY LISTINGS: its five pages
 var _paging_back := false                          # (a chest page past the first, from before the 100-slot cap: back)
+var _resynced_at := 0                              # the refusal last answered with a fresh listing chest
 var _arrows := {}                                  # sort key -> its SortArrow by the header
 var sort_key := ""                                 # BROWSE's sort ("" the broker's own order)
 var sort_asc := true
@@ -356,9 +357,33 @@ func open_tab(which: String) -> void:
 ## A tab clicked: the broker is told too - its page decides what a drop does (owner 2026-11-06: "dragging the item
 ## onto the realm exchange slots still doesn't do anything" - the window had come up on BROWSE, MY LISTINGS was only
 ## this window's page, and the broker, still on its market search, refused the move without a word).
-func _tell_broker(which: String) -> void:
-	if Server.active and Server.exchange_mode != which:
-		Server.command("/whisper manage my listings" if which == "listings" else "/whisper browse the exchange")
+## force: asked even when the broker should be there already (a drop, a take-back, a price waiting on it). When the
+## shared slots 150-249 are not the broker's on the server (a vault opened since), the broker is talked to again first.
+func _tell_broker(which: String, force := false) -> void:
+	if not Server.active:
+		return
+	if not force and Server.exchange_mode == which and Server.chest_owner == "exchange":
+		return
+	if Server.chest_owner != "exchange":
+		Server.exchange_reconnect()
+	Server.command("/whisper manage my listings" if which == "listings" else "/whisper browse the exchange")
+
+
+## `action` once the broker has your moves and its listing chest is open (at once when it already is) - never while the
+## slots 150-249 are another container's on the server, where a drop would land in that container instead. Gives up
+## after four seconds with the broker's own advice.
+func _with_broker(action: Callable, tries := 0) -> void:
+	if not Server.active or (Server.chest_owner == "exchange" and Server.exchange_mode == "listings"):
+		action.call()
+		return
+	if tries == 0:
+		_tell_broker("listings", true)
+	if tries >= 20 or not is_inside_tree():
+		Server.exchange_refusal = "The broker did not answer - talk to the broker again."
+		Server.exchange_refusal_at = Time.get_ticks_msec()
+		refresh()
+		return
+	get_tree().create_timer(0.2).timeout.connect(_with_broker.bind(action, tries + 1))
 
 
 func show_tab(which: String) -> void:
@@ -422,6 +447,11 @@ func refresh() -> void:
 		# a drop the broker refused ("That item cannot be traded."): in red here for a while - before, the item only
 		# snapped back to the backpack (owner 2026-11-06: "when i drag an item over nothing happens")
 		var since := Time.get_ticks_msec() - Server.exchange_refusal_at
+		# the broker says the chest is not as shown (a slot holds a listing this window never got): its chest again
+		if Server.exchange_refusal_at > _resynced_at and (Server.exchange_refusal.contains("already holds a listing")
+				or Server.exchange_refusal.contains("talk to the broker again")):
+			_resynced_at = Server.exchange_refusal_at
+			_tell_broker("listings", true)
 		if Server.exchange_refusal != "" and since < REFUSAL_MS:
 			_status.text = Server.exchange_refusal.to_upper()
 			_status.add_theme_color_override("font_color", UiArt.RED)
@@ -527,11 +557,15 @@ func _do_action2() -> void:
 		if selected >= 0:
 			Server.detail_shown(10, selected)
 	elif Server.listings.has(selected):
-		var to := PlayerData.first_free()
-		if to < 0:
-			PlayerData.message.emit("You need an empty backpack slot.", "error")
-		else:
-			PlayerData.move(selected, to)
+		var slot := selected
+		_with_broker(func():
+			if not Server.listings.has(slot):
+				return
+			var to := PlayerData.first_free()
+			if to < 0:
+				PlayerData.message.emit("You need an empty backpack slot.", "error")
+			else:
+				PlayerData.move(slot, to))
 
 
 ## A result bought after a yes (BUY / double-click; dragging it into the backpack buys at once, as the server has it).
@@ -548,25 +582,22 @@ func buy(place: int) -> void:
 
 ## A backpack item dropped on the listing chest: moved into `slot` (or the first free one); its price asked next.
 func list_item(from: int, slot := -1) -> void:
-	if slot < 0 or Server.listings.has(slot):
-		slot = -1
-		for i in 100:
-			var s := Server.CHEST_FIRST + i
-			if not Server.listings.has(s):
-				slot = s
-				break
-	if slot < 0:
-		PlayerData.message.emit("Your 100 listing slots are full.", "error")
-		return
-	if Server.active and Server.exchange_mode != "listings":
-		# the broker still on its market search (a page it opened before): its listings first, then the move
-		_tell_broker("listings")
-		get_tree().create_timer(0.8).timeout.connect(func():
-			if PlayerData.move(from, slot):
-				_ask_price = slot)
-		return
-	if PlayerData.move(from, slot):
-		_ask_price = slot
+	# (the broker first when it is not the one holding the chest's slots on the server - its listings then come fresh,
+	# so the slot is chosen after; the item stays in the backpack until then)
+	_with_broker(func():
+		var to := slot
+		if to < 0 or Server.listings.has(to):
+			to = -1
+			for i in 100:
+				var s := Server.CHEST_FIRST + i
+				if not Server.listings.has(s):
+					to = s
+					break
+		if to < 0:
+			PlayerData.message.emit("Your 100 listing slots are full.", "error")
+			return
+		if PlayerData.inventory.has(from) and PlayerData.move(from, to):
+			_ask_price = to)
 
 
 ## The price box in the granite: platinum / gold / silver / copper (0 = kept in the chest, not for sale).
@@ -637,9 +668,11 @@ func ask_price(slot: int) -> void:
 		if ok:
 			var c := _value(fields.copper, 0) + _value(fields.silver, 0) * 100 + _value(fields.gold, 0) * 10000 \
 					+ _value(fields.platinum, 0) * 10000000
-			Server.set_listing_price(slot, c)
-			if c > 0:
-				Server.command("/whisper duration %d %d" % [slot - Server.CHEST_FIRST, duration_hours])
+			var hours := duration_hours
+			_with_broker(func():                           # (the price goes to the broker, never another container)
+				Server.set_listing_price(slot, c)
+				if c > 0:
+					Server.command("/whisper duration %d %d" % [slot - Server.CHEST_FIRST, hours]))
 		shade.queue_free()
 	var yes := UiArt.button("LIST IT", Vector2(110, 24), 11)
 	yes.position = Vector2(box.size.x * 0.5 - 175, 134)
@@ -919,6 +952,9 @@ class ExRow extends Control:
 		var id := item_id()
 		if id == "":
 			return null
+		if window.tab == "listings" and Server.active and Server.chest_owner != "exchange":
+			window._tell_broker("listings", true)          # (a listing dragged out while a vault holds the slots: the
+			return null                                     # broker's chest comes back first - drag it again then)
 		var it := ItemDb.item(id)
 		var prev := TextureRect.new()
 		prev.texture = ItemDb.icon(int(it.get("icon", 0)))

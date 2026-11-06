@@ -620,6 +620,7 @@ func enter_world(c: Dictionary) -> void:
 	_friends_listed = false
 	friends_online = []
 	selected = c
+	chest_owner = ""                                      # (a new session: no container open on the server yet)
 	inv = {}
 	points = {}
 	info = {}
@@ -727,6 +728,7 @@ func _on_world_inner(kind: String, d: Dictionary) -> void:
 		"market_open":                                    # [Browse the exchange]: the market search window
 			_load_prices()
 			exchange_mode = "browse"
+			chest_owner = "exchange"
 			exchange_open.emit("browse")
 		"market":                                         # a page of search results
 			_market_packet(d)
@@ -1595,6 +1597,10 @@ signal vault_open(title: String, first: int, count: int)
 const VAULT_FIRST := 110
 const VAULT_COUNT := 40
 const ACCOUNT_VAULT_COUNT := 100
+# Whose the shared slots 150-249 are on the server right now - the container it opened for you last (it routes your
+# moves there): "exchange" (the Realm Exchange broker: your listing chest), "vault" (a vault page), "" not known.
+var chest_owner := ""
+var exchange_broker_oid := 0             # the Realm Exchange broker you last talked to (its greeting came after)
 var container_mode := ""                 # "account" while an account vault page is open, else the listing chest's
 var house_vault_at := 0                  # when you last right-clicked a house vault (ServerWorld): its window 4 is one
 # True 1.65 Mode account vault keepers (owner 2026-11-03, a QoL exception: Virsha / Janash / Giorny in the capitals,
@@ -1618,29 +1624,31 @@ func account_vault_show(page: int) -> void:
 
 
 func on_inventory(d: Dictionary) -> void:
-	# True 1.65 Mode: the companion gear window the server fills for the original client (its HouseVault window, slots
-	# 150 and up - plan 17h; there are no houses in 1.65): our own companion window draws it from op 7, so not shown
-	if world_mode == "1.65" and not account_vault_open and Time.get_ticks_msec() - CompanionNet.asked_gear_at < 600000 			and not (int(d.window) == 4 and (Time.get_ticks_msec() - house_vault_at < 5000 or account_vault_recent())):
-		if int(d.window) == 4:
-			return
-		var keep: Array = (d.get("items", []) as Array).filter(func(it): return int(it.slot) < 150)
-		if keep.size() != (d.get("items", []) as Array).size():
-			if keep.is_empty():
-				return
-			d = d.duplicate()
-			d["items"] = keep
+	# True 1.65 Mode: the companion GIVE ITEMS window the server builds for the original client (CompanionGearVault165:
+	# its HouseVault window 4, slots 150 and up - plan 17h; there are no houses in 1.65): our own companion window draws
+	# the gear from op 7, so that window is not shown. Only that window (4): slots 150-249 are also your Realm Exchange
+	# listing chest (window 5 and its plain updates). Dropping every item in those slots for ten minutes after a
+	# companion gear click threw the exchange's away too (owner 2026-11-06: a lute dropped on MY LISTINGS left the bag,
+	# never showed, and "deleted" it - it was in the chest, unpriced; the chest's own list never showed either).
+	if world_mode == "1.65" and int(d.window) == 4 and not account_vault_open \
+			and Time.get_ticks_msec() - CompanionNet.asked_gear_at < 600000 \
+			and Time.get_ticks_msec() - house_vault_at >= 5000 and not account_vault_recent():
+		return
 	if int(d.window) == 5:                                # your Realm Exchange listing chest opens (ConsignmentOwner)
 		_clear_slots(CHEST_FIRST, CHEST_LAST)
 		container_mode = ""
+		chest_owner = "exchange"
 		_listings_packet(d, true)
 		return
 	if int(d.window) == 6:                                # someone else's consignment: not your slots
 		return
 	if int(d.window) == 3:                                # your vault opens: its whole list
 		_clear_slots(VAULT_FIRST, VAULT_FIRST + VAULT_COUNT - 1)
+		chest_owner = "vault"                             # (the server's moves go to the vault now, not the broker)
 	elif int(d.window) == 4:                              # an account vault page opens
 		_clear_slots(CHEST_FIRST, CHEST_LAST)
 		container_mode = "account"
+		chest_owner = "vault"
 		account_vault_open = account_vault_recent()
 	# the chest's slots come in plain updates too (a move in or out, the rest of a long list)
 	var mine := []
@@ -1890,10 +1898,25 @@ func _save_prices() -> void:
 		f.store_string(JSON.stringify(_prices))
 
 
+## The broker you deal with, talked to again (as a right-click on it): the server gives it back your moves - the
+## shared slots 150-249 - after a vault opened since. It answers with its greeting (chest_owner "exchange").
+func exchange_reconnect() -> void:
+	var v: Node = viewer()
+	var sw = v.get("npcs") if v else null
+	if exchange_broker_oid > 0 and sw is ServerWorld:
+		(sw as ServerWorld).interact_oid(exchange_broker_oid)
+
+
 ## The broker's own words, read for the exchange window: the greeting's waiting proceeds, a claim, a sale while you
 ## are online, the search's count, the chest's page.
 func _exchange_text(text: String) -> void:
 	if text.begins_with("Welcome to the Realm Exchange"):
+		# a broker talked to: it takes your moves from now on (RealmExchangeBroker.Interact sets it active)
+		chest_owner = "exchange"
+		var v: Node = viewer()
+		var sw = v.get("npcs") if v else null
+		if sw is ServerWorld and int((sw as ServerWorld).last_interact_oid) > 0:
+			exchange_broker_oid = int((sw as ServerWorld).last_interact_oid)
 		var m := RegEx.create_from_string("Claim sale proceeds.: *([^\\n]+)").search(text)
 		proceeds = _copper_of(m.get_string(1)) if m else 0
 		_load_prices()
@@ -1912,6 +1935,8 @@ func _exchange_text(text: String) -> void:
 			or text.begins_with("The Realm Exchange could not"):
 		exchange_refusal = text                    # (RealmExchangeBroker: a drop refused - every refusal has its reason)
 		exchange_refusal_at = Time.get_ticks_msec()
+		if text.contains("talk to the broker again"):
+			chest_owner = ""                      # (the broker no longer has your moves: talked to again first)
 	else:
 		return
 	exchange_changed.emit()
