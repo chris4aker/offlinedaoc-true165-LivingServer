@@ -28,7 +28,8 @@ namespace DOL.GS
         private static readonly ConcurrentDictionary<GameNPC, uint> GiverIds = new();
         private static readonly ConcurrentDictionary<GamePlayer, HashSet<uint>> Shown = new();
         private static GameNPC[] _givers = [];
-        private static long _giversAt = long.MinValue;
+        private static long _giversDueAt;                 // (0: the first call builds the list)
+        private static int _checkErrorLogged;
         private static int _nextId;
         private static Timer _timer;
 
@@ -75,11 +76,19 @@ namespace DOL.GS
             }
         }
 
+        /// <summary>
+        /// Whether the giver list is built (again) now: on the first call, then every 10 minutes. Until 2026-11-05 it kept
+        /// its build time from long.MinValue, and "now - long.MinValue" overflows to a negative number, so the empty list
+        /// looked fresh forever and no quest giver marker was ever sent (owner: none on the Camelot Hills map from Avalon
+        /// Marsh).
+        /// </summary>
+        public static bool GiverListDue(long now, long dueAt) => now >= dueAt;
+
         /// <summary>Every NPC in the world that gives a quest (scripted or data), looked up again every 10 minutes.</summary>
         private static GameNPC[] Givers()
         {
             long now = Environment.TickCount64;
-            if (now - _giversAt < GiverListMilliseconds)
+            if (!GiverListDue(now, _giversDueAt))
                 return _givers;
             var list = new List<GameNPC>();
             foreach (Region region in WorldMgr.GetAllRegions())
@@ -87,7 +96,7 @@ namespace DOL.GS
                     if (npc is not GameBot && npc.ObjectState == GameObject.eObjectState.Active && (npc.QuestListToGive.Count > 0 || npc.DataQuestList.Count > 0))
                         list.Add(npc);
             _givers = list.ToArray();
-            _giversAt = now;
+            _giversDueAt = now + GiverListMilliseconds;
             if (Log.IsInfoEnabled)
                 Log.Info($"QUEST_GIVER_MARKERS givers={_givers.Length}");
             return _givers;
@@ -106,7 +115,12 @@ namespace DOL.GS
                     continue;
                 bool available;
                 try { available = npc.CanShowOneQuest(player); }
-                catch (Exception) { continue; }
+                catch (Exception ex)
+                {
+                    if (Interlocked.Exchange(ref _checkErrorLogged, 1) == 0)
+                        Log.Warn($"QUEST_GIVER_MARKERS could not check {npc.Name} for {player.Name} (logged once)", ex);
+                    continue;
+                }
                 if (!available)
                     continue;
                 uint id = IdOf(npc);
