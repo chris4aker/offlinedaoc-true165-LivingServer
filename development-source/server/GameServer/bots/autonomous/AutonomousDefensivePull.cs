@@ -260,7 +260,9 @@ namespace DOL.GS
                 if (bot.Group == null || !state.Target.IsAlive || state.Target.ObjectState != GameObject.eObjectState.Active ||
                     state.Members.Any(member => !member.IsAlive || member.Group != bot.Group ||
                         member.CurrentRegion != state.Shooter.CurrentRegion || member.IsOnStableMasterRoute) ||
-                    state.Target.CurrentRegion != bot.CurrentRegion || GameLoop.GameLoopTime >= state.Until)
+                    state.Target.CurrentRegion != bot.CurrentRegion || GameLoop.GameLoopTime >= state.Until ||
+                    state.ReturnTo is { } player && (!player.IsAlive || player.CurrentRegion != state.Shooter.CurrentRegion ||
+                        player.Group != bot.Group))
                 {
                     Finish(state, false);
                     return false;
