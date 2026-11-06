@@ -19,18 +19,19 @@ namespace DOL.GS
             {
                 eSpecType.NurtureWarden => Util.Random(0, 1),
                 eSpecType.BattleWarden => 2,
-                eSpecType.RegrowthWarden => 3,
-                _ => Util.Random(3),
+                eSpecType.RegrowthWarden => Util.Random(3, 4),
+                _ => Pick(2, 2, 2, 1, 1),
             };
 
             switch (randVariance)
             {
+                // Period Wardens trained Nurture 49 in every build.
                 case 0:
                 SpecType = eSpecType.NurtureWarden;
-                Add(ObjToSpec(WeaponOneType), 39, 0.6f);
-                Add(Specs.Nurture, 45, 0.9f);
-                Add(Specs.Regrowth, 26, 0.5f);
-                Add(Specs.Parry, 10, 0.1f);
+                Add(ObjToSpec(WeaponOneType), 37, 0.6f);
+                Add(Specs.Nurture, 49, 0.9f);
+                Add(Specs.Regrowth, 23, 0.5f);
+                Add(Specs.Parry, 6, 0.1f);
                 break;
 
                 case 1:
@@ -49,11 +50,21 @@ namespace DOL.GS
                 Add(Specs.Parry, 12, 0.1f);
                 break;
 
+                // Regrowth Warden (period): Nurture 49 / Regrowth 33-42 / a small weapon line.
                 case 3:
                 SpecType = eSpecType.RegrowthWarden;
-                Add(Specs.Nurture, 45, 0.9f);
-                Add(Specs.Regrowth, 48, 0.7f);
-                Add(Specs.Parry, 5, 0.0f);
+                Add(ObjToSpec(WeaponOneType), 13, 0.2f);
+                Add(Specs.Nurture, 49, 0.9f);
+                Add(Specs.Regrowth, 42, 0.7f);
+                Add(Specs.Parry, 3, 0.0f);
+                break;
+
+                case 4:
+                SpecType = eSpecType.RegrowthWarden;
+                Add(ObjToSpec(WeaponOneType), 22, 0.3f);
+                Add(Specs.Nurture, 49, 0.9f);
+                Add(Specs.Regrowth, 38, 0.7f);
+                Add(Specs.Parry, 3, 0.0f);
                 break;
             }
         }

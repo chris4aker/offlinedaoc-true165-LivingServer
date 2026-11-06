@@ -366,5 +366,20 @@ namespace DOL.UnitTests
             }
             Assert.That(found, Is.True);
         }
+
+        [Test]
+        public void WardenTrainsNurture49InEveryBuild()
+        {
+            foreach (BotSpec plan in Roll(eCharacterClass.Warden).Take(300))
+            {
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Warden, 50);
+                Assert.That(at50[Specs.Nurture], Is.EqualTo(49));
+                if (plan.SpecType == eSpecType.RegrowthWarden)
+                {
+                    Assert.That(at50[Specs.Regrowth], Is.InRange(33, 42));
+                    Assert.That(at50[SkillBase.ObjectTypeToSpec(plan.WeaponOneType)], Is.InRange(2, 25));
+                }
+            }
+        }
     }
 }
