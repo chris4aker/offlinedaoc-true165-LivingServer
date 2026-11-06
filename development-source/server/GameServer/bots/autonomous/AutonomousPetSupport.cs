@@ -475,10 +475,13 @@ public static class AutonomousPetSupport
             }
 
             (Spell Spell, SpellLine Line) summon = default;
+            // a hired Hunter whose player switched its pet off (AI Options) summons none
+            bool hunterPetOff = owner is GameBot hunter && hunter.CharacterClass?.ID == (int)eCharacterClass.Hunter &&
+                                CompanionOptions165.Choice(hunter, "hunterpet") == 1;
             // A hired Cabalist / Enchanter summons the pet its player chose (CompanionOptions165), else its own choice.
-            if (owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
+            if (!hunterPetOff && owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
                 summon = ChooseCastableByRank(owner, spells.Where(entry => IsChosenPet(entry, chosenLine)).ToList(), null, true);
-            if (summon.Spell == null)
+            if (summon.Spell == null && !hunterPetOff)
                 summon = ChooseCastableByRank(owner, spells, null,
                     owner is GameBot { IsEndgameCompanion: true });
             if (summon.Spell != null)

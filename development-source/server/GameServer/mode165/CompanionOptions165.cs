@@ -322,6 +322,9 @@ namespace DOL.GS
                     if (option == null || !option.Applies(bot) || i < 0 || i >= option.Choices.Length)
                         return "Choose an option.";
                     Set(hired, option.Key, i == 0 ? null : i.ToString());
+                    // the Hunter's pet switched off: the wolf that is out goes now
+                    if (option.Kind == KindHunterPet && i == 1 && bot.ControlledBrain != null)
+                        bot.CommandNpcRelease();
                     return null;
                 }
                 case "song":
