@@ -147,6 +147,7 @@ namespace DOL.GS
         private long _deathTick;
         private ushort _deathRegionId;
         private Point3D _deathLocation;
+        private readonly AutonomousBindDeaths _bindDeaths165 = new();
         private long _nextReturnRoleplayTick;
         private AutonomousStableRoutePlanner.Choice _stableReturnPlan;
         // GameObject.MoveTo removes and re-adds an actor. GameNPC.RemoveFromWorld
@@ -1177,6 +1178,8 @@ namespace DOL.GS
                     out bool newHotspot) is { } hotspot && newHotspot)
                 log.Info($"AUTONOMOUS_ROAD_HOTSPOT region={hotspot.Region} at={hotspot.X},{hotspot.Y} killer=\"{deathSource.Name}\" " +
                          $"killer_level={hotspot.KillerLevel} - bots below level {hotspot.KillerLevel - AutonomousRoadHotspots.KillerLevelsAbove + 1} avoid it");
+            if (Classic165Mode.IsOn && IsAutonomousWorldBot && Group == null && PersistentRecord is { BindRegionId: > 0 } bind)
+                _bindDeaths165.Record(CurrentRegionID, X, Y, (ushort)bind.BindRegionId, bind.BindX, bind.BindY, GameLoop.GameLoopTime);
             IsReturningAfterRelease = false;
             _stableReturnPlan = null;
             CompleteStableMasterRoute();
@@ -1415,6 +1418,9 @@ namespace DOL.GS
                 PersistentRecord is { BindRegionId: > 0 } bindRecord && WorldMgr.GetRegion((ushort)bindRecord.BindRegionId) != null &&
                 (bindRecord.BindX != 0 || bindRecord.BindY != 0))
             {
+                // died beside its own bind three times in 15 minutes: bind elsewhere first (AutonomousBindDeaths)
+                if (_bindDeaths165.ShouldMove(GameLoop.GameLoopTime))
+                    MoveBindAwayFromDanger165(bindRecord);
                 releaseRegion = (ushort)bindRecord.BindRegionId;
                 release = new Point3D(bindRecord.BindX, bindRecord.BindY, bindRecord.BindZ);
             }
@@ -1488,6 +1494,37 @@ namespace DOL.GS
                 ClientService.CreateObjectForPlayer(viewer, this);
                 viewer.Out.SendLivingEquipmentUpdate(this);
             }
+        }
+
+        /// <summary>
+        /// Binds the bot at the nearest friendly bindstone in its bind's region that is clear of every bind it left this
+        /// way and of a road hotspot dangerous to it, or else in its capital.
+        /// </summary>
+        private void MoveBindAwayFromDanger165(OfflineWorldBotRecord bindRecord)
+        {
+            ushort oldRegion = (ushort)bindRecord.BindRegionId;
+            int oldX = bindRecord.BindX, oldY = bindRecord.BindY;
+            _bindDeaths165.Moved(oldRegion, oldX, oldY);
+            long now = GameLoop.GameLoopTime;
+            Region region = WorldMgr.GetRegion(oldRegion);
+            Point3D? stone = region == null ? null : BotReleaseBindPoints.Nearest(oldRegion, oldX, oldY, Realm, p =>
+                !_bindDeaths165.Avoids(oldRegion, p.X, p.Y) &&
+                region.GetZone(p.X, p.Y) is { } zone && AutonomousRealmBoundary.Allows(Realm, oldRegion, zone.ID) &&
+                !AutonomousRoadHotspots.Blocks(oldRegion, p.X, p.Y, Level, oldRegion, p.X, p.Y, now));
+            ushort newRegion = oldRegion;
+            if (stone is not { } point)
+            {
+                var capital = AutonomousStuckWatchdog.SafeCapitalFor(Realm);
+                newRegion = capital.RegionId;
+                point = new Point3D(capital.X, capital.Y, capital.Z);
+            }
+            bindRecord.BindRegionId = newRegion;
+            bindRecord.BindX = point.X;
+            bindRecord.BindY = point.Y;
+            bindRecord.BindZ = point.Z;
+            MarkAutonomousStateDirty();
+            log.Info($"AUTONOMOUS_REBIND_165 bot={Name} id={DatabaseID} level={Level} from={oldRegion}:{oldX},{oldY} " +
+                     $"to={newRegion}:{point.X},{point.Y} - died beside its bind {AutonomousBindDeaths.DeathsBeforeMove} times");
         }
 
         private Point3D? FindNearestBindPoint()

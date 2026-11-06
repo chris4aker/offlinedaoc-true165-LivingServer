@@ -55,7 +55,11 @@ namespace DOL.GS
                 (int)System.Math.Round(floor.Value.Y), (int)System.Math.Round(floor.Value.Z));
         }
 
-        public static Point3D? Nearest(ushort region, int x, int y, eRealm realm = eRealm.None)
+        public static Point3D? Nearest(ushort region, int x, int y, eRealm realm = eRealm.None) =>
+            Nearest(region, x, y, realm, null);
+
+        /// <summary>The nearest bindstone of the realm that <paramref name="accept"/> allows (all of them when null).</summary>
+        public static Point3D? Nearest(ushort region, int x, int y, eRealm realm, System.Func<Point3D, bool> accept)
         {
             if (!Regions.TryGetValue(region, out Bind[] points)) return null;
             Point3D? nearest = null;
@@ -68,7 +72,7 @@ namespace DOL.GS
                 Point3D point = bind.Point;
                 double dx = (double)x - point.X, dy = (double)y - point.Y;
                 double distance = dx * dx + dy * dy;
-                if (distance >= best) continue;
+                if (distance >= best || accept != null && !accept(point)) continue;
                 best = distance;
                 nearest = point;
             }

@@ -115,5 +115,28 @@ namespace DOL.UnitTests
             Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening([[yellowNear], [yellowNear, yellowFar]], Safest), Is.SameAs(yellowNear));
             Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening([[], []], Safest), Is.Null);
         }
+
+        [Test]
+        public void ABotThatDiesBesideItsBindThreeTimesInFifteenMinutesBindsElsewhere()
+        {
+            var deaths = new AutonomousBindDeaths();
+            const ushort midgard = 100;
+            // two deaths beside the bind, one far away: not yet
+            deaths.Record(midgard, 806_000, 702_000, midgard, 805_790, 701_700, 1_000);
+            deaths.Record(midgard, 806_600, 704_000, midgard, 805_790, 701_700, 60_000);
+            deaths.Record(midgard, 760_000, 650_000, midgard, 805_790, 701_700, 90_000);
+            deaths.Record(1, 806_000, 702_000, midgard, 805_790, 701_700, 100_000);
+            Assert.That(deaths.ShouldMove(120_000), Is.False);
+            deaths.Record(midgard, 805_900, 702_100, midgard, 805_790, 701_700, 120_000);
+            Assert.That(deaths.ShouldMove(120_000), Is.True);
+            // three deaths spread over more than 15 minutes do not count
+            Assert.That(deaths.ShouldMove(1_000 + AutonomousBindDeaths.WindowMilliseconds + 1), Is.False);
+
+            deaths.Moved(midgard, 805_790, 701_700);
+            Assert.That(deaths.ShouldMove(120_000), Is.False, "the count starts over");
+            Assert.That(deaths.Avoids(midgard, 804_487, 701_766), Is.True, "the stone beside the old bind");
+            Assert.That(deaths.Avoids(midgard, 804_518, 724_128), Is.False);
+            Assert.That(deaths.Avoids(101, 804_487, 701_766), Is.False);
+        }
     }
 }
