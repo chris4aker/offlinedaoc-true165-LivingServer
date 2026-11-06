@@ -201,5 +201,19 @@ namespace DOL.UnitTests
             }
             Assert.That(ticks, Is.GreaterThanOrEqualTo(3));
         }
+
+        // A Healer or Shaman in its player's group topping up the group out of combat: the heal stood it up and ended the
+        // rest, so it sat and stood again without end. In True 1.65 the rest lock stays through a helpful cast.
+        [TestCase(true, true, false, true, false, true)]
+        [TestCase(true, true, false, true, true, false)]    // combat ends the rest
+        [TestCase(true, true, false, false, false, false)]  // a harmful spell ends it
+        [TestCase(true, false, false, true, false, false)]  // a gamebot party: unchanged
+        [TestCase(true, true, true, true, false, false)]    // a /spawn helper: unchanged
+        [TestCase(false, true, false, true, false, false)]  // normal mode: unchanged
+        public void AnOutOfCombatHealKeepsTheRestInThePlayersGroup(bool classic165, bool playerLed, bool temporary,
+            bool helpful, bool combat, bool keeps)
+        {
+            Assert.That(BotRestRecovery.KeepsRestThroughCast(classic165, playerLed, temporary, helpful, combat), Is.EqualTo(keeps));
+        }
     }
 }

@@ -2407,7 +2407,9 @@ namespace DOL.AI.Brain
                 return false;
             }
 
-            if (bot.IsRecoveryResting)
+            // True 1.65: in its player's group the rest goes on after the shield (BotRestRecovery.KeepsRestThroughCast)
+            if (bot.IsRecoveryResting && !BotRestRecovery.KeepsRestThroughCast(Classic165Mode.IsOn, bot.IsPlayerLedGroup,
+                    bot.IsTemporaryGroupHelper, true, bot.InCombat || HasAggro))
                 bot.WakeRecoveryRest();
             if (shield.CastTime > 0)
             {

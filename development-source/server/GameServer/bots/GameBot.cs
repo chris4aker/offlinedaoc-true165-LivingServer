@@ -3163,8 +3163,12 @@ namespace DOL.GS
             if (!quickCastThisCast)
                 EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
 
+            // True 1.65: an out-of-combat heal or buff in its player's group keeps the rest lock; the bot only stands to
+            // cast and sits again after (BotRestRecovery.KeepsRestThroughCast)
             if (IsRecoveryResting && !IsTemporaryGroupHelper &&
-                !BotSongTwistPolicy.IsMobileSong(this, spell))
+                !BotSongTwistPolicy.IsMobileSong(this, spell) &&
+                !BotRestRecovery.KeepsRestThroughCast(Classic165Mode.IsOn, IsPlayerLedGroup, IsTemporaryGroupHelper,
+                    !spell.IsHarmful, InCombat || Brain is BotBrain { HasAggro: true }))
                 WakeRecoveryRest();
             // 1.65 Mode: a seated bot stands to cast, as a player does (a song keeps the rest; it sits again after)
             if (_seatedForClients)

@@ -84,7 +84,7 @@ namespace DOL.GS
             if (bot == null || !bot.IsAlive || bot.IsCrowdControlled || bot.IsAttacking ||
                 bot.Brain is BotBrain { HasAggro: true } ||
                 (bot.IsCasting || bot.castingComponent?.HasPendingSkillRequests == true) &&
-                    !BotSongTwistPolicy.HasMobileSongCast(bot) ||
+                    !BotSongTwistPolicy.HasMobileSongCast(bot) && !KeepsRestThroughOwnCast(bot) ||
                 bot.IsOnStableMasterRoute || HasCombat(bot, GameLoop.GameLoopTime)) return true;
             if (bot.Group == null) return false;
             // Only the local party matters. A distant casualty cannot prevent rest
@@ -132,6 +132,28 @@ namespace DOL.GS
         /// </summary>
         public static bool BuffingBeforeRest(GameBot bot, long now) => Classic165Mode.IsOn && bot != null &&
             bot.IsPlayerLedGroup && !bot.IsTemporaryGroupHelper && !bot.IsRecoveryResting && now < bot.SupportCastGraceUntil;
+
+        /// <summary>
+        /// Pure rule, True 1.65 Mode: a bot in its player's group keeps its rest (the "rest until full" lock) through an
+        /// out-of-combat heal or buff - it stands up to cast, as a player does, and sits down again after (BeginRecoveryRest
+        /// re-seats a locked bot). Before, every out-of-combat heal ended the rest, so a Healer or Shaman topping up the
+        /// group sat down and stood up again without end and never got its power back. Combat still ends the rest.
+        /// </summary>
+        public static bool KeepsRestThroughCast(bool classic165, bool playerLedGroup, bool temporary, bool helpful, bool combat) =>
+            classic165 && playerLedGroup && !temporary && helpful && !combat;
+
+        /// <summary>The bot's current, queued and requested casts are all helpful and keep its rest (see KeepsRestThroughCast).</summary>
+        private static bool KeepsRestThroughOwnCast(GameBot bot)
+        {
+            if (!KeepsRestThroughCast(Classic165Mode.IsOn, bot.IsPlayerLedGroup, bot.IsTemporaryGroupHelper, true, false))
+                return false;
+            CastingComponent casting = bot.castingComponent;
+            if (casting == null)
+                return false;
+            Spell active = casting.SpellHandler?.Spell, queued = casting.QueuedSpellHandler?.Spell;
+            bool pending = casting.TryPeekPendingSpell(out Spell requested);
+            return active?.IsHarmful != true && queued?.IsHarmful != true && (!pending || requested is { IsHarmful: false });
+        }
 
         private static bool SeatedInPlayerGroup165(GameBot bot) => Classic165Mode.IsOn &&
             bot.IsPlayerLedGroup && !bot.IsTemporaryGroupHelper && bot.IsRecoveryResting;
