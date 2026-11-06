@@ -34,8 +34,8 @@ func _ready() -> void:
 	ex.show_window()
 	ex.show_tab("listings")
 	await get_tree().process_frame
-	print("[similar] chest label '%s', status '%s'" % [ex._chest_label.text, ex._status.text])
-	var ok := ex._chest_label.text.ends_with("1/100")
+	print("[similar] status '%s'" % ex._status.text)
+	var ok := ex._status.text.begins_with("1 OF 100 SLOTS USED")
 	ex.ask_price(slot)
 	await get_tree().process_frame
 	var btn: Button = null

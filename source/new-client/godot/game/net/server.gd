@@ -1773,6 +1773,8 @@ func listing_time_text(slot: int) -> String:
 		return "-"
 	return "%dH" % ceili(m / 60.0) if m >= 60 else "%dM" % m
 var listing_page := 0                             # the chest's page on the server (100 slots each)
+var exchange_refusal := ""                        # the broker's last refusal of a listing (the window shows it in red)
+var exchange_refusal_at := 0                      # (its time, msec)
 var proceeds := -1                                # sale proceeds waiting (copper; the greeting's amount), -1 unknown
 var _prices := {}                                 # "<character>|<page>|<slot>|<name>" -> copper priced from here
 
@@ -1903,6 +1905,9 @@ func _exchange_text(text: String) -> void:
 		market_count = int(text.get_slice(" ", 3))
 	elif text.begins_with("Your listings - page "):
 		listing_page = maxi(int(text.get_slice(" ", 4).trim_suffix(".")) - 1, 0)
+	elif text == "That item cannot be traded." or text.begins_with("Your 100 listing slots"):
+		exchange_refusal = text                    # (RealmExchangeBroker: a drop onto the listings refused)
+		exchange_refusal_at = Time.get_ticks_msec()
 	else:
 		return
 	exchange_changed.emit()

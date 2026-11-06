@@ -8,9 +8,12 @@ extends ClassicWindow
 ##   BROWSE - the server's market search with its own filters (name, slot, armour, damage, level, quality, price, a
 ##            bonus, crafted only), 20 results a page with their prices; BUY (or double-click, or drag a result into
 ##            the backpack - the server's way).
-##   MY LISTINGS - your listing chest (100 slots a chest page, five pages of twenty here): drag a backpack item in
-##            to list it (its price is asked), SET PRICE to change it, TAKE BACK (or drag it to the backpack) cancels.
-## SALE PROCEEDS: what the broker holds for you (its greeting's amount, sales while you are online added) and CLAIM.
+##   MY LISTINGS - your listing chest: 100 slots a player (owner 2026-11-06: "100 slot cap for players"), shown as
+##            five pages of twenty with a scroll bar beside them (no chest pages): drag a backpack item in to list it
+##            (its price is asked), SET PRICE to change it, TAKE BACK (or drag it to the backpack) cancels. A drop the
+##            broker refuses ("That item cannot be traded.") shows in red under the list.
+## SALES MONEY: what the broker holds for you (its greeting's amount, sales while you are online added) and the
+## CLAIM MONEY button beside it - gold while money waits, NOTHING TO CLAIM when none does.
 ## The broker answers only within reach and in its own realm (the server's rules); its words come in the chat.
 ## Text sizes (owner 2026-10-13: "some of the text is small and hard to read"): rows 11, captions 10, nothing under 10.
 
@@ -39,6 +42,8 @@ const C_NAME := [28.0, 236.0]
 const C_LEVEL := [268.0, 34.0]
 const C_QUALITY := [306.0, 40.0]
 const C_PRICE := [350.0, 104.0]
+const LISTING_PAGES := 5                           # MY LISTINGS: 100 slots as five pages of ROWS
+const REFUSAL_MS := 8000                           # how long a refused drop's words stay under the list
 
 var tab := "browse"
 var selected := -1                                 # browse: the result's place; listings: the chest slot
@@ -70,7 +75,8 @@ var _crafted: Button
 var _bonus: OptionButton
 var _bonus_pick: OptionButton
 var _bonus_amount: LineEdit
-var _chest_label: Label
+var _scroll: VScrollBar                            # MY LISTINGS: its five pages
+var _paging_back := false                          # (a chest page past the first, from before the 100-slot cap: back)
 var _arrows := {}                                  # sort key -> its SortArrow by the header
 var sort_key := ""                                 # BROWSE's sort ("" the broker's own order)
 var sort_asc := true
@@ -124,13 +130,14 @@ func build() -> void:
 	_tab_listings = _tab_button("MY LISTINGS", Vector2(142, 32), "listings")
 	_proceeds = UiArt.label("", TEXT, UiArt.CREAM)
 	_proceeds.position = Vector2(270, 32)
-	_proceeds.size = Vector2(SIZE.x - 270 - 108, 22)
+	_proceeds.size = Vector2(SIZE.x - 270 - 170, 22)
 	_proceeds.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_proceeds.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_proceeds.clip_text = true
 	add_child(_proceeds)
-	_claim = UiArt.button("CLAIM", Vector2(88, 22), 10)
-	_claim.position = Vector2(SIZE.x - 102, 32)
+	_claim = UiArt.button("CLAIM MONEY", Vector2(150, 22), 10)
+	_claim.position = Vector2(SIZE.x - 164, 32)
+	_claim.tooltip_text = "TAKE THE MONEY YOUR SOLD LISTINGS EARNED"
 	_claim.pressed.connect(func(): Server.command("/whisper claim sale proceeds"))
 	add_child(_claim)
 	_build_list()
@@ -191,6 +198,21 @@ func _build_list() -> void:
 		r.size = Vector2(SIZE.x - LIST_X - 18, ROW_H)
 		add_child(r)
 		_rows.append(r)
+	# MY LISTINGS' five pages of twenty on a scroll bar beside the rows (owner 2026-11-06: "make it the scroll bar to
+	# scroll thru them"); the wheel and < > move it too
+	_scroll = VScrollBar.new()
+	_scroll.position = Vector2(SIZE.x - 17, LIST_Y)
+	_scroll.size = Vector2(9, ROWS * ROW_H)
+	_scroll.min_value = 0
+	_scroll.max_value = LISTING_PAGES
+	_scroll.page = 1
+	_scroll.step = 1
+	_scroll.value_changed.connect(func(v: float):
+		if tab == "listings" and int(v) != _lpage:
+			_lpage = clampi(int(v), 0, LISTING_PAGES - 1)
+			selected = -1
+			refresh())
+	add_child(_scroll)
 	var y := LIST_Y + ROWS * ROW_H + 14
 	var prev := UiArt.button("<", Vector2(28, 22), 10)
 	prev.position = Vector2(LIST_X, y)
@@ -284,24 +306,13 @@ func _build_listings() -> void:
 	var help := UiArt.label("TO SELL: DRAG AN ITEM FROM YOUR BACKPACK ONTO THE LIST, THEN SET ITS PRICE.\n\n" +
 			"SET PRICE CHANGES A PRICE. A PRICE OF 0 KEEPS THE ITEM HERE, NOT FOR SALE.\n\n" +
 			"TO CANCEL: TAKE BACK, OR DRAG THE LISTING TO YOUR BACKPACK.\n\n" +
-			"MONEY FROM SALES WAITS HERE: CLAIM IT AT THE TOP.\n\nYOUR LISTINGS NEVER EXPIRE.", CAPTION, UiArt.CREAM, false)
+			"YOU HAVE 100 SLOTS: FIVE PAGES OF 20 - SCROLL, OR USE < >.\n\n" +
+			"A LISTING RUNS 12, 24 OR 48 HOURS; UNSOLD, IT STAYS HERE, NOT OFFERED.\n\n" +
+			"MONEY FROM SALES: CLAIM MONEY AT THE TOP.", CAPTION, UiArt.CREAM, false)
 	help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	help.position = Vector2(COL_X, LIST_Y - 20)
 	_fix_size(help, Vector2(COL_W, 290))
 	_listings.add_child(help)
-	_chest_label = UiArt.label("", TEXT, UiArt.GOLD_HI)
-	_chest_label.position = Vector2(COL_X, LIST_Y + 284)
-	_chest_label.size = Vector2(COL_W, 16)
-	_chest_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_listings.add_child(_chest_label)
-	var prev := UiArt.button("< CHEST", Vector2(90, 22), 10)
-	prev.position = Vector2(COL_X, LIST_Y + 304)
-	prev.pressed.connect(func(): Server.command("/whisper previous listing page"))
-	_listings.add_child(prev)
-	var nxt := UiArt.button("CHEST >", Vector2(90, 22), 10)
-	nxt.position = Vector2(COL_X + COL_W - 90, LIST_Y + 304)
-	nxt.pressed.connect(func(): Server.command("/whisper next listing page"))
-	_listings.add_child(nxt)
 	var how := UiArt.button("HOW IT WORKS", Vector2(COL_W, 24), 10)
 	how.position = Vector2(COL_X, LIST_Y + ROWS * ROW_H - 28)
 	how.pressed.connect(func(): Server.command("/whisper how does this work"))
@@ -349,6 +360,7 @@ func show_tab(which: String) -> void:
 	_listings.visible = which == "listings"
 	_header_price.text = "PRICE" if which == "browse" else "YOUR PRICE"
 	_header_quality.text = "QUA" if which == "browse" else "LEFT"
+	_scroll.visible = which == "listings"
 	_action.text = "BUY" if which == "browse" else "SET PRICE"
 	_action2.text = "INFO" if which == "browse" else "TAKE BACK"
 	refresh()
@@ -360,7 +372,7 @@ func _page_step(d: int) -> void:
 		if p != Server.market_page:
 			Server.exchange_search(Server.market_search, p)
 	else:
-		_lpage = clampi(_lpage + d, 0, 4)
+		_lpage = clampi(_lpage + d, 0, LISTING_PAGES - 1)
 		selected = -1
 		refresh()
 
@@ -369,11 +381,18 @@ func refresh() -> void:
 	if not visible or _rows.is_empty():
 		return
 	var p := Server.proceeds
-	_proceeds.text = "SALE PROCEEDS: " + ("ASK THE BROKER" if p < 0 else ("NONE WAITING" if p == 0 else
+	_proceeds.text = "SALES MONEY: " + ("ASK THE BROKER" if p < 0 else ("NONE WAITING" if p == 0 else
 			PlayerData.money_string(p).to_upper()))
 	_proceeds.add_theme_color_override("font_color", UiArt.GOLD_HI if p > 0 else UiArt.CREAM)
 	_proceeds.tooltip_text = _proceeds.text
+	# the claim at a glance: gold while money waits, NOTHING TO CLAIM when none does
 	_claim.disabled = p == 0
+	_claim.text = "NOTHING TO CLAIM" if p == 0 else "CLAIM MONEY"
+	for k in ["font_color", "font_hover_color"]:
+		if p > 0:
+			_claim.add_theme_color_override(k, UiArt.GOLD_HI)
+		else:
+			_claim.remove_theme_color_override(k)
 	for r in _rows:
 		(r as ExRow).refresh()
 	if tab == "browse":
@@ -385,10 +404,24 @@ func refresh() -> void:
 		_action.disabled = selected < 0 or selected >= Server.market_items.size()
 		_action2.disabled = _action.disabled
 	else:
-		_page_label.text = "SLOTS %d-%d" % [_lpage * ROWS + 1, _lpage * ROWS + ROWS]
-		# the chest page's count against its 100 slots (reset day C16, 2026-11-05)
-		_chest_label.text = "CHEST PAGE %d  -  %d/100" % [Server.listing_page + 1, Server.listings.size()]
-		_status.text = "%d OF 100 SLOTS USED ON THIS CHEST PAGE" % Server.listings.size()
+		_page_label.text = "PAGE %d OF %d" % [_lpage + 1, LISTING_PAGES]
+		_scroll.set_value_no_signal(_lpage)
+		_status.text = "%d OF 100 SLOTS USED  -  THIS PAGE: SLOTS %d-%d" % [Server.listings.size(), _lpage * ROWS + 1,
+				_lpage * ROWS + ROWS]
+		_status.remove_theme_color_override("font_color")
+		# a drop the broker refused ("That item cannot be traded."): in red here for a while - before, the item only
+		# snapped back to the backpack (owner 2026-11-06: "when i drag an item over nothing happens")
+		var since := Time.get_ticks_msec() - Server.exchange_refusal_at
+		if Server.exchange_refusal != "" and since < REFUSAL_MS:
+			_status.text = Server.exchange_refusal.to_upper()
+			_status.add_theme_color_override("font_color", UiArt.RED)
+			get_tree().create_timer((REFUSAL_MS - since) / 1000.0 + 0.1).timeout.connect(refresh)
+		# a chest page past the first (from before the 100-slot cap): back to the first, the one this window shows
+		if Server.listing_page > 0 and not _paging_back:
+			_paging_back = true
+			Server.command("/whisper previous listing page")
+		elif Server.listing_page == 0:
+			_paging_back = false
 		_action.disabled = not Server.listings.has(selected)
 		_action2.disabled = _action.disabled
 	if _ask_price >= 0 and Server.listings.has(_ask_price):
@@ -513,7 +546,7 @@ func list_item(from: int, slot := -1) -> void:
 				slot = s
 				break
 	if slot < 0:
-		PlayerData.message.emit("This chest page is full - use CHEST > for the next.", "error")
+		PlayerData.message.emit("Your 100 listing slots are full.", "error")
 		return
 	if PlayerData.move(from, slot):
 		_ask_price = slot
