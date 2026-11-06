@@ -6,20 +6,20 @@ namespace DOL.GS
         {
             SpecName = "MercenaryBotSpec";
 
-            int randBaseWeap = Util.Random(2);
-
-            switch (randBaseWeap)
+            // Period Mercenary templates: slash 36, thrust 22, crush 11.
+            switch (Pick(36, 22, 11))
             {
                 case 0: WeaponOneType = eObjectType.SlashingWeapon; break;
                 case 1: WeaponOneType = eObjectType.ThrustWeapon; break;
                 case 2: WeaponOneType = eObjectType.CrushingWeapon; break;
             }
 
+            // DW and shield is about 1 in 8 Mercenaries (family weights in BotSpec).
             var randVariance = spec switch
             {
                 eSpecType.DualWield => Util.Random(0, 2),
                 eSpecType.DualWieldAndShield => 3,
-                _ => Util.Random(3),
+                _ => Pick(7, 0, 0, 1),
             };
 
             switch (randVariance)
