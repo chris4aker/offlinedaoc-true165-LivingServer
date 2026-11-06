@@ -253,5 +253,17 @@ namespace DOL.UnitTests
             foreach (BotSpec plan in Roll(eCharacterClass.Thane).Where(p => !p.Is2H).Take(300))
                 Assert.That(Cap(plan, Specs.Shields), Is.EqualTo(42u));
         }
+
+        [TestCase(eObjectType.Hammer, 44, 49)]
+        [TestCase(eObjectType.Sword, 50, 42)]
+        [TestCase(eObjectType.Axe, 50, 42)]
+        [TestCase(eObjectType.HandToHand, 50, 42)]
+        public void SavageBuildFollowsItsWeapon(eObjectType weapon, int weaponLevel, int savagery)
+        {
+            BotSpec plan = new SavageBotSpec(weapon == eObjectType.HandToHand ? eSpecType.DualWield : eSpecType.TwoHanded, weapon);
+            Dictionary<string, int> at50 = At(plan, eCharacterClass.Savage, 50);
+            Assert.That(at50[SkillBase.ObjectTypeToSpec(weapon)], Is.EqualTo(weaponLevel));
+            Assert.That(at50[Specs.Savagery], Is.EqualTo(savagery));
+        }
     }
 }

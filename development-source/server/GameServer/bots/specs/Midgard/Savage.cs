@@ -39,33 +39,19 @@ namespace DOL.GS
             else
                 SpecType = eSpecType.DualWield;
 
-            int randVariance = Util.Random(3);
-
-            switch (randVariance)
+            // Period Savages: hammer users went weapon 44 / Savagery 49; sword, axe and hand to hand went weapon 50 /
+            // Savagery 42 / parry 9.
+            if (WeaponOneType == eObjectType.Hammer)
             {
-                case 0:
                 Add(ObjToSpec(WeaponOneType), 44, 1.0f);
                 Add(Specs.Savagery, 49, 0.75f);
                 Add(Specs.Parry, 4, 0.0f);
-                break;
-
-                case 1:
-                Add(ObjToSpec(WeaponOneType), 39, 1.0f);
-                Add(Specs.Savagery, 49, 0.75f);
-                Add(Specs.Parry, 20, 0.1f);
-                break;
-
-                case 2:
-                Add(ObjToSpec(WeaponOneType), 44, 1.0f);
-                Add(Specs.Savagery, 48, 0.75f);
-                Add(Specs.Parry, 10, 0.1f);
-                break;
-
-                case 3:
+            }
+            else
+            {
                 Add(ObjToSpec(WeaponOneType), 50, 1.0f);
                 Add(Specs.Savagery, 42, 0.75f);
                 Add(Specs.Parry, 9, 0.1f);
-                break;
             }
         }
 
