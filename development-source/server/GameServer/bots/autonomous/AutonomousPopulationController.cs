@@ -104,12 +104,12 @@ public static class AutonomousPopulationController
 
             OfflineWorldBotRecord[] roster = _cachedRoster;
             int desired = AutonomousPopulationRamp.DesiredActiveCount(_cachedEnabled, roster.Length, _cachedRampMinutes, nowUtc - _startedUtc);
-            int missing = desired - AutonomousBotRegistry.Count - PendingSpawns.Count;
+            int missing = desired - AutonomousBotRegistry.RosterCount - PendingSpawns.Count;   // (hired companions are not on the roster)
             _populationSatisfied = missing <= 0;
             if (missing <= 0)
                 return;
 
-            var realmLoad = new Dictionary<eRealm, int>(AutonomousBotRegistry.CountByRealm());
+            var realmLoad = new Dictionary<eRealm, int>(AutonomousBotRegistry.RosterCountByRealm());
             foreach (OfflineWorldBotRecord pending in roster.Where(record => PendingSpawns.ContainsKey(record.BotId)))
             {
                 eRealm realm = (eRealm)pending.Realm;

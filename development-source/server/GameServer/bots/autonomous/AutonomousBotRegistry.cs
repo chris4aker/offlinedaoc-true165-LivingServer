@@ -89,6 +89,17 @@ public static class AutonomousBotRegistry
         .GroupBy(bot => bot.Realm)
         .ToDictionary(group => group.Key, group => group.Count());
 
+    // The gamebot roster's live actors only. Hired companions are registered here too (they load from the same
+    // records), but the population target leaves them out, so counting them kept one gamebot per companion out of the
+    // world (owner 2026-11-05: three Albion bots stayed "Queued for staggered login" while three companions were out).
+    public static int RosterCount => Active.Values.Count(bot => bot?.ObjectState == GameObject.eObjectState.Active &&
+                                                                 !HiredCompanions165.IsHired(bot));
+
+    public static IReadOnlyDictionary<eRealm, int> RosterCountByRealm() => Active.Values
+        .Where(bot => bot?.ObjectState == GameObject.eObjectState.Active && !HiredCompanions165.IsHired(bot))
+        .GroupBy(bot => bot.Realm)
+        .ToDictionary(group => group.Key, group => group.Count());
+
     public static bool TryGetByName(string name, out GameBot bot)
     {
         bot = null;
