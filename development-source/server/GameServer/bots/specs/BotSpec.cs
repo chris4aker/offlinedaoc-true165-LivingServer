@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -115,23 +116,47 @@ namespace DOL.GS
             _ => [eSpecType.None],
         };
 
+        /// <summary>
+        /// How often a new bot takes each build family (period template counts; every family 1 when not listed).
+        /// Only new bots roll this: a bot's first plan is saved (SerializedBuildPlan) and restored for life.
+        /// </summary>
+        public static IReadOnlyList<(eSpecType Spec, int Weight)> GetSpecializationWeights(eCharacterClass charClass) => charClass switch
+        {
+            _ => [.. GetSpecializationChoices(charClass).Select(spec => (spec, 1))],
+        };
+
         public static eSpecType ChooseRandomSpecialization(eCharacterClass charClass)
         {
-            IReadOnlyList<eSpecType> choices = GetSpecializationChoices(charClass);
-            return choices[Util.Random(choices.Count - 1)];
+            IReadOnlyList<(eSpecType Spec, int Weight)> weights = GetSpecializationWeights(charClass);
+            return weights[Pick(weights.Select(choice => choice.Weight).ToArray())].Spec;
         }
 
         public static eSpecType ChoosePersistentSpecialization(eCharacterClass charClass, long botId)
         {
-            IReadOnlyList<eSpecType> choices = GetSpecializationChoices(charClass);
+            IReadOnlyList<(eSpecType Spec, int Weight)> weights = GetSpecializationWeights(charClass);
             unchecked
             {
                 ulong value = (ulong)botId + 0x9E3779B97F4A7C15UL + (ulong)(int)charClass * 0xBF58476D1CE4E5B9UL;
                 value = (value ^ (value >> 30)) * 0xBF58476D1CE4E5B9UL;
                 value = (value ^ (value >> 27)) * 0x94D049BB133111EBUL;
                 value ^= value >> 31;
-                return choices[(int)(value % (ulong)choices.Count)];
+                int total = weights.Sum(choice => choice.Weight);
+                return weights[IndexOf(weights.Select(choice => choice.Weight).ToArray(), (int)(value % (ulong)total))].Spec;
             }
+        }
+
+        /// <summary>A random index, each as likely as its weight.</summary>
+        public static int Pick(params int[] weights) => IndexOf(weights, Util.Random(weights.Sum() - 1));
+
+        private static int IndexOf(int[] weights, int roll)
+        {
+            for (int i = 0; i < weights.Length; i++)
+            {
+                if (roll < weights[i])
+                    return i;
+                roll -= weights[i];
+            }
+            return weights.Length - 1;
         }
     }
 }

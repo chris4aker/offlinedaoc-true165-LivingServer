@@ -105,9 +105,8 @@ namespace DOL.GS
                 if (!HasPendingAutonomousTraining || BotSpec == null || IsTemporaryGroupHelper)
                     return false;
                 int points = m_leftOverSpecPoints;
-                bool catchingUp = Level - _lastAutonomousTrainedLevel > 1;
                 for (int level = _lastAutonomousTrainedLevel + 1; level <= Level; level++)
-                    points += GetSpecPointsForLevel(level, catchingUp);
+                    points += GetSpecPointsForLevel(level);
                 return BotSpec.SpecLines.Any(line => (line.levelRatio > 0 || Level >= 50) &&
                     GetSpecializationByName(line.Spec) is Specialization spec && spec.Trainable &&
                     spec.Level < Math.Min(Level, line.SpecCap) && points >= spec.Level + 1);
@@ -3727,7 +3726,7 @@ namespace DOL.GS
             {
                 int points = m_leftOverSpecPoints;
                 for (int level = _lastAutonomousTrainedLevel + 1; level <= Level; level++)
-                    points += GetSpecPointsForLevel(level, false);
+                    points += GetSpecPointsForLevel(level);
                 return points;
             }
         }
@@ -3755,7 +3754,7 @@ namespace DOL.GS
         {
             int total = 0;
             for (int level = 2; level <= Level; level++)
-                total += GetSpecPointsForLevel(level, false);
+                total += GetSpecPointsForLevel(level);
             foreach (Specialization spec in GetSpecList().Where(s => s.Trainable))
                 spec.Level = 1;
             m_leftOverSpecPoints = total;
@@ -4065,81 +4064,17 @@ namespace DOL.GS
 
             BotSpec.SpecLines = BotSpec.SpecLines.OrderByDescending(ratio => ratio.levelRatio).ToList();
 
-            int leftOverSpecPoints = m_leftOverSpecPoints;
-            bool spentPoints = true;
-            bool spendLeftOverPoints = false;
-            bool botCreation = level - previousLevel > 1;
-
-            byte index = (byte)(previousLevel + 1);
-
+            int index = previousLevel + 1;
             if (level == previousLevel)
                 index = level;
 
-            for (byte i = index; i <= Level; i++)
-            {
-                spentPoints = true;
-                spendLeftOverPoints = false;
-
-                int totalSpecPointsThisLevel = GetSpecPointsForLevel(i, botCreation) + leftOverSpecPoints;
-
-                while (spentPoints)
-                {
-                    spentPoints = false;
-
-                    foreach (BotSpecLine specLine in BotSpec.SpecLines)
-                    {
-                        if (specLine.levelRatio <= 0 && Level < 50)
-                            continue;
-
-                        Specialization spec = GetSpecializationByName(specLine.Spec);
-
-                        if (spec != null)
-                        {
-                            if (spec.Level < specLine.SpecCap && spec.Level < i)
-                            {
-                                int specRatio = (int)(i * specLine.levelRatio);
-
-                                if (!spendLeftOverPoints && spec.Level >= specRatio)
-                                    continue;
-
-                                int totalCost = spec.Level + 1;
-
-                                if (totalSpecPointsThisLevel >= totalCost)
-                                {
-                                    totalSpecPointsThisLevel -= totalCost;
-                                    spec.Level++;
-                                    spentPoints = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!spentPoints && !spendLeftOverPoints)
-                    {
-                        spendLeftOverPoints = true;
-                        spentPoints = true;
-                    }
-                }
-
-                m_leftOverSpecPoints = leftOverSpecPoints = totalSpecPointsThisLevel;
-            }
+            m_leftOverSpecPoints = BotSpecTrainer.Spend(BotSpec.SpecLines, index, Level, Level, m_leftOverSpecPoints,
+                CharacterClass.SpecPointsMultiplier,
+                line => GetSpecializationByName(line)?.Level ?? -1,
+                (line, value) => GetSpecializationByName(line).Level = value);
         }
 
-        private int GetSpecPointsForLevel(int level, bool botCreation)
-        {
-            int specpoints = 0;
-
-            if (botCreation)
-                if (level > 40)
-                    specpoints += CharacterClass.SpecPointsMultiplier * (level - 1) / 20;
-
-            if (level > 5)
-                specpoints += CharacterClass.SpecPointsMultiplier * level / 10;
-            else if (level >= 2)
-                specpoints = level;
-
-            return specpoints;
-        }
+        private int GetSpecPointsForLevel(int level) => BotSpecTrainer.PointsForLevel(CharacterClass.SpecPointsMultiplier, level);
 
         public virtual void RefreshSpecDependantSkills(bool sendMessages)
         {
