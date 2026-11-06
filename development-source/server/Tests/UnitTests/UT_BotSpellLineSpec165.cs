@@ -22,6 +22,7 @@ namespace DOL.GS.Tests
         {
             private SpecBot() : base((OfflineWorldBotRecord)null) { }
             public int Spec, ItemDarkness;
+            public override byte Level { get; set; }
             public override ICharacterClass CharacterClass => new DOL.GS.PlayerClass.ClassRunemaster();
             public override int GetModifiedSpecLevel(string keyName) => keyName is "Augmentation" or "Darkness" ? Spec : 0;
             public override int GetModified(eProperty property) => 0;
@@ -98,6 +99,22 @@ namespace DOL.GS.Tests
             Assert.That(new SpellHandler(bot, nuke, Mob).CalculateDamageBase(bot), Is.EqualTo(100 * (1 + 10 * 0.005)).Within(1e-9));
             DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = false;
             Assert.That(new SpellHandler(bot, nuke, Mob).CalculateDamageBase(bot), Is.EqualTo(100).Within(1e-9), "normal mode unchanged");
+        }
+
+        // A Minstrel or Mentalist bot charms through the Mob line: its pulsing charm resisted as if it had no spec.
+        [Test]
+        public void ABotsPulsingCharmResistUsesItsLearnedLinesSpec()
+        {
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = true;
+            Spell charm = new(new DbSpell { SpellID = 99963, Name = "Charm song", Type = "Charm", Target = "Enemy", Pulse = 1,
+                Frequency = 5000, Range = 1500 }, 30);
+            SpecBot bot = Bot(30, charm);   // Augmentation 30 learned line (the double maps non-damage spells there)
+            bot.Level = 30;
+            var target = (SpecBot)RuntimeHelpers.GetUninitializedObject(typeof(SpecBot));
+            target.Level = 30;
+            Assert.That(new CharmSpellHandler(bot, charm, Mob).ResistChance165(target),
+                Is.EqualTo(CharmSpellHandler.ResistChance165(true, 30, 30, 30)), "spec 30 as a player's, not 0");
+            Assert.That(CharmSpellHandler.ResistChance165(true, 30, 30, 30), Is.LessThan(CharmSpellHandler.ResistChance165(true, 30, 0, 30)));
         }
     }
 }

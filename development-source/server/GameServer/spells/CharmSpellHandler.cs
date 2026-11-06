@@ -137,7 +137,7 @@ namespace DOL.GS.Spells
         /// (level / 1.5 + spec / 3), 3 points less per level under it (at least 1%), and 3 x the square of the gap above it
         /// (at most 99%).</summary>
         public double ResistChance165(GameLiving target) =>
-            ResistChance165(Spell.Pulse != 0, Caster.Level, Caster.GetModifiedSpecLevel(m_spellLine.Spec), target.Level);
+            ResistChance165(Spell.Pulse != 0, Caster.Level, Caster.GetModifiedSpecLevel(SpecLineOf(Caster).Spec), target.Level);   // a bot: its learned line
 
         public static double ResistChance165(bool pulse, int casterLevel, int spec, int targetLevel)
         {
