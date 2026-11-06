@@ -3123,8 +3123,16 @@ namespace DOL.AI.Brain
             return cast;
         }
 
-        internal static bool IsMaintainableClassBuff(Spell spell) => spell?.SpellType switch
+        internal static bool IsMaintainableClassBuff(Spell spell) => IsMaintainableClassBuff(spell, Classic165Mode.IsOn);
+
+        /// <summary>
+        /// A buff kept up between fights. True 1.65 also: the concentration haste (the Healer's Purity of
+        /// Attack/Offense/Aggression, the Druid's Hunter's line) - a lasting single-ally buff that was dropped from the
+        /// upkeep, so a Healer never cast it. Celerity (group, 20 s) stays a fight buff (TryGroupCelerity).
+        /// </summary>
+        public static bool IsMaintainableClassBuff(Spell spell, bool classic165) => spell?.SpellType switch
         {
+            eSpellType.CombatSpeedBuff => classic165 && spell.IsConcentration && !spell.IsPulsing,
             eSpellType.SpeedEnhancement or
             eSpellType.BodySpiritEnergyBuff or eSpellType.HeatColdMatterBuff or
             eSpellType.SpiritResistBuff or eSpellType.EnergyResistBuff or eSpellType.HeatResistBuff or
