@@ -39,9 +39,11 @@ namespace DOL.GS
                 Add(Specs.Envenom, 37, 0.6f);
                 break;
 
+                // Period Nightshades took Critical Strike in every build (perforate artery from stealth).
                 case 4:
                 Add(ObjToSpec(WeaponOneType), 39, 0.9f);
-                Add(Specs.Celtic_Dual, 50, 1.0f);
+                Add(Specs.Celtic_Dual, 44, 1.0f);
+                Add(Specs.Critical_Strike, 23, 0.3f);
                 Add(Specs.Stealth, 34, 0.5f);
                 Add(Specs.Envenom, 34, 0.6f);
                 break;

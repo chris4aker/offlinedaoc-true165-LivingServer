@@ -403,5 +403,12 @@ namespace DOL.UnitTests
             }
             Assert.That(found, Is.True);
         }
+
+        [Test]
+        public void NightshadeTrainsCriticalStrikeInEveryBuild()
+        {
+            foreach (BotSpec plan in Roll(eCharacterClass.Nightshade).Take(300))
+                Assert.That(At(plan, eCharacterClass.Nightshade, 50)[Specs.Critical_Strike], Is.GreaterThanOrEqualTo(20));
+        }
     }
 }
