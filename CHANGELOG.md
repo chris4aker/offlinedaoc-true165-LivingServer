@@ -59,7 +59,7 @@ hold). Its changelog has the history of everything this version inherits.
 - NPC dialogue: the words you can answer with show bold and in [brackets], as in the 1.64 client, and long ones are never dropped (Kaere's "[Will you gather the components ...]" in Protecting Anniogel was missing).
 - Monsters: a body no longer plays its death again when you right-click its loot or it is sent again, and a body whose removal never arrived (an untargetable dead wolf in Avalon Marsh) sinks away after 45 seconds.
 - Looting (a small quality-of-life addition, not in 1.64): a right click on a loot bag or an item on the ground picks it up even when a monster's body or an NPC stands on the same spot, and the new Pick Up Loot key (Shift+G) takes the nearest loot within reach, one item a press, without pointing at it or targeting it.
-- Looting (a small quality-of-life addition, not in 1.65): AUTO LOOT is back as an option (Options > Interface > Loot, off by default) - on, coins and items from your kills go straight into your backpack.
+- Looting (a small quality-of-life addition, not in 1.65): AUTO LOOT is back as an option (Options > Interface > Loot, off by default) - on, coins and items from your kills go straight into your backpack. Gamebots and companions still walk to their bags.
 - World: Avalon Marsh's water no longer shows dark squares and steps where its pools meet.
 - Quickbars: a weapon or instrument on a quickbar switches to it again (a Minstrel's instrument and weapon), as in the 1.64 client.
 - Movement: going up and down stairs, your character, the camera and NPCs glide over the steps instead of jerking up and down; climbing itself is unchanged.
@@ -98,6 +98,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: the companion window no longer shows an old error message again after something works (TRAIN showed "Unknown hiring command.").
 - Companions: hovering a companion's style that follows another (an Armsman's Opal Slash) names its opening style; it showed "(style not found 58)" when your own class has no such style.
 - Merchants: 36 merchants whose title did not match their goods show the right one - Adribard's Retreat's Theurgist and Sorcerer staff sellers were titled Shield Merchant and Armor Merchant; arrow, bolt, bow and crossbow sellers, armor and robe merchants elsewhere had the same mix-up.
+- Raids: a realm raid's high-end boss loot is shared out again - a quarter straight to the players' bags, the rest to the raid's gamebots; in True 1.65 it had stayed on the ground.
 
 ## 0.2 (2026-11-01)
 
