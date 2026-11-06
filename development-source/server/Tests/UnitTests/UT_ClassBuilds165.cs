@@ -132,5 +132,17 @@ namespace DOL.UnitTests
             foreach (BotSpec plan in plans.Where(p => p.SpecType != eSpecType.MindSorc).Take(100))
                 Assert.That(At(plan, eCharacterClass.Sorcerer, 50)[Specs.Mind_Magic], Is.InRange(20, 24));
         }
+
+        [Test]
+        public void ScoutPrefersThrustAndCanRollTheMeleeBuild()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Scout);
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.ThrustWeapon), Is.EqualTo(2 / 3.0).Within(0.03));
+            List<BotSpec> melee = plans.Where(p => Cap(p, Specs.Stealth) <= 6).ToList();
+            Assert.That(melee.Count / (double)plans.Count, Is.EqualTo(0.2).Within(0.03));
+            Dictionary<string, int> at50 = At(melee[0], eCharacterClass.Scout, 50);
+            Assert.That(at50[SkillBase.ObjectTypeToSpec(melee[0].WeaponOneType)], Is.InRange(44, 50));
+            Assert.That(at50[Specs.Longbow], Is.InRange(38, 42));
+        }
     }
 }

@@ -7,15 +7,14 @@ namespace DOL.GS
             SpecName = "ScoutBotSpec";
             Is2H = false;
 
-            int randBaseWeap = Util.Random(1);
-
-            switch (randBaseWeap)
+            // Period Scouts used thrust about twice as often as slash.
+            switch (Pick(1, 2))
             {
                 case 0: WeaponOneType = eObjectType.SlashingWeapon; break;
                 case 1: WeaponOneType = eObjectType.ThrustWeapon; break;
             }
 
-            int randVariance = Util.Random(3);
+            int randVariance = Util.Random(4);
 
             switch (randVariance)
             {
@@ -49,6 +48,15 @@ namespace DOL.GS
                 Add(Specs.Longbow, 35, 0.8f);
                 Add(Specs.Shields, 35, 0.6f);
                 Add(Specs.Stealth, 36, 0.1f);
+                break;
+
+                // Melee Scout (period): weapon 44-50 first, bow about 40, shield, a few points of stealth.
+                case 4:
+                SpecType = eSpecType.OneHandAndShield;
+                Add(ObjToSpec(WeaponOneType), 50, 0.9f);
+                Add(Specs.Longbow, 40, 0.8f);
+                Add(Specs.Shields, 41, 0.6f);
+                Add(Specs.Stealth, 6, 0.1f);
                 break;
             }
         }
