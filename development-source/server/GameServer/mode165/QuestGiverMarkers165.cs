@@ -88,6 +88,8 @@ namespace DOL.GS
                         list.Add(npc);
             _givers = list.ToArray();
             _giversAt = now;
+            if (Log.IsInfoEnabled)
+                Log.Info($"QUEST_GIVER_MARKERS givers={_givers.Length}");
             return _givers;
         }
 
@@ -112,13 +114,24 @@ namespace DOL.GS
             }
             Shown.TryGetValue(player, out HashSet<uint> before);
             // only what changed is sent: the client keeps its markers until removed
+            int added = 0, removed = 0;
             foreach (GameNPC npc in Givers())
                 if (GiverIds.TryGetValue(npc, out uint id) && now.Contains(id) && before?.Contains(id) != true)
+                {
                     player.Out.SendMinotaurRelicMapUpdate(id, npc.CurrentRegionID, npc.X, npc.Y, npc.Z);
+                    added++;
+                }
             if (before != null)
                 foreach (uint gone in before.Where(id => !now.Contains(id)))
+                {
                     player.Out.SendMinotaurRelicMapRemove(gone);
+                    removed++;
+                }
             Shown[player] = now;
+            // what the map got (2026-11-05: the owner saw no other-zone quest givers on the map)
+            if ((added > 0 || removed > 0 || before == null) && Log.IsInfoEnabled)
+                Log.Info($"QUEST_GIVER_MARKERS player={player.Name} level={player.Level} region={player.CurrentRegionID} " +
+                         $"available={now.Count} added={added} removed={removed}");
         }
     }
 }
