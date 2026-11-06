@@ -115,6 +115,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                             // True 1.65 Mode: an enemy's milegate stays shut (it says so); it has to be broken.
                             if (door is GameRealmGate)
                                 door.Open(client.Player);
+                            else if (door is GameKeepDoor enemyKeepDoor && Classic165Mode.IsOn)
+                                enemyKeepDoor.UseForRealm(client.Player, true);
                         }
                     }
                 }
@@ -152,6 +154,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         if (keepDoor.Component.Keep is GameKeepTower && keepDoor.Component.Keep.KeepComponents.Count > 1)
                             keepDoor.Interact(player);
+                        // True 1.65 Mode (owner 2026-11-06): the keep's own realm opens its keep doors and posterns by
+                        // hand; they shut again by themselves. Enemies are refused: they break the door.
+                        else if (Classic165Mode.IsOn && player.IsWithinRadius(door, radius))
+                            keepDoor.UseForRealm(player, doorState == 0x01);
                     }
                     else
                     {

@@ -285,6 +285,56 @@ namespace DOL.GS.Keeps
             return base.Interact(player);
         }
 
+        /// <summary>True 1.65 Mode: how long a keep door its own realm opened by hand stays open.</summary>
+        public const int FriendlyOpenMilliseconds = 5_000;
+        private ECSGameTimer _friendlyCloseTimer;
+
+        /// <summary>Who may open a keep door or postern by hand: the keep's own realm (the door stays the keep's), or anyone
+        /// once it is broken (it already stands open).</summary>
+        public static bool MayOpenByHand(eRealm actor, eRealm keep, bool broken) =>
+            broken || actor != eRealm.None && actor == keep;
+
+        /// <summary>The door is broken: an attackable door at or under the close threshold.</summary>
+        public bool IsBrokenOpen => IsAttackableDoor && HealthPercent <= DOOR_CLOSE_THRESHOLD;
+
+        /// <summary>
+        /// True 1.65 Mode (owner 2026-11-06: "friendly players can get thru them"): a player's DoorRequest. The keep's own
+        /// realm opens it (DoorState goes to the clients and the navmesh opens with it) and it shuts again after
+        /// <see cref="FriendlyOpenMilliseconds"/>; an enemy is refused and has to break it. A broken door stays open.
+        /// </summary>
+        public bool UseForRealm(GamePlayer player, bool open)
+        {
+            if (player == null || Component?.Keep == null)
+                return false;
+
+            if (!MayOpenByHand(player.Realm, Realm, IsBrokenOpen) && (player.Client?.Account?.PrivLevel ?? 1) <= 1)
+            {
+                player.Out.SendMessage($"{GetName(0, true)} is shut; it belongs to an enemy realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            if (!open)
+            {
+                if (!IsBrokenOpen && State == eDoorState.Open)
+                    CloseDoor();
+                return true;
+            }
+
+            if (State == eDoorState.Open)
+                return true;
+
+            State = eDoorState.Open;
+            BroadcastDoorStatus();
+            _friendlyCloseTimer ??= new ECSGameTimer(this, _ =>
+            {
+                if (!IsBrokenOpen && State == eDoorState.Open)
+                    CloseDoor();
+                return 0;
+            });
+            _friendlyCloseTimer.Start(FriendlyOpenMilliseconds);
+            return true;
+        }
+
         public bool TryTraverse(GameBot bot)
         {
             if (bot?.IsAutonomousWorldBot != true || !bot.IsAlive || bot.IsStunned || bot.IsMezzed ||
