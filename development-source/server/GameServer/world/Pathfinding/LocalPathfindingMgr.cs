@@ -356,13 +356,18 @@ namespace DOL.GS
         public override bool RegisterDoor(GameDoorBase door)
         {
             const int MAX_DOOR_POLYS = 12;
+            // True 1.65 Mode: a gate fort's gate spans its passage (~234 wide, the BuildNav DoorSize); the usual 64 box
+            // around the door row left the passage's side polygons open (1.64 Emain mesh, 2026-11-06: a sealed walk ran
+            // past 214000101 75 from its row). A gate takes the polygons of its whole doorway.
+            bool gate = door is GameRealmGate;
 
             Zone zone = door.CurrentZone;
 
             if (zone == null)
                 return false;
 
-            ulong[] polyRefs = GetNearestPolys(zone, new(door.X, door.Y, door.Z), _doorMask, MAX_DOOR_POLYS);
+            ulong[] polyRefs = GetNearestPolys(zone, new(door.X, door.Y, door.Z), _doorMask, gate ? 2 * MAX_DOOR_POLYS : MAX_DOOR_POLYS,
+                gate ? GameRealmGate.DoorwayHalfWidth : 64f);
 
             if (polyRefs.Length == 0)
                 return false;
@@ -717,7 +722,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 || polyRef == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        private static ulong[] GetNearestPolys(Zone zone, Vector3 point, EDtPolyFlags[] filters, int maxPolyCount)
+        private static ulong[] GetNearestPolys(Zone zone, Vector3 point, EDtPolyFlags[] filters, int maxPolyCount, float halfWidth = 64f)
         {
             using QueryLease lease = RentQuery(zone);
             NavMeshQuery query = lease.Query;
@@ -728,7 +733,7 @@ namespace DOL.GS
             FillRecastFloats(point, center);
 
             Span<float> extents = stackalloc float[3];
-            FillRecastFloats(new(64f, 64f, 128f), extents);
+            FillRecastFloats(new(halfWidth, halfWidth, 128f), extents);
 
             Span<ulong> polyRefs = stackalloc ulong[maxPolyCount];
             EDtStatus status = GetPolysInBox(query, center, extents, filters, polyRefs, out int outputPolyCount, maxPolyCount);

@@ -103,6 +103,7 @@ public class UT_GateNavmeshInstalled165
                 TestContext.WriteLine($"DOOR {row.Id} {(eRealm)row.Realm} at {row.Point}: doorPolygons={registered}");
                 gates[row.Id] = gate;
             }
+            bool registeredBoth(Gate x, Gate y) => !offMesh.Contains(x) && !offMesh.Contains(y);
             var getPolys = typeof(LocalPathfindingMgr).GetMethod("GetNearestPolys", BindingFlags.Static | BindingFlags.NonPublic);
             var meshPtr = typeof(LocalPathfindingMgr).GetMethod("TryGetMeshPtr", BindingFlags.Static | BindingFlags.NonPublic);
             var updateFlags = typeof(LocalPathfindingMgr).GetMethod("UpdateFlags", BindingFlags.Static | BindingFlags.NonPublic)
@@ -122,6 +123,16 @@ public class UT_GateNavmeshInstalled165
                 var doors = new Dictionary<WrappedPathfindingNode, List<GameDoorBase>>();
                 for (int i = 1; i < Math.Min(through.NodeCount, nodes.Length); i++) queue.Enqueue(nodes[i]);
                 bool meshDoor = Enumerable.Range(0, Math.Min(through.NodeCount, nodes.Length)).Any(i => (nodes[i].Flags & EDtPolyFlags.AnyDoor) != 0);
+                // The mover finds a door object within Pathfinder.DOOR_SEARCH_DISTANCE of a door polygon's node.
+                float nearestDoorNode = Enumerable.Range(0, Math.Min(through.NodeCount, nodes.Length))
+                    .Where(i => (nodes[i].Flags & EDtPolyFlags.AnyDoor) != 0)
+                    .Select(i => Math.Min(Vector3.Distance(nodes[i].Position, pa), Vector3.Distance(nodes[i].Position, pb)))
+                    .DefaultIfEmpty(-1).Min();
+                var sealedNodes = new WrappedPathfindingNode[512];
+                var sealedWalk = nav.GetPathStraight(zone, start.Value, end.Value, nav.BlockingDoorAvoidanceFilters, sealedNodes);
+                if (sealedWalk.Status == PathfindingStatus.PathFound)
+                    TestContext.WriteLine($"GATE {first}: sealed walk " + string.Join(" ", sealedNodes.Take(sealedWalk.NodeCount)
+                        .Select(n => $"{n.Position.X:0},{n.Position.Y:0},{n.Position.Z:0}/{n.Flags}")));
                 int marked = Pathfinder.MarkGatesOffMesh(queue, doors, start.Value, offMesh);
                 var friend = (Walker)RuntimeHelpers.GetUninitializedObject(typeof(Walker)); friend.Realm = a.Realm;
                 var enemy = (Walker)RuntimeHelpers.GetUninitializedObject(typeof(Walker)); enemy.Realm = a.Realm == eRealm.Albion ? eRealm.Midgard : eRealm.Albion;
@@ -145,7 +156,7 @@ public class UT_GateNavmeshInstalled165
                     {
                         var polys = new HashSet<ulong>();
                         foreach (Vector3 p in new[] { pa, (pa + pb) / 2, pb })
-                            foreach (ulong poly in (ulong[])getPolys.Invoke(null, [zone, p, new[] { EDtPolyFlags.Walk, (EDtPolyFlags)0 }, 12]))
+                            foreach (ulong poly in (ulong[])getPolys.Invoke(null, [zone, p, new[] { EDtPolyFlags.Walk, (EDtPolyFlags)0 }, 12, 64f]))
                                 polys.Add(poly);
                         ulong[] cut = polys.ToArray();
                         updateFlags((nint)args[1], cut, cut.Length, (EDtPolyFlags)0, EDtPolyFlags.Disabled);
@@ -159,6 +170,11 @@ public class UT_GateNavmeshInstalled165
                 TestContext.WriteLine($"GATE {first} {a.Realm}: walk={through.Status}/{through.NodeCount} meshDoor={meshDoor} offMeshGatesOnWalk={marked} " +
                                       $"friendBlocked={friendBlocked} enemyBlocked={enemyBlocked} enemyStops={gap:0} from door {firstBlock?.DoorId} " +
                                       $"(nodes {beforeStop}->{queue.Count}); round the wall without the gate fort: {round}");
+                TestContext.WriteLine($"GATE {first}: doorNodeToGate={nearestDoorNode:0} shutGates={sealedWalk.Status}");
+                if (meshDoor && (nearestDoorNode < 0 || nearestDoorNode > Pathfinder.DOOR_SEARCH_DISTANCE))
+                    failures.Add($"{first}: the gate's door polygons lie {nearestDoorNode:0} from its door rows, the mover would not see it");
+                if (meshDoor && registeredBoth(a, b) && sealedWalk.Status == PathfindingStatus.PathFound)
+                    failures.Add($"{first}: a way round its shut gates");
                 if (through.Status != PathfindingStatus.PathFound) failures.Add($"{first}: no walk through the gate fort");
                 if (!meshDoor && marked < 1) failures.Add($"{first}: the walk through is not seen as running through the gate");
                 if (friendBlocked) failures.Add($"{first}: its own realm is shut out");

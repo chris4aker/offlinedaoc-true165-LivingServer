@@ -108,6 +108,14 @@ public class UT_GatePathing165 : RealmGateFixture
     }
 
     [Test]
+    public void AGateTakesItsWholeDoorwayButNotTheOtherGate()
+    {
+        // BuildNav DoorSize of the gate fort gates: 234 wide; the two gates of a gate fort stand ~430 apart.
+        Assert.That(GameRealmGate.DoorwayHalfWidth, Is.GreaterThanOrEqualTo(234 / 2));
+        Assert.That(GameRealmGate.DoorwayHalfWidth, Is.LessThan(430 / 2));
+    }
+
+    [Test]
     public void AWalkRunsThroughAGateWithin140AndItsHeight()
     {
         var door = new Vector3(500, 0, 0);

@@ -42,6 +42,9 @@ namespace DOL.GS
         /// the gate fort passage is ~234 wide (DoorSize in the BuildNav door export), the relic gates' rule.</summary>
         public const float CrossingRadius = 140;
         public const float CrossingHeight = 260;
+        /// <summary>The navmesh box a gate takes its door polygons from (LocalPathfindingMgr.RegisterDoor): half its passage
+        /// and some; the gate fort's other gate stands ~430 away, its wall-walk doors ~400 higher (box height 128).</summary>
+        public const float DoorwayHalfWidth = 160;
 
         private CloseAction _closeAction;
         private byte _lastHealthPercent;
