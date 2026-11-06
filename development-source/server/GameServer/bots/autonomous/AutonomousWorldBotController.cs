@@ -3625,7 +3625,7 @@ namespace DOL.GS
                 usedDeathFallback = chosen != null;
                 if (usedDeathFallback)
                 {
-                    Log.Warn($"AUTONOMOUS_DEATH_TARGET_FALLBACK bot={bot.Name} id={bot.DatabaseID} " +
+                    Log.Info($"AUTONOMOUS_DEATH_TARGET_FALLBACK bot={bot.Name} id={bot.DatabaseID} " +
                              $"level={bot.Level} requested_max={maximumTargetCon} available_con={chosen.TypicalCon} " +
                              $"failed_target=\"{_lastFailedTargetName}\" selected=\"{chosen.MonsterName}\" camp={chosen.Id}");
                 }
@@ -4101,7 +4101,7 @@ namespace DOL.GS
             _nextPlanTick = GameLoop.GameLoopTime + 2_500 + bot.ObjectID % 1_500;
             if (bot.PersistentRecord != null)
                 bot.PersistentRecord.CurrentCampId = string.Empty;
-            Log.Warn($"AUTONOMOUS_DEATH_ROUTE_REPLAN bot={bot.Name} id={bot.DatabaseID} " +
+            Log.Info($"AUTONOMOUS_DEATH_ROUTE_REPLAN bot={bot.Name} id={bot.DatabaseID} " +
                      $"level={bot.Level} realm={GlobalConstants.RealmToName(bot.Realm)} class=\"{bot.ClassName}\" deaths={deathCount} " +
                      $"failed_target=\"{failedTarget}\" at_camp={diedAtCamp} died_at={bot.LastDeathSpot.Region}:{bot.LastDeathSpot.X},{bot.LastDeathSpot.Y} " +
                      $"goal=\"{goalAtDeath}\" con_lost={bot.TotalConstitutionLostAtDeath} new_max_con={MaximumTargetCon(groupSize, bot)} " +
