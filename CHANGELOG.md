@@ -95,6 +95,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Maps: the map list starts with your realm's two realm maps - Albion and Avalon (Shrouded Isles), Midgard and Aegir (Shrouded Isles), Hibernia and Hy Brasil (Shrouded Isles) - above the capital. Every zone is a block on them; click one to open its map.
 - Maps: your realm's gamebots show as green dots on every zone map you pick from the list, wherever you are, and as small dots all over the realm maps (Options > Bots > REALM BOTS ON MAP turns them off). It stays light with thousands of bots: bots outside your zone move on the map every 12 seconds.
 - Companions: the companion window no longer shows an old error message again after something works (TRAIN showed "Unknown hiring command.").
+- Companions: hovering a companion's style that follows another (an Armsman's Opal Slash) names its opening style; it showed "(style not found 58)" when your own class has no such style.
 
 ## 0.2 (2026-11-01)
 
