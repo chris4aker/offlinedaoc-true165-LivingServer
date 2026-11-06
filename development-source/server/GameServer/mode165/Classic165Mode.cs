@@ -8,10 +8,11 @@ namespace DOL.GS
 {
     /// <summary>
     /// True 1.65 Mode (owner 2026-10-29/30): the launcher toggle that runs the server as a true patch-1.65 game, Classic and
-    /// Shrouded Isles as on 1 November 2003, with everything freeshards added switched off. Only the bot systems, the
-    /// Realm Exchange and the bot-tuned bosses stay. It runs from its own database (opendaoc-165.sqlite3.db), which
-    /// carries the server property classic165_mode = True; normal mode's database has it False or absent. Every 1.65
-    /// rule in the code checks <see cref="IsOn"/>, so normal mode never changes.
+    /// Shrouded Isles at patch 1.65 (US: until 1.66 in October 2003; EU: from February 2004), with everything freeshards
+    /// added switched off. Only the bot systems, the Realm Exchange and the bot-tuned bosses stay. It runs from its own
+    /// database (opendaoc-165.sqlite3.db), which carries the server property classic165_mode = True; normal mode's
+    /// database has it False or absent. Every 1.65 rule in the code checks <see cref="IsOn"/>, so normal mode never
+    /// changes.
     /// Plan: DAOC HIATUS\Claude Takeover GitHub\1.65 MODE PLAN.md.
     /// </summary>
     public static class Classic165Mode
