@@ -369,7 +369,9 @@ namespace DOL.GS.Commands
         }
     }
 
-    [CmdAttribute("&pull", ePrivLevel.Player, "Orders party bots and their pets to engage your target", "/pull")]
+    [CmdAttribute("&pull", ePrivLevel.Player,
+        "Orders your companions to pull your target: one pulls it and brings it back (name one, or they choose)",
+        "/pull", "/pull <companion name>")]
     public sealed class PullGroupCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -377,13 +379,15 @@ namespace DOL.GS.Commands
             GamePlayer player = client.Player;
             if (player.TargetObject is not GameLiving target || !target.IsAlive)
             {
-                DisplayMessage(client, "Select a living enemy first, then type /pull.");
+                DisplayMessage(client, "Select a living enemy first, then type /pull, or /pull <companion name> to choose the puller.");
                 return;
             }
             if (!GameServer.ServerRules.IsAllowedToAttack(player, target, false))
                 return;
 
-            DisplayMessage(client, PlayerLedPullCoordinator.Begin(player, target));
+            // "/pull Bob": Bob pulls (owner 2026-11-06); "/pull" alone lets the companions choose
+            string puller = args.Length > 1 ? string.Join(" ", args, 1, args.Length - 1) : null;
+            DisplayMessage(client, PlayerLedPullCoordinator.Begin(player, target, puller));
         }
     }
 }

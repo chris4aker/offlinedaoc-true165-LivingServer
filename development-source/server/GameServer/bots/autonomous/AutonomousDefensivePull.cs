@@ -85,6 +85,15 @@ namespace DOL.GS
         private static bool HasUsableDistanceWeapon(GameBot bot) =>
             BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon));
 
+        /// <summary>A companion that can pull with a low-aggro spell (debuff, Nearsight, root): a preferred puller.</summary>
+        public static bool HasLowAggroPull(GameBot bot) => bot?.CharacterClass != null &&
+            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
+            PullSpell(bot) is Spell spell && IsLowAggroPullSpell(spell);
+
+        /// <summary>A companion that can pull with a bow, crossbow or thrown weapon it carries ammunition for.</summary>
+        public static bool CanShootPull(GameBot bot) => bot?.CharacterClass != null &&
+            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) && HasUsableDistanceWeapon(bot);
+
         public static bool HasRangedPull(GameBot bot) => bot?.CharacterClass != null &&
             !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
             (PullSpell(bot) != null || BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon)));
@@ -347,10 +356,14 @@ namespace DOL.GS
         public static bool IgnoresThreatWhileBringingBack(bool bringingBack, bool attackerIsTarget, bool memberIsShooter) =>
             bringingBack && attackerIsTarget && memberIsShooter;
 
-        /// <summary>The weakest ranged pull the tank knows: its lowest-level pull spell, else its bow.</summary>
+        /// <summary>
+        /// The lightest ranged pull the puller knows: a low-aggro pull spell (debuff, Nearsight, root) first, else its
+        /// lowest-level pull spell; its bow comes first of all (TryBeginPlayerLedTag).
+        /// </summary>
         private static Spell LightestPullSpell(GameBot bot) => bot.Spells?.Where(spell => IsPullSpell(spell, bot.Level) &&
                 bot.Mana >= bot.PowerCost(spell) && bot.GetSkillDisabledDuration(spell) == 0)
-            .OrderBy(spell => spell.Level).ThenByDescending(spell => spell.Range).FirstOrDefault();
+            .OrderBy(spell => IsLowAggroPullSpell(spell) ? 0 : 1)
+            .ThenBy(spell => spell.Level).ThenByDescending(spell => spell.Range).FirstOrDefault();
 
         /// <summary>The tank goes out to tag the monster from range, then brings it back to the player.</summary>
         public static bool TryBeginPlayerLedTag(GameBot tank, GameLiving target, GamePlayer player)

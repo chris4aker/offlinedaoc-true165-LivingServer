@@ -29,7 +29,11 @@ namespace DOL.GS
         }
         private static readonly ConditionalWeakTable<Group, GroupState> States = new();
 
-        public static string Begin(GamePlayer player, GameLiving target)
+        /// <param name="pullerName">
+        /// "/pull (companion name)": that companion pulls (owner 2026-11-06). Null or empty: the automatic pick
+        /// (<see cref="ChoosePuller"/>).
+        /// </param>
+        public static string Begin(GamePlayer player, GameLiving target, string pullerName = null)
         {
             Group group = player?.Group;
             if (!ValidEnemy(player, target)) return "No valid nearby pull target.";
@@ -64,9 +68,19 @@ namespace DOL.GS
             // the old "party is resting" refusal could block /pull forever).
             foreach (GameBot bot in helpers.Where(bot => bot.IsTemporaryCompanionRestLocked))
                 bot.WakeTemporaryCompanionRest();
-            GameBot tank = helpers.Where(BotPartyRoles.IsTank)
-                .Where(bot => !bot.IsCrowdControlled)
-                .OrderBy(bot => bot.GetDistanceTo(target)).ThenBy(bot => bot.ObjectID).FirstOrDefault();
+            GameBot tank;
+            if (!string.IsNullOrWhiteSpace(pullerName))
+            {
+                tank = FindNamed(helpers, pullerName.Trim());
+                if (tank == null)
+                    return $"No companion named {pullerName.Trim()} is near enough to pull. Type /pull alone to let them choose.";
+                if (tank.IsCrowdControlled)
+                    return $"{tank.Name} can't pull right now.";
+                if (BotPartyRoles.IsSupport(tank))
+                    return $"{tank.Name} heals and supports the party and does not pull.";
+            }
+            else
+                tank = ChoosePuller(helpers, target);
             if (tank == null || helpers.Any(bot => bot.InCombat || bot.IsAttacking) || FindLeaderTarget(player) != null)
             {
                 Engage(player, target, true);
@@ -86,13 +100,72 @@ namespace DOL.GS
             if (!((BotBrain)tank.Brain).OrderPull(target))
             {
                 Cancel(order, false);
-                return "Pull cancelled: the tank could not engage that target.";
+                return $"Pull cancelled: {tank.Name} could not engage that target.";
             }
             if (order.BringBack)
                 return tagging
                     ? $"{tank.Name} tags it from range and brings it back to you. The others wait here."
                     : $"{tank.Name} walks up, makes contact and brings it back to you. The others wait here.";
-            return $"{tank.Name} leads the pull. Attackers wait for tank contact; healers and buffers support.";
+            return $"{tank.Name} leads the pull. Attackers wait for contact; healers and buffers support.";
+        }
+
+        /// <summary>The companion named (whole name first, else the start of a name), ignoring case.</summary>
+        public static GameBot FindNamed(GameBot[] helpers, string name) =>
+            helpers.FirstOrDefault(bot => string.Equals(bot.Name, name, StringComparison.OrdinalIgnoreCase)) ??
+            helpers.Where(bot => bot.Name?.StartsWith(name, StringComparison.OrdinalIgnoreCase) == true)
+                .OrderBy(bot => bot.Name.Length).FirstOrDefault();
+
+        /// <summary>
+        /// Who pulls. True 1.65 Mode (Prima, pulling: the designated puller - an archer, or a tank - shoots once with the
+        /// lightest shot and runs back; period forums: debuff, Nearsight and root pulls bring the monster with little anger):
+        /// the tank if it has a ranged pull, else a companion with a low-aggro pull spell, else an archer or thrower, else
+        /// the tank walks up, else the nearest melee companion that is no healer; nearest first in each. Before 2026-11-06
+        /// only a tank ever pulled, and with no tank the whole group charged. Normal mode: the nearest tank.
+        /// </summary>
+        public static GameBot ChoosePuller(GameBot[] helpers, GameLiving target)
+        {
+            var free = helpers.Where(bot => !bot.IsCrowdControlled);
+            if (!Classic165Mode.IsOn)
+                return free.Where(BotPartyRoles.IsTank)
+                    .OrderBy(bot => bot.GetDistanceTo(target)).ThenBy(bot => bot.ObjectID).FirstOrDefault();
+            return free
+                .Select(bot => (Bot: bot, Rank: PullerRank(bot)))
+                .Where(entry => entry.Rank >= 0)
+                .OrderBy(entry => entry.Rank).ThenBy(entry => entry.Bot.GetDistanceTo(target)).ThenBy(entry => entry.Bot.ObjectID)
+                .Select(entry => entry.Bot).FirstOrDefault();
+        }
+
+        private static int PullerRank(GameBot bot)
+        {
+            if (bot?.CharacterClass == null)
+                return -1;
+            var characterClass = (eCharacterClass)bot.CharacterClass.ID;
+            bool tank = BotPartyRoles.IsTank(bot);
+            return PullerRank(tank, tank && AutonomousDefensivePull.HasRangedPull(bot),
+                AutonomousDefensivePull.HasLowAggroPull(bot), AutonomousDefensivePull.CanShootPull(bot),
+                BotPartyRoles.IsSupport(bot), BotPartyRoles.IsHealingClass(characterClass),
+                BotBrain.PrefersSpellRange(bot.CharacterClass, true));
+        }
+
+        /// <summary>
+        /// Pure rule: the puller's rank (lower pulls first), or -1 for a companion that does not pull: 0 the tank with a
+        /// ranged pull, 1 a low-aggro pull spell, 2 a bow or thrown weapon, 3 the tank walking up, 4 a melee companion that
+        /// is no healer walking up. A support class (Cleric, Druid, Healer) never pulls (it refuses pull orders).
+        /// </summary>
+        public static int PullerRank(bool tank, bool tankRangedPull, bool lowAggroPullSpell, bool shoots, bool support,
+            bool healingClass, bool caster)
+        {
+            if (support)
+                return -1;
+            if (tankRangedPull)
+                return 0;
+            if (lowAggroPullSpell)
+                return 1;
+            if (shoots)
+                return 2;
+            if (tank)
+                return 3;
+            return healingClass || caster ? -1 : 4;
         }
 
         /// <summary>
@@ -335,7 +408,7 @@ namespace DOL.GS
             (order.Tank.Brain as BotBrain)?.CancelOrderedPull(order.Target);
             if (order.BringBack) AutonomousDefensivePull.Cancel(order.Group);
             if (inform && order.Leader.Group == order.Group)
-                order.Leader.Out.SendMessage("Pull cancelled: the tank could not make contact. Reposition and use /pull again.",
+                order.Leader.Out.SendMessage($"Pull cancelled: {order.Tank.Name} could not make contact. Reposition and use /pull again.",
                     eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
     }

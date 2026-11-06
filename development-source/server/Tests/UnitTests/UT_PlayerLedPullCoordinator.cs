@@ -868,6 +868,47 @@ namespace DOL.UnitTests
             Assert.That(CompanionPvpEngagement.SelectNearby(damage, new GameNPC[] { enemy }, (_, _) => true), Is.Null);
         }
 
+        // owner 2026-11-06: "/pull <companion name>" picks the puller
+        [Test] public void PullNamesThePuller()
+        {
+            var (player, tank, damage, healer, enemy) = Party();
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy, "cabalist"), Does.Contain(damage.Name));
+            Assert.That(B(damage).Pulls, Is.EqualTo(1), "the named companion pulls");
+            Assert.That(B(tank).Pulls, Is.Zero, "the tank waits like the others");
+            Assert.That(PlayerLedPullCoordinator.IsWaiting(tank), Is.True);
+            Assert.That(PlayerLedPullCoordinator.IsWaiting(damage), Is.False);
+        }
+
+        [Test] public void PullWithAnUnknownOrSupportNameExplainsWhy()
+        {
+            var (player, tank, damage, healer, enemy) = Party();
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy, "Nobody"), Does.Contain("No companion named Nobody"));
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy, healer.Name), Does.Contain("does not pull"));
+            Assert.That(B(tank).Pulls + B(damage).Pulls + B(healer).Pulls, Is.Zero);
+            Assert.That(PlayerLedPullCoordinator.FindNamed(new[] { tank, damage }, "pala"), Is.SameAs(tank), "the start of a name");
+        }
+
+        [Test] public void AutomaticPullerOrder() => Assert.Multiple(() =>
+        {
+            // (tank, tank's ranged pull, low-aggro pull spell, bow/thrown, support class, healing class, caster)
+            Assert.That(PlayerLedPullCoordinator.PullerRank(true, true, false, true, false, false, false), Is.EqualTo(0),
+                "the tank with a ranged pull");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, true, false, false, false, true), Is.EqualTo(1),
+                "a debuff / Nearsight / root pull caster");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, true, false, false, false), Is.EqualTo(2),
+                "an archer or thrower");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(true, false, false, false, false, false, false), Is.EqualTo(3),
+                "the tank walks up");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, false, false), Is.EqualTo(4),
+                "a melee companion walks up");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, true, false), Is.EqualTo(-1),
+                "a healer does not walk up");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, false, true), Is.EqualTo(-1),
+                "a caster with only a nuke does not walk up");
+            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, true, true, true, true, true), Is.EqualTo(-1),
+                "a Cleric, Druid or Healer never pulls");
+        });
+
         private (Player, Bot, Bot, Bot, Enemy) Party()
         {
             Player player = Actor<Player>();
