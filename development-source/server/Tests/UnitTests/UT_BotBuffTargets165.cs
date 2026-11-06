@@ -63,5 +63,17 @@ namespace DOL.GS.Tests
             Assert.That(BotBrain.BuffHelps(new ClassWizard(), regen, true), Is.True);
             Assert.That(BotBrain.BuffHelps(new ClassMercenary(), regen, false), Is.True, "normal mode unchanged");
         });
+
+        // The server adds acuity only to a pure caster's mana stat (StatCalculator): a Shaman's acuity on a Healer or a
+        // Thane was wasted concentration.
+        [Test]
+        public void AcuityOnlyForPureCastersInTrue165() => Assert.Multiple(() =>
+        {
+            Spell acuity = Buff("AcuityBuff");
+            Assert.That(BotBrain.BuffHelps(new ClassHealer(), acuity, true), Is.False);
+            Assert.That(BotBrain.BuffHelps(new ClassThane(), acuity, true), Is.False);
+            Assert.That(BotBrain.BuffHelps(new ClassRunemaster(), acuity, true), Is.True);
+            Assert.That(BotBrain.BuffHelps(new ClassHealer(), acuity, false), Is.True, "normal mode unchanged");
+        });
     }
 }

@@ -2984,7 +2984,9 @@ namespace DOL.AI.Brain
             return spell.SpellType switch
             {
                 eSpellType.StrengthBuff or eSpellType.StrengthConstitutionBuff => cls.ClassType != eClassType.ListCaster,
-                eSpellType.AcuityBuff => cls.ManaStat is not eStat.UNDEFINED,
+                // True 1.65: the server adds acuity only to a pure caster's mana stat (StatCalculator), so a Shaman's
+                // acuity on a Healer or a hybrid was wasted concentration
+                eSpellType.AcuityBuff => classic165 ? cls.ClassType == eClassType.ListCaster : cls.ManaStat is not eStat.UNDEFINED,
                 eSpellType.CombatSpeedBuff when classic165 => cls.ClassType != eClassType.ListCaster,
                 eSpellType.PowerRegenBuff when classic165 => cls.ManaStat is not eStat.UNDEFINED,
                 _ => true,
