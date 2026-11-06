@@ -95,4 +95,19 @@ public class UT_RealmGates165 : RealmGateFixture
     {
         Assert.That(AutonomousRvrObjectiveState.ForTarget(NewGate(eRealm.Albion)), Is.EqualTo(eAutonomousRvrPhase.BreachingDoor));
     }
+
+    [Test]
+    public void TheDoorObjectPacketCarriesTheOwnersRealm()
+    {
+        // Client: realm = (flags >> 4) & 3 (live test 2026-11-06 read 2 for every gate: realm 6 rows, 6 & 3).
+        static int ClientRealm(GameObject obj, bool classic165) => (((GameDoorBase.PacketRealm(obj, classic165) & 3) << 4) >> 4) & 3;
+        Assert.That(ClientRealm(NewGate(eRealm.Albion), true), Is.EqualTo(1), "Hadrian's milegate: Albion");
+        Assert.That(ClientRealm(NewGate(eRealm.Hibernia), true), Is.EqualTo(3), "Emain's milegate: Hibernia");
+        Assert.That(ClientRealm(NewGate(eRealm.Midgard, doorId: BorderKeepId), true), Is.EqualTo(2), "a border keep door: its realm");
+        Assert.That(ClientRealm(NewKeepDoor(3), true), Is.EqualTo(3), "a keep door: its keep's realm");
+        var plain = new GameDoor { Realm = eRealm.Door };
+        Assert.That(ClientRealm(plain, true), Is.Zero, "a town door belongs to no realm");
+        Assert.That(ClientRealm(plain, false), Is.EqualTo(2), "normal mode unchanged");
+        Assert.That(ClientRealm(NewBot(eRealm.Midgard), true), Is.EqualTo(2), "other objects unchanged");
+    }
 }

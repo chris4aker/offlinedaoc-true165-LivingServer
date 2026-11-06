@@ -29,6 +29,14 @@ namespace DOL.GS
         /// </summary>
         public const int DoorwayReach = 150;
 
+        /// <summary>
+        /// The realm an object create packet carries ((realm &amp; 3) &lt;&lt; 4 in its flags). True 1.65 Mode: a door that belongs
+        /// to no realm (realm 6 "Door": houses, towns, dungeons) carries 0; 6 &amp; 3 read as Midgard on the client (live
+        /// test 2026-11-06). A milegate or border keep door carries its owner, a keep door its keep's realm.
+        /// </summary>
+        public static int PacketRealm(GameObject obj, bool classic165) =>
+            classic165 && obj is GameDoorBase && obj.Realm is not (eRealm.Albion or eRealm.Midgard or eRealm.Hibernia) ? 0 : (byte) obj.Realm;
+
         public static int MeleeReachBonus(GameObject target, bool classic165) =>
             classic165 && target is GameDoorBase { IsAttackableDoor: true } door && door.Realm is not eRealm.Door ? DoorwayReach : 0;
         public virtual bool CanBeOpenedViaInteraction => false;

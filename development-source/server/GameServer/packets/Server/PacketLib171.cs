@@ -72,7 +72,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)obj.Z);
 				pak.WriteInt((uint)obj.X);
 				pak.WriteInt((uint)obj.Y);
-				int flag = ((byte)obj.Realm & 3) << 4;
+				int flag = (GameDoorBase.PacketRealm(obj, Classic165Mode.IsOn) & 3) << 4;
 				ushort model = obj.Model;
 				if (obj.IsUnderwater)
 				{
