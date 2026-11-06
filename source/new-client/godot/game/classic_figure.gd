@@ -522,6 +522,10 @@ static func _classic_material(cutout: bool, single_sided := false, cloak := fals
 			code = code.replace("cull_disabled", "cull_back")
 		if cloak:
 			code = code.replace("texture(albedo_tex, UV)", "texture(albedo_tex, logo_uv)")
+			# the guild logo on the classic cloak's set 1 (UV2): on set 2 - its own skin's set - the logo was stretched
+			# over the whole cloak, the skull's eyes two black blots down the back (owner 2026-11-06: "the shield is
+			# right but cloak is wrong"; set 1 puts the skull on the upper back, as the client draws it)
+			code = code.replace("texture(logo_tex, logo_uv)", "texture(logo_tex, UV2)")
 		if cutout:
 			code = code.replace("//CUTOUT", "ALPHA = c.a;\n\tALPHA_SCISSOR_THRESHOLD = 0.5;")
 		var s := Shader.new()
