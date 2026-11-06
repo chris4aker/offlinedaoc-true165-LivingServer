@@ -400,7 +400,7 @@ namespace DOL.GS
 
         private static bool UpdateDoorFlags(nint meshPtr, ulong[] polyRefs, GameDoorBase door)
         {
-            bool isBlockingDoor = door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction;
+            bool isBlockingDoor = IsBlockingDoor(door);
             EDtPolyFlags flagsToRemove = isBlockingDoor ? EDtPolyFlags.Door : EDtPolyFlags.BlockingDoor;
             EDtPolyFlags flagsToAdd = isBlockingDoor ? EDtPolyFlags.BlockingDoor : EDtPolyFlags.Door;
             EDtStatus status = UpdateFlags(meshPtr, polyRefs, polyRefs.Length, flagsToRemove, flagsToAdd);

@@ -337,7 +337,8 @@ namespace DOL.GS.Keeps
 
         public bool TryTraverse(GameBot bot)
         {
-            if (bot?.IsAutonomousWorldBot != true || !bot.IsAlive || bot.IsStunned || bot.IsMezzed ||
+            // True 1.65 Mode: the owner's hired companions of the keep's realm use its doors too (Pathfinder.CanUseFriendlyKeepDoor).
+            if (bot == null || !(bot.IsAutonomousWorldBot || Classic165Mode.IsOn && bot.IsPlayerCompanion) || !bot.IsAlive || bot.IsStunned || bot.IsMezzed ||
                 Component?.Keep == null || bot.Realm != Component.Keep.Realm ||
                 !bot.IsWithinRadius(this, WorldMgr.INTERACT_DISTANCE)) return false;
             return TraverseDoor(bot);

@@ -93,6 +93,11 @@ namespace DOL.GS
         public virtual EDtPolyFlags[] DefaultFilters => SharedDefaultFilters;
         public virtual EDtPolyFlags[] BlockingDoorAvoidanceFilters => SharedBlockingDoorAvoidanceFilters;
 
+        /// <summary>A registered door's polygons are BlockingDoor (else Door) while it is shut and nobody opens it by
+        /// interaction: keep doors and True 1.65 milegates. One state for every realm; Pathfinder.BlocksActor decides who
+        /// passes.</summary>
+        public static bool IsBlockingDoor(GameDoorBase door) => door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction;
+
         protected static void FillRecastFloats(Vector3 value, Span<float> destination)
         {
             destination[0] = value.X * CONVERSION_FACTOR;

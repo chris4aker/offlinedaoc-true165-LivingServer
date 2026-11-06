@@ -26,6 +26,7 @@ namespace DOL.GS
 		/// </summary>
 		private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, GameDoorBase> m_unregisteredInNavmesh = new();
 		public static ICollection<GameDoorBase> UnregisteredInNavmesh => m_unregisteredInNavmesh.Values;
+		public static bool IsUnregisteredInNavmesh(int doorId) => m_unregisteredInNavmesh.ContainsKey(doorId);
 
 		public const string WANT_TO_ADD_DOORS = "WantToAddDoors";
 
@@ -125,7 +126,14 @@ namespace DOL.GS
 					// Track doors that can't be opened via interaction, so they can be treated as obstacles.
 					if (!door.CanBeOpenedViaInteraction && !PathfindingProvider.Instance.RegisterDoor(door))
 						m_unregisteredInNavmesh[door.DoorId] = door;
-					if (m_unregisteredInNavmesh.ContainsKey(door.DoorId) && log.IsErrorEnabled)
+					// True 1.65 Mode: a gate fort mesh without door polygons is expected; the mover checks walks against
+					// those gates itself (Pathfinder.MarkGatesOffMesh).
+					if (door is GameRealmGate && m_unregisteredInNavmesh.ContainsKey(door.DoorId))
+					{
+						if (log.IsInfoEnabled)
+							log.Info($"GATE_OFF_NAVMESH id={door.DoorId} realm={door.Realm} at={door.X},{door.Y},{door.Z} region={door.CurrentRegionID}");
+					}
+					else if (m_unregisteredInNavmesh.ContainsKey(door.DoorId) && log.IsErrorEnabled)
 					{
 						log.Error($"Failed to register door in pathfinding provider, possible navmesh/object location mismatch " +
 							$"(Id: {door.DoorId}) " +

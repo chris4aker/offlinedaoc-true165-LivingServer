@@ -36,6 +36,12 @@ namespace DOL.GS
         public const int EnemiesNearRadius = 3_000;
 
         private static readonly ConcurrentDictionary<ushort, GameRealmGate[]> ByRegion = new();
+        private static readonly ConcurrentDictionary<ushort, GameRealmGate[]> OffMeshByRegion = new();
+
+        /// <summary>A walk this close to a gate off the navmesh (2D, within <see cref="CrossingHeight"/>) runs through it:
+        /// the gate fort passage is ~234 wide (DoorSize in the BuildNav door export), the relic gates' rule.</summary>
+        public const float CrossingRadius = 140;
+        public const float CrossingHeight = 260;
 
         private CloseAction _closeAction;
         private byte _lastHealthPercent;
@@ -71,7 +77,46 @@ namespace DOL.GS
                 return gates.ToArray();
             });
 
-        public static void ForgetRegions() => ByRegion.Clear();
+        /// <summary>
+        /// The region's gates that have no door polygons on the navmesh (RegisterDoor found none: the installed gate fort
+        /// meshes were built without them, 2026-11-06). The mesh cannot shut them, so the mover checks its walk against
+        /// them (Pathfinder.MarkGatesOffMesh).
+        /// </summary>
+        public static GameRealmGate[] OffMeshInRegion(ushort regionId) =>
+            OffMeshByRegion.GetOrAdd(regionId, static id =>
+            {
+                var gates = new List<GameRealmGate>();
+                foreach (GameRealmGate gate in InRegion(id))
+                    if (DoorMgr.IsUnregisteredInNavmesh(gate.DoorId))
+                        gates.Add(gate);
+                return gates.ToArray();
+            });
+
+        public static void ForgetRegions()
+        {
+            ByRegion.Clear();
+            OffMeshByRegion.Clear();
+        }
+
+        /// <summary>
+        /// Where a walk from <paramref name="a"/> to <paramref name="b"/> must stop for a gate at <paramref name="door"/>:
+        /// the fraction of the segment where it comes within <see cref="CrossingRadius"/> of the gate (2D, at a height
+        /// within <see cref="CrossingHeight"/>), in front of it. False when the segment does not run through the gate.
+        /// </summary>
+        public static bool TryCrossing(System.Numerics.Vector3 a, System.Numerics.Vector3 b, System.Numerics.Vector3 door, out float stop)
+        {
+            stop = 0;
+            System.Numerics.Vector2 a2 = new(a.X, a.Y), ab = new(b.X - a.X, b.Y - a.Y), point = new(door.X, door.Y);
+            float length2 = ab.LengthSquared();
+            float t = length2 < 1 ? 0 : Math.Clamp(System.Numerics.Vector2.Dot(point - a2, ab) / length2, 0, 1);
+            float distance2 = System.Numerics.Vector2.DistanceSquared(a2 + ab * t, point);
+            float z = a.Z + (b.Z - a.Z) * t;
+            if (distance2 > CrossingRadius * CrossingRadius || Math.Abs(z - door.Z) > CrossingHeight)
+                return false;
+            float back = length2 < 1 ? 0 : MathF.Sqrt(CrossingRadius * CrossingRadius - distance2) / MathF.Sqrt(length2);
+            stop = Math.Max(0, t - back);
+            return true;
+        }
 
         public bool MayPass(GameLiving actor) => actor != null && MayPass(actor.Realm, Realm, State);
         public bool MayBreak(GameLiving actor) => actor != null && MayBreak(actor.Realm, Realm, IsAlive, State);

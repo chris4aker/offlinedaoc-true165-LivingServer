@@ -26,6 +26,10 @@ public sealed class AutonomousKeepApproachNavigation : PathfindingMgrBase
         var doors = GameServer.KeepManager?.GetKeepsOfRegion(region.ID)
             .SelectMany(k => k.Doors.Values.Where(d => k.Realm == realm || d.IsAttackableDoor && !d.IsAlive || d.State == eDoorState.Open))
             .Select(d => new Vector3(d.X,d.Y,d.Z)).ToArray() ?? [];
+        // True 1.65 Mode (owner 2026-11-06): a milegate is no wall for a plan. Its own realm walks through it, and an enemy
+        // army breaks it when it gets there (the mover stops at it: Pathfinder.BlockingGate, AutonomousRouteGates), so
+        // a route through it is a route. Every realm's planner passes the gates of the region.
+        doors = doors.Concat(GameRealmGate.InRegion(region.ID).Select(gate => new Vector3(gate.X, gate.Y, gate.Z))).ToArray();
         // Relic audit 2026-10-31 (B3): the navmesh has no door polygons at the six relic gates (door 02 of each relic
         // keep), so a shut relic gate of an enemy keep did not block a planned walk at all (UT_RelicShrineReach: it lies
         // on the open walk to every shrine). Such doors are checked against the planned walk below.
