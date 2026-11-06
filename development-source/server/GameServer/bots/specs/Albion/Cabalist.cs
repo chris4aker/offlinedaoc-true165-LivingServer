@@ -19,35 +19,9 @@ namespace DOL.GS
 
             switch (randVariance)
             {
-                // Matter
+                // Matter: period Matter Cabalists took Body about 28 second (the Body debuffs), not Spirit.
                 case 0:
                 case 1:
-                {
-                    SpecType = eSpecType.MatterCab;
-                    Add(Specs.Matter_Magic, 50, 1.0f);
-                    Add(Specs.Spirit_Magic, 20, 0.1f);
-                    break;
-                }
-
-                case 2:
-                case 3:
-                {
-                    SpecType = eSpecType.MatterCab;
-                    Add(Specs.Matter_Magic, 49, 1.0f);
-                    Add(Specs.Spirit_Magic, 22, 0.1f);
-                    break;
-                }
-
-                case 4:
-                case 5:
-                {
-                    SpecType = eSpecType.MatterCab;
-                    Add(Specs.Matter_Magic, 46, 1.0f);
-                    Add(Specs.Spirit_Magic, 28, 0.1f);
-                    break;
-                }
-
-                case 6:
                 {
                     SpecType = eSpecType.MatterCab;
                     Add(Specs.Matter_Magic, 46, 1.0f);
@@ -55,7 +29,29 @@ namespace DOL.GS
                     Add(Specs.Spirit_Magic, 4, 0.0f);
                     break;
                 }
-
+                case 2:
+                case 3:
+                {
+                    SpecType = eSpecType.MatterCab;
+                    Add(Specs.Matter_Magic, 47, 1.0f);
+                    Add(Specs.Body_Magic, 26, 0.1f);
+                    break;
+                }
+                case 4:
+                case 5:
+                {
+                    SpecType = eSpecType.MatterCab;
+                    Add(Specs.Matter_Magic, 46, 1.0f);
+                    Add(Specs.Body_Magic, 28, 0.1f);
+                    break;
+                }
+                case 6:
+                {
+                    SpecType = eSpecType.MatterCab;
+                    Add(Specs.Matter_Magic, 50, 1.0f);
+                    Add(Specs.Body_Magic, 20, 0.1f);
+                    break;
+                }
                 // Body
                 case 7:
                 {

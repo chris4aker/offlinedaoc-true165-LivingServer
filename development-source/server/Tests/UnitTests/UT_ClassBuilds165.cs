@@ -177,5 +177,16 @@ namespace DOL.UnitTests
                 Assert.That(at50[Specs.Earth_Magic], Is.InRange(18, 23));
             }
         }
+
+        [Test]
+        public void MatterCabalistTakesBodySecond()
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Dictionary<string, int> at50 = At(BotSpec.GetSpec(eCharacterClass.Cabalist, eSpecType.MatterCab), eCharacterClass.Cabalist, 50);
+                Assert.That(at50[Specs.Matter_Magic], Is.InRange(46, 50));
+                Assert.That(at50[Specs.Body_Magic], Is.InRange(20, 28));
+            }
+        }
     }
 }
