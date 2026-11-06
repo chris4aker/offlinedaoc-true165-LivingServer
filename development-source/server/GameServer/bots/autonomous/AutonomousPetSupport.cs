@@ -477,7 +477,7 @@ public static class AutonomousPetSupport
             (Spell Spell, SpellLine Line) summon = default;
             // A hired Cabalist / Enchanter summons the pet its player chose (CompanionOptions165), else its own choice.
             if (owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
-                summon = ChooseCastableByRank(owner, spells.Where(entry => entry.Line?.KeyName == chosenLine).ToList(), null, true);
+                summon = ChooseCastableByRank(owner, spells.Where(entry => IsChosenPet(entry, chosenLine)).ToList(), null, true);
             if (summon.Spell == null)
                 summon = ChooseCastableByRank(owner, spells, null,
                     owner is GameBot { IsEndgameCompanion: true });
@@ -653,8 +653,14 @@ public static class AutonomousPetSupport
 
         if (combatTarget?.IsAlive == true && GameLoop.GameLoopTime >= nextDeployablePetTick)
         {
-            (Spell Spell, SpellLine Line) theurgistPet = ChooseCastableByRank(owner, spells, eSpellType.SummonTheurgistPet,
-                owner is GameBot { IsEndgameCompanion: true });
+            // a hired Theurgist calls the elementals its player chose (AI Options pet row), else its own choice
+            (Spell Spell, SpellLine Line) theurgistPet = default;
+            if (owner is GameBot elementalist && CompanionOptions165.PetLine(elementalist) is string elementLine)
+                theurgistPet = ChooseCastableByRank(owner, spells.Where(entry => IsChosenPet(entry, elementLine)).ToList(),
+                    eSpellType.SummonTheurgistPet, true);
+            if (theurgistPet.Spell == null)
+                theurgistPet = ChooseCastableByRank(owner, spells, eSpellType.SummonTheurgistPet,
+                    owner is GameBot { IsEndgameCompanion: true });
             if (theurgistPet.Spell != null && owner.IsWithinRadius(combatTarget, theurgistPet.Spell.CalculateEffectiveRange(owner)))
             {
                 if (CastPreservingTarget(owner, combatTarget, theurgistPet.Spell, theurgistPet.Line))
@@ -1557,6 +1563,17 @@ public static class AutonomousPetSupport
         BotAutomatedSpells(bot).Where(entry => entry.Spell != null && IsMainPetSummon(entry.Spell.SpellType) &&
                                                entry.Spell.Level <= bot.Level).ToArray();
 
+    /// <summary>The player's pet choice (CompanionOptions165): one summon ("spell:&lt;id&gt;") or a whole line (its key).</summary>
+    private static bool IsChosenPet((Spell Spell, SpellLine Line) entry, string choice) =>
+        choice.StartsWith("spell:", StringComparison.Ordinal)
+            ? int.TryParse(choice.AsSpan(6), out int id) && entry.Spell?.ID == id
+            : entry.Line?.KeyName == choice;
+
+    /// <summary>The Theurgist's elemental summons a bot knows (earth, ice, air lines).</summary>
+    public static (Spell Spell, SpellLine Line)[] TheurgistSummons(GameBot bot) =>
+        BotAutomatedSpells(bot).Where(entry => entry.Spell?.SpellType == eSpellType.SummonTheurgistPet &&
+                                               entry.Spell.Level <= bot.Level).ToArray();
+
     /// <summary>The Bonedancer sub-pet summons a bot knows.</summary>
     public static (Spell Spell, SpellLine Line)[] MinionSummons(GameBot bot) =>
         BotAutomatedSpells(bot).Where(entry => entry.Spell?.SpellType == eSpellType.SummonMinion &&
@@ -2021,7 +2038,9 @@ public static class AutonomousPetSupport
 
         (Spell Spell, SpellLine Line) strongest = knownSpells
             .Where(entry => entry.Spell?.SpellType == eSpellType.SummonCommander &&
-                            CanCast(owner, entry.Spell))
+                            CanCast(owner, entry.Spell) &&
+                            // a hired Bonedancer keeps the commander its player chose (AI Options pet row)
+                            (CompanionOptions165.PetLine(owner) is not string chosen || IsChosenPet(entry, chosen)))
             .OrderByDescending(entry => entry.Spell.Level)
             .FirstOrDefault();
 

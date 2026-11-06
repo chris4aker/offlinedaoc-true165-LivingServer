@@ -133,14 +133,28 @@ namespace DOL.GS
             ((eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Sorcerer or eCharacterClass.Minstrel ||
              (eCharacterClass)bot.CharacterClass.ID != eCharacterClass.Hunter && Charm165.LearnedCharm(bot) != null);
 
-        /// <summary>The pets the companion can summon, one per spell line, by that line's best learned summon.</summary>
-        private static List<(string Line, string Name)> PetLines(GameBot bot) =>
-            AutonomousPetSupport.MainPetSummons(bot)
-                .Where(entry => entry.Line != null)
-                .GroupBy(entry => entry.Line.KeyName)
-                .Select(group => (group.Key, group.OrderByDescending(entry => entry.Spell.Level).First().Spell.Name))
-                .OrderBy(entry => entry.Key, StringComparer.Ordinal)
+        /// <summary>
+        /// The pets the player can choose (AI Options pet row; stored as the choice key). Cabalist, Enchanter and Bonedancer:
+        /// every summon the companion knows - each is its own pet with its own creature and perks (owner 2026-11-05: Amber,
+        /// Ruby, Sapphire... simulacrums; Underhill Friend ... Zealot; Bone Boss ... Bone Master commanders), keyed
+        /// "spell:&lt;id&gt;". Theurgist: one choice per element line (earth, ice, air), keyed by the line.
+        /// </summary>
+        private static List<(string Line, string Name)> PetLines(GameBot bot)
+        {
+            if ((eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Theurgist)
+                return AutonomousPetSupport.TheurgistSummons(bot)
+                    .Where(entry => entry.Line != null)
+                    .GroupBy(entry => entry.Line.KeyName)
+                    .Select(group => (group.Key, group.OrderByDescending(entry => entry.Spell.Level).First().Spell.Name))
+                    .OrderBy(entry => entry.Key, StringComparer.Ordinal)
+                    .ToList();
+            return AutonomousPetSupport.MainPetSummons(bot)
+                .GroupBy(entry => entry.Spell.ID)
+                .Select(group => group.First())
+                .OrderBy(entry => entry.Spell.Level).ThenBy(entry => entry.Spell.ID)
+                .Select(entry => ($"spell:{entry.Spell.ID}", entry.Spell.Name))
                 .ToList();
+        }
 
         private static readonly BdSubPet.SubPetType[] SubPetTypes =
             [BdSubPet.SubPetType.Melee, BdSubPet.SubPetType.Archer, BdSubPet.SubPetType.Caster,
@@ -185,7 +199,7 @@ namespace DOL.GS
             var cls = (eCharacterClass)bot.CharacterClass.ID;
             if (CanCharm(bot))
                 rows.Add(new Row(KindCharm, 0, CharmAllowed(bot) ? 1 : 0, ["Off", "On"], 0, 0));
-            if (cls is eCharacterClass.Cabalist or eCharacterClass.Enchanter)
+            if (cls is eCharacterClass.Cabalist or eCharacterClass.Enchanter or eCharacterClass.Theurgist or eCharacterClass.Bonedancer)
             {
                 var pets = PetLines(bot);
                 if (pets.Count > 1)
