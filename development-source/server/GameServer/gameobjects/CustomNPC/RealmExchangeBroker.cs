@@ -77,6 +77,9 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
         if (player.Realm != Realm)
             return false;
         player.TargetObject = this;
+        // The exchange window may open straight from this talk (the new client's tabs), so the broker takes the
+        // player's moves from now on; the drop itself picks buying or listing (CanHandleMove).
+        SetActive(player, player.TempProperties.GetProperty(ModeProperty, ModeBrowse));
         long pendingProceeds = GetPendingPlayerProceeds(player.InternalID, Realm);
         // DetailWindow text has no clickable NPC links. The native NPC speech
         // popup routes bracketed choices back through WhisperReceive.
@@ -297,14 +300,41 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
 
     public bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
     {
-        if (!CanUseExchange(player) || player.ActiveInventoryObject != this)
+        // Only a move that touches the market results or the listing chest is the exchange's; any other move (the
+        // player sorting the backpack while the window is open) goes back to the normal inventory, silently.
+        bool buying = fromClientSlot >= eInventorySlot.MarketExplorerFirst &&
+                      (int)fromClientSlot < (int)eInventorySlot.MarketExplorerFirst + PageSize;
+        bool chest = this.CanHandleRequest(fromClientSlot, toClientSlot);
+        if (!buying && !chest)
             return false;
 
-        string mode = player.TempProperties.GetProperty(ModeProperty, ModeBrowse);
-        if (mode == ModeBrowse)
-            return fromClientSlot >= eInventorySlot.MarketExplorerFirst &&
-                   (int)fromClientSlot < (int)eInventorySlot.MarketExplorerFirst + PageSize &&
-                   GameInventoryObjectExtensions.IsBackpackSlot(toClientSlot);
+        if (player == null)
+            return false;
+        if (!CanUseExchange(player))
+        {
+            Refuse(player, player.Realm != Realm ? "this is another realm's exchange" :
+                !player.IsAlive ? "you are dead" : "you are too far from the broker");
+            return false;
+        }
+        if (player.ActiveInventoryObject != this)
+        {
+            Refuse(player, "talk to the broker again");
+            return false;
+        }
+
+        // The drop itself says what the player is doing (owner 2026-11-06: a listing did nothing while the broker was
+        // still on the browse page - the window's tabs never told it): results to backpack buys, anything with the
+        // chest is listing.
+        player.TempProperties.SetProperty(ModeProperty, buying ? ModeBrowse : ModeSell);
+        if (buying)
+        {
+            if (!GameInventoryObjectExtensions.IsBackpackSlot(toClientSlot))
+            {
+                Refuse(player, "drop the item in your backpack");
+                return false;
+            }
+            return true;
+        }
 
         if (GameInventoryObjectExtensions.IsBackpackSlot(fromClientSlot))
         {
@@ -314,18 +344,24 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
                 player.Out.SendMessage("That item cannot be traded.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-            Dictionary<int, DbInventoryItem> chest = GetClientInventory(player);
-            if (chest.Count >= ListingSlots)
+            Dictionary<int, DbInventoryItem> listed = GetClientInventory(player);
+            if (listed.Count >= ListingSlots)
             {
                 player.Out.SendMessage($"Your {ListingSlots} listing slots are full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
-            if (chest.ContainsKey((int)toClientSlot))
+            if (listed.ContainsKey((int)toClientSlot))
+            {
+                Refuse(player, "that slot already holds a listing; drop it on an empty one");
                 return false;
+            }
         }
 
-        return this.CanHandleRequest(fromClientSlot, toClientSlot);
+        return true;
     }
+
+    private static void Refuse(GamePlayer player, string reason) =>
+        player.Out.SendMessage($"The Realm Exchange could not do that: {reason}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
     public bool MoveItem(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort itemCount)
     {
@@ -338,7 +374,10 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
             List<DbInventoryItem> items = player.TempProperties.GetProperty<List<DbInventoryItem>>(BrowseListProperty);
             int index = (int)fromClientSlot - (int)eInventorySlot.MarketExplorerFirst;
             if (items == null || index < 0 || index >= items.Count)
+            {
+                Refuse(player, "that result is gone; search again");
                 return false;
+            }
 
             BuyItem(player, items[index]);
             return true;
@@ -352,6 +391,8 @@ public sealed partial class RealmExchangeBroker : GameNPC, IGameInventoryObject
             // broadcast one seller's slot changes to another seller's chest.
             if (updates != null && updates.Count > 0)
                 player.Out.SendInventoryItemsUpdate(updates, eInventoryWindowType.Update);
+            if (updates == null)
+                Refuse(player, "the item could not be moved");
             return updates != null;
         }
     }

@@ -150,6 +150,15 @@ public sealed class UT_RealmExchangeInterface
     }
 
     [Test]
+    public void CanHandleMove_LeavesOrdinaryBackpackMovesToTheNormalInventory()
+    {
+        (RealmExchangeBroker broker, GamePlayer player) = ChestOwner("backpack-sort-test");
+        // with the exchange as the active window, sorting the backpack is not the exchange's move (and says nothing)
+        Assert.That(broker.CanHandleMove(player, eInventorySlot.FirstBackpack, eInventorySlot.FirstBackpack + 1), Is.False);
+        Assert.That(broker.CanHandleMove(player, eInventorySlot.FirstBackpack, eInventorySlot.Ground), Is.False);
+    }
+
+    [Test]
     public void MoveListingsIntoChest_MovesOldPageListingsIntoFreeSlotsAndCountsTheRest()
     {
         (RealmExchangeBroker broker, GamePlayer player) = ChestOwner("human-move-test");
