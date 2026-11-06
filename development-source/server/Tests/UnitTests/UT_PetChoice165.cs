@@ -25,5 +25,21 @@ namespace DOL.GS.Tests
             Assert.That(AutonomousPetSupport.CabalistPeriodPet([Summon("Sapphire Slash", 44, "DirectDamage")]).Spell, Is.Null,
                 "only a simulacrum summon counts");
         });
+
+        [Test]
+        public void AGroupedTheurgistKeepsPetsForEmergencies() => Assert.Multiple(() =>
+        {
+            Assert.That(AutonomousPetSupport.TheurgistMaySummon(false, false), Is.True, "solo: pets are its tank");
+            Assert.That(AutonomousPetSupport.TheurgistMaySummon(true, false), Is.False, "the tank holds everything: nuke, root");
+            Assert.That(AutonomousPetSupport.TheurgistMaySummon(true, true), Is.True, "a monster on the caster or loose");
+        });
+
+        [Test]
+        public void EarthElementalsAreTheEarthLine() => Assert.Multiple(() =>
+        {
+            Assert.That(AutonomousPetSupport.IsEarthSummon(Summon("Call Earthlord", 48, "SummonTheurgistPet")), Is.True);
+            Assert.That(AutonomousPetSupport.IsEarthSummon(Summon("Summon Ice Elemental", 32, "SummonTheurgistPet")), Is.False);
+            Assert.That(AutonomousPetSupport.IsEarthSummon(Summon("Call Air Sprite", 12, "SummonTheurgistPet")), Is.False);
+        });
     }
 }

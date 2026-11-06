@@ -4731,6 +4731,10 @@ namespace DOL.AI.Brain
                     // Do not roll a DoT/debuff already on this mob and mistake
                     // its refusal for a reason to abandon ranged combat.
                     spellsToCast.RemoveAll(spell => !NeedsOffensiveSpellApplication((GameLiving)Body.TargetObject, spell));
+                    // True 1.65: a grouped Theurgist calls no elementals while the tanks hold everything (AutonomousPetSupport)
+                    if (spellsToCast.Exists(spell => spell.SpellType == eSpellType.SummonTheurgistPet) &&
+                        AutonomousPetSupport.TheurgistHoldsPets(BotBody))
+                        spellsToCast.RemoveAll(spell => spell.SpellType == eSpellType.SummonTheurgistPet);
                     if (holdDamage)
                         spellsToCast.RemoveAll(BotCasterPriority.IsDamage);   // debuffs and control may still go
                     if (spellsToCast.Count == 0) return Body.IsCasting;

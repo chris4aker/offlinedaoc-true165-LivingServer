@@ -671,11 +671,20 @@ public static class AutonomousPetSupport
         {
             // a hired Theurgist calls the elementals its player chose (AI Options pet row), else its own choice
             (Spell Spell, SpellLine Line) theurgistPet = default;
+            bool periodTheurgistHolds = false;
             if (owner is GameBot elementalist && CompanionOptions165.PetLine(elementalist) is string elementLine)
                 theurgistPet = ChooseCastableByRank(owner,
                     LearnedPetSummons(elementalist).Where(entry => IsChosenPet(entry, elementLine)).ToList(),
                     eSpellType.SummonTheurgistPet, true);
-            if (theurgistPet.Spell == null)
+            else if (Classic165Mode.IsOn && characterClass == eCharacterClass.Theurgist && owner is GameBot theurgist)
+            {
+                // True 1.65 (period Theurgists): with a tank in a full group, pets are the last resort - only when a
+                // monster is on the caster or loose on the group; otherwise earth elementals first, they take the aggro
+                periodTheurgistHolds = TheurgistHoldsPets(theurgist);
+                if (!periodTheurgistHolds)
+                    theurgistPet = BestCastableEarthSummon(owner, TheurgistSummons(theurgist));
+            }
+            if (theurgistPet.Spell == null && !periodTheurgistHolds)
                 theurgistPet = ChooseCastableByRank(owner, spells, eSpellType.SummonTheurgistPet,
                     owner is GameBot { IsEndgameCompanion: true });
             if (theurgistPet.Spell != null && owner.IsWithinRadius(combatTarget, theurgistPet.Spell.CalculateEffectiveRange(owner)))
@@ -1639,6 +1648,51 @@ public static class AutonomousPetSupport
                 amber = entry;
         }
         return amber;
+    }
+
+    /// <summary>
+    /// True 1.65 Theurgist (period forums, "Theurgist tips" 2002): pets are a last resort in big PvE groups - bladeturn,
+    /// roots and nukes instead - but essential solo. Grouped with a tank (four or more members) it summons only when a
+    /// monster is on the caster or loose on the group.
+    /// </summary>
+    public static bool TheurgistMaySummon(bool groupedWithTank, bool petsNeeded) => !groupedWithTank || petsNeeded;
+
+    /// <summary>
+    /// True 1.65: a Theurgist without a player pet choice, grouped with a tank, while no monster is on it or loose:
+    /// it calls no elementals (its spell rotation skips them too).
+    /// </summary>
+    public static bool TheurgistHoldsPets(GameBot bot) =>
+        Classic165Mode.IsOn && bot?.CharacterClass?.ID == (int)eCharacterClass.Theurgist &&
+        CompanionOptions165.PetLine(bot) == null &&
+        !TheurgistMaySummon(bot.Group?.MemberCount >= 4 && BotMeleeStylePolicy.HasTankPartner(bot), TheurgistPetsNeeded(bot));
+
+    /// <summary>A monster on the Theurgist, or on a group member who is not a tank (an add the tanks do not hold).</summary>
+    private static bool TheurgistPetsNeeded(GameBot theurgist)
+    {
+        if (theurgist.attackComponent?.AttackerTracker?.Count > 0)
+            return true;
+        if (theurgist.Group == null)
+            return false;
+        foreach (GameLiving member in theurgist.Group.GetMembersInTheGroup())
+            if (member != theurgist && member?.IsAlive == true && !BotHealTriage165.IsTank(member) &&
+                member.attackComponent?.AttackerTracker?.Count > 0)
+                return true;
+        return false;
+    }
+
+    /// <summary>An earth elemental summon (Abrasion): the pet that draws aggro off the caster.</summary>
+    public static bool IsEarthSummon((Spell Spell, SpellLine Line) entry) =>
+        entry.Spell?.SpellType == eSpellType.SummonTheurgistPet &&
+        (entry.Line?.KeyName == "Abrasion" || entry.Spell.Name?.Contains("Earth", StringComparison.OrdinalIgnoreCase) == true);
+
+    /// <summary>The highest castable earth summon, or none.</summary>
+    private static (Spell Spell, SpellLine Line) BestCastableEarthSummon(GameLiving owner, IReadOnlyList<(Spell Spell, SpellLine Line)> summons)
+    {
+        (Spell Spell, SpellLine Line) best = default;
+        foreach (var entry in summons)
+            if (IsEarthSummon(entry) && (best.Spell == null || entry.Spell.Level > best.Spell.Level) && CanCast(owner, entry.Spell))
+                best = entry;
+        return best;
     }
 
     /// <summary>The Theurgist's elemental summons a bot knows (earth, ice, air lines).</summary>
