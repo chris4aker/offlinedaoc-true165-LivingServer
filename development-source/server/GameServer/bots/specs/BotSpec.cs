@@ -128,6 +128,7 @@ namespace DOL.GS
             eCharacterClass.Friar => [(eSpecType.RejuvFriar, 1), (eSpecType.EnhanceFriar, 6), (eSpecType.StaffFriar, 3)],
             eCharacterClass.Sorcerer => [(eSpecType.MatterSorc, 1), (eSpecType.BodySorc, 1), (eSpecType.MindSorc, 2)],
             eCharacterClass.Animist => [(eSpecType.ArborealAnimist, 17), (eSpecType.CreepingAnimist, 2), (eSpecType.VerdantAnimist, 1)],
+            eCharacterClass.Mentalist => [(eSpecType.LightMenta, 9), (eSpecType.ManaMenta, 9), (eSpecType.MentaMenta, 2)],
             _ => [.. GetSpecializationChoices(charClass).Select(spec => (spec, 1))],
         };
 

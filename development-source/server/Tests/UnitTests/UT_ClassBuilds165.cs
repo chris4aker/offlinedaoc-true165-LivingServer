@@ -324,5 +324,19 @@ namespace DOL.UnitTests
             Dictionary<string, int> at50 = At(arboreal, eCharacterClass.Animist, 50);
             Assert.That((at50[Specs.Arboreal_Path], at50[Specs.Creeping_Path], at50[Specs.Verdant_Path]), Is.EqualTo((50, 19, 7)));
         }
+
+        [Test]
+        public void MentalistTrainsHolismAndMentalismWhileLevelling()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Mentalist);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.MentaMenta), Is.EqualTo(0.1).Within(0.03));
+            foreach (BotSpec plan in plans.Take(300))
+            {
+                Dictionary<string, int> at20 = At(plan, eCharacterClass.Mentalist, 20);
+                Assert.That(at20[Specs.Mana], Is.GreaterThanOrEqualTo(4), "Holism (power regeneration) by 20");
+                if (Cap(plan, Specs.Mentalism) >= 15)
+                    Assert.That(At(plan, eCharacterClass.Mentalist, 30)[Specs.Mentalism], Is.GreaterThanOrEqualTo(14));
+            }
+        }
     }
 }
