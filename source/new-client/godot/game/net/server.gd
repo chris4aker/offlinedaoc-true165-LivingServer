@@ -726,6 +726,7 @@ func _on_world_inner(kind: String, d: Dictionary) -> void:
 			on_inventory(d)
 		"market_open":                                    # [Browse the exchange]: the market search window
 			_load_prices()
+			exchange_mode = "browse"
 			exchange_open.emit("browse")
 		"market":                                         # a page of search results
 			_market_packet(d)
@@ -1773,6 +1774,7 @@ func listing_time_text(slot: int) -> String:
 		return "-"
 	return "%dH" % ceili(m / 60.0) if m >= 60 else "%dM" % m
 var listing_page := 0                             # the chest's page on the server (100 slots each)
+var exchange_mode := ""                           # the broker's page for you: "browse" / "listings" (what it opened last)
 var exchange_refusal := ""                        # the broker's last refusal of a listing (the window shows it in red)
 var exchange_refusal_at := 0                      # (its time, msec)
 var proceeds := -1                                # sale proceeds waiting (copper; the greeting's amount), -1 unknown
@@ -1794,6 +1796,7 @@ func _listings_packet(d: Dictionary, opened: bool) -> void:
 	exchange_changed.emit()
 	if opened:
 		_load_prices()
+		exchange_mode = "listings"
 		exchange_open.emit("listings")
 
 

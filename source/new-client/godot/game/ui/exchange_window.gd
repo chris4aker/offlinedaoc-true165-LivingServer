@@ -152,7 +152,9 @@ func _tab_button(text: String, at: Vector2, which: String) -> Button:
 	var b := UiArt.button(text, Vector2(122, 22), 10)
 	b.position = at
 	b.toggle_mode = true
-	b.pressed.connect(func(): show_tab(which))
+	b.pressed.connect(func():
+		show_tab(which)
+		_tell_broker(which))
 	add_child(b)
 	return b
 
@@ -351,6 +353,14 @@ func open_tab(which: String) -> void:
 		search()                                          # everything for sale, first page
 
 
+## A tab clicked: the broker is told too - its page decides what a drop does (owner 2026-11-06: "dragging the item
+## onto the realm exchange slots still doesn't do anything" - the window had come up on BROWSE, MY LISTINGS was only
+## this window's page, and the broker, still on its market search, refused the move without a word).
+func _tell_broker(which: String) -> void:
+	if Server.active and Server.exchange_mode != which:
+		Server.command("/whisper manage my listings" if which == "listings" else "/whisper browse the exchange")
+
+
 func show_tab(which: String) -> void:
 	tab = which
 	selected = -1
@@ -547,6 +557,13 @@ func list_item(from: int, slot := -1) -> void:
 				break
 	if slot < 0:
 		PlayerData.message.emit("Your 100 listing slots are full.", "error")
+		return
+	if Server.active and Server.exchange_mode != "listings":
+		# the broker still on its market search (a page it opened before): its listings first, then the move
+		_tell_broker("listings")
+		get_tree().create_timer(0.8).timeout.connect(func():
+			if PlayerData.move(from, slot):
+				_ask_price = slot)
 		return
 	if PlayerData.move(from, slot):
 		_ask_price = slot
