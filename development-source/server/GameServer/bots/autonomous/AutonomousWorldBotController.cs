@@ -2222,7 +2222,7 @@ namespace DOL.GS
 
             GameLiving opponent = humans.Concat(worldBots)
                 .Where(candidate => candidate != null && !IsSafeArea(candidate))
-                .Where(candidate => !candidate.IsStealthed && AutonomousDungeonPolicy.CanEngageLocalOpponent(
+                .Where(candidate => StealthDetection.BotCanSee(bot, candidate) && AutonomousDungeonPolicy.CanEngageLocalOpponent(
                     bot.Realm, candidate.Realm, bot.CurrentRegionID, candidate.CurrentRegionID,
                     candidate.IsAlive, GameServer.ServerRules.IsAllowedToAttack(bot, candidate, true)))
                 .OrderBy(candidate => bot.GetDistanceTo(candidate))

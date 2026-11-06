@@ -22,7 +22,7 @@ namespace DOL.AI.Brain
             // interruption and spell timers still decide whether a cast succeeds.
             GameLiving[] enemies = Body.GetNPCsInRadius(1800).Where(BotPvpCrowdControl.PlayerLike).Cast<GameLiving>()
                 .Concat(Body.GetPlayersInRadius(1800)).Where(t => BotSiegeRuntime.LegalEnemy(Body,t) && !t.IsMezzed &&
-                    !t.IsStealthed && !BotPvpCrowdControl.Protected(Body,t) && CompanionEngagementMode.Allows(Body,t) &&
+                    StealthDetection.BotCanSee(Body,t) && !BotPvpCrowdControl.Protected(Body,t) && CompanionEngagementMode.Allows(Body,t) &&
                     !CompanionPvpEngagement.Focused(Body,t) && !CompanionPvpEngagement.Defending(Body,t))
                 .OrderBy(Body.GetDistanceTo).Take(24).ToArray();
             if (enemies.Length == 0) return false;

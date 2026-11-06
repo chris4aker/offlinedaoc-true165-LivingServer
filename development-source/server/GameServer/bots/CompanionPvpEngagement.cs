@@ -168,7 +168,7 @@ namespace DOL.GS
             GamePlayer leader = Leader(helper);
             if (!FrontierRaidAggro(leader)) return null;
             int radius = FrontierRaidAggroRadius(CompanionEngagementMode.DefensiveLeader(helper) != null);
-            return candidates.Where(t => Live(leader, t) && !t.IsStealthed &&
+            return candidates.Where(t => Live(leader, t) && StealthDetection.BotCanSee(helper, t) &&
                     leader.IsWithinRadius(t, radius) &&
                     GameServer.ServerRules.IsAllowedToAttack(helper, t, true) && visible(leader, t))
                 .OrderBy(leader.GetDistanceTo).FirstOrDefault();
@@ -178,7 +178,7 @@ namespace DOL.GS
         {
             GamePlayer leader = Leader(helper);
             if (leader == null || CompanionEngagementMode.DefensiveLeader(helper) == null) return null;
-            return candidates.Where(t => Live(leader, t) && !t.IsStealthed &&
+            return candidates.Where(t => Live(leader, t) && StealthDetection.BotCanSee(helper, t) &&
                     leader.IsWithinRadius(t, CompanionEngagementMode.DefensiveRadius) &&
                     GameServer.ServerRules.IsAllowedToAttack(helper, t, true) && visible(leader, t))
                 .OrderBy(leader.GetDistanceTo).FirstOrDefault();

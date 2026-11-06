@@ -193,7 +193,7 @@ public sealed partial class AutonomousWorldBotController
     }
 
     private bool EligibleRvrTarget(GameBot bot, GameLiving target) =>
-        target != bot && !target.IsStealthed && !IsIgnoredPvpTarget(target) &&
+        target != bot && StealthDetection.BotCanSee(bot, target) && !IsIgnoredPvpTarget(target) &&
         target.ObjectState == GameObject.eObjectState.Active && target.IsAlive &&
         target.Realm != bot.Realm && target.Realm != eRealm.None && target.CurrentRegionID == bot.CurrentRegionID &&
         AutonomousRvrTargetPolicy.IsEligible(bot.Realm, target.Realm, target.IsAlive,

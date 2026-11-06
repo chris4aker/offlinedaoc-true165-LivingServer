@@ -11185,26 +11185,7 @@ namespace DOL.GS
         }
 
         /// <summary>The player detection rules (see the PLAYER case of <see cref="CanDetect"/>) for a stealthed gamebot.</summary>
-        private bool CanDetectStealthedBot(GameBot bot)
-        {
-            if (bot.Realm == Realm || bot.Group != null && Group != null && bot.Group == Group)
-                return true;
-            if (effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
-                return true;
-            int stealthLevel = Math.Min(50, bot.GetModifiedSpecLevel(Specs.Stealth));
-            int levelDiff = Math.Max(0, Level - stealthLevel);
-            bool camouflage = bot.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage);
-            bool vanish = bot.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish);
-            if (vanish)
-                return false;
-            int range = HasAbility(Abilities.DetectHidden) && !bot.HasAbility(Abilities.DetectHidden) && !camouflage
-                ? levelDiff * 50 + 250
-                : levelDiff * 20 + 125;
-            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) && bot.CharacterClass?.IsAssassin != true && !camouflage)
-                range = Math.Max(range, 2700 - 36 * stealthLevel);
-            range += BaseBuffBonusCategory[eProperty.Skill_Stealth];
-            return IsWithinRadius(bot, Math.Min(range, 1900));
-        }
+        private bool CanDetectStealthedBot(GameBot bot) => StealthDetection.CanDetect(this, bot);
 
         public virtual bool CanDetect(GameObject enemy)
         {
@@ -11241,30 +11222,17 @@ namespace DOL.GS
                      * -See Hidden range = 2700 - (38 * your stealth spec)
                      */
 
-                    int enemyStealthLevel = Math.Min(50, enemyPlayer.GetModifiedSpecLevel(Specs.Stealth));
-                    int levelDiff = Math.Max(0, Level - enemyStealthLevel);
-                    int range = 0;
-
                     // Detect Hidden works only if the enemy doesn't have it or camouflage or vanish.
                     // According to https://disorder.dk/daoc/stealth/, it's possible that the range per level difference is supposed to be 50 even when Detect Hidden is cancelled out.
-                    if (HasAbility(Abilities.DetectHidden) &&
+                    bool detectHidden = HasAbility(Abilities.DetectHidden) &&
                         !enemyPlayer.HasAbility(Abilities.DetectHidden) &&
                         !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage) &&
-                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-                    {
-                        range = levelDiff * 50 + 250;
-                    }
-                    else
-                        range = levelDiff * 20 + 125;
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish);
 
                     // See Hidden only works against non assassin classes, if they don't have Camouflage enabled.
-                    if (HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
+                    bool seeHidden = HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
                         !enemyPlayer.CharacterClass.IsAssassin &&
-                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
-                    {
-                        // https://forums.freddyshouse.com/threads/scouts-and-stealth.139740/
-                        range = Math.Max(range, 2700 - 36 * enemyStealthLevel);
-                    }
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage);
 
                     // Mastery of Stealth
                     // Disabled. This is NF MoS. OF Version does not add range, only movement speed.
@@ -11275,7 +11243,9 @@ namespace DOL.GS
                             range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
                     }*/
 
-                    range += BaseBuffBonusCategory[eProperty.Skill_Stealth];
+                    // The numbers (and the 1,900 hard cap) live in StealthDetection.Range, shared with the gamebots.
+                    int range = StealthDetection.Range(Level, enemyPlayer.GetModifiedSpecLevel(Specs.Stealth), detectHidden, seeHidden,
+                        BaseBuffBonusCategory[eProperty.Skill_Stealth]);
 
                     // //Buff (Stealth Detection)
                     // //Increases the target's ability to detect stealthed players and monsters.
@@ -11315,10 +11285,6 @@ namespace DOL.GS
                     // GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
                     // if (iConvokerEffect != null)
                     //     range += (int)iConvokerEffect.Spell.Value;
-
-                    // Hard cap.
-                    if (range > 1900)
-                        range = 1900;
 
                     return IsWithinRadius(enemy, range);
                 }

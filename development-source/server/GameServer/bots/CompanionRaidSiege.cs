@@ -582,7 +582,7 @@ namespace DOL.GS
         private static IEnumerable<GameLiving> Enemies(GameBot bot, AbstractGameKeep keep, GameNPC[] nearby) =>
             nearby.OfType<GameLiving>().Concat(bot.GetPlayersInRadius(3000)).Where(t =>
                 (t is GameBot or GamePlayer || t is GameKeepGuard guard && guard.Component?.Keep == keep && !guard.IsPortalKeepGuard) &&
-                BotSiegeRuntime.LegalEnemy(bot, t) && !t.IsStealthed);
+                BotSiegeRuntime.LegalEnemy(bot, t) && StealthDetection.BotCanSee(bot, t));
 
         private static bool FiringOnRealm(GameBot bot, GameLiving t) =>
             (t.IsAttacking || t.IsCasting) && t.TargetObject is GameLiving victim && victim.Realm == bot.Realm;
