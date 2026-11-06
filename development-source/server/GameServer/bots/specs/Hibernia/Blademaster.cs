@@ -19,8 +19,8 @@ namespace DOL.GS
             var randVariance = spec switch
             {
                 eSpecType.DualWield => Util.Random(1),
-                eSpecType.DualWieldAndShield => 2,
-                _ => Util.Random(2),
+                eSpecType.DualWieldAndShield => Util.Random(2, 3),
+                _ => Pick(2, 2, 1, 1),
             };
 
             switch (randVariance)
@@ -39,6 +39,15 @@ namespace DOL.GS
                 Add(Specs.Celtic_Dual, 50, 1.0f);
                 Add(Specs.Shields, 42, 0.5f);
                 Add(Specs.Parry, 6, 0.1f);
+                break;
+
+                // Period shield Blademaster: weapon 50 / shield 42 / parry 36, Celtic Dual low.
+                case 3:
+                SpecType = eSpecType.DualWieldAndShield;
+                Add(ObjToSpec(WeaponOneType), 50, 1.0f);
+                Add(Specs.Celtic_Dual, 16, 0.1f);
+                Add(Specs.Shields, 42, 0.7f);
+                Add(Specs.Parry, 36, 0.5f);
                 break;
             }
         }

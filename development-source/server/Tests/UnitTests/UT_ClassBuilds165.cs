@@ -390,5 +390,18 @@ namespace DOL.UnitTests
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Piercing), Is.EqualTo(2 / 3.0).Within(0.03));
             Assert.That(plans.Any(p => Cap(p, Specs.RecurveBow) is >= 40 and <= 45), Is.True);
         }
+
+        [Test]
+        public void BlademasterCanRollTheShieldAndParryBuild()
+        {
+            bool found = false;
+            for (int i = 0; i < 100 && !found; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Blademaster, eSpecType.DualWieldAndShield);
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Blademaster, 50);
+                found = at50[SkillBase.ObjectTypeToSpec(plan.WeaponOneType)] == 50 && at50[Specs.Shields] == 42 && at50[Specs.Parry] == 36;
+            }
+            Assert.That(found, Is.True);
+        }
     }
 }
