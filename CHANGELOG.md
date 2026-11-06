@@ -99,6 +99,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: hovering a companion's style that follows another (an Armsman's Opal Slash) names its opening style; it showed "(style not found 58)" when your own class has no such style.
 - Merchants: 36 merchants whose title did not match their goods show the right one - Adribard's Retreat's Theurgist and Sorcerer staff sellers were titled Shield Merchant and Armor Merchant; arrow, bolt, bow and crossbow sellers, armor and robe merchants elsewhere had the same mix-up.
 - Raids: a realm raid's high-end boss loot is shared out again - a quarter straight to the players' bags, the rest to the raid's gamebots; in True 1.65 it had stayed on the ground.
+- Gamebots: your hired companions no longer take gamebots' places - with three companions out, three gamebots stayed offline ("queued") because the companions were counted toward the gamebot population.
 
 ## 0.2 (2026-11-01)
 
