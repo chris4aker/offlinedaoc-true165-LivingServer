@@ -23,10 +23,23 @@ from daoc_mpk import read_mpk
 ZONES = HERE.parent / 'godot/content/zones'
 
 
-def unique_id(row):
-    """fixtures.csv's Unique Id (column 15), the row ID where it is 0 or missing."""
+RELIC_KEEP_FIXTURE = 9999                       # the server's door rows for a Unique Id 0 whose row number is taken
+
+
+def unique_id(row, taken=()):
+    """fixtures.csv's Unique Id (column 15), the row ID where it is 0 or missing - unless another fixture of the table
+    has that row number as its Unique Id: then 9999, as the server's door table numbers it (Mount Collory's and
+    Cruachan Gorge's relic keeps: row 1, Unique Id 0, beside the frontier keep's Unique Id 1 - doors 2x0999901..11; with
+    the row number both keeps' doors had the same ids and opened together)."""
     u = row[14].strip() if len(row) > 14 else ''
-    return int(u) if u.isdigit() and int(u) != 0 else int(row[0])
+    if u.isdigit() and int(u) != 0:
+        return int(u)
+    return RELIC_KEEP_FIXTURE if int(row[0]) in taken else int(row[0])
+
+
+def taken_ids(rows):
+    """The table's non-zero Unique Ids (unique_id's 'taken')."""
+    return {int(r[14]) for r in rows if len(r) > 14 and r[14].strip().isdigit() and int(r[14]) != 0}
 
 
 def add(zone_id):
@@ -39,6 +52,7 @@ def add(zone_id):
     key = next(k for k in dat if k.lower() == 'fixtures.csv')
     rows = {int(r[0]): r for r in csv.reader(io.StringIO(dat[key].decode('latin1')))
             if r and r[0].strip().isdigit() and len(r) > 11 and r[1].strip().isdigit()}
+    taken = taken_ids(rows.values())
     changed = bad = 0
     for f in zone['fixtures']:
         fid = int(f.get('id', -1))
@@ -48,7 +62,7 @@ def add(zone_id):
         if r is None or r[2].strip() != f['name']:
             bad += 1
             continue
-        uid = unique_id(r)
+        uid = unique_id(r, taken)
         if uid != fid and f.get('uid') != uid:
             f['uid'] = uid
             changed += 1
