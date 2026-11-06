@@ -7,9 +7,8 @@ namespace DOL.GS
             SpecName = "InfiltratorBotSpec";
             Is2H = false;
 
-            int randBaseWeap = Util.Random(1);
-
-            switch (randBaseWeap)
+            // Period Infiltrators used thrust about three times as often as slash.
+            switch (Pick(1, 3))
             {
                 case 0: WeaponOneType = eObjectType.SlashingWeapon; break;
                 case 1: WeaponOneType = eObjectType.ThrustWeapon; break;

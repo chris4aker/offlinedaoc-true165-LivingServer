@@ -159,5 +159,12 @@ namespace DOL.UnitTests
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.SlashingWeapon), Is.EqualTo(160 / 222.0).Within(0.03));
             Assert.That(plans.All(p => Cap(p, Specs.Stealth) is >= 18 and <= 31), Is.True);
         }
+
+        [Test]
+        public void InfiltratorIsThreeInFourThrust()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Infiltrator);
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.ThrustWeapon), Is.EqualTo(0.75).Within(0.03));
+        }
     }
 }
