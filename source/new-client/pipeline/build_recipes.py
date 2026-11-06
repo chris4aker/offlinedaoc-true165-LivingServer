@@ -53,6 +53,11 @@ for codes, names in [
         PREFIX[c] = n
 ALL_PREFIXES = sorted(set(PREFIX.values()), key=len, reverse=True)
 
+# 1.65 recipes that can never be made (owner 2026-11-06 via the server chat): metalworking's tempered metal studs /
+# wire / strapping / scales need the old components 1.65 retired, so nothing in a 1.65 world produces them; the server
+# drops them too. The tempered saddlebags (2790, 9790, 16790) stay: they can be made.
+HIDE_165 = set(range(3491, 3521)) | set(range(10491, 10511)) | set(range(17491, 17521))
+
 
 def tdl_rows():
     """[(row fields, realm, trade)] of the 1.64 file's recipe rows, and its alchemy category labels."""
@@ -143,6 +148,8 @@ def main():
     out165 = collections.defaultdict(lambda: collections.defaultdict(list))
     for r in rows:
         rid, trade, cat, realm = int(r[0]), int(r[1]), int(r[2]), int(r[3])
+        if rid in HIDE_165:
+            continue
         base, code = r[7].strip(), r[8].strip()
         name = named(base, code)
         ing = [[ing_name.get(n.lower(), n), c] for n, c in tdl_ingredients(r)]
