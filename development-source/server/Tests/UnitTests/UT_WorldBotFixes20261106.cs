@@ -175,5 +175,39 @@ namespace DOL.UnitTests
                 AutonomousCampCompetition.PublishCatalog([]);
             }
         }
+
+        [Test]
+        public void ACampWhereThreeBotsStallIsBenched()
+        {
+            AutonomousCampRouteQuarantine.ResetForTests();
+            try
+            {
+                var now = new System.DateTime(2026, 11, 6, 3, 0, 0, System.DateTimeKind.Utc);
+                const string camp = "capnbry:201:6:0";
+                // one bot stalling over and over is not enough
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall(camp, 1, now), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall(camp, 1, now.AddMinutes(5)), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall(camp, 2, now.AddMinutes(10)), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.IsQuarantined(camp, now.AddMinutes(10)), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall(camp, 3, now.AddMinutes(20)), Is.True);
+                Assert.That(AutonomousCampRouteQuarantine.IsQuarantined(camp, now.AddMinutes(21)), Is.True);
+                // stalls more than 30 minutes apart don't add up
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall("other", 1, now), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall("other", 2, now.AddMinutes(20)), Is.False);
+                Assert.That(AutonomousCampRouteQuarantine.ReportStall("other", 3, now.AddMinutes(45)), Is.False);
+            }
+            finally
+            {
+                AutonomousCampRouteQuarantine.ResetForTests();
+            }
+        }
+
+        [Test]
+        public void AMeleePullerThatNeverReachedItsTargetBlamesTheCamp()
+        {
+            Assert.That(AutonomousCampRouteQuarantine.StallBlamesCamp(true, 900, 150), Is.True);
+            Assert.That(AutonomousCampRouteQuarantine.StallBlamesCamp(true, 120, 150), Is.False, "in reach: the bot stalled itself");
+            Assert.That(AutonomousCampRouteQuarantine.StallBlamesCamp(false, 900, 150), Is.False, "a caster may just be out of power");
+        }
     }
 }

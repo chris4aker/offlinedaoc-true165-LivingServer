@@ -26,14 +26,46 @@ namespace DOL.GS
         }
 
         private static readonly ConcurrentDictionary<string, Record> Records = new(StringComparer.OrdinalIgnoreCase);
+        // bots that gave a camp up after pulls in which they never moved, kept apart from route failures
+        private static readonly ConcurrentDictionary<string, Record> Stalls = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Returns true when this report put the camp on the bench.</summary>
-        public static bool ReportFailure(string campId, long botId, DateTime? nowUtc = null)
+        public static bool ReportFailure(string campId, long botId, DateTime? nowUtc = null) =>
+            Report(Records, campId, botId, nowUtc);
+
+        /// <summary>
+        /// A bot gave the camp up after pulls in which it never moved. One such bot may only have stalled on its own side
+        /// (no weapon, nothing to cast), but <see cref="DistinctBotsToQuarantine"/> different bots within
+        /// <see cref="FailureWindow"/> mean the camp is the problem (2026-11-06: a navmesh pocket at a lough wolf cadger
+        /// camp held up to 31 bots, 395 pull timeouts and 72 camp abandons, and was never benched). Returns true when this
+        /// report put the camp on the bench.
+        /// </summary>
+        public static bool ReportStall(string campId, long botId, DateTime? nowUtc = null)
+        {
+            if (IsQuarantined(campId, nowUtc) || !Report(Stalls, campId, botId, nowUtc))
+                return false;
+            Record record = Records.GetOrAdd(campId, _ => new Record());
+            lock (record.Gate)
+            {
+                record.FailedBots.Clear();
+                record.QuarantinedUntilUtc = (nowUtc ?? DateTime.UtcNow) + QuarantineDuration;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// A pull stall that says something about the camp, not the bot: a melee puller whose target stayed beyond its
+        /// reach while following it moved the bot nowhere.
+        /// </summary>
+        public static bool StallBlamesCamp(bool meleePuller, int targetDistance, int meleeRange) =>
+            meleePuller && targetDistance > meleeRange;
+
+        private static bool Report(ConcurrentDictionary<string, Record> records, string campId, long botId, DateTime? nowUtc)
         {
             if (string.IsNullOrWhiteSpace(campId) || botId <= 0)
                 return false;
             DateTime now = nowUtc ?? DateTime.UtcNow;
-            Record record = Records.GetOrAdd(campId, _ => new Record());
+            Record record = records.GetOrAdd(campId, _ => new Record());
             lock (record.Gate)
             {
                 if (record.QuarantinedUntilUtc > now)
@@ -58,6 +90,10 @@ namespace DOL.GS
             !string.IsNullOrWhiteSpace(campId) && Records.TryGetValue(campId, out Record record) &&
             record.QuarantinedUntilUtc > (nowUtc ?? DateTime.UtcNow);
 
-        public static void ResetForTests() => Records.Clear();
+        public static void ResetForTests()
+        {
+            Records.Clear();
+            Stalls.Clear();
+        }
     }
 }

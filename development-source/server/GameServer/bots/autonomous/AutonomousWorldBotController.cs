@@ -2668,10 +2668,12 @@ namespace DOL.GS
                 return false;
 
             _campPullFailures = 0;
-            if (!stalled && AutonomousCampRouteQuarantine.ReportFailure(_camp.Id, bot.DatabaseID))
+            // a stall alone doesn't count against the camp; three different bots stalling there within 30 minutes do
+            if (stalled ? AutonomousCampRouteQuarantine.ReportStall(_camp.Id, bot.DatabaseID)
+                    : AutonomousCampRouteQuarantine.ReportFailure(_camp.Id, bot.DatabaseID))
                 Log.Warn($"AUTONOMOUS_CAMP_ROUTE_QUARANTINE camp=\"{_camp.Id}\" target=\"{_camp.MonsterName}\" " +
                          $"zone=\"{_camp.ZoneName}\" bots={AutonomousCampRouteQuarantine.DistinctBotsToQuarantine} " +
-                         $"hours={AutonomousCampRouteQuarantine.QuarantineDuration.TotalHours:0} reason=unreachable-pulls");
+                         $"hours={AutonomousCampRouteQuarantine.QuarantineDuration.TotalHours:0} reason={(stalled ? "stalled-pulls" : "unreachable-pulls")}");
             Log.Warn($"AUTONOMOUS_CAMP_UNREACHABLE_PULLS bot={bot.Name} id={bot.DatabaseID} level={bot.Level} " +
                      $"class=\"{bot.ClassName}\" camp=\"{_camp.Id}\" target=\"{_camp.MonsterName}\" " +
                      $"region={bot.CurrentRegionID} x={bot.X} y={bot.Y} z={bot.Z} stalled={stalled}");
@@ -2811,7 +2813,11 @@ namespace DOL.GS
                             $"region={bot.CurrentRegionID} x={bot.X} y={bot.Y} z={bot.Z}");
                     // A bot that never moved during the pull stalled on its own side (no weapon, nothing to cast):
                     // that says nothing about the camp, so it doesn't count toward quarantining it (owner 2026-10-31).
-                    bool stalled = Vector3.Distance(_savageMeleePullStartPosition, new Vector3(bot.X, bot.Y, bot.Z)) < 100f;
+                    // A melee puller (not an archer) still out of reach that never moved did try to follow: the camp's
+                    // ground failed it.
+                    bool stalled = Vector3.Distance(_savageMeleePullStartPosition, new Vector3(bot.X, bot.Y, bot.Z)) < 100f &&
+                        !AutonomousCampRouteQuarantine.StallBlamesCamp(meleePuller && !BotRangedCombat.UsesAutonomousBowPositioning(bot),
+                            distance, bot.MeleeAttackRange);
                     if (AbandonCampAfterUnreachablePulls(bot, stalled))
                         return true;
                     return noOtherAggro;
