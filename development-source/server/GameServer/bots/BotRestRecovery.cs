@@ -121,6 +121,19 @@ namespace DOL.GS
             AutonomousRestPolicy.NeedsRecovery(bot.HealthPercent, bot.ManaPercent, bot.EndurancePercent, bot.MaxMana > 0);
 
         public static bool DeferOptionalCasterUpkeep(GameBot bot) => bot != null &&
-            BotSpellPower.IsOffensiveCaster(bot) && bot.IsEnhancedResting;
+            (BotSpellPower.IsOffensiveCaster(bot) && bot.IsEnhancedResting || SeatedInPlayerGroup165(bot));
+
+        /// <summary>
+        /// True 1.65 Mode (owner 2026-11-06: "make it so they can use all available power for buffs without sitting outside
+        /// combat"): a bot in its player's group spends its power on buffs first and sits only when it can't cast the next
+        /// one. It stays standing while a buff or heal it just cast is followed by another (GameBot.SupportCastGraceUntil),
+        /// and once seated it rests until full before the optional buffs and pet buffs go on again (a missing pet is still
+        /// summoned, a heal still stands it up), so it never stands up and sits down again for every buff.
+        /// </summary>
+        public static bool BuffingBeforeRest(GameBot bot, long now) => Classic165Mode.IsOn && bot != null &&
+            bot.IsPlayerLedGroup && !bot.IsTemporaryGroupHelper && !bot.IsRecoveryResting && now < bot.SupportCastGraceUntil;
+
+        private static bool SeatedInPlayerGroup165(GameBot bot) => Classic165Mode.IsOn &&
+            bot.IsPlayerLedGroup && !bot.IsTemporaryGroupHelper && bot.IsRecoveryResting;
     }
 }

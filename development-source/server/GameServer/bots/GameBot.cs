@@ -3039,6 +3039,13 @@ namespace DOL.GS
             return true;
         }
 
+        internal const int SupportCastGraceMilliseconds = 2_000;
+
+        /// <summary>Until when a bot that just cast a buff or heal stays standing for its next one instead of sitting down
+        /// to rest between casts (owner 2026-11-06: a Cabalist buffing her pet below 70% power sat down and stood up again
+        /// between every buff). Set at the cast's start: its cast time plus two seconds.</summary>
+        internal long SupportCastGraceUntil { get; private set; }
+
         /// <summary>The partner song of a Minstrel's charm twist while it is being requested (see CastSpell).</summary>
         internal Spell CharmTwistSong;
 
@@ -3108,6 +3115,8 @@ namespace DOL.GS
             if (_seatedForClients)
                 SetSeatedForClients(false);
             bool started = base.CastSpell(spell, line, spellCastingAbilityHandler, checkLos);
+            if (started && !spell.IsHarmful)
+                SupportCastGraceUntil = GameLoop.GameLoopTime + spell.CastTime + SupportCastGraceMilliseconds;
             if (quickCastThisCast && !started)
                 EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast)?.End();
             if (spell.IsHarmful || spell.IsHealing)

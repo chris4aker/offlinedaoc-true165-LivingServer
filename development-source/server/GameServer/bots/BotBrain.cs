@@ -3331,7 +3331,10 @@ namespace DOL.AI.Brain
                 // non-temporary playerbots until companion behavior is proven.
                 if (!_brain.BotBody.IsTemporaryGroupHelper)
                 {
-                    bool rest = AutonomousRestPolicy.ShouldRest(
+                    // True 1.65 Mode: buffs and heals out of combat first, on all the power there is, then a rest
+                    // (owner 2026-11-06); a bot already seated finishes its rest (BotRestRecovery.DeferOptionalCasterUpkeep)
+                    bool rest = !BotRestRecovery.BuffingBeforeRest(_brain.BotBody, GameLoop.GameLoopTime) &&
+                        AutonomousRestPolicy.ShouldRest(
                         leader.CurrentRegionID == _brain.Body.CurrentRegionID &&
                             _brain.Body.IsWithinRadius(leader, 350),
                         AutonomousRestPolicy.MovementBlocksRest(
