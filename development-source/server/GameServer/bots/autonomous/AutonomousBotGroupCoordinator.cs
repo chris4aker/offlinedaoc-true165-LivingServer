@@ -2779,8 +2779,9 @@ public static partial class AutonomousBotGroupCoordinator
         GameBot[] pool = candidates.Where(candidate => candidate?.CharacterClass != null)
             .OrderBy(_ => Random.Shared.Next()).ToArray();
         eCharacterClass[] poolClasses = pool.Select(candidate => (eCharacterClass)candidate.CharacterClass.ID).ToArray();
+        bool[] crowdControl = Classic165Mode.IsOn ? pool.Select(HasMesmerize).ToArray() : null;
         if (!TryMatchPveRoster((eCharacterClass)leader.CharacterClass.ID, poolClasses, minimumSize, maximumSize,
-                out BotPveGroupRole[] template, out int[] owners))
+                out BotPveGroupRole[] template, out int[] owners, crowdControl))
             return false;
         GameBot[] slotted = owners.Select(owner => owner < 0 ? leader : pool[owner]).ToArray();
         selected = slotted.Where(owner => owner != leader).ToArray();
@@ -2792,30 +2793,83 @@ public static partial class AutonomousBotGroupCoordinator
 
     /// <summary>
     /// Fills the first template (largest first) whose size is allowed. owners
-    /// holds a pool index per slot, or -1 for the leader.
+    /// holds a pool index per slot, or -1 for the leader. With crowdControl
+    /// (True 1.65 Mode: which pool members can mesmerize) a mezzer that can
+    /// fill the buffer slot is put there first, as period groups wanted crowd
+    /// control; a template that cannot be filled that way is filled as before,
+    /// so the preference never makes a party smaller or stops one forming.
     /// </summary>
     private static bool TryMatchPveRoster(eCharacterClass leader, eCharacterClass[] pool, int minimumSize,
-        int maximumSize, out BotPveGroupRole[] template, out int[] owners)
+        int maximumSize, out BotPveGroupRole[] template, out int[] owners, bool[] crowdControl = null)
     {
+        int mezzer = PreferredCrowdControlCandidate(pool, crowdControl);
         foreach (BotPveGroupRole[] candidateTemplate in PveRosterTemplates)
         {
             if (candidateTemplate.Length < minimumSize || candidateTemplate.Length > maximumSize)
                 continue;
             template = candidateTemplate;
-            foreach (int leaderSlot in Enumerable.Range(0, template.Length)
-                         .Where(index => BotPartyRoles.CanFill(leader, candidateTemplate[index]))
-                         .OrderBy(_ => Random.Shared.Next()))
-            {
-                owners = Enumerable.Repeat(int.MinValue, template.Length).ToArray();
-                owners[leaderSlot] = -1;
-                for (int candidate = 0; candidate < pool.Length; candidate++)
-                    TryMatchPveSlot(candidate, pool, template, owners, new bool[template.Length], leaderSlot);
-                if (owners.All(owner => owner != int.MinValue))
+            int[] leaderSlots = Enumerable.Range(0, template.Length)
+                .Where(index => BotPartyRoles.CanFill(leader, candidateTemplate[index]))
+                .OrderBy(_ => Random.Shared.Next())
+                .ToArray();
+            int bufferSlot = Array.IndexOf(template, BotPveGroupRole.Buffer);
+            if (bufferSlot >= 0 && mezzer >= 0)
+                foreach (int leaderSlot in leaderSlots)
+                    if (leaderSlot != bufferSlot && TryFillPveTemplate(template, pool, leaderSlot, bufferSlot, mezzer, out owners))
+                        return true;
+            foreach (int leaderSlot in leaderSlots)
+                if (TryFillPveTemplate(template, pool, leaderSlot, -1, -1, out owners))
                     return true;
-            }
         }
         template = null;
         owners = null;
+        return false;
+    }
+
+    /// <summary>The first pool member that can mesmerize and fill the buffer slot, or -1.</summary>
+    public static int PreferredCrowdControlCandidate(eCharacterClass[] pool, bool[] crowdControl)
+    {
+        if (crowdControl == null)
+            return -1;
+        for (int candidate = 0; candidate < pool.Length && candidate < crowdControl.Length; candidate++)
+            if (crowdControl[candidate] && BotPartyRoles.CanFill(pool[candidate], BotPveGroupRole.Buffer))
+                return candidate;
+        return -1;
+    }
+
+    private static bool TryFillPveTemplate(BotPveGroupRole[] template, eCharacterClass[] pool, int leaderSlot,
+        int pinnedSlot, int pinnedCandidate, out int[] owners)
+    {
+        owners = Enumerable.Repeat(int.MinValue, template.Length).ToArray();
+        owners[leaderSlot] = -1;
+        if (pinnedSlot >= 0)
+            owners[pinnedSlot] = pinnedCandidate;
+        for (int candidate = 0; candidate < pool.Length; candidate++)
+        {
+            if (candidate == pinnedCandidate)
+                continue;
+            // the pinned mezzer keeps the buffer slot: no augmenting path may move it
+            bool[] visited = new bool[template.Length];
+            if (pinnedSlot >= 0)
+                visited[pinnedSlot] = true;
+            TryMatchPveSlot(candidate, pool, template, owners, visited, leaderSlot);
+        }
+        return owners.All(owner => owner != int.MinValue);
+    }
+
+    /// <summary>The bot knows a single-target mesmerize at its level (crowd control for the party).</summary>
+    private static bool HasMesmerize(GameBot bot)
+    {
+        if (bot?.Spells is not { } spells)
+            return false;
+        try
+        {
+            foreach (Spell spell in spells)
+                if (spell?.SpellType is eSpellType.Mesmerize or eSpellType.Mez && spell.Target == eSpellTarget.ENEMY &&
+                    spell.Level <= bot.Level)
+                    return true;
+        }
+        catch (InvalidOperationException) { } // spell list cleared mid-scan (respec): no preference this pass
         return false;
     }
 
@@ -2852,6 +2906,20 @@ public static partial class AutonomousBotGroupCoordinator
     public static int PveFormationSize(eCharacterClass leader, params eCharacterClass[] candidates) =>
         TryMatchPveRoster(leader, candidates, MinimumPveFormationSize, 8, out BotPveGroupRole[] template, out _)
             ? template.Length : 0;
+
+    /// <summary>The role each pool member gets in the roster formation would build (null when none fits).</summary>
+    public static BotPveGroupRole?[] PveFormationRoles(eCharacterClass leader, eCharacterClass[] candidates,
+        bool[] crowdControl)
+    {
+        if (!TryMatchPveRoster(leader, candidates, MinimumPveFormationSize, 8, out BotPveGroupRole[] template,
+                out int[] owners, crowdControl))
+            return null;
+        var roles = new BotPveGroupRole?[candidates.Length];
+        for (int slot = 0; slot < owners.Length; slot++)
+            if (owners[slot] >= 0)
+                roles[owners[slot]] = template[slot];
+        return roles;
+    }
 
     private static bool HasActivePveComposition(Session session, GameBot[] members) =>
         session != null && members != null &&

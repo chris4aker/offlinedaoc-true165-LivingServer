@@ -34,5 +34,44 @@ namespace DOL.GS.Tests
             // the owner's solo rest rule is untouched
             Assert.That(AutonomousRestPolicy.PowerRestThreshold, Is.EqualTo(70));
         });
+
+        [Test]
+        public void AMezzerIsPreferredForTheBufferSlot()
+        {
+            eCharacterClass[] pool =
+            [
+                eCharacterClass.Thane, eCharacterClass.Healer, eCharacterClass.Healer, eCharacterClass.Shaman,
+                eCharacterClass.Berserker, eCharacterClass.Savage, eCharacterClass.Hunter
+            ];
+            bool[] mez = [false, true, false, false, false, false, false];
+            for (int run = 0; run < 20; run++)
+            {
+                BotPveGroupRole?[] roles = AutonomousBotGroupCoordinator.PveFormationRoles(eCharacterClass.Warrior, pool, mez);
+                Assert.That(roles, Is.Not.Null);
+                Assert.That(roles[1], Is.EqualTo(BotPveGroupRole.Buffer), "the Healer with mez takes the buffer slot");
+                Assert.That(roles, Has.All.Not.Null, "still the full eight");
+            }
+            Assert.That(AutonomousBotGroupCoordinator.PreferredCrowdControlCandidate(pool, null), Is.EqualTo(-1),
+                "normal mode: no preference");
+        }
+
+        [Test]
+        public void TheMezPreferenceNeverShrinksTheParty()
+        {
+            // the only mezzer is one of the two healers the full eight needs: it stays a healer
+            eCharacterClass[] pool =
+            [
+                eCharacterClass.Thane, eCharacterClass.Healer, eCharacterClass.Shaman, eCharacterClass.Skald,
+                eCharacterClass.Berserker, eCharacterClass.Savage, eCharacterClass.Hunter
+            ];
+            bool[] mez = [false, true, false, false, false, false, false];
+            for (int run = 0; run < 20; run++)
+            {
+                BotPveGroupRole?[] roles = AutonomousBotGroupCoordinator.PveFormationRoles(eCharacterClass.Warrior, pool, mez);
+                Assert.That(roles, Is.Not.Null);
+                Assert.That(roles, Has.All.Not.Null);
+                Assert.That(roles[1], Is.EqualTo(BotPveGroupRole.Healer));
+            }
+        }
     }
 }
