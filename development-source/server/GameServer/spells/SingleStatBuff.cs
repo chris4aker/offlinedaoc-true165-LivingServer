@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
                 if (playerCaster != null)
                     effectiveness = CalculateEffectivenessFromSpec(playerCaster.GetModifiedSpecLevel(m_spellLine.Spec), Spell.Level);
                 else if (PlayerRules165.IsPlayerRulesBot(Caster))   // True 1.65 Mode: a bot's buffs scale with its spec like a player's
-                    effectiveness = CalculateEffectivenessFromSpec(Caster.GetModifiedSpecLevel(m_spellLine.Spec), Spell.Level);
+                    effectiveness = CalculateEffectivenessFromSpec(Caster.GetModifiedSpecLevel(SpecLineOf(Caster).Spec), Spell.Level);
                 else
                     effectiveness = 1.0; // NPC (necromancer pet excluded).
             }

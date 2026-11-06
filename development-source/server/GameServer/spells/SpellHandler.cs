@@ -2686,6 +2686,14 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
+		/// The line whose specialization scales this spell for <paramref name="caster"/>. True 1.65 Mode: a gamebot or hired
+		/// companion casts every spell through the generic "Mob Spells" line (no such spec: 0), so its learned line is used,
+		/// as a player's own line is (owner 2026-11-06). Every other caster, and normal mode: the line it was cast from.
+		/// </summary>
+		protected SpellLine SpecLineOf(GameLiving caster) =>
+			PlayerRules165.IsPlayerRulesBot(caster) ? HealSpellHandler.SpecLineFor(caster, m_spell, m_spellLine) : m_spellLine;
+
+		/// <summary>
 		/// The Caster
 		/// </summary>
 		public GameLiving Caster
