@@ -133,6 +133,13 @@ public sealed partial class AutonomousWorldBotController
         bool defending = AutonomousRvrDefense.IsCommittedDefender(bot);
         bool siegeFighter = AutonomousRvrDefense.IsCommittedSiegeFighter(bot);
         GameLiving previousEngine = defending ? bot.TargetObject as GameSiegeWeapon ?? _siegeWeapon?.TargetObject as GameSiegeWeapon : null;
+        GameBot mainAssist = RvrMainAssist(bot, defending, siegeFighter);
+        if (mainAssist != null && bot.IsAlive && IsBattleground(bot) && (brain.HasAggro || bot.InCombat || bot.IsAttacking))
+        {
+            // In a fight: the main assist keeps its call fresh, a member switches to a new call.
+            KeepAssistCall(brain, bot, mainAssist);
+            return false;
+        }
         if (bot?.IsAutonomousWorldBot != true || bot.IsTemporaryGroupHelper || bot.IsPlayerLedGroup ||
             !bot.IsAlive || bot.ObjectState != GameObject.eObjectState.Active || bot.IsReturningAfterRelease ||
             bot.IsOnStableMasterRoute || !IsBattleground(bot) ||
@@ -142,14 +149,17 @@ public sealed partial class AutonomousWorldBotController
 
         var nav = PathfindingProvider.Instance;
         if (!nav.IsAvailable || !nav.HasNavmesh(bot.CurrentZone)) return false;
+        bool callsTargets = mainAssist == bot;
+        if (mainAssist != null && !callsTargets && MainAssistNearby(bot, mainAssist))
+        {
+            // A member /assists: no scan of its own while its main assist is close by.
+            GameLiving called = AutonomousRvrAssist.CalledTarget(bot.Group, GameLoop.GameLoopTime);
+            if (called == null || !bot.IsWithinRadius(called, TargetSearchRadius) || !EligibleRvrTarget(bot, called)) return false;
+            return EngageFrontierEnemy(brain, bot, called, defending: false, previousEngine: null);
+        }
         // Cheap rejections first (most nearby livings are friendly bots); the area lookup last
         // (IsSafeArea/GetAreasOfZone were ~64 MB per 40 s of allocations in run 11).
-        bool Eligible(GameLiving target) => target != bot && !target.IsStealthed && !IsIgnoredPvpTarget(target) &&
-            target.ObjectState == GameObject.eObjectState.Active && target.IsAlive &&
-            target.Realm != bot.Realm && target.Realm != eRealm.None && target.CurrentRegionID == bot.CurrentRegionID &&
-            AutonomousRvrTargetPolicy.IsEligible(bot.Realm, target.Realm, target.IsAlive,
-                target.CurrentRegionID == bot.CurrentRegionID, IsBattleground(target), IsSafeArea(target),
-                GameServer.ServerRules.IsAllowedToAttack(bot, target, true));
+        bool Eligible(GameLiving target) => EligibleRvrTarget(bot, target);
 
         GameLiving[] nearby = bot.GetPlayersInRadius(TargetSearchRadius).Where(Eligible).Cast<GameLiving>()
             .Concat(bot.GetNPCsInRadius(TargetSearchRadius)
@@ -172,10 +182,68 @@ public sealed partial class AutonomousWorldBotController
         var visibleTargets=visible.ToArray();
         var operatorThreats=visibleTargets.Where(target=>target.IsAttacking && target.TargetObject is GameBot friendly &&
             friendly.Realm==bot.Realm && bot.IsWithinRadius(friendly,1000) && BotSiegeRuntime.HoldingPosition(friendly)).ToArray();
-        GameLiving enemy = SelectDistributedRvrTarget(bot, operatorThreats.Length>0 ? operatorThreats : visibleTargets);
+        GameLiving enemy = callsTargets
+            ? AutonomousRvrAssist.Pick(visibleTargets, operatorThreats.Contains, GameRelic.IsPlayerCarryingRelic,
+                target => AutonomousRvrAssist.KillOrderRank(AutonomousRvrAssist.ClassOf(target)), target => bot.GetDistanceTo(target))
+            : SelectDistributedRvrTarget(bot, operatorThreats.Length>0 ? operatorThreats : visibleTargets);
         if (enemy == null || !Eligible(enemy)) return false;
         if (previousEngine != null && enemy is GameSiegeWeapon) return false;
+        if (callsTargets) AutonomousRvrAssist.CallTarget(bot.Group, enemy, GameLoop.GameLoopTime);
+        return EngageFrontierEnemy(brain, bot, enemy, defending, previousEngine);
+    }
 
+    private bool EligibleRvrTarget(GameBot bot, GameLiving target) =>
+        target != bot && !target.IsStealthed && !IsIgnoredPvpTarget(target) &&
+        target.ObjectState == GameObject.eObjectState.Active && target.IsAlive &&
+        target.Realm != bot.Realm && target.Realm != eRealm.None && target.CurrentRegionID == bot.CurrentRegionID &&
+        AutonomousRvrTargetPolicy.IsEligible(bot.Realm, target.Realm, target.IsAlive,
+            target.CurrentRegionID == bot.CurrentRegionID, IsBattleground(target), IsSafeArea(target),
+            GameServer.ServerRules.IsAllowedToAttack(bot, target, true));
+
+    /// <summary>True 1.65 Mode: the warband leader is the main assist of an RvR warband; null when assist does not apply.</summary>
+    private GameBot RvrMainAssist(GameBot bot, bool defending, bool siegeFighter)
+    {
+        var directive = _groupDirective;
+        if (bot?.Group == null || bot.IsAutonomousWorldBot != true || directive is not { IsDynamic: true, ObjectiveKind: eAutonomousObjectiveKind.RvR } ||
+            directive.Leader is not { } leader || leader.Group != bot.Group || !leader.IsAlive ||
+            bot.IsTemporaryGroupHelper || bot.IsPlayerLedGroup)
+            return null;
+        return AutonomousRvrAssist.Applies(Classic165Mode.IsOn, true, defending, siegeFighter, BotSiegeRuntime.Assigned(bot))
+            ? leader : null;
+    }
+
+    private static bool MainAssistNearby(GameBot bot, GameBot mainAssist) =>
+        mainAssist.ObjectState == GameObject.eObjectState.Active && mainAssist.CurrentRegionID == bot.CurrentRegionID &&
+        IsBattleground(mainAssist) && bot.IsWithinRadius(mainAssist, TargetSearchRadius);
+
+    private long _nextAssistCheck;
+
+    private void KeepAssistCall(BotBrain brain, GameBot bot, GameBot mainAssist)
+    {
+        long now = GameLoop.GameLoopTime;
+        if (now < _nextAssistCheck) return;
+        _nextAssistCheck = now + 1_000 + bot.ObjectID % 250;
+        GameLiving current = bot.TargetObject as GameLiving;
+        bool fightingEnemy = current is GamePlayer or GameBot && current.IsAlive && current.Realm != bot.Realm && current.Realm != eRealm.None;
+        if (mainAssist == bot)
+        {
+            if (fightingEnemy) AutonomousRvrAssist.CallTarget(bot.Group, current, now);
+            return;
+        }
+        // Healers keep healing; a member already on someone else's player switches to the call when it is close.
+        GameLiving called = AutonomousRvrAssist.CalledTarget(bot.Group, now);
+        if (!fightingEnemy || called == null || called == current || BotPartyRoles.IsSupport(bot) ||
+            !MainAssistNearby(bot, mainAssist) || !bot.IsWithinRadius(called, AssistSwitchRadius) || !EligibleRvrTarget(bot, called))
+            return;
+        brain.AddToAggroList(called, Math.Max(1, brain.GetBaseAggroAmount(current) - brain.GetBaseAggroAmount(called) + 1));
+        bot.TargetObject = called;
+    }
+
+    // A member does not run off across the field after a call; it switches only to a target this close.
+    private const int AssistSwitchRadius = 2_000;
+
+    private bool EngageFrontierEnemy(BotBrain brain, GameBot bot, GameLiving enemy, bool defending, GameLiving previousEngine)
+    {
         if (defending)
         {
             // Combat wins over buying, deploying or operating a siege engine.
