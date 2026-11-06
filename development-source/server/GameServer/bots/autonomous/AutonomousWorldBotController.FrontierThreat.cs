@@ -130,6 +130,7 @@ public sealed partial class AutonomousWorldBotController
         // L4: a relic carrier does not go looking for fights; Tick decides whether it is cornered.
         if (GameRelic.IsPlayerCarryingRelic(bot)) return false;
         if (bot?.IsAutonomousWorldBot == true && IsBattleground(bot) && (BreakPvpStalemate(brain, bot) || BreakUnreachableTarget(brain, bot))) return false;
+        KeepHiddenInFrontier(brain, bot);
         bool defending = AutonomousRvrDefense.IsCommittedDefender(bot);
         bool siegeFighter = AutonomousRvrDefense.IsCommittedSiegeFighter(bot);
         GameLiving previousEngine = defending ? bot.TargetObject as GameSiegeWeapon ?? _siegeWeapon?.TargetObject as GameSiegeWeapon : null;
@@ -182,7 +183,13 @@ public sealed partial class AutonomousWorldBotController
         var visibleTargets=visible.ToArray();
         var operatorThreats=visibleTargets.Where(target=>target.IsAttacking && target.TargetObject is GameBot friendly &&
             friendly.Realm==bot.Realm && bot.IsWithinRadius(friendly,1000) && BotSiegeRuntime.HoldingPosition(friendly)).ToArray();
-        GameLiving enemy = callsTargets
+        // A True 1.65 stealther (alone or leading a pair) takes the easy kill first: sitting, out of power, hurt.
+        bool stalker = (mainAssist == null || callsTargets) && Classic165Mode.IsOn && AutonomousRvrStealthers.PrefersSolo(bot);
+        GameLiving enemy = stalker
+            ? AutonomousRvrAssist.Pick(visibleTargets, operatorThreats.Contains, GameRelic.IsPlayerCarryingRelic,
+                target => AutonomousRvrStealthers.Vulnerability(target) * 5 + AutonomousRvrAssist.KillOrderRank(AutonomousRvrAssist.ClassOf(target)),
+                target => bot.GetDistanceTo(target))
+            : callsTargets
             ? AutonomousRvrAssist.Pick(visibleTargets, operatorThreats.Contains, GameRelic.IsPlayerCarryingRelic,
                 target => AutonomousRvrAssist.KillOrderRank(AutonomousRvrAssist.ClassOf(target)), target => bot.GetDistanceTo(target))
             : SelectDistributedRvrTarget(bot, operatorThreats.Length>0 ? operatorThreats : visibleTargets);
@@ -190,6 +197,28 @@ public sealed partial class AutonomousWorldBotController
         if (previousEngine != null && enemy is GameSiegeWeapon) return false;
         if (callsTargets) AutonomousRvrAssist.CallTarget(bot.Group, enemy, GameLoop.GameLoopTime);
         return EngageFrontierEnemy(brain, bot, enemy, defending, previousEngine);
+    }
+
+    private long _nextHideCheck;
+
+    /// <summary>True 1.65 Mode: a stealther hunting alone or in a pair moves hidden through the frontier.</summary>
+    private void KeepHiddenInFrontier(BotBrain brain, GameBot bot)
+    {
+        if (bot == null || bot.IsStealthed || !Classic165Mode.IsOn || !bot.IsAutonomousWorldBot || bot.IsTemporaryGroupHelper ||
+            bot.IsPlayerLedGroup) return;
+        long now = GameLoop.GameLoopTime;
+        if (now < _nextHideCheck) return;
+        _nextHideCheck = now + 2_000 + bot.ObjectID % 500;
+        if (!AutonomousObjectiveAssignments.Is(bot, eAutonomousObjectiveKind.RvR) || !AutonomousRvrStealthers.PrefersSolo(bot) ||
+            !IsInFrontier(bot)) return;
+        bool busy = !bot.IsAlive || bot.InCombat || bot.IsAttacking || bot.IsCasting || brain.HasAggro ||
+            GameRelic.IsPlayerCarryingRelic(bot) || bot.IsReturningAfterRelease;
+        bool mounted = bot.IsOnHorse || bot.IsOnStableMasterRoute;
+        if (busy || mounted) return;
+        // The area lookup last (allocates).
+        if (AutonomousRvrStealthers.TravelsHidden(true, true, (bot.GetSpecializationByName(Specs.Stealth)?.Level ?? 0) > 0,
+                true, IsSafeArea(bot), busy, mounted, bot.Group?.MemberCount ?? 1))
+            bot.Stealth(true);
     }
 
     private bool EligibleRvrTarget(GameBot bot, GameLiving target) =>

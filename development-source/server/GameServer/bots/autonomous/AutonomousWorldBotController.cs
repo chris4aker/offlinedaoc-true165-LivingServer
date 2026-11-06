@@ -2463,7 +2463,10 @@ namespace DOL.GS
             }
 
             // True 1.65 Mode: the old-frontier fights centred on the milegates and outside the enemy portal keeps
-            // (installed door and keep data); they weigh more than a keep's surroundings or a clearing.
+            // (installed door and keep data); they weigh more than a keep's surroundings or a clearing. A stealther
+            // hunting alone or in a pair mostly takes one as its hunting post.
+            int hotspotWeight = Classic165Mode.IsOn && AutonomousRvrStealthers.PrefersSolo(bot) && (bot.Group?.MemberCount ?? 1) <= 2
+                ? AutonomousRvrStealthers.PostWeight : AutonomousFrontierHotspots.RoamWeight;
             if (Classic165Mode.IsOn)
                 foreach (ushort regionId in local)
                     foreach (AutonomousFrontierHotspots.Anchor anchor in AutonomousFrontierHotspots.For(regionId))
@@ -2472,7 +2475,7 @@ namespace DOL.GS
                         int x = (int)floor.X, y = (int)floor.Y, z = (int)floor.Z;
                         choices.Add(new(anchor.Id, anchor.Name, anchor.Name, regionId, x, y, z, 1, false, true));
                         objectives.Add(new(anchor.Id, anchor.Name, AutonomousRvrEventLayer.Intent.Roam, eRealm.None, regionId,
-                            x, y, z, false, 0, 0, 0, 0, Weight: AutonomousFrontierHotspots.RoamWeight));
+                            x, y, z, false, 0, 0, 0, 0, Weight: hotspotWeight));
                     }
 
             if (choices.Count == 0)

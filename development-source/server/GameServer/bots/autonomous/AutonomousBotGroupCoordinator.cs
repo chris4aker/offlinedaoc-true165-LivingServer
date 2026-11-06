@@ -1587,10 +1587,15 @@ public static partial class AutonomousBotGroupCoordinator
             // through eight create an actual warband. The realm-local reserve
             // below still guarantees that grouping pressure cannot consume
             // every solo RvR character.
-            // True 1.65 Mode: warbands lean toward a full eight (period groups were full groups).
+            // True 1.65 Mode: warbands lean toward a full eight (period groups were full groups). Stealthers keep out
+            // of them: most hunt alone (the solo reserve), some pair up with another stealther.
             bool classicWarband = objectiveKind == eAutonomousObjectiveKind.RvR && Classic165Mode.IsOn;
+            bool stealthLeader = classicWarband && AutonomousRvrStealthers.PrefersSolo(leader);
+            if (stealthLeader && !AutonomousRvrStealthers.FormsDuo(leader.DatabaseID))
+                continue;
             int rolledSize = objectiveKind == eAutonomousObjectiveKind.RvR
-                ? classicWarband
+                ? stealthLeader ? 2
+                : classicWarband
                     ? AutonomousRvrStaging.RollClassicWarbandSize(largestAllowed, Random.Shared.NextDouble())
                     : AutonomousRvrStaging.RollWarbandSize(largestAllowed, Random.Shared.NextDouble())
                 : 8;
@@ -1601,6 +1606,7 @@ public static partial class AutonomousBotGroupCoordinator
                                      AutonomousObjectiveAssignments.Is(candidate, objectiveKind) &&
                                      candidate.Realm == leader.Realm && candidate.CurrentRegionID == leader.CurrentRegionID &&
                                      LevelsCompatible(leader.Level, candidate.Level) &&
+                                     (!classicWarband || AutonomousRvrStealthers.PrefersSolo(candidate) == stealthLeader) &&
                                      (objectiveKind != eAutonomousObjectiveKind.GroupPve ||
                                       CanRecruitPveMember(candidate.IsOnStableMasterRoute,
                                           candidate.IsReturningAfterRelease, candidate.InCombat,
@@ -1617,6 +1623,12 @@ public static partial class AutonomousBotGroupCoordinator
                         MinimumPveFormationSize, largestAllowed))
                     continue;
                 rolledSize = compatible.Length + 1;
+            }
+            else if (stealthLeader)
+            {
+                compatible = compatiblePool.Take(1).ToArray();
+                if (compatible.Length == 0)
+                    continue;
             }
             else if (classicWarband)
             {
