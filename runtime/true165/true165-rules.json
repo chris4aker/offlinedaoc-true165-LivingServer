@@ -40770,10 +40770,6 @@
    "reason": "True 1.65 account vault position: Giorny beside Bhreagar Hylvian, the regular vault keeper (owner 2026-11-05)"
   },
   {
-   "sql": "UPDATE ItemTemplate SET Realm = 1 WHERE Id_nb = 'Fireworks2'",
-   "reason": "True 1.65 merchant realm: Fireworks is a Albion item (its type / the merchants that sell it)"
-  },
-  {
    "sql": "UPDATE ItemTemplate SET Realm = 2 WHERE Id_nb = 'alloy_great_axe'",
    "reason": "True 1.65 merchant realm: alloy great axe is a Midgard item (its type / the merchants that sell it)"
   },
@@ -47004,6 +47000,926 @@
   {
    "sql": "UPDATE Mob SET X = 33217 WHERE Mob_ID = 'caledon-guard-25' AND Region = 250 AND X = 33185",
    "reason": "True 1.65 BG keeps: Caledon's keep Wizard stood about 30 units inside a wall of the keep (navmesh floor starts at X 33217)"
+  },
+  {
+   "sql": "UPDATE Mob SET ItemsListTemplateID = 'p165list_Brungar' WHERE Name = 'Forgemaster Brungar' AND Region = 151 AND lower(ItemsListTemplateID) = lower('MidBlades')",
+   "reason": "True 1.65 merchant fix: Forgemaster Brungar gets his own merchant list p165list_Brungar (MidBlades + his period item Brungar's Might); MidBlades is shared by 12 other Midgard sword merchants (owner 2026-11-06: \"Aren sword vendor has a random lvl 45 hammer\")"
+  },
+  {
+   "sql": "DELETE FROM MerchantItem WHERE lower(ItemListID) = lower('MidBlades') AND lower(ItemTemplateID) = lower('Brungars_Might')",
+   "reason": "True 1.65 merchant fix: Brungar's Might off the shared list MidBlades (Aren, Vordn, Orm... sold it); it stays on Forgemaster Brungar's own list p165list_Brungar (add-merchantfix2_165_brungar.json)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'alchemy_kit3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: alchemy kit is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'blue_dye2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: blue dye is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'blue_enamel4' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: blue enamel is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'bone_strips3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: bone strips is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'bronze_metal_bars' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: bronze metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'cobalt_metal_bars2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: cobalt metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'cobalt_metal_bars3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: cobalt metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'copper_metal_bars' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: copper metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'copper_metal_bars2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: copper metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'copper_metal_bars3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: copper metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'dolomite_metal_bars2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: dolomite metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'dolomite_metal_bars3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: dolomite metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Endurance2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Endurance is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Endurance3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Endurance is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Healing2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Healing is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Healing3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Healing is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Invigoration2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Invigoration is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Invigoration3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Invigoration is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Mending2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Mending is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Mending3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Mending is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Power2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Power is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Power3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Power is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Replenishment2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Replenishment is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Draught_of_Replenishment3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Draught of Replenishment is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'fairy_dust2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: fairy dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'fairy_dust3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: fairy dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'ferrite_metal_bars2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: ferrite metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'ferrite_metal_bars3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: ferrite metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Fireworks' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Fireworks is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Fireworks2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Fireworks is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'fossil_strips3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: fossil strips is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'ice_ball' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: ice ball is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Endurance2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Endurance is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Endurance3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Endurance is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Healing2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Healing is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Healing3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Healing is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Invigoration2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Invigoration is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Invigoration3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Invigoration is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Mending2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Mending is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Mending3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Mending is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Power2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Power is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Power3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Power is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Replenishment2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Replenishment is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'Improved_Draught_of_Replenishment3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: Improved Draught of Replenishment is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'leaf_strips3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: leaf strips is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_alloy_renewal' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid alloy renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_arcanium_renewal2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid arcanium renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_asterium_renewal2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid asterium renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_fine_alloy_renewal2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid fine alloy renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_mithril_renewal' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid mithril renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'liquid_netherium_renewal2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: liquid netherium renewal is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'mortar_and_pestle3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: mortar and pestle is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'oaken_wooden_boards' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: oaken wooden boards is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'other_worldly_dust3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: other worldly dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'platinum_ensorcelled_dust2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: platinum ensorcelled dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'platinum_glowing_dust2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: platinum glowing dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'quartz_metal_bars2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: quartz metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'quartz_metal_bars3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: quartz metal bars is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'rawhide_leather_squares' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: rawhide leather square is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'red_enamel4' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: red enamel is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'rowan_wooden_boards' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: rowan wooden boards is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'rust_colored_cloth_dye2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: rust colored cloth dye is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'rust_colored_cloth_dye3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: rust colored cloth dye is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'rust_colored_enamel2' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: rust colored enamel is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'shell_strips3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: shell strips is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'spellcraft_kit3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: spellcraft kit is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'stone_shot' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: stone shot is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'unseelie_dust3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: unseelie dust is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Realm = 0 WHERE Id_nb = 'vine_strips3' AND Realm <> 0",
+   "reason": "True 1.65 merchant fix: vine strips is merchant goods no one equips, sold by several realms' merchants: no realm (the tooltip showed another realm; owner 2026-11-06)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'black_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('black_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy black_cloth_dye_anyrealm of black cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'black_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('black_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye2', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy black_enamel_anyrealm of black enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'black_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('black_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy black_leather_dye_anyrealm of black leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blue_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('blue_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'cinnie', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy blue_cloth_dye_anyrealm of blue cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blue_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('blue_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy blue_enamel_anyrealm of blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'blue_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('blue_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '46e0501d-36a5-46bf-a504-9291795ea72c', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye', 'leatherdye1', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy blue_leather_dye_anyrealm of blue leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'brown_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('brown_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'cinnie', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy brown_cloth_dye_anyrealm of brown cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'brown_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('brown_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy brown_enamel_anyrealm of brown enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'brown_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('brown_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy brown_leather_dye_anyrealm of brown leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'charcoal_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('charcoal_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy charcoal_cloth_dye_anyrealm of charcoal cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'charcoal_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('charcoal_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy charcoal_enamel_anyrealm of charcoal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'charcoal_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('charcoal_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy charcoal_leather_dye_anyrealm of charcoal leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'crimson_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('crimson_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy crimson_cloth_dye_anyrealm of crimson cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'crimson_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('crimson_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy crimson_enamel_anyrealm of crimson enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'crimson_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('crimson_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy crimson_enamel2_anyrealm of crimson enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'crimson_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('crimson_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy crimson_leather_dye_anyrealm of crimson leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_blue_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_blue_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_blue_cloth_dye_anyrealm of dark blue cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_blue_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_blue_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_blue_enamel_anyrealm of dark blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_blue_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_blue_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_blue_enamel2_anyrealm of dark blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_blue_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_blue_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_blue_leather_dye_anyrealm of dark blue leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_brown_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_brown_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_brown_cloth_dye_anyrealm of dark brown cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_brown_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_brown_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_brown_enamel_anyrealm of dark brown enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_brown_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_brown_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_brown_leather_dye_anyrealm of dark brown leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_gray_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_gray_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_gray_cloth_dye_anyrealm of dark gray cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_gray_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_gray_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_gray_enamel_anyrealm of dark gray enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_gray_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_gray_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_gray_leather_dye_anyrealm of dark gray leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_purple_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_purple_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_purple_cloth_dye_anyrealm of dark purple cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_purple_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_purple_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_purple_enamel_anyrealm of dark purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_purple_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_purple_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_purple_enamel2_anyrealm of dark purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_purple_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_purple_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_purple_leather_dye_anyrealm of dark purple leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_teal_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_teal_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_teal_cloth_dye_anyrealm of dark teal cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_teal_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_teal_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_teal_enamel_anyrealm of dark teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_teal_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_teal_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_teal_enamel2_anyrealm of dark teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'dark_teal_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('dark_teal_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy dark_teal_leather_dye_anyrealm of dark teal leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'forest_green_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('forest_green_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy forest_green_cloth_dye_anyrealm of forest green cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'forest_green_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('forest_green_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy forest_green_enamel_anyrealm of forest green enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'forest_green_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('forest_green_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy forest_green_leather_dye_anyrealm of forest green leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'greater_imbalancing_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('greater_imbalancing_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy greater_imbalancing_poison_anyrealm of greater imbalancing poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'greater_infectious_serum_anyrealm' WHERE lower(ItemTemplateID) = lower('greater_infectious_serum') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy greater_infectious_serum_anyrealm of greater infectious serum (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'greater_lethal_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('greater_lethal_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy greater_lethal_poison_anyrealm of greater lethal poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'greater_lethal_venom_anyrealm' WHERE lower(ItemTemplateID) = lower('greater_lethal_venom') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy greater_lethal_venom_anyrealm of greater lethal venom (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'greater_weakening_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('greater_weakening_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy greater_weakening_poison_anyrealm of greater weakening poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'green_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('green_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'cinnie', 'clothdye1', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy green_cloth_dye_anyrealm of green cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'green_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('green_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy green_enamel_anyrealm of green enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'green_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('green_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy green_leather_dye_anyrealm of green leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'infectious_serum_anyrealm' WHERE lower(ItemTemplateID) = lower('infectious_serum') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy infectious_serum_anyrealm of infectious serum (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'insidious_lethal_venom_anyrealm' WHERE lower(ItemTemplateID) = lower('insidious_lethal_venom') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy insidious_lethal_venom_anyrealm of insidious lethal venom (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_crippling_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_crippling_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_crippling_poison_anyrealm of lesser crippling poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_enervating_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_enervating_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_enervating_poison_anyrealm of lesser enervating poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_imbalancing_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_imbalancing_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_imbalancing_poison_anyrealm of lesser imbalancing poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_infectious_serum_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_infectious_serum') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_infectious_serum_anyrealm of lesser infectious serum (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_lethal_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_lethal_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_lethal_poison_anyrealm of lesser lethal poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_lethal_venom_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_lethal_venom') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_lethal_venom_anyrealm of lesser lethal venom (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lesser_weakening_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lesser_weakening_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lesser_weakening_poison_anyrealm of lesser weakening poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'lethal_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('lethal_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy lethal_poison_anyrealm of lethal poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_blue_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_blue_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_blue_cloth_dye_anyrealm of light blue cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_blue_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_blue_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_blue_enamel_anyrealm of light blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_blue_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('light_blue_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_blue_enamel2_anyrealm of light blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_blue_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_blue_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_blue_leather_dye_anyrealm of light blue leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_brown_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_brown_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_brown_cloth_dye_anyrealm of light brown cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_brown_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_brown_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_brown_enamel_anyrealm of light brown enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_brown_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_brown_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_brown_leather_dye_anyrealm of light brown leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_green_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_green_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_green_cloth_dye_anyrealm of light green cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_green_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_green_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothdye1', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_green_enamel_anyrealm of light green enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_green_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_green_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_green_leather_dye_anyrealm of light green leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_orange_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_orange_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_orange_cloth_dye_anyrealm of light orange cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_orange_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_orange_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_orange_enamel_anyrealm of light orange enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_orange_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_orange_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_orange_leather_dye_anyrealm of light orange leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_purple_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_purple_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_purple_cloth_dye_anyrealm of light purple cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_purple_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_purple_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_purple_enamel_anyrealm of light purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_purple_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('light_purple_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_purple_enamel2_anyrealm of light purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_purple_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_purple_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_purple_leather_dye_anyrealm of light purple leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_red_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_red_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_red_cloth_dye_anyrealm of light red cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_red_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_red_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_red_enamel_anyrealm of light red enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_red_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_red_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_red_leather_dye_anyrealm of light red leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_teal_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_teal_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_teal_cloth_dye_anyrealm of light teal cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_teal_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_teal_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_teal_enamel_anyrealm of light teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_teal_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('light_teal_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_teal_enamel2_anyrealm of light teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_teal_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_teal_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_teal_leather_dye_anyrealm of light teal leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_turquoise_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_turquoise_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_turquoise_cloth_dye_anyrealm of light turquoise cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_turquoise_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_turquoise_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_turquoise_enamel_anyrealm of light turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_turquoise_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('light_turquoise_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_turquoise_enamel2_anyrealm of light turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_turquoise_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_turquoise_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_turquoise_leather_dye_anyrealm of light turquoise leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_yellow_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_yellow_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_yellow_cloth_dye_anyrealm of light yellow cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_yellow_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('light_yellow_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_yellow_enamel_anyrealm of light yellow enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'light_yellow_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('light_yellow_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy light_yellow_leather_dye_anyrealm of light yellow leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_crippling_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('major_crippling_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_crippling_poison_anyrealm of major crippling poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_enervating_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('major_enervating_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_enervating_poison_anyrealm of major enervating poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_imbalancing_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('major_imbalancing_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_imbalancing_poison_anyrealm of major imbalancing poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_infectious_serum_anyrealm' WHERE lower(ItemTemplateID) = lower('major_infectious_serum') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_infectious_serum_anyrealm of major infectious serum (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_lethal_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('major_lethal_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_lethal_poison_anyrealm of major lethal poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_lethal_venom_anyrealm' WHERE lower(ItemTemplateID) = lower('major_lethal_venom') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_lethal_venom_anyrealm of major lethal venom (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'major_weakening_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('major_weakening_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy major_weakening_poison_anyrealm of major weakening poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'mauve_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('mauve_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy mauve_cloth_dye_anyrealm of mauve cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'mauve_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('mauve_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy mauve_enamel_anyrealm of mauve enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'mauve_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('mauve_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy mauve_enamel2_anyrealm of mauve enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'mauve_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('mauve_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy mauve_leather_dye_anyrealm of mauve leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_crippling_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_crippling_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_crippling_poison_anyrealm of minor crippling poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_enervating_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_enervating_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_enervating_poison_anyrealm of minor enervating poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_imbalancing_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_imbalancing_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_imbalancing_poison_anyrealm of minor imbalancing poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_infectious_serum_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_infectious_serum') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_infectious_serum_anyrealm of minor infectious serum (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_lethal_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_lethal_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_lethal_poison_anyrealm of minor lethal poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_lethal_venom_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_lethal_venom') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', 'b5163320-2b42-44ea-9376-8bf747b6a584', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'hibpoison2', 'hibpoison3', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_lethal_venom_anyrealm of minor lethal venom (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'minor_weakening_poison_anyrealm' WHERE lower(ItemTemplateID) = lower('minor_weakening_poison') AND lower(ItemListID) IN ('2b88cfee-4bb8-4123-8aa0-cf33b8f5d0d9', '44071d35-1595-422c-bf7a-6000f38b2b27', '6326d1cf-744d-475b-aa4f-5ccc9c664b09', '77793010', '9704f11f-6082-47b6-bd9e-99fc72f27237', '9fa6a629-1346-4d51-8b6d-27e1ff16ba64', 'c95ecb0c-fbaa-45d2-a6b2-04954bd045af', 'ee8d9f86-cdab-4345-b734-e07437056daf', 'f653c7f7-a474-4f10-ae57-fda44a7db391', 'hibpoison', 'hibpoison2', 'midthrowingarrowspoisons')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy minor_weakening_poison_anyrealm of minor weakening poison (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'orange_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('orange_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy orange_cloth_dye_anyrealm of orange cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'orange_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('orange_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy orange_enamel_anyrealm of orange enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'orange_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('orange_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy orange_leather_dye_anyrealm of orange leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'purple_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('purple_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy purple_cloth_dye_anyrealm of purple cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'purple_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('purple_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy purple_enamel_anyrealm of purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'purple_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('purple_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy purple_enamel2_anyrealm of purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'purple_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('purple_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy purple_leather_dye_anyrealm of purple leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'red_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('red_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy red_cloth_dye_anyrealm of red cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'red_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('red_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy red_enamel_anyrealm of red enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'red_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('red_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '46e0501d-36a5-46bf-a504-9291795ea72c', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy red_leather_dye_anyrealm of red leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_blue_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_blue_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_blue_cloth_dye_anyrealm of royal blue cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_blue_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_blue_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_blue_enamel_anyrealm of royal blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_blue_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_blue_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_blue_enamel2_anyrealm of royal blue enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_blue_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_blue_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_blue_leather_dye_anyrealm of royal blue leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_green_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_green_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_green_cloth_dye_anyrealm of royal green cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_green_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_green_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_green_enamel_anyrealm of royal green enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_green_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_green_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_green_leather_dye_anyrealm of royal green leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_orange_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_orange_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_orange_cloth_dye_anyrealm of royal orange cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_orange_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_orange_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_orange_enamel_anyrealm of royal orange enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_orange_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_orange_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye1', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_orange_leather_dye_anyrealm of royal orange leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_purple_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_purple_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_purple_cloth_dye_anyrealm of royal purple cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_purple_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_purple_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_purple_enamel_anyrealm of royal purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_purple_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_purple_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_purple_enamel2_anyrealm of royal purple enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_purple_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_purple_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_purple_leather_dye_anyrealm of royal purple leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_red_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_red_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_red_cloth_dye_anyrealm of royal red cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_red_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_red_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_red_enamel_anyrealm of royal red enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_red_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_red_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_red_leather_dye_anyrealm of royal red leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_teal_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_teal_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_teal_cloth_dye_anyrealm of royal teal cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_teal_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_teal_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_teal_enamel_anyrealm of royal teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_teal_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_teal_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_teal_enamel2_anyrealm of royal teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_teal_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_teal_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_teal_leather_dye_anyrealm of royal teal leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_turquoise_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_turquoise_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_turquoise_cloth_dye_anyrealm of royal turquoise cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_turquoise_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_turquoise_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_turquoise_enamel_anyrealm of royal turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_turquoise_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_turquoise_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_turquoise_enamel2_anyrealm of royal turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_turquoise_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_turquoise_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_turquoise_leather_dye_anyrealm of royal turquoise leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_yellow_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_yellow_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_yellow_cloth_dye_anyrealm of royal yellow cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_yellow_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_yellow_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_yellow_enamel_anyrealm of royal yellow enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'royal_yellow_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('royal_yellow_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy royal_yellow_leather_dye_anyrealm of royal yellow leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rust_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('rust_enamel') AND lower(ItemListID) IN ('6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy rust_enamel_anyrealm of rust enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'rust_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('rust_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy rust_leather_dye_anyrealm of rust leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'teal_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('teal_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy teal_cloth_dye_anyrealm of teal cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'teal_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('teal_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy teal_enamel_anyrealm of teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'teal_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('teal_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy teal_enamel2_anyrealm of teal enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'teal_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('teal_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy teal_leather_dye_anyrealm of teal leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'turquoise_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('turquoise_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy turquoise_cloth_dye_anyrealm of turquoise cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'turquoise_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('turquoise_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy turquoise_enamel_anyrealm of turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'turquoise_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('turquoise_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy turquoise_enamel2_anyrealm of turquoise enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'turquoise_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('turquoise_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy turquoise_leather_dye_anyrealm of turquoise leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'violet_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('violet_cloth_dye') AND lower(ItemListID) IN ('0be5b625-7a50-423b-b83b-64ebd19d01a1', '1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye1', 'clothdye2', 'clothdye3', 'clothdye4', 'clothleatherenameldye', 'clothleatherenameldye2', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy violet_cloth_dye_anyrealm of violet cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'violet_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('violet_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'd5fe79af-9e13-45c2-b053-cb43a63bf882', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye2', 'enameldye4', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy violet_enamel_anyrealm of violet enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'violet_enamel2_anyrealm' WHERE lower(ItemTemplateID) = lower('violet_enamel2') AND lower(ItemListID) IN ('enameldye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy violet_enamel2_anyrealm of violet enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'violet_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('violet_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '4637eab9-96a5-4cdd-a8a4-4a53f25ec1ad', '6fc6c3df-e654-46f0-a3e1-5474ceec9c9b', '77793019', 'clothdye3', 'clothleatherenameldye', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'housing_dye', 'leatherdye2', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy violet_leather_dye_anyrealm of violet leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'yellow_cloth_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('yellow_cloth_dye') AND lower(ItemListID) IN ('20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '77793019', '92d7d665-139c-4141-9487-2e10a0a8fc4f', 'cinnie', 'clothdye1', 'clothdye2', 'clothdye3', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy yellow_cloth_dye_anyrealm of yellow cloth dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'yellow_enamel_anyrealm' WHERE lower(ItemTemplateID) = lower('yellow_enamel') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '496aa217-2ec1-413f-89dd-7b9069e39097', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye1', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ead0a609-c8f8-4e3f-99bd-4766e5c8483e', 'enameldye1', 'enameldye3', 'enameldye4', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy yellow_enamel_anyrealm of yellow enamel (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
+  },
+  {
+   "sql": "UPDATE MerchantItem SET ItemTemplateID = 'yellow_leather_dye_anyrealm' WHERE lower(ItemTemplateID) = lower('yellow_leather_dye') AND lower(ItemListID) IN ('1dc4126d-fa8d-415e-9988-eca34d407ac5', '20abf4d7-446c-46ca-b8a8-e4449543a7b3', '249f29ff-a150-4f07-b8b0-1557e233445f', '2da7d471-2bf9-401b-9a23-0ceb8dd1a22a', '46e0501d-36a5-46bf-a504-9291795ea72c', '68de21de-c74b-4ecc-bb01-3ba90c401455', '77793019', '89e2e77f-dc80-4b5c-ad2f-c3980e3436f2', 'clothdye3', 'clothleatherenameldye2', 'clothleatherenameldye3', 'ef6fa5f6-bdbd-4d22-9d5d-1cf51e385cc5', 'hibcruaighmerchant', 'hibrobedyemerchant', 'hibrobemerchant', 'housing_dye', 'leatherdye', 'leatherdye1', 'leatherdye3')",
+   "reason": "True 1.65 merchant fix: merchants of another realm sell the no-realm copy yellow_leather_dye_anyrealm of yellow leather dye (the crafted item keeps its realm for its crafters; owner 2026-11-06: the tooltip showed another realm)"
   }
  ]
 }

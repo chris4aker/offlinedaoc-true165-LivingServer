@@ -1,0 +1,215 @@
+{
+ "table": "MerchantItem",
+ "key": "MerchantItem_ID",
+ "reason": "True 1.65 merchant fix: Forgemaster Brungar's own merchant list (the MidBlades stock plus his period item Brungar's Might; owner 2026-11-06)",
+ "rows": [
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-0",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "bronze_dagger2",
+   "PageNumber": 0,
+   "SlotPosition": 0,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-1",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "bronze_short_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 1,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-2",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "bronze_broadsword2",
+   "PageNumber": 0,
+   "SlotPosition": 2,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-3",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "bronze_longsword2",
+   "PageNumber": 0,
+   "SlotPosition": 3,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-4",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "bronze_bastard_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 4,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-5",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "iron_dagger2",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-6",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "iron_short_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 6,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-7",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "iron_broadsword2",
+   "PageNumber": 0,
+   "SlotPosition": 7,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-8",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "iron_longsword2",
+   "PageNumber": 0,
+   "SlotPosition": 8,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-9",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "iron_bastard_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 9,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-10",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "steel_dagger2",
+   "PageNumber": 0,
+   "SlotPosition": 10,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-11",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "steel_short_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 11,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-12",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "steel_broadsword2",
+   "PageNumber": 0,
+   "SlotPosition": 12,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-13",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "steel_longsword2",
+   "PageNumber": 0,
+   "SlotPosition": 13,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-14",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "steel_bastard_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 14,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-15",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "alloy_dagger2",
+   "PageNumber": 0,
+   "SlotPosition": 15,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-16",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "alloy_short_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 16,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-17",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "alloy_broadsword2",
+   "PageNumber": 0,
+   "SlotPosition": 17,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-18",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "alloy_longsword2",
+   "PageNumber": 0,
+   "SlotPosition": 18,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-19",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "alloy_bastard_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 19,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-20",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "fine_alloy_dagger2",
+   "PageNumber": 0,
+   "SlotPosition": 20,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-21",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "fine_alloy_short_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 21,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-22",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "fine_alloy_broadsword2",
+   "PageNumber": 0,
+   "SlotPosition": 22,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-23",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "fine_alloy_longsword2",
+   "PageNumber": 0,
+   "SlotPosition": 23,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-24",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "fine_alloy_bastard_sword2",
+   "PageNumber": 0,
+   "SlotPosition": 24,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "p165fix2-p165list_Brungar-0-25",
+   "ItemListID": "p165list_Brungar",
+   "ItemTemplateID": "Brungars_Might",
+   "PageNumber": 0,
+   "SlotPosition": 25,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  }
+ ]
+}

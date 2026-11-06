@@ -41,6 +41,10 @@ for f in os.listdir(RUNTIME):
             on_list.add((r['ItemListID'].lower(), r['ItemTemplateID'].lower()))
 
 rows, updates, skipped = [], [], {}
+# owner 2026-11-06 ("Aren sword vendor has a random lvl 45 hammer"): Forgemaster Brungar's own period item went onto
+# MidBlades, the list 12 other sword merchants share; build_merchantfix2_165.py puts it on his own list instead.
+# Rerun build_merchantfix2_165.py after this script (it also repoints rows of this file).
+OWN_LIST_ONLY = {('midblades', 'brungars_might')}
 
 
 def skip(why):
@@ -52,6 +56,9 @@ for a in adds:
         skip('low confidence')
         continue
     tid, lid = a['item_template_id'], a['list_id']
+    if (lid.lower(), tid.lower()) in OWN_LIST_ONLY:
+        skip("one merchant's period item on a shared list (build_merchantfix2_165.py gives him his own list)")
+        continue
     if tid.lower() not in items:
         skip('item not in world or built')
         continue

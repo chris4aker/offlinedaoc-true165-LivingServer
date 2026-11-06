@@ -878,7 +878,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-19",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_green_enamel",
+   "ItemTemplateID": "light_green_enamel_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 19,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -886,7 +886,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-20",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_red_cloth_dye",
+   "ItemTemplateID": "light_red_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 20,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -894,7 +894,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-21",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "dark_blue_cloth_dye",
+   "ItemTemplateID": "dark_blue_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 21,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -902,7 +902,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-22",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_turquoise_cloth_dye",
+   "ItemTemplateID": "light_turquoise_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 22,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -910,7 +910,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-23",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_teal_cloth_dye",
+   "ItemTemplateID": "light_teal_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 23,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -918,7 +918,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-24",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "teal_cloth_dye",
+   "ItemTemplateID": "teal_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 24,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -926,7 +926,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-25",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "turquoise_cloth_dye",
+   "ItemTemplateID": "turquoise_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 25,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -934,7 +934,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-26",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "royal_blue_cloth_dye",
+   "ItemTemplateID": "royal_blue_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 26,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -942,7 +942,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-27",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_blue_cloth_dye",
+   "ItemTemplateID": "light_blue_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 27,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -950,7 +950,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-28",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "royal_orange_leather_dye",
+   "ItemTemplateID": "royal_orange_leather_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 28,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -958,7 +958,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-0-29",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "yellow_enamel",
+   "ItemTemplateID": "yellow_enamel_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 29,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -966,7 +966,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-0",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "red_cloth_dye",
+   "ItemTemplateID": "red_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 0,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -974,7 +974,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-1",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "blue_cloth_dye",
+   "ItemTemplateID": "blue_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 1,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -982,7 +982,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-2",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "royal_teal_cloth_dye",
+   "ItemTemplateID": "royal_teal_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 2,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -990,7 +990,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-3",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "dark_teal_cloth_dye",
+   "ItemTemplateID": "dark_teal_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 3,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -998,7 +998,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-4",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "royal_red_cloth_dye",
+   "ItemTemplateID": "royal_red_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 4,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1006,7 +1006,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-5",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "mauve_cloth_dye",
+   "ItemTemplateID": "mauve_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 5,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1022,7 +1022,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-7",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "light_purple_cloth_dye",
+   "ItemTemplateID": "light_purple_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 7,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1030,7 +1030,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-8",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "purple_cloth_dye",
+   "ItemTemplateID": "purple_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 8,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1038,7 +1038,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-9",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "royal_purple_cloth_dye",
+   "ItemTemplateID": "royal_purple_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 9,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1046,7 +1046,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye1-1-10",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "dark_purple_cloth_dye",
+   "ItemTemplateID": "dark_purple_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 10,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1054,7 +1054,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-0-25",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "light_green_cloth_dye",
+   "ItemTemplateID": "light_green_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 25,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1062,7 +1062,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-0-26",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "royal_green_cloth_dye",
+   "ItemTemplateID": "royal_green_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 26,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1070,7 +1070,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-0-27",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "forest_green_cloth_dye",
+   "ItemTemplateID": "forest_green_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 27,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1078,7 +1078,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-0-28",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "light_brown_cloth_dye",
+   "ItemTemplateID": "light_brown_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 28,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1086,7 +1086,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-0-29",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "brown_cloth_dye",
+   "ItemTemplateID": "brown_cloth_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 29,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1094,7 +1094,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-0",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "dark_brown_cloth_dye",
+   "ItemTemplateID": "dark_brown_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 0,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1102,7 +1102,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-1",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "dark_gray_cloth_dye",
+   "ItemTemplateID": "dark_gray_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 1,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1110,7 +1110,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-2",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "charcoal_cloth_dye",
+   "ItemTemplateID": "charcoal_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 2,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1118,7 +1118,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-3",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "black_cloth_dye",
+   "ItemTemplateID": "black_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 3,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1126,7 +1126,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-4",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "light_orange_cloth_dye",
+   "ItemTemplateID": "light_orange_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 4,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1134,7 +1134,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-5",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "orange_cloth_dye",
+   "ItemTemplateID": "orange_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 5,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1142,7 +1142,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-6",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "royal_orange_cloth_dye",
+   "ItemTemplateID": "royal_orange_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 6,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1150,7 +1150,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-7",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "light_yellow_cloth_dye",
+   "ItemTemplateID": "light_yellow_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 7,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1158,7 +1158,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-8",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "yellow_cloth_dye",
+   "ItemTemplateID": "yellow_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 8,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1166,7 +1166,7 @@
   {
    "MerchantItem_ID": "p165stock-ClothDye2-1-9",
    "ItemListID": "ClothDye2",
-   "ItemTemplateID": "royal_yellow_cloth_dye",
+   "ItemTemplateID": "royal_yellow_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 9,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1190,7 +1190,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye2-0-23",
    "ItemListID": "EnamelDye2",
-   "ItemTemplateID": "black_enamel",
+   "ItemTemplateID": "black_enamel_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 23,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1206,7 +1206,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-18",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "light_blue_enamel2",
+   "ItemTemplateID": "light_blue_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 18,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1222,7 +1222,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-20",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "royal_blue_enamel2",
+   "ItemTemplateID": "royal_blue_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 20,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1230,7 +1230,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-21",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "dark_blue_enamel2",
+   "ItemTemplateID": "dark_blue_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 21,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1238,7 +1238,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-22",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "light_turquoise_enamel2",
+   "ItemTemplateID": "light_turquoise_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 22,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1246,7 +1246,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-23",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "turquoise_enamel2",
+   "ItemTemplateID": "turquoise_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 23,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1254,7 +1254,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-24",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "royal_turquoise_enamel2",
+   "ItemTemplateID": "royal_turquoise_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 24,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1262,7 +1262,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-25",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "light_teal_enamel2",
+   "ItemTemplateID": "light_teal_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 25,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1270,7 +1270,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-26",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "teal_enamel2",
+   "ItemTemplateID": "teal_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 26,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1278,7 +1278,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-27",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "royal_teal_enamel2",
+   "ItemTemplateID": "royal_teal_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 27,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1286,7 +1286,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-28",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "dark_teal_enamel2",
+   "ItemTemplateID": "dark_teal_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 28,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1294,7 +1294,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-0-29",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "crimson_enamel2",
+   "ItemTemplateID": "crimson_enamel2_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 29,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1302,7 +1302,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-0",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "mauve_enamel2",
+   "ItemTemplateID": "mauve_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 0,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1318,7 +1318,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-2",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "light_purple_enamel2",
+   "ItemTemplateID": "light_purple_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 2,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1326,7 +1326,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-3",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "purple_enamel2",
+   "ItemTemplateID": "purple_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 3,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1334,7 +1334,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-4",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "royal_purple_enamel2",
+   "ItemTemplateID": "royal_purple_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 4,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1342,7 +1342,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-5",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "dark_purple_enamel2",
+   "ItemTemplateID": "dark_purple_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 5,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1350,7 +1350,7 @@
   {
    "MerchantItem_ID": "p165stock-EnamelDye3-1-6",
    "ItemListID": "EnamelDye3",
-   "ItemTemplateID": "violet_enamel2",
+   "ItemTemplateID": "violet_enamel2_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 6,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1566,7 +1566,7 @@
   {
    "MerchantItem_ID": "p165stock-LeatherDye1-0-17",
    "ItemListID": "LeatherDye1",
-   "ItemTemplateID": "blue_leather_dye",
+   "ItemTemplateID": "blue_leather_dye_anyrealm",
    "PageNumber": 0,
    "SlotPosition": 17,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"

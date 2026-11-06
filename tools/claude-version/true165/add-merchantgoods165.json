@@ -918,7 +918,7 @@
   {
    "MerchantItem_ID": "p165goods-ClothDye1-1-11",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "crimson_cloth_dye",
+   "ItemTemplateID": "crimson_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 11,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -926,7 +926,7 @@
   {
    "MerchantItem_ID": "p165goods-ClothDye1-1-13",
    "ItemListID": "ClothDye1",
-   "ItemTemplateID": "violet_cloth_dye",
+   "ItemTemplateID": "violet_cloth_dye_anyrealm",
    "PageNumber": 1,
    "SlotPosition": 13,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
@@ -1057,14 +1057,6 @@
    "ItemTemplateID": "Exceptional_Avernal_Maligned_Staff_of_Wailing",
    "PageNumber": 1,
    "SlotPosition": 16,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165goods-MidBlades-0-25",
-   "ItemListID": "MidBlades",
-   "ItemTemplateID": "Brungars_Might",
-   "PageNumber": 0,
-   "SlotPosition": 25,
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
   },
   {
