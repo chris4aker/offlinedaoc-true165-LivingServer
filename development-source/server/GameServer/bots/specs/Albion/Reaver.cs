@@ -18,15 +18,13 @@ namespace DOL.GS
                 return;
             }
 
-            int randBaseWeap = Util.Random(4);
-
-            switch (randBaseWeap)
+            // About 9 in 10 period Reavers used flex: 8 in 10 here, plus the Soulrending build (always flex).
+            switch (Pick(1, 1, 1, 12))
             {
                 case 0: WeaponOneType = eObjectType.SlashingWeapon; break;
                 case 1: WeaponOneType = eObjectType.ThrustWeapon; break;
                 case 2: WeaponOneType = eObjectType.CrushingWeapon; break;
-                case 3:
-                case 4: WeaponOneType = eObjectType.Flexible; break;
+                case 3: WeaponOneType = eObjectType.Flexible; break;
             }
 
             int randVariance = Util.Random(2);

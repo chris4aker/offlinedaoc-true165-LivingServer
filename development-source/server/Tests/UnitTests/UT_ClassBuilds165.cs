@@ -144,5 +144,12 @@ namespace DOL.UnitTests
             Assert.That(at50[SkillBase.ObjectTypeToSpec(melee[0].WeaponOneType)], Is.InRange(44, 50));
             Assert.That(at50[Specs.Longbow], Is.InRange(38, 42));
         }
+
+        [Test]
+        public void ReaverIsNineInTenFlex()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Reaver);
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Flexible), Is.EqualTo(0.9).Within(0.03));
+        }
     }
 }
