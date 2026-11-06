@@ -21,9 +21,11 @@ namespace DOL.GS.Tests
         private sealed class SpecBot : GameBot
         {
             private SpecBot() : base((OfflineWorldBotRecord)null) { }
-            public int Spec;
-            public override int GetModifiedSpecLevel(string keyName) => keyName == "Augmentation" ? Spec : 0;
+            public int Spec, ItemDarkness;
+            public override ICharacterClass CharacterClass => new DOL.GS.PlayerClass.ClassRunemaster();
+            public override int GetModifiedSpecLevel(string keyName) => keyName is "Augmentation" or "Darkness" ? Spec : 0;
             public override int GetModified(eProperty property) => 0;
+            public override int GetModifiedFromItems(eProperty property) => property == eProperty.Skill_Darkness ? ItemDarkness : 0;
         }
 
         private static readonly SpellLine Mob =
@@ -31,21 +33,25 @@ namespace DOL.GS.Tests
         private static readonly SpellLine Augmentation = new("Shaman Augmentation Spec", "Augmentation", "Augmentation", false);
 
         private bool _mode;
-        private IDisposable _server;
+        private IDisposable _server, _language;
 
         [SetUp]
         public void Setup()
         {
             _mode = DOL.GS.ServerProperties.Properties.CLASSIC165_MODE;
             _server = new DOL.UnitTests.EpicTestServerScope();   // GameObject's quest cache needs a database
+            _language = new DOL.UnitTests.PetTestLanguageScope();   // SkillBase's property names need translations
         }
 
         [TearDown]
         public void Cleanup()
         {
             DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = _mode;
+            _language.Dispose();
             _server.Dispose();
         }
+
+        private static readonly SpellLine Darkness = new("Darkness", "Darkness", "Darkness", true);
 
         private static SpecBot Bot(int spec, params Spell[] learned)
         {
@@ -53,7 +59,7 @@ namespace DOL.GS.Tests
             bot.Spec = spec;
             var lines = new Dictionary<int, SpellLine>();
             foreach (Spell spell in learned)
-                lines[spell.ID] = Augmentation;
+                lines[spell.ID] = spell.SpellType == eSpellType.DirectDamage ? Darkness : Augmentation;
             typeof(GameBot).GetField("_powerSpellLines", Hidden).SetValue(bot, lines);
             return bot;
         }
@@ -76,6 +82,22 @@ namespace DOL.GS.Tests
                 Assert.That(BuffEffectiveness(new StrengthBuff(Bot(20), buff, Mob)), Is.EqualTo(0.75).Within(1e-9),
                     "no learned line: the Mob line's (no) spec, as before");
             });
+        }
+
+        private static Spell Nuke(int level = 30) => new(new DbSpell { SpellID = 99962, Name = "Nuke", Type = "DirectDamage",
+            Target = "Enemy", Damage = 100, Range = 1500 }, level);
+
+        // Only item skill bonuses raise spell damage (+Darkness on gear); a bot's were looked up for "Mob Spells".
+        [Test]
+        public void ABotsItemSkillBonusRaisesItsSpellDamage()
+        {
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = true;
+            Spell nuke = Nuke();
+            SpecBot bot = Bot(30, nuke);
+            bot.ItemDarkness = 10;
+            Assert.That(new SpellHandler(bot, nuke, Mob).CalculateDamageBase(bot), Is.EqualTo(100 * (1 + 10 * 0.005)).Within(1e-9));
+            DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = false;
+            Assert.That(new SpellHandler(bot, nuke, Mob).CalculateDamageBase(bot), Is.EqualTo(100).Within(1e-9), "normal mode unchanged");
         }
     }
 }

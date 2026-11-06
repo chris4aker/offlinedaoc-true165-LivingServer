@@ -3120,7 +3120,8 @@ namespace DOL.GS.Spells
 						if (botCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
 							stat = botCaster.GetModified((eProperty) botCaster.CharacterClass.ManaStat);
 
-						spec = modifiedCaster.GetModifiedFromItems(SkillBase.SpecToSkill(m_spellLine.Spec));
+						// True 1.65: a bot's learned line, as a player's own (its cast line is the generic Mob Spells)
+						spec = modifiedCaster.GetModifiedFromItems(SkillBase.SpecToSkill(SpecLineOf(modifiedCaster).Spec));
 						break;
 					}
 				}
