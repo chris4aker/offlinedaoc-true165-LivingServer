@@ -2261,6 +2261,9 @@ namespace DOL.AI.Brain
                 .Where(spell => BotMaintenancePulsePolicy.CanMaintain(spell, maintenancePulse))
                 .Where(spell => spell.SpellType != eSpellType.SpeedEnhancement || traveling)
                 .OrderByDescending(spell => spell.SpellType == eSpellType.SpeedEnhancement && traveling)
+                // True 1.65: by buff type first (Value compared across types put endurance regeneration, value 1-5,
+                // after everything else, when the concentration had run out)
+                .ThenBy(spell => Classic165Mode.IsOn ? UpkeepPriority165(spell) : 0)
                 .ThenByDescending(spell => spell.Value)
                 .ThenByDescending(spell => spell.Level);
 
@@ -2351,6 +2354,25 @@ namespace DOL.AI.Brain
             CompleteCompanionPerformerBuffBatch(bot);
             return false;
         }
+
+        /// <summary>
+        /// The order a True 1.65 buffer keeps its buffs up in, by type: the specialization strength/constitution, then
+        /// dexterity/quickness, the haste, endurance regeneration, acuity, everything else (armor, resists, damage adds,
+        /// procs, self and pet buffs), and the base (single stat and base armor) buffs last - period buffbots put the
+        /// specialization buffs and endurance regeneration on the tanks first and the base buffs with what concentration
+        /// was left. Within a type the stronger spell goes first, as before.
+        /// </summary>
+        public static int UpkeepPriority165(Spell spell) => spell?.SpellType switch
+        {
+            eSpellType.StrengthConstitutionBuff => 0,
+            eSpellType.DexterityQuicknessBuff => 1,
+            eSpellType.CombatSpeedBuff => 2,
+            eSpellType.EnduranceRegenBuff => 3,
+            eSpellType.AcuityBuff => 4,
+            eSpellType.StrengthBuff or eSpellType.DexterityBuff or eSpellType.ConstitutionBuff or
+                eSpellType.BaseArmorFactorBuff => 6,
+            _ => 5,
+        };
 
         private int _pendingMaintenancePetBuffId;
         private long _pendingMaintenancePetBuffUntil;

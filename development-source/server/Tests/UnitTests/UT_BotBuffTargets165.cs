@@ -75,5 +75,23 @@ namespace DOL.GS.Tests
             Assert.That(BotBrain.BuffHelps(new ClassRunemaster(), acuity, true), Is.True);
             Assert.That(BotBrain.BuffHelps(new ClassHealer(), acuity, false), Is.True, "normal mode unchanged");
         });
+
+        // A Shaman's upkeep ordered by spell Value across buff types, so endurance regeneration (value 1-5) always came
+        // last, after the concentration had run out. True 1.65: a fixed order by type.
+        [Test]
+        public void UpkeepGoesSpecBuffsHasteEnduranceAcuityThenBaseBuffs()
+        {
+            string[] order = ["StrengthConstitutionBuff", "DexterityQuicknessBuff", "CombatSpeedBuff", "EnduranceRegenBuff",
+                "AcuityBuff", "SpecArmorFactorBuff", "StrengthBuff"];
+            for (int i = 1; i < order.Length; i++)
+                Assert.That(BotBrain.UpkeepPriority165(Buff(order[i - 1])), Is.LessThan(BotBrain.UpkeepPriority165(Buff(order[i]))),
+                    $"{order[i - 1]} before {order[i]}");
+            Assert.Multiple(() =>
+            {
+                Assert.That(BotBrain.UpkeepPriority165(Buff("DexterityBuff")), Is.EqualTo(BotBrain.UpkeepPriority165(Buff("StrengthBuff"))));
+                Assert.That(BotBrain.UpkeepPriority165(Buff("ConstitutionBuff")), Is.EqualTo(BotBrain.UpkeepPriority165(Buff("StrengthBuff"))));
+                Assert.That(BotBrain.UpkeepPriority165(Buff("BaseArmorFactorBuff")), Is.EqualTo(BotBrain.UpkeepPriority165(Buff("StrengthBuff"))));
+            });
+        }
     }
 }
