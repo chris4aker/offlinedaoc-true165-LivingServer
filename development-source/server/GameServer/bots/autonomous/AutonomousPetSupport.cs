@@ -483,7 +483,18 @@ public static class AutonomousPetSupport
             if (!hunterPetOff && owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
                 summon = ChooseCastableByRank(owner,
                     LearnedPetSummons(chooser).Where(entry => IsChosenPet(entry, chosenLine)).ToList(), null, true);
-            if (summon.Spell == null && !hunterPetOff)
+            // True 1.65: a Cabalist with no player choice calls the period pet (Sapphire, else Amber), and waits for the
+            // power for it rather than calling another
+            bool cabalistPeriodPet = false;
+            if (summon.Spell == null && Classic165Mode.IsOn && characterClass == eCharacterClass.Cabalist &&
+                owner is GameBot cabalist && CompanionOptions165.PetLine(cabalist) == null &&
+                CabalistPeriodPet(LearnedPetSummons(cabalist)) is { Spell: not null } periodPet)
+            {
+                cabalistPeriodPet = true;
+                if (CanCast(owner, periodPet.Spell))
+                    summon = periodPet;
+            }
+            if (summon.Spell == null && !hunterPetOff && !cabalistPeriodPet)
                 summon = ChooseCastableByRank(owner, spells, null,
                     owner is GameBot { IsEndgameCompanion: true });
             if (summon.Spell != null)
@@ -1610,6 +1621,25 @@ public static class AutonomousPetSupport
         choice.StartsWith("spell:", StringComparison.Ordinal)
             ? int.TryParse(choice.AsSpan(6), out int id) && entry.Spell?.ID == id
             : entry.Line?.KeyName == choice;
+
+    /// <summary>
+    /// The Cabalist's period pet (True 1.65, no player choice): Sapphire Simulacrum once learned - period players called
+    /// it the best PvE pet - else Amber, the early and RvR pet. Ruby, Emerald and Jade were thought weaker. None: default.
+    /// </summary>
+    public static (Spell Spell, SpellLine Line) CabalistPeriodPet(IReadOnlyList<(Spell Spell, SpellLine Line)> learned)
+    {
+        (Spell Spell, SpellLine Line) amber = default;
+        foreach (var entry in learned)
+        {
+            if (entry.Spell?.SpellType != eSpellType.SummonSimulacrum)
+                continue;
+            if (entry.Spell.Name?.Contains("Sapphire", StringComparison.OrdinalIgnoreCase) == true)
+                return entry;
+            if (entry.Spell.Name?.Contains("Amber", StringComparison.OrdinalIgnoreCase) == true)
+                amber = entry;
+        }
+        return amber;
+    }
 
     /// <summary>The Theurgist's elemental summons a bot knows (earth, ice, air lines).</summary>
     public static (Spell Spell, SpellLine Line)[] TheurgistSummons(GameBot bot) =>
