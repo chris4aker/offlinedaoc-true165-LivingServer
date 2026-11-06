@@ -125,6 +125,7 @@ namespace DOL.GS
             eCharacterClass.Mercenary => [(eSpecType.DualWield, 7), (eSpecType.DualWieldAndShield, 1)],
             eCharacterClass.Paladin => [(eSpecType.OneHandAndShield, 17), (eSpecType.TwoHandHybrid, 3)],
             eCharacterClass.Theurgist => [(eSpecType.EarthTheur, 1), (eSpecType.IceTheur, 1), (eSpecType.AirTheur, 2)],
+            eCharacterClass.Friar => [(eSpecType.RejuvFriar, 1), (eSpecType.EnhanceFriar, 6), (eSpecType.StaffFriar, 3)],
             _ => [.. GetSpecializationChoices(charClass).Select(spec => (spec, 1))],
         };
 

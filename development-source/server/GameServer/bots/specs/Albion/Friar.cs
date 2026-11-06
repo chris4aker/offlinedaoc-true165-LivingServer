@@ -9,12 +9,14 @@ namespace DOL.GS
             WeaponOneType = eObjectType.Staff;
             Is2H = true;
 
+            // Period Friars: most trained Enhancement 49 / Staff 39 / Rejuvenation 15 / Parry 13 (case 8); staff-first
+            // builds next, rejuvenation-heavy about 1 in 10 (family weights in BotSpec).
             var randVariance = spec switch
             {
                 eSpecType.StaffFriar => Util.Random(0, 4),
                 eSpecType.RejuvFriar => Util.Random(5, 7),
                 eSpecType.EnhanceFriar => 8,
-                _ => Util.Random(8),
+                _ => Pick(6, 6, 6, 6, 6, 4, 3, 3, 60),
             };
 
             switch (randVariance)

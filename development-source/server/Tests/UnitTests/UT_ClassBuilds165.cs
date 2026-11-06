@@ -99,5 +99,16 @@ namespace DOL.UnitTests
                 Assert.That(at50[Specs.Earth_Magic], Is.GreaterThan(at50[Specs.Wind_Magic]));
             }
         }
+
+        [Test]
+        public void FriarMainBuildIsEnhancementStaffAndRejuvenationIsRare()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Friar);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.RejuvFriar), Is.EqualTo(0.1).Within(0.03));
+            BotSpec main = BotSpec.GetSpec(eCharacterClass.Friar, eSpecType.EnhanceFriar);
+            Dictionary<string, int> at50 = At(main, eCharacterClass.Friar, 50);
+            Assert.That(new[] { at50[Specs.Enhancement], at50[Specs.Staff], at50[Specs.Rejuvenation], at50[Specs.Parry] },
+                Is.EqualTo(new[] { 49, 39, 15, 13 }));
+        }
     }
 }
