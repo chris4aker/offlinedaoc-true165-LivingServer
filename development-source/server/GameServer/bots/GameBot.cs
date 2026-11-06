@@ -2082,9 +2082,15 @@ namespace DOL.GS
                 SetBotSpells();
                 SortStyles();
                 SortSpells();
-                Health = MaxHealth;
-                Mana = MaxMana;
-                Endurance = MaxEndurance;
+                // Experience can arrive after the bot died (its group or pet finished the kill). A dead bot is not
+                // refilled: a full health bar made it look alive, its release timer stopped for good and it stood
+                // frozen where it fell for hours (2026-11-06: 22 bots overnight). It levels now and rises on release.
+                if (IsAlive)
+                {
+                    Health = MaxHealth;
+                    Mana = MaxMana;
+                    Endurance = MaxEndurance;
+                }
                 // Players around see the new level (its con colour comes from it) and the group window shows it (player
                 // report 2026-11-01: a levelled bot stayed grey, and group members' levels never changed in the window).
                 if (ObjectState == eObjectState.Active)
