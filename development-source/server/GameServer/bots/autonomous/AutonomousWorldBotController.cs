@@ -4078,6 +4078,11 @@ namespace DOL.GS
                          $"bots={AutonomousCampDangerBench.DistinctBotsToBench} hours={bench.TotalHours:0}");
             if (!diedAtCamp && bot.LastDeathSpot is { Region: > 0 } deathSpot)
                 RememberNoGo(deathSpot.Region, deathSpot.X, deathSpot.Y);
+            // ... and the camp it was walking to: this bot doesn't plan that camp (or one beside it) again for a while, so
+            // it doesn't take the same deadly road there after every release (2026-11-06: level-4 Hibernians died to
+            // Murgar 382 times on the way to two Connacht skeletal pawn camps, each bot again and again)
+            if (!diedAtCamp && _camp != null && _camp.RegionId > 0)
+                RememberNoGo(_camp.RegionId, _camp.X, _camp.Y);
             // died on the way to a merchant, healer or trainer: that one is skipped for a while (2026-11-05: low bots walked
             // to the same merchant past the same monsters ten times an hour)
             if (!diedAtCamp && _serviceNpc != null)

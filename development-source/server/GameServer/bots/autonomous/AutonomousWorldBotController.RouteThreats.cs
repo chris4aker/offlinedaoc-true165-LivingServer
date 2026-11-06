@@ -30,6 +30,23 @@ namespace DOL.GS
         public const long RouteThreatHoldLimitMilliseconds = 75_000;
 
         /// <summary>
+        /// A bot that gave up its camp for a monster on the road walks back out of that monster's reach before it plans
+        /// again (2026-11-06: AbandonCamp stopped it where it stood, already at the edge of the aggro range, for the 30 s
+        /// replan wait; "Retarget Murgar" at 22:39:15, dead at 22:39:26).
+        /// </summary>
+        private static void StepBackFrom(GameBot bot, IPathfindingMgr nav, Zone zone, GameNPC threat, int keepAway)
+        {
+            float dx = bot.X - threat.X, dy = bot.Y - threat.Y;
+            float distance = MathF.Sqrt(dx * dx + dy * dy);
+            if (distance < 1f || distance >= keepAway)
+                return;
+            float reach = keepAway + 300;
+            Vector3 wanted = new(threat.X + dx / distance * reach, threat.Y + dy / distance * reach, bot.Z);
+            if (AutonomousNavigationSurface.TryFloor(nav, zone, wanted, out Vector3 floor))
+                bot.PathTo(floor, bot.MaxSpeed);
+        }
+
+        /// <summary>
         /// Open-world route threat awareness (see AutonomousRouteThreatPolicy). Called right before
         /// a travelling bot issues its walk order. True consumes this travel turn (a pull started,
         /// the bot is holding, or the camp was given up); false lets the walk continue, with a
@@ -147,7 +164,10 @@ namespace DOL.GS
                 case RouteThreatAction.Retarget:
                     _lastRouteThreatRetargetTick = now;
                     RememberNoGo(blocker.CurrentRegionID, blocker.X, blocker.Y);   // the next camp doesn't lead back past it
+                    if (_camp != null && _camp.RegionId > 0)
+                        RememberNoGo(_camp.RegionId, _camp.X, _camp.Y);   // nor this camp, behind it
                     AbandonCamp(bot, $"Route blocked by {blocker.Name} (level {blocker.Level}, {pack} together) with no way around");
+                    StepBackFrom(bot, nav, zone, blocker, blockerBrain.AggroRange + margin);
                     return true;
 
                 default: // Pull
