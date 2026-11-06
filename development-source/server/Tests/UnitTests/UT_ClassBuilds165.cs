@@ -313,5 +313,16 @@ namespace DOL.UnitTests
             Dictionary<string, int> at50 = At(plan, eCharacterClass.Bonedancer, 50);
             Assert.That((at50[primary], at50[secondary]), Is.EqualTo((50, 20)));
         }
+
+        [Test]
+        public void AnimistIsMostlyArborealWithVerdantEarly()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Animist);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.ArborealAnimist), Is.EqualTo(0.85).Within(0.03));
+            BotSpec arboreal = BotSpec.GetSpec(eCharacterClass.Animist, eSpecType.ArborealAnimist);
+            Assert.That(At(arboreal, eCharacterClass.Animist, 30)[Specs.Verdant_Path], Is.EqualTo(7));
+            Dictionary<string, int> at50 = At(arboreal, eCharacterClass.Animist, 50);
+            Assert.That((at50[Specs.Arboreal_Path], at50[Specs.Creeping_Path], at50[Specs.Verdant_Path]), Is.EqualTo((50, 19, 7)));
+        }
     }
 }
