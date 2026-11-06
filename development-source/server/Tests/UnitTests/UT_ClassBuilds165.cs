@@ -63,5 +63,19 @@ namespace DOL.UnitTests
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.ThrustWeapon), Is.EqualTo(22 / 69.0).Within(0.03));
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.CrushingWeapon), Is.EqualTo(11 / 69.0).Within(0.03));
         }
+
+        [Test]
+        public void PaladinIsMostlyOneHandSlashWithChantsAndShield42()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Paladin);
+            Assert.That(Share(plans, p => p.Is2H), Is.EqualTo(0.15).Within(0.04));
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.SlashingWeapon), Is.EqualTo(0.8).Within(0.03));
+            foreach (BotSpec plan in plans.Where(p => !p.Is2H).Take(200))
+            {
+                Assert.That(Cap(plan, Specs.Chants), Is.InRange(46u, 48u));
+                Assert.That(Cap(plan, Specs.Shields), Is.EqualTo(42u));
+                Assert.That(Cap(plan, SkillBase.ObjectTypeToSpec(plan.WeaponOneType)), Is.InRange(29u, 44u));
+            }
+        }
     }
 }

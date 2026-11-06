@@ -123,6 +123,7 @@ namespace DOL.GS
         public static IReadOnlyList<(eSpecType Spec, int Weight)> GetSpecializationWeights(eCharacterClass charClass) => charClass switch
         {
             eCharacterClass.Mercenary => [(eSpecType.DualWield, 7), (eSpecType.DualWieldAndShield, 1)],
+            eCharacterClass.Paladin => [(eSpecType.OneHandAndShield, 17), (eSpecType.TwoHandHybrid, 3)],
             _ => [.. GetSpecializationChoices(charClass).Select(spec => (spec, 1))],
         };
 
