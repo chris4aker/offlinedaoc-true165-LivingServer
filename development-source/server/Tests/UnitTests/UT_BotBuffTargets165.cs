@@ -93,5 +93,19 @@ namespace DOL.GS.Tests
                 Assert.That(BotBrain.UpkeepPriority165(Buff("BaseArmorFactorBuff")), Is.EqualTo(BotBrain.UpkeepPriority165(Buff("StrengthBuff"))));
             });
         }
+
+        // A Healer and a Shaman both spent concentration on the shared baseline Augmentation buffs: one keeps each.
+        [Test]
+        public void ABaseBuffBothBuffersKnowIsLeftToTheHealerElseTheLowerObjectId() => Assert.Multiple(() =>
+        {
+            Assert.That(BotBrain.LeavesBaseBuffToMate(selfHealer: false, 10, mateHealer: true, 20), Is.True, "the Shaman leaves it");
+            Assert.That(BotBrain.LeavesBaseBuffToMate(selfHealer: true, 20, mateHealer: false, 10), Is.False, "the Healer keeps it");
+            Assert.That(BotBrain.LeavesBaseBuffToMate(false, 20, false, 10), Is.True);
+            Assert.That(BotBrain.LeavesBaseBuffToMate(false, 10, false, 20), Is.False);
+            Assert.That(BotBrain.IsBaseStatBuff(Buff("StrengthBuff")), Is.True);
+            Assert.That(BotBrain.IsBaseStatBuff(Buff("BaseArmorFactorBuff")), Is.True);
+            Assert.That(BotBrain.IsBaseStatBuff(Buff("StrengthConstitutionBuff")), Is.False, "spec buffs are each buffer's own");
+            Assert.That(BotBrain.IsBaseStatBuff(Buff("EnduranceRegenBuff")), Is.False);
+        });
     }
 }

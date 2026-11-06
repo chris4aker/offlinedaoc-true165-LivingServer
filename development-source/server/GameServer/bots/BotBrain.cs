@@ -2241,7 +2241,8 @@ namespace DOL.AI.Brain
                                 (spell.Target is not (eSpellTarget.PET or eSpellTarget.CONTROLLED) ||
                                  AutonomousPetSupport.ShouldMaintainRoutinePetBuff(spell, false)) &&
                                 (!waitingForLeader || CompanionFollowPolicy.CanStopForNativeTravelSpeed(bot, spell)) &&
-                                !BotSongTwistPolicy.IsReservedPulse(bot, spell))
+                                !BotSongTwistPolicy.IsReservedPulse(bot, spell) &&
+                                !BaseBuffLeftToGroupmate(spell))
                 .DistinctBy(spell => spell.ID)
                 .ToList();
             if (known.Count == 0)
@@ -3180,6 +3181,73 @@ namespace DOL.AI.Brain
             eSpellType.Bladeturn => true,
             _ => false
         };
+
+        /// <summary>A base buff: one stat (strength, dexterity, constitution) or base armor, from a baseline line.</summary>
+        public static bool IsBaseStatBuff(Spell spell) => spell?.SpellType is eSpellType.StrengthBuff or
+            eSpellType.DexterityBuff or eSpellType.ConstitutionBuff or eSpellType.BaseArmorFactorBuff;
+
+        /// <summary>Pure rule: of two bot buffers knowing the same base buff, the Healer keeps it up, else the lower ObjectID.</summary>
+        public static bool LeavesBaseBuffToMate(bool selfHealer, int selfObjectId, bool mateHealer, int mateObjectId) =>
+            selfHealer != mateHealer ? mateHealer : mateObjectId < selfObjectId;
+
+        private Group _baseBuffShareGroup;
+        private long _baseBuffShareKey;
+        private long _nextBaseBuffShareCheck;
+        private Dictionary<int, GameBot> _baseBuffsLeftToMates;
+
+        /// <summary>
+        /// True 1.65: a Healer and a Shaman share the baseline Augmentation buffs, and both spent their concentration on
+        /// them (two buffers each putting the same base buffs on half the group, neither left with concentration for its
+        /// own buffs). A bot buffer leaves a base buff to a living groupmate bot that knows the same spell and keeps it
+        /// (the Healer first, else the lower ObjectID), as a song is left to a groupmate with a faster one
+        /// (GroupmateHasStrongerSpeed). Worked out once per group change; checked at most once a second.
+        /// </summary>
+        private bool BaseBuffLeftToGroupmate(Spell spell)
+        {
+            if (!Classic165Mode.IsOn || !IsBaseStatBuff(spell) || Body?.Group is not { } group)
+                return false;
+            long now = GameLoop.GameLoopTime;
+            if (group != _baseBuffShareGroup || now >= _nextBaseBuffShareCheck)
+            {
+                _nextBaseBuffShareCheck = now + 1_000;
+                List<GameLiving> members = group.GetMembersInTheGroup();
+                long key = members.Count;
+                foreach (GameLiving member in members)
+                    key = key * 31 + member.ObjectID + (member is GameBot mateBot ? mateBot.Level * 7919L : 0);
+                if (group != _baseBuffShareGroup || key != _baseBuffShareKey || _baseBuffsLeftToMates == null)
+                {
+                    _baseBuffShareGroup = group;
+                    _baseBuffShareKey = key;
+                    _baseBuffsLeftToMates = BaseBuffsKeptByMates(members);
+                }
+            }
+            return _baseBuffsLeftToMates.TryGetValue(spell.ID, out GameBot keeper) && keeper.IsAlive && keeper.Group == group;
+        }
+
+        private Dictionary<int, GameBot> BaseBuffsKeptByMates(List<GameLiving> members)
+        {
+            Dictionary<int, GameBot> left = new();
+            GameBot self = BotBody;
+            if (self == null)
+                return left;
+            bool selfHealer = self.CharacterClass?.ID == (int)eCharacterClass.Healer;
+            HashSet<int> mine = (self.MiscSpells ?? []).Concat(self.InstantMiscSpells ?? [])
+                .Where(spell => IsBaseStatBuff(spell) && spell.Level <= self.Level).Select(spell => spell.ID).ToHashSet();
+            if (mine.Count == 0)
+                return left;
+            foreach (GameLiving member in members)
+            {
+                if (member == self || member is not GameBot mate)
+                    continue;
+                bool mateHealer = mate.CharacterClass?.ID == (int)eCharacterClass.Healer;
+                if (!LeavesBaseBuffToMate(selfHealer, self.ObjectID, mateHealer, mate.ObjectID))
+                    continue;
+                foreach (Spell spell in (mate.MiscSpells ?? []).Concat(mate.InstantMiscSpells ?? []))
+                    if (spell != null && spell.Level <= mate.Level && mine.Contains(spell.ID))
+                        left.TryAdd(spell.ID, mate);
+            }
+            return left;
+        }
 
         /// <summary>
         /// Another living groupmate provides a faster speed: a bot that knows one
@@ -5544,6 +5612,9 @@ namespace DOL.AI.Brain
                     continue;
                 // Cast in the fight by TryShortCombatShield, never as upkeep.
                 if (IsShortCombatShield(spell))
+                    continue;
+                // True 1.65: a groupmate buffer keeps this base buff up (BaseBuffLeftToGroupmate)
+                if (BaseBuffLeftToGroupmate(spell))
                     continue;
                 // Caster-pet classes, including a Bonedancer's commander tree,
                 // maintain their controlled pets through AutonomousPetSupport. The
