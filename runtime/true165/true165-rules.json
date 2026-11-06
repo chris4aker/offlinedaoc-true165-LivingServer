@@ -294,6 +294,120 @@
     "key": "CraftedItemID",
     "reason": "True 1.65 recipes: hidden: 1.65 tempering of retired pre-1.65 components that cannot be made (owner 2026-11-06) (build_recipes165.py)",
     "where": "CraftedItemID IN ('3491','3492','3493','3494','3495','3496','3497','3498','3499','3500','3501','3502','3503','3504','3505','3506','3507','3508','3509','3510','3511','3512','3513','3514','3515','3516','3517','3518','3519','3520','10491','10492','10493','10494','10495','10496','10497','10498','10499','10500','10501','10502','10503','10504','10505','10506','10507','10508','10509','10510','17491','17492','17493','17494','17495','17496','17497','17498','17499','17500','17501','17502','17503','17504','17505','17506','17507','17508','17509','17510','17511','17512','17513','17514','17515','17516','17517','17518','17519','17520')"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (250000303,250000304)",
+    "reason": "True 1.65 period 1.64 navmesh: Caer Caledon: door rows of the later client's 'New Frontier Keep' model (bfrontkeep2.nif), which has posterns; the 1.64 keep model (bfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (252000303,252000304,252000305,252000306)",
+    "reason": "True 1.65 period 1.64 navmesh: Thidranki Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2.nif), which has posterns; the 1.64 keep model (nfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (15110603,15110604)",
+    "reason": "True 1.65 period 1.64 navmesh: Caer Benowyc: door rows of the later client's 'New Frontier Keep' model (bfrontkeep2.nif), which has posterns; the 1.64 keep model (bfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (115001203,115001204,115001205,115001206)",
+    "reason": "True 1.65 period 1.64 navmesh: Bledmeer Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2-s.nif), which has posterns; the 1.64 keep model (n-frontkeep1-s.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (214015803,214015804,214015805,214015806)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Crauchon: door rows of the later client's 'New Frontier Keep' model (hfrontkeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (12069903,12069904)",
+    "reason": "True 1.65 period 1.64 navmesh: Caer Hurbury: door rows of the later client's 'New Frontier Keep' model (bfrontkeep2.nif), which has posterns; the 1.64 keep model (bfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (210000103,210000104,210000105,210000106)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Scathaig: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (111068103,111068104,111068105,111068106)",
+    "reason": "True 1.65 period 1.64 navmesh: Fensalir Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2-s.nif), which has posterns; the 1.64 keep model (n-frontkeep1-s.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (11181203,11181204,11181205,11181206)",
+    "reason": "True 1.65 period 1.64 navmesh: Caer Renaris: door rows of the later client's 'New Frontier Keep' model (bfrontkeep2.nif), which has posterns; the 1.64 keep model (bfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (112179203,112179204,112179205,112179206)",
+    "reason": "True 1.65 period 1.64 navmesh: Arvakr Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2-s.nif), which has posterns; the 1.64 keep model (n-frontkeep1-s.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (113057403,113057404)",
+    "reason": "True 1.65 period 1.64 navmesh: Glenlock Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2.nif), which has posterns; the 1.64 keep model (nfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (113057503,113057504)",
+    "reason": "True 1.65 period 1.64 navmesh: Blendrake Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2.nif), which has posterns; the 1.64 keep model (nfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (113057703,113057704,113057705,113057706)",
+    "reason": "True 1.65 period 1.64 navmesh: Nottmoor Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2.nif), which has posterns; the 1.64 keep model (nfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (113057803,113057804,113057805,113057806)",
+    "reason": "True 1.65 period 1.64 navmesh: Hlidskialf Faste: door rows of the later client's 'New Frontier Keep' model (nfrontkeep2.nif), which has posterns; the 1.64 keep model (nfrontkeep1.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (211000103,211000104,211000105,211000106)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Ailinne: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (212006103,212006104,212006105,212006106)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Crimthain: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (212006203,212006204,212006205,212006206)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Bolg: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (212006303,212006304,212006305,212006306)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun nGed: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Door",
+    "key": "Door_ID",
+    "where": "InternalID IN (212006403,212006404,212006405,212006406)",
+    "reason": "True 1.65 period 1.64 navmesh: Dun Da Behnn: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
    }
   ]
  },
@@ -48910,6 +49024,102 @@
   {
    "sql": "UPDATE ItemTemplate SET MaxCount = 20 WHERE Id_nb IN ('catapult_stone','catapult_stone2','catapult_stone3','ballista_bolt','ballista_bolt2','ballista_bolt3','bullet','bullet2','bullet3','grapeshot','grapeshot2','grapeshot3','ball_of_ice','ball_of_ice2','ball_of_ice3') AND MaxCount < 20",
    "reason": "True 1.65 siege ammunition stacks to 20 (1.60b notes, Freddyshouse 113142: 'Ballista and Catapult ammo now stack up to 20'; merchants sold stacks of 10, FH 127770). The recipe agent's add-recipes165-items.json rows carry MaxCount 1, which makes every piece take a backpack slot (a bot crew's 20-piece restock would need 20 slots). NOTE for the lead: updates run BEFORE add-files, so on a fresh refresh this UPDATE finds no rows; set MaxCount 20 on those 15 rows in add-recipes165-items.json instead (or run this after the add-files)."
+  },
+  {
+   "sql": "UPDATE Door SET X = 32963, Y = 38991, Z = 3783, Heading = 617 WHERE InternalID = 250000302 AND X = 33192 AND Y = 37634",
+   "reason": "True 1.65 period 1.64 navmesh: Caer Caledon gate door 250000302 to the 1.64 bfrontkeep1.nif door02 (33192,37634 was the later 'New Frontier Keep' model's door 02, 1376 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 34044, Y = 38272, Z = 3720, Heading = 1024 WHERE InternalID = 252000302 AND X = 32654 AND Y = 38180",
+   "reason": "True 1.65 period 1.64 navmesh: Thidranki Faste gate door 252000302 to the 1.64 nfrontkeep1.nif door02 (32654,38180 was the later 'New Frontier Keep' model's door 02, 1393 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 652361, Y = 346437, Z = 6346, Heading = 1150 WHERE InternalID = 15110602 AND X = 653401 AND Y = 345539",
+   "reason": "True 1.65 period 1.64 navmesh: Caer Benowyc gate door 15110602 to the 1.64 bfrontkeep1.nif door02 (653401,345539 was the later 'New Frontier Keep' model's door 02, 1374 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 648575, Y = 584956, Z = 7431, Heading = 2080 WHERE InternalID = 115001202 AND X = 648665 AND Y = 583533",
+   "reason": "True 1.65 period 1.64 navmesh: Bledmeer Faste gate door 115001202 to the 1.64 n-frontkeep1-s.nif door02 (648665,583533 was the later 'New Frontier Keep' model's door 02, 1426 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET InternalID = 115000101 WHERE Door_ID = '18d0982a-4917-40d3-8f3d-5bc627dc1d43' AND InternalID = 115000102 AND X = 621861",
+   "reason": "True 1.65 period 1.64 navmesh: Odin's Gate Albion-side gate fort: its two gate leaves were both stored as 115000102; the west leaf (1.64 n-gatefort-s door01 at 621800,626560) is 115000101"
+  },
+  {
+   "sql": "UPDATE Door SET X = 426817, Y = 318464, Z = 4728, Heading = 3085 WHERE InternalID = 214015802 AND X = 425670 AND Y = 318721",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Crauchon gate door 214015802 to the 1.64 HfrontKeep.nif door02 (425670,318721 was the later 'New Frontier Keep' model's door 02, 1175 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 547589, Y = 337360, Z = 5026, Heading = 3604 WHERE InternalID = 12069902 AND X = 546222 AND Y = 337253",
+   "reason": "True 1.65 period 1.64 navmesh: Caer Hurbury gate door 12069902 to the 1.64 bfrontkeep1.nif door02 (546222,337253 was the later 'New Frontier Keep' model's door 02, 1371 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 528384, Y = 357899 WHERE InternalID = 12000102 AND X = 528603 AND Y = 357902",
+   "reason": "True 1.65 period 1.64 navmesh: Snowdonia border keep gate door 12000102 to the 1.64 borderkeep1.nif door02 centre (was 528603,357902, 219 units off)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 414782, Y = 442408, Z = 2888, Heading = 1681 WHERE InternalID = 210000102 AND X = 415753 AND Y = 443050",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Scathaig gate door 210000102 to the 1.64 HfrontKeep.nif door02 (415753,443050 was the later 'New Frontier Keep' model's door 02, 1164 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 738995, Y = 656067, Z = 7024, Heading = 3613 WHERE InternalID = 111068102 AND X = 739910 AND Y = 657115",
+   "reason": "True 1.65 period 1.64 navmesh: Fensalir Faste gate door 111068102 to the 1.64 n-frontkeep1-s.nif door02 (739910,657115 was the later 'New Frontier Keep' model's door 02, 1391 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 580421, Y = 430774, Z = 4706, Heading = 4049 WHERE InternalID = 11181202 AND X = 579536 AND Y = 429736",
+   "reason": "True 1.65 period 1.64 navmesh: Caer Renaris gate door 11181202 to the 1.64 bfrontkeep1.nif door02 (579536,429736 was the later 'New Frontier Keep' model's door 02, 1364 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 585088, Y = 476171 WHERE InternalID = 11020502 AND X = 585296 AND Y = 476182",
+   "reason": "True 1.65 period 1.64 navmesh: Forest Sauvage border keep gate door 11020502 to the 1.64 borderkeep1.nif door02 centre (was 585296,476182, 208 units off)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 697891, Y = 681116, Z = 6904, Heading = 2540 WHERE InternalID = 112179202 AND X = 698959 AND Y = 680165",
+   "reason": "True 1.65 period 1.64 navmesh: Arvakr Faste gate door 112179202 to the 1.64 n-frontkeep1-s.nif door02 (698959,680165 was the later 'New Frontier Keep' model's door 02, 1430 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 707040, Y = 656547, Z = 5184, Heading = 2 WHERE InternalID = 113057402 AND X = 706949 AND Y = 657981",
+   "reason": "True 1.65 period 1.64 navmesh: Glenlock Faste gate door 113057402 to the 1.64 nfrontkeep1.nif door02 (706949,657981 was the later 'New Frontier Keep' model's door 02, 1437 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 701487, Y = 629836, Z = 4416, Heading = 2083 WHERE InternalID = 113057502 AND X = 701579 AND Y = 628402",
+   "reason": "True 1.65 period 1.64 navmesh: Blendrake Faste gate door 113057502 to the 1.64 nfrontkeep1.nif door02 (701579,628402 was the later 'New Frontier Keep' model's door 02, 1437 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 676879, Y = 628476, Z = 5184, Heading = 2035 WHERE InternalID = 113057702 AND X = 676970 AND Y = 627062",
+   "reason": "True 1.65 period 1.64 navmesh: Nottmoor Faste gate door 113057702 to the 1.64 nfrontkeep1.nif door02 (676970,627062 was the later 'New Frontier Keep' model's door 02, 1417 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 679200, Y = 653859, Z = 5712, Heading = 83 WHERE InternalID = 113057802 AND X = 679087 AND Y = 655293",
+   "reason": "True 1.65 period 1.64 navmesh: Hlidskialf Faste gate door 113057802 to the 1.64 nfrontkeep1.nif door02 (679087,655293 was the later 'New Frontier Keep' model's door 02, 1438 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 369280, Y = 395198, Z = 4624, Heading = 2052 WHERE InternalID = 211000102 AND X = 369553 AND Y = 396295",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Ailinne gate door 211000102 to the 1.64 HfrontKeep.nif door02 (369553,396295 was the later 'New Frontier Keep' model's door 02, 1130 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 436670, Y = 368255, Z = 4088, Heading = 1032 WHERE InternalID = 212006102 AND X = 437792 AND Y = 367996",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Crimthain gate door 212006102 to the 1.64 HfrontKeep.nif door02 (437792,367996 was the later 'New Frontier Keep' model's door 02, 1152 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 403199, Y = 367809, Z = 4792, Heading = 23 WHERE InternalID = 212006202 AND X = 402945 AND Y = 366662",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Bolg gate door 212006202 to the 1.64 HfrontKeep.nif door02 (402945,366662 was the later 'New Frontier Keep' model's door 02, 1175 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 398017, Y = 399488, Z = 4328, Heading = 3227 WHERE InternalID = 212006302 AND X = 396870 AND Y = 399746",
+   "reason": "True 1.65 period 1.64 navmesh: Dun nGed gate door 212006302 to the 1.64 HfrontKeep.nif door02 (396870,399746 was the later 'New Frontier Keep' model's door 02, 1176 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 431678, Y = 403839, Z = 4952, Heading = 992 WHERE InternalID = 212006402 AND X = 432825 AND Y = 403562",
+   "reason": "True 1.65 period 1.64 navmesh: Dun Da Behnn gate door 212006402 to the 1.64 HfrontKeep.nif door02 (432825,403562 was the later 'New Frontier Keep' model's door 02, 1180 units off; floor Z and heading axis from door 01)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 585088, Y = 478181 WHERE InternalID = 11020501 AND X = 585178 AND Y = 478294",
+   "reason": "True 1.65 period 1.64 navmesh: Forest Sauvage border keep gate door 01 11020501 onto its 1.64 borderkeep1.nif door group centre (was 585178,478294, outside the door polygon, so the server never registered it)"
+  },
+  {
+   "sql": "UPDATE Door SET X = 677729, Y = 711367 WHERE InternalID = 112179306 AND X = 677714 AND Y = 711280",
+   "reason": "True 1.65 period 1.64 navmesh: Grallarhorn Faste relic keep postern 06 112179306 onto its 1.64 nrelickeep-s.nif door group centre (was 677714,711280, outside the door polygon, so the server never registered it)"
   },
   {
    "sql": "UPDATE Mob SET \"ClassType\" = 'DOL.GS.GameGuard', \"TranslationId\" = '', \"Name\" = 'elite guard', \"Suffix\" = '', \"Guild\" = '', \"ExamineArticle\" = '', \"MessageArticle\" = '', \"Speed\" = 191, \"Model\" = 716, \"Size\" = 50, \"Strength\" = 85, \"Constitution\" = 85, \"Dexterity\" = 99, \"Quickness\" = 99, \"Intelligence\" = 99, \"Piety\" = 99, \"Empathy\" = 99, \"Charisma\" = 99, \"Level\" = 65, \"Realm\" = 1, \"EquipmentTemplateID\" = 'PortalKeepFighterAlb', \"ItemsListTemplateID\" = NULL, \"NPCTemplateID\" = -1, \"Race\" = 0, \"Flags\" = 0, \"AggroLevel\" = 200, \"AggroRange\" = 500, \"MeleeDamageType\" = 3, \"RespawnInterval\" = 1380, \"FactionID\" = 0, \"BodyType\" = 0, \"Brain\" = '', \"IsCloakHoodUp\" = 0, \"Gender\" = 0, \"VisibleWeaponSlots\" = 240 WHERE Mob_ID = '25b15552-9c7e-41a4-a0ed-aa9651880e59' AND Name = 'Knight Commander'",
