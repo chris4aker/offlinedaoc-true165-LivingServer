@@ -168,5 +168,38 @@ namespace DOL.UnitTests
                 true, true, false, false, 12_000, 10_000,
                 1000, 1000, 1000, 1000, 1000, 1000), Is.False);
         }
+
+        // A Healer or Shaman standing up for each heal and sitting again restarted its regeneration timers with a full
+        // interval every time (3 s seated, 6 s standing), so no tick ever came: a pending tick is never pushed back.
+        [TestCase(false, 0, 3000, true)]        // not running: start it
+        [TestCase(true, 5500, 3000, true)]      // sitting down: the 6 s standing tick comes forward to 3 s
+        [TestCase(true, 2000, 3000, false)]     // sitting down with a tick due sooner: kept
+        [TestCase(true, 2500, 6000, false)]     // standing up: the seated tick is not delayed
+        [TestCase(true, 14000, 6000, true)]     // a combat-length wait out of combat comes forward
+        public void APostureChangeNeverDelaysARegenerationTick(bool running, int untilTick, int interval, bool restart)
+        {
+            Assert.That(GameBot.RegenerationTimerNeedsRestart(running, untilTick, interval), Is.EqualTo(restart));
+        }
+
+        [Test]
+        public void SitStandFasterThanTheIntervalStillTicks()
+        {
+            // stand at 0 (6 s tick due at 6000), sit/stand every second: the old restart never let a tick come
+            long next = 6000;
+            int ticks = 0;
+            for (long now = 1000; now <= 12000; now += 1000)
+            {
+                bool seated = now / 1000 % 2 == 1;
+                int interval = ClassicRestRegeneration.HealthAndPowerInterval(seated, false);
+                if (now >= next)
+                {
+                    ticks++;                  // the timer callback returns the interval of the current posture
+                    next = now + interval;
+                }
+                else if (GameBot.RegenerationTimerNeedsRestart(true, (int)(next - now), interval))
+                    next = now + interval;   // the posture change
+            }
+            Assert.That(ticks, Is.GreaterThanOrEqualTo(3));
+        }
     }
 }

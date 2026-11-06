@@ -424,10 +424,23 @@ namespace DOL.GS
                 return;
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendEmoteAnimation(this, seated ? SitEmote : StandEmote);
-            // a seated rest ticks at the sitting interval from now on, as a player's does
-            if (Health < MaxHealth) m_healthRegenerationTimer?.Start(GetHealthRegenerationInterval());
-            if (Mana < MaxMana) m_powerRegenerationTimer?.Start(GetPowerRegenerationInterval());
+            // a seated rest ticks at the sitting interval from now on, as a player's does. A pending tick is only ever
+            // brought forward, never pushed back: restarting the timers with a full interval on every sit and stand
+            // (a Healer or Shaman standing for each heal) meant no regeneration tick ever came.
+            if (Health < MaxHealth) BringRegenerationTickForward(m_healthRegenerationTimer, GetHealthRegenerationInterval());
+            if (Mana < MaxMana) BringRegenerationTickForward(m_powerRegenerationTimer, GetPowerRegenerationInterval());
         }
+
+        private static void BringRegenerationTickForward(ECSGameTimer timer, int interval)
+        {
+            if (timer != null && RegenerationTimerNeedsRestart(timer.IsAlive, timer.TimeUntilElapsed, interval))
+                timer.Start(interval);
+        }
+
+        /// <summary>Pure rule: a regeneration timer is (re)started on a posture change only when it is not running or its
+        /// next tick is further away than the new interval - a sit brings the tick forward, a stand never delays it.</summary>
+        public static bool RegenerationTimerNeedsRestart(bool running, int millisecondsUntilTick, int interval) =>
+            !running || millisecondsUntilTick > interval;
 
         /// <summary>
         /// Moves an already-running ordinary regeneration timer onto the
