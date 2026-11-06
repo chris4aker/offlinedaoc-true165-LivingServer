@@ -17,7 +17,7 @@
 > **This is an AI-made project.** All of its code was written by AI tools (Codex, then Claude). The project owner
 > has no game development or coding experience: they directed the work and play-tested it. Expect bugs.
 >
-> **v0.2 is out**, with an in-place update for v0.1 players. Large parts of the game haven't been played through by a person.
+> **v0.3 is out**, with an in-place update for v0.1 and v0.2 players. Large parts of the game haven't been played through by a person.
 > Expect bugs, and keep a backup of your save. Bug reports are welcome in [Issues](https://github.com/shadowofze/OfflineDAoC-True165/issues).
 
 # Offline DAoC True 1.65: single-player Dark Age of Camelot as of patch 1.65
@@ -32,18 +32,18 @@ project owner, who has no game development or coding experience, directed and pl
 
 ## Download and play
 
-**[Download v0.2](https://github.com/shadowofze/OfflineDAoC-True165/releases/latest)**, no Git or AI tools needed.
-**Already playing v0.1?** The same downloader updates your game in place with a much smaller download (about 2.5 GB). Your
-account, characters, companions and bots stay as they are.
+**[Download v0.3](https://github.com/shadowofze/OfflineDAoC-True165/releases/latest)**, no Git or AI tools needed.
+**Already playing v0.1 or v0.2?** The same downloader updates your game in place with a much smaller download (about
+2.8 GB). Your account, characters, companions and bots stay as they are.
 
-1. On the release page, under **Assets**, download **`Download-OfflineDAoC-True165-v0.2.zip`** (just the
+1. On the release page, under **Assets**, download **`Download-OfflineDAoC-True165-v0.3.zip`** (just the
    downloader, a few KB).
 2. Put it in a folder with a short path, such as `C:\Games\OfflineDAoC`. Right-click it, choose **Extract All…**,
    and open the extracted folder.
 3. Close the game and the launcher if they're running. Then double-click **`GET-OFFLINE-DAOC-TRUE165.cmd`**. If
    Windows SmartScreen appears, click **More info → Run anyway**. It checks your PC and asks:
    - **1 = Update my game:** it finds your `OfflineDAoC-True165` folder (or asks you to pick it), checks it, and
-     updates it in place (about 2.5 GB);
+     updates it in place (about 2.8 GB);
    - **2 = New install:** the complete game, into a new folder (about 36 GB).
 
    If it stops, run it again; it continues where it stopped.
@@ -54,7 +54,7 @@ What you need:
 - 64-bit Windows 10 or 11, with a CPU that supports **AVX2** (the bots' navigation needs it; most CPUs from 2014
   onward do).
 - A graphics card that supports **Vulkan**, with current drivers. It's developed and tested on an RTX 2060 (6 GB).
-- 16 GB RAM recommended, and about 48 GB of free disk space for a new install.
+- 16 GB RAM recommended, and about 49 GB of free disk space for a new install.
 - **Nothing to install or turn on in Windows:** .NET comes with the game. You don't need the Windows ".NET Framework
   3.5" feature, the Visual C++ Redistributable or an original DAoC client.
 
@@ -202,5 +202,5 @@ code it is based on. Other parts keep their own licenses; see [THIRD_PARTY.md](T
 
 ## Changes
 
-See the [changelog](CHANGELOG.md), including what's coming in 0.2.
+See the [changelog](CHANGELOG.md), including what's coming in 0.4.
 

@@ -22,7 +22,7 @@ release page (see [docs/PLAY.md](../docs/PLAY.md)).
 3. **Pack:**
    ```
    python -I release/make_release_true165.py --game <game package> --client <folder holding new-client> --repo . --out <assets> --version <version>
-   python -I release/make_patch_true165.py --base 0.1=release-baselines/0.1/package.sha256 [--base 0.2=...] --game <game package> --client <folder holding new-client> --repo . --out <assets> --version <version>
+   python -I release/make_patch_true165.py --base 0.1=release-baselines/0.1/package.sha256 --base 0.2=release-baselines/0.2/package.sha256 --game <game package> --client <folder holding new-client> --repo . --out <assets> --version <version>
    python -I release/make_downloader_true165.py --assets <assets> --version <version>
    ```
 4. **Test** a full install from the parts on disk, as a player would:

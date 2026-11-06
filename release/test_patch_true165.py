@@ -6,8 +6,8 @@
 It builds a fake v0.1 and v0.2 (changed, added and removed files in the game and the client), installs v0.1 with the
 downloader, adds a player's save (world, login, client settings), and checks the update: a changed file stops it (and
 the fresh-install-with-save path works), a failure halfway puts everything back, a good run gives exactly v0.2 with
-the save untouched and a backup of what it replaced, a second run says "already up to date", and a half-applied update
-finishes on the next run.
+the save untouched and a backup of what it replaced, a second run says "already up to date", a half-applied update
+finishes on the next run, and a v0.3 patch built from both baselines brings v0.1 and v0.2 installs to exactly v0.3.
 """
 from __future__ import annotations
 
@@ -178,6 +178,48 @@ def main():
     assert "updated to" in out, out[-800:]
     check_is_v02(g, save)
     print("5 ok: a half-applied update finishes")
+
+    # ---- 6. v0.3: one cumulative patch brings both v0.1 and v0.2 up to v0.3
+    shutil.copytree(w / "game2", w / "game3")
+    shutil.copytree(w / "client2", w / "client3")
+    (w / "game3/runtime/true165/drops165.json").write_text('{"drops": 3}', encoding="utf-8")       # changed again
+    (w / "game3/runtime/true165/new165.json").unlink()                                             # added in 0.2, removed
+    (w / "game3/runtime/true165/v03.json").write_text("added in 0.3", encoding="utf-8")            # added
+    (w / "game3/VERSION.txt").write_text("Offline DAoC True 1.65 v0.3\r\n", encoding="utf-8")
+    (w / "client3/new-client/VERSION.txt").write_text("Offline DAoC True 1.65 v0.3 new client\r\n", encoding="utf-8")
+    run(py + [str(HERE / "make_release_true165.py"), "--game", w / "game3", "--client", w / "client3",
+              "--repo", args.repo, "--out", w / "assets", "--version", "0.3", "--part-budget", "4000000"])
+    run(py + [str(HERE / "make_patch_true165.py"), "--base", f"0.1={w / 'assets/baseline-0.1.sha256'}",
+              "--base", f"0.2={w / 'assets/baseline-0.2.sha256'}",
+              "--game", w / "game3", "--client", w / "client3", "--repo", args.repo, "--out", w / "assets",
+              "--version", "0.3", "--part-budget", "4000000"])
+    import json
+    patch = json.loads((w / "assets/v0.3/download-manifest.json").read_text(encoding="utf-8"))["Patch"]
+    assert patch["From"] == ["0.1", "0.2"], patch["From"]
+    v03 = dict(reversed(line.split("  ", 1)) for line in
+               (w / "assets/baseline-0.3.sha256").read_text(encoding="utf-8").splitlines() if line.strip())
+
+    def check_is_v03(game: Path, save: dict):
+        have = tree(game)
+        for rel, h in v03.items():
+            if rel in SAVE_FILES or rel.startswith("runtime/data/"):
+                continue
+            assert have.get(rel) == h, f"{game.name}: {rel} is not the v0.3 file"
+        for gone in ("runtime/true165/old165.json", "runtime/true165/new165.json"):
+            assert gone not in have, f"{game.name}: the removed file {gone} is still there"
+        for rel in SAVE_FILES:
+            assert have.get(rel) == save[rel], f"{game.name}: the save file {rel} was changed"
+
+    g01 = install("g6-v01")
+    g02 = install("g6-v02")
+    out = downloader("0.2", w / "assets", "-Mode", "update", "-Update", g02)
+    assert "updated to" in out, out[-800:]
+    for g in (g01, g02):
+        save = {rel: sha(g / rel) for rel in SAVE_FILES}
+        out = downloader("0.3", w / "assets", "-Mode", "update", "-Update", g)
+        assert "updated to" in out, f"{g.name}: {out[-800:]}"
+        check_is_v03(g, save)
+    print("6 ok: v0.1 and v0.2 both update to exactly v0.3 with one patch (files added in 0.2 and removed in 0.3 go)")
     print("ALL PATCH TESTS PASSED")
 
 

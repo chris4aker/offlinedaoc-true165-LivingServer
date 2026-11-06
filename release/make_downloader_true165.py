@@ -41,7 +41,7 @@ def readme(version: str) -> str:
         "   ENTER REALM.",
         "",
         "You need: 64-bit Windows 10 or 11, a CPU with AVX2, a graphics card with Vulkan",
-        "(a current driver), 16 GB RAM recommended, and about 48 GB of free space for a new install.",
+        "(a current driver), 16 GB RAM recommended, and about 49 GB of free space for a new install.",
         "Nothing else to install: .NET comes with the game, and no original DAoC client is needed.",
         "",
         "Full guide and troubleshooting:",
@@ -57,7 +57,7 @@ def sha(path: Path) -> str:
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--assets", type=Path, required=True)
-    parser.add_argument("--version", default="0.2")
+    parser.add_argument("--version", default="0.3")
     args = parser.parse_args()
     folder = args.assets.resolve() / f"v{args.version}"
     if not (folder / "download-manifest.json").is_file():

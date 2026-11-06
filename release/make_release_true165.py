@@ -84,7 +84,7 @@ def collect(game: Path, client: Path, repo: Path, snapshot: Path) -> dict[str, P
     if not (client / "new-client").is_dir():
         raise SystemExit("--client must hold a new-client folder")
     for path in client.iterdir():
-        if path.name != "new-client" and not path.name.endswith("stage-report.json"):
+        if path.name != "new-client" and not path.name.endswith(("stage-report.json", "-changes.json")):
             raise SystemExit(f"--client holds something besides new-client: {path.name}")
     for path in (client / "new-client").rglob("*"):
         if path.is_file():
