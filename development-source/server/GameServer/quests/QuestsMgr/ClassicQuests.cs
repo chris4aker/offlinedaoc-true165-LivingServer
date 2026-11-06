@@ -182,6 +182,11 @@ namespace DOL.GS.Quests
             return info.Races.Any(r => string.Equals(r.Replace(" ", ""), race, StringComparison.OrdinalIgnoreCase));
         }
 
+        /// <summary>Every classic quest's id with its classic-quests.json entry as text (QuestLootGate165: which quests
+        /// name an item).</summary>
+        public static IEnumerable<(int Id, string Text)> QuestTexts() =>
+            _config.Quests.Select(pair => (pair.Key, JsonSerializer.Serialize(pair.Value))).ToArray();
+
         public sealed class Config
         {
             public Dictionary<int, QuestInfo> Quests { get; set; } = new();

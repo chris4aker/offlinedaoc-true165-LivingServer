@@ -1687,6 +1687,9 @@ namespace DOL.GS.ServerRules
 
             foreach (DbItemTemplate itemTemplate in LootMgr.GetLoot(killedNpc, killer))
             {
+                // True 1.65 Mode: a quest's item drops only for a player on a quest that uses it (QuestLootGate165)
+                if (!QuestLootGate165.MayDrop(itemTemplate, itemOwners.Select(owner => owner.Owner)))
+                    continue;
                 if (GameMoney.IsItemMoney(itemTemplate.Name))
                     CreateMoney(killedNpc, itemTemplate, itemOwners, playersInRadius);
                 else
