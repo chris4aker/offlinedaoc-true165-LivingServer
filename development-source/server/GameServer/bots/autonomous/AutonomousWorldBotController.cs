@@ -2394,7 +2394,7 @@ namespace DOL.GS
                     CampDestination destination = new(id, label, keep.Name, keep.Region, keep.X, keep.Y, keep.Z, 1, false, true);
                     choices.Add(destination);
                     int closedDoors = keep.Doors.Values.Count(door => door.IsAlive && door.State == eDoorState.Closed);
-                    int guards = keep.Guards.Values.Count(guard => guard.IsAlive);
+                    int guards = keep.Guards.Values.Count(guard => guard.IsAlive && AutonomousRvrKeepPolicy.IsDefendingGuard(guard));
                     objectives.Add(new(id, label,
                         keep.Realm == bot.Realm ? AutonomousRvrEventLayer.Intent.Roam :
                         keep.IsRelic ? AutonomousRvrEventLayer.Intent.AssaultRelicKeep : AutonomousRvrEventLayer.Intent.AssaultKeep,

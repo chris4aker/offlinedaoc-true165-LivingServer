@@ -42,7 +42,7 @@ public static class AutonomousRvrDefense
     public static Vector3 Position(GameBot bot, AbstractGameKeep keep)
     {
         var nav = AutonomousKeepApproachNavigation.ForRealm(PathfindingProvider.Instance,bot.CurrentRegion,bot.Realm);
-        var guards = keep.Guards.Values.Where(guard => guard.IsAlive && guard.Realm == bot.Realm)
+        var guards = keep.Guards.Values.Where(guard => guard.IsAlive && guard.Realm == bot.Realm && AutonomousRvrKeepPolicy.IsDefendingGuard(guard))
             .OrderBy(guard => IsRangedDefender(bot) ? guard is GuardArcher ? 0 : 1 : guard is GuardLord ? 0 : 1)
             .ThenBy(guard => (unchecked((ulong)(guard.ObjectID + bot.DatabaseID)) * 2654435761UL) % 100);
         foreach (var guard in guards.Take(12))

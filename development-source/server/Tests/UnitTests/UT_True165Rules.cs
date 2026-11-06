@@ -72,6 +72,17 @@ namespace DOL.UnitTests
             Assert.That(Classic165Mode.IsGmOnlyCommand(command), Is.False);
         }
 
+        // Keep hasteners are back in True 1.65 (1.52b: one at every frontier and border keep); bots don't count them as
+        // defenders or stand at their spot outside the gate.
+        [Test]
+        public void KeepHastenersAreNotDefendingGuards()
+        {
+            Assert.That(AutonomousRvrKeepPolicy.IsDefendingGuardType(typeof(DOL.GS.Keeps.FrontierHastener)), Is.False);
+            Assert.That(AutonomousRvrKeepPolicy.IsDefendingGuardType(typeof(DOL.GS.Keeps.GuardFighter)), Is.True);
+            Assert.That(AutonomousRvrKeepPolicy.IsDefendingGuardType(typeof(DOL.GS.Keeps.GuardLord)), Is.True);
+            Assert.That(AutonomousRvrKeepPolicy.IsDefendingGuard(null), Is.False);
+        }
+
         [Test]
         public void InconnuAcolyteHasNoCareerWhileHereticIsDisabled()
         {

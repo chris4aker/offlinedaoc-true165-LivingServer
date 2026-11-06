@@ -152,7 +152,7 @@ public static partial class AutonomousRvrEventLayer
     public static LiveObjective ObjectiveForKeep(DOL.GS.Keeps.AbstractGameKeep keep) =>
         new($"rvr-keep-{keep.KeepID}", keep.Name, keep.IsRelic ? Intent.AssaultRelicKeep : Intent.AssaultKeep,
             keep.Realm, keep.Region, keep.X, keep.Y, keep.Z, keep.IsRelic, 0, 0,
-            keep.Guards.Values.Count(g => g.IsAlive), keep.Doors.Values.Count(d => d.IsAlive && d.State == eDoorState.Closed));
+            keep.Guards.Values.Count(g => g.IsAlive && AutonomousRvrKeepPolicy.IsDefendingGuard(g)), keep.Doors.Values.Count(d => d.IsAlive && d.State == eDoorState.Closed));
 
     private static DOL.GS.Keeps.AbstractGameKeep NextSentinelKeep(LiveObjective relic, long now) =>
         HeldSentinelKeeps(relic)
