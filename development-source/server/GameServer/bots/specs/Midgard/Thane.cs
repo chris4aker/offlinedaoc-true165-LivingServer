@@ -37,11 +37,12 @@ namespace DOL.GS
                 Add(Specs.Parry, 6, 0.0f);
                 break;
 
+                // Period template: weapon 44 / Stormcalling 46 / shield 42 / parry 3.
                 case 2:
                 Add(ObjToSpec(WeaponOneType), 44, 0.8f);
-                Add(Specs.Stormcalling, 48, 1.0f);
-                Add(Specs.Shields, 35, 0.5f);
-                Add(Specs.Parry, 18, 0.0f);
+                Add(Specs.Stormcalling, 46, 1.0f);
+                Add(Specs.Shields, 42, 0.5f);
+                Add(Specs.Parry, 3, 0.0f);
                 break;
 
                 case 3:

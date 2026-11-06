@@ -246,5 +246,12 @@ namespace DOL.UnitTests
             }
             Assert.That(seen, Is.SupersetOf(new[] { (37, 39, 4), (43, 27, 14), (32, 41, 14), (22, 46, 17) }));
         }
+
+        [Test]
+        public void ThaneShieldBuildsTakeShield42()
+        {
+            foreach (BotSpec plan in Roll(eCharacterClass.Thane).Where(p => !p.Is2H).Take(300))
+                Assert.That(Cap(plan, Specs.Shields), Is.EqualTo(42u));
+        }
     }
 }
