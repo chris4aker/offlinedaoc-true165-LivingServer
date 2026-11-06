@@ -860,6 +860,7 @@ func _on_world_inner(kind: String, d: Dictionary) -> void:
 			trainer_changed.emit()
 		"trainer_ra":                                     # the trainer's Realm Skills (TrainerWindow code 1)
 			realm_abilities = d.list
+			_forget_details("ra:")                          # (their descriptions asked again: a level may have changed)
 			ra_points = int(d.points)
 			trainer_changed.emit()
 		"disable":                                        # reuse timers (DisableSkills)

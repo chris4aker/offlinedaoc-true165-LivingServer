@@ -100,6 +100,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Merchants: 36 merchants whose title did not match their goods show the right one - Adribard's Retreat's Theurgist and Sorcerer staff sellers were titled Shield Merchant and Armor Merchant; arrow, bolt, bow and crossbow sellers, armor and robe merchants elsewhere had the same mix-up.
 - Raids: a realm raid's high-end boss loot is shared out again - a quarter straight to the players' bags, the rest to the raid's gamebots; in True 1.65 it had stayed on the ground.
 - Gamebots: your hired companions no longer take gamebots' places - with three companions out, three gamebots stayed offline ("queued") because the companions were counted toward the gamebot population.
+- Trainers: hovering a realm ability in the trainer window shows what it does, from the server's own description (the window never asked for it before).
 
 ## 0.2 (2026-11-01)
 

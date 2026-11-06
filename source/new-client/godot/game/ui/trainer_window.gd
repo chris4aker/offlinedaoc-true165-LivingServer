@@ -309,8 +309,41 @@ func _realm_rows() -> void:
 	for ra in Server.realm_abilities:
 		var idx := int(ra.index)
 		var col := UiArt.GOLD_HI if idx == _selected_ra else (UiArt.CREAM if bool(ra.available) else Color(0.55, 0.55, 0.55))
-		_ra_rows.add_child(_row(String(ra.name).to_upper(), str(int(ra.level)), "COST: %d" % int(ra.cost), col, func():
+		var row := _row(String(ra.name).to_upper(), str(int(ra.level)), "COST: %d" % int(ra.cost), col, func():
 			_selected_ra = idx
 			_selected = ""
-			refresh()))
+			refresh())
+		if Server.active:
+			# its description on hover, from the server (owner 2026-11-06: the realm abilities had no tooltip - the server
+			# has every description, the window never asked): the trainer window's info request, DetailDisplayHandler
+			# type 9 with 50 + its place in the class's list (the list this window shows, realm rank 5 left out)
+			var tip := RaTip.new()
+			tip.key = "ra:%d" % idx
+			tip.id = 50 + idx
+			tip.ra_name = String(ra.name)
+			tip.set_anchors_preset(Control.PRESET_FULL_RECT)
+			row.add_child(tip)
+		_ra_rows.add_child(row)
 	_ra_points.text = str(Server.ra_points)
+
+
+## Over a realm ability's row (clicks pass through to the row): asks the server for its description as the pointer
+## comes in and shows it in the same box as an item's or a skill's.
+class RaTip extends Control:
+	var key := ""
+	var id := 0
+	var ra_name := ""
+
+	func _init() -> void:
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		tooltip_text = " "                                  # (any text: Godot asks _make_custom_tooltip only then)
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_MOUSE_ENTER:
+			Server.prefetch_detail(key, 9, id, ra_name)
+
+	func _make_custom_tooltip(_for_text: String) -> Object:
+		var d := Server.item_lines(key)
+		if (d.get("lines", []) as Array).is_empty():
+			return ItemTooltip.text_box(ra_name.to_upper(), [])
+		return ItemTooltip.text_box(String(d.get("caption", ra_name)), d.lines)
