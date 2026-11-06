@@ -188,5 +188,33 @@ namespace DOL.UnitTests
                 Assert.That(at50[Specs.Body_Magic], Is.InRange(20, 28));
             }
         }
+
+        [Test]
+        public void SpiritmasterSuppressionBuildsTrainSuppressionWhileLevelling()
+        {
+            for (int i = 0; i < 40; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Spiritmaster, eSpecType.SuppSpirit);
+                Dictionary<string, int> at20 = At(plan, eCharacterClass.Spiritmaster, 20);
+                Assert.That(at20[Specs.Suppression], Is.EqualTo(20), "Suppression is the main line");
+                Assert.That(At(plan, eCharacterClass.Spiritmaster, 50)[Specs.Suppression], Is.InRange(41, 49));
+            }
+        }
+
+        [Test]
+        public void DarknessSpiritmasterWithSuppression26TakesItWhileLevelling()
+        {
+            for (int i = 0; i < 40; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Spiritmaster, eSpecType.DarkSpirit);
+                if (Cap(plan, Specs.Suppression) != 26)
+                    continue;
+                Dictionary<string, int> at30 = At(plan, eCharacterClass.Spiritmaster, 30);
+                Assert.That(at30[Specs.Suppression], Is.InRange(14, 18));
+                Assert.That(at30[Specs.Darkness], Is.GreaterThanOrEqualTo(24));
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Spiritmaster, 50);
+                Assert.That((at50[Specs.Darkness], at50[Specs.Suppression]), Is.EqualTo((47, 26)));
+            }
+        }
     }
 }
