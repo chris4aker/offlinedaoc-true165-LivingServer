@@ -3631,6 +3631,8 @@ namespace DOL.AI.Brain
                 bool outOfPowerMelee = rangedCaster && NoAttackSpellYet();
                 if (rangedCaster && !outOfPowerMelee || !IsMeleeChasing(Body.TargetObject))
                     Body.StopFollowing();
+                if (!rangedCaster && TryHealBetweenSwings())
+                    return;
                 if (!rangedCaster && Body.TargetObject is GameLiving meleeTarget && TryEngageUnderMeleePressure(meleeTarget))
                     return;
 
@@ -3919,6 +3921,30 @@ namespace DOL.AI.Brain
                 (short)Math.Clamp(desired, 160, short.MaxValue),
                 (short)Math.Clamp((int)MAX_AGGRO_LIST_DISTANCE, 200, (int)short.MaxValue));
             return true;
+        }
+
+        /// <summary>
+        /// A bot meleeing with a monster on it heals itself (or a group member) right after the monster's swing, when its
+        /// heal finishes before the next one, as a player does (owner 2026-11-06). The melee-pressure branch below returned
+        /// before the heal check, so Acolytes, Naturalists and every other melee class with a heal never healed in a fight:
+        /// level-1 Acolytes died at full power to blue monsters swinging every 6 s, with a 2.2 s heal unused.
+        /// </summary>
+        private bool TryHealBetweenSwings()
+        {
+            if (!Body.CanCastHealSpells || Body.IsCasting || Body.castingComponent?.HasPendingSkillRequests == true ||
+                _recentDirectAttacker is not { IsAlive: true } attacker)
+                return false;
+            long sinceHit = GameLoop.GameLoopTime - _recentDirectAttackTick;
+            if (sinceHit > 1_000)
+                return false;
+            int longestHeal = 0;
+            foreach (Spell heal in Body.HealSpells)
+                if (heal != null && heal.Level <= Body.Level)
+                    longestHeal = Math.Max(longestHeal, heal.CastTime);
+            int swing = attacker.attackComponent?.AttackSpeed(attacker.ActiveWeapon) ?? 0;
+            if (swing - sinceHit < longestHeal + 300)
+                return false;
+            return CheckHeals();
         }
 
         private bool TryEngageUnderMeleePressure(GameLiving target)
