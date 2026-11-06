@@ -48906,6 +48906,10 @@
   {
    "sql": "UPDATE MerchantItem SET ItemTemplateID = 'flight_bodkin_arrows2' WHERE MerchantItem_ID = 'e10884db-264c-492a-9610-958fc8f0a4b3' AND ItemTemplateID = 'flight_bodkin_arrows'",
    "reason": "True 1.65 arrows: MidWeaponMerchant7 sold another realm's flight bodkin arrows; now the Midgard copy"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET MaxCount = 20 WHERE Id_nb IN ('catapult_stone','catapult_stone2','catapult_stone3','ballista_bolt','ballista_bolt2','ballista_bolt3','bullet','bullet2','bullet3','grapeshot','grapeshot2','grapeshot3','ball_of_ice','ball_of_ice2','ball_of_ice3') AND MaxCount < 20",
+   "reason": "True 1.65 siege ammunition stacks to 20 (1.60b notes, Freddyshouse 113142: 'Ballista and Catapult ammo now stack up to 20'; merchants sold stacks of 10, FH 127770). The recipe agent's add-recipes165-items.json rows carry MaxCount 1, which makes every piece take a backpack slot (a bot crew's 20-piece restock would need 20 slots). NOTE for the lead: updates run BEFORE add-files, so on a fresh refresh this UPDATE finds no rows; set MaxCount 20 on those 15 rows in add-recipes165-items.json instead (or run this after the add-files)."
   }
  ]
 }

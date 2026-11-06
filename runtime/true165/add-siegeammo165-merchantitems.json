@@ -1,0 +1,103 @@
+{
+ "table": "MerchantItem",
+ "key": "MerchantItem_ID",
+ "reason": "True 1.65 siege ammunition (owner 2026-11-06): ballista bolts and catapult stones of the merchant's realm on the battleground Siegemasters (SiegeMerchantAlb/Mid/Hib, regions 250-252) and the portal-keep Medallion Merchants (OFMerchant_Alb/Mid/Hib: Sall Fadri, Gwulla, Araisa). Period: 'ballista bolt and catapult stone can be purchased from the siege merchant, you have to craft the other types' (Freddyshouse 157111, Dec 2003); portal-keep medallion merchant sold siege ammo (FH 86463, Feb 2003; 1.54f notes FH 101036 'portal ticket vendors will now also sell siege ammunition'). Bullet, grapeshot and ball of ice stay crafter-only (FH 132447). The item rows are the recipe agent's (add-recipes165-items.json); merge after them.",
+ "rows": [
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantAlb-catapult_stone",
+   "ItemListID": "SiegeMerchantAlb",
+   "ItemTemplateID": "catapult_stone",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantAlb-ballista_bolt",
+   "ItemListID": "SiegeMerchantAlb",
+   "ItemTemplateID": "ballista_bolt",
+   "PageNumber": 0,
+   "SlotPosition": 6,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantMid-catapult_stone2",
+   "ItemListID": "SiegeMerchantMid",
+   "ItemTemplateID": "catapult_stone2",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantMid-ballista_bolt2",
+   "ItemListID": "SiegeMerchantMid",
+   "ItemTemplateID": "ballista_bolt2",
+   "PageNumber": 0,
+   "SlotPosition": 6,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantHib-catapult_stone3",
+   "ItemListID": "SiegeMerchantHib",
+   "ItemTemplateID": "catapult_stone3",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-SiegeMerchantHib-ballista_bolt3",
+   "ItemListID": "SiegeMerchantHib",
+   "ItemTemplateID": "ballista_bolt3",
+   "PageNumber": 0,
+   "SlotPosition": 6,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Alb-catapult_stone",
+   "ItemListID": "OFMerchant_Alb",
+   "ItemTemplateID": "catapult_stone",
+   "PageNumber": 0,
+   "SlotPosition": 4,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Alb-ballista_bolt",
+   "ItemListID": "OFMerchant_Alb",
+   "ItemTemplateID": "ballista_bolt",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Mid-catapult_stone2",
+   "ItemListID": "OFMerchant_Mid",
+   "ItemTemplateID": "catapult_stone2",
+   "PageNumber": 0,
+   "SlotPosition": 4,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Mid-ballista_bolt2",
+   "ItemListID": "OFMerchant_Mid",
+   "ItemTemplateID": "ballista_bolt2",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Hib-catapult_stone3",
+   "ItemListID": "OFMerchant_Hib",
+   "ItemTemplateID": "catapult_stone3",
+   "PageNumber": 0,
+   "SlotPosition": 4,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  },
+  {
+   "MerchantItem_ID": "true165-siegeammo-OFMerchant_Hib-ballista_bolt3",
+   "ItemListID": "OFMerchant_Hib",
+   "ItemTemplateID": "ballista_bolt3",
+   "PageNumber": 0,
+   "SlotPosition": 5,
+   "LastTimeRowUpdated": "2026-11-06 00:00:00"
+  }
+ ]
+}
