@@ -479,8 +479,10 @@ public static class AutonomousPetSupport
             bool hunterPetOff = owner is GameBot hunter && hunter.CharacterClass?.ID == (int)eCharacterClass.Hunter &&
                                 CompanionOptions165.Choice(hunter, "hunterpet") == 1;
             // A hired Cabalist / Enchanter summons the pet its player chose (CompanionOptions165), else its own choice.
+            // (from every rank it learned: its own spell list keeps only the strongest - see LearnedPetSummons)
             if (!hunterPetOff && owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)
-                summon = ChooseCastableByRank(owner, spells.Where(entry => IsChosenPet(entry, chosenLine)).ToList(), null, true);
+                summon = ChooseCastableByRank(owner,
+                    LearnedPetSummons(chooser).Where(entry => IsChosenPet(entry, chosenLine)).ToList(), null, true);
             if (summon.Spell == null && !hunterPetOff)
                 summon = ChooseCastableByRank(owner, spells, null,
                     owner is GameBot { IsEndgameCompanion: true });
@@ -659,7 +661,8 @@ public static class AutonomousPetSupport
             // a hired Theurgist calls the elementals its player chose (AI Options pet row), else its own choice
             (Spell Spell, SpellLine Line) theurgistPet = default;
             if (owner is GameBot elementalist && CompanionOptions165.PetLine(elementalist) is string elementLine)
-                theurgistPet = ChooseCastableByRank(owner, spells.Where(entry => IsChosenPet(entry, elementLine)).ToList(),
+                theurgistPet = ChooseCastableByRank(owner,
+                    LearnedPetSummons(elementalist).Where(entry => IsChosenPet(entry, elementLine)).ToList(),
                     eSpellType.SummonTheurgistPet, true);
             if (theurgistPet.Spell == null)
                 theurgistPet = ChooseCastableByRank(owner, spells, eSpellType.SummonTheurgistPet,
@@ -1563,8 +1566,44 @@ public static class AutonomousPetSupport
     // The upkeep list without a per-call filter (every ordinary pet turn), cached with the known spells.
     /// <summary>The main-pet summons a bot knows (the companion window's pet choice, CompanionOptions165).</summary>
     public static (Spell Spell, SpellLine Line)[] MainPetSummons(GameBot bot) =>
-        BotAutomatedSpells(bot).Where(entry => entry.Spell != null && IsMainPetSummon(entry.Spell.SpellType) &&
-                                               entry.Spell.Level <= bot.Level).ToArray();
+        LearnedPetSummons(bot).Where(entry => IsMainPetSummon(entry.Spell.SpellType)).ToArray();
+
+    private sealed class LearnedPetCache
+    {
+        public object Source; public int Count; public byte Level; public long Until;
+        public (Spell Spell, SpellLine Line)[] Spells = [];
+    }
+    private static readonly ConditionalWeakTable<GameBot, LearnedPetCache> LearnedPetCaches = new();
+
+    /// <summary>
+    /// Every main-pet and Theurgist summon the bot has learned, every rank. Its own spell list (SetCasterSpells) keeps
+    /// only the strongest rank of a kind, so a level-10 Cabalist "knew" only Ruby Simulacrum: the AI Options pet row
+    /// (two or more pets) never showed, and a chosen lower pet could not be cast (owner 2026-11-05). Rebuilt when
+    /// training or a level changes the spell list, as the known-spell cache is, with a minute as a backstop.
+    /// </summary>
+    public static (Spell Spell, SpellLine Line)[] LearnedPetSummons(GameBot bot)
+    {
+        LearnedPetCache cache = LearnedPetCaches.GetOrCreateValue(bot);
+        long now = GameLoop.GameLoopTime;
+        var source = bot.Spells;
+        lock (cache)
+        {
+            if (now < cache.Until && ReferenceEquals(cache.Source, source) && cache.Count == (source?.Count ?? 0) &&
+                cache.Level == bot.Level)
+                return cache.Spells;
+            cache.Spells = (bot.GetAllUsableListSpells(true) ?? [])
+                .Where(entry => entry?.Item1 != null && entry.Item2 != null)
+                .SelectMany(entry => entry.Item2.OfType<Spell>()
+                    .Where(spell => spell.Level <= bot.Level &&
+                                    (IsMainPetSummon(spell.SpellType) || spell.SpellType == eSpellType.SummonTheurgistPet))
+                    .Select(spell => (Spell: spell, Line: entry.Item1)))
+                .DistinctBy(entry => entry.Spell.ID)
+                .ToArray();
+            cache.Source = source; cache.Count = source?.Count ?? 0; cache.Level = bot.Level;
+            cache.Until = now + 60_000;
+            return cache.Spells;
+        }
+    }
 
     /// <summary>The player's pet choice (CompanionOptions165): one summon ("spell:&lt;id&gt;") or a whole line (its key).</summary>
     private static bool IsChosenPet((Spell Spell, SpellLine Line) entry, string choice) =>
@@ -1574,8 +1613,7 @@ public static class AutonomousPetSupport
 
     /// <summary>The Theurgist's elemental summons a bot knows (earth, ice, air lines).</summary>
     public static (Spell Spell, SpellLine Line)[] TheurgistSummons(GameBot bot) =>
-        BotAutomatedSpells(bot).Where(entry => entry.Spell?.SpellType == eSpellType.SummonTheurgistPet &&
-                                               entry.Spell.Level <= bot.Level).ToArray();
+        LearnedPetSummons(bot).Where(entry => entry.Spell.SpellType == eSpellType.SummonTheurgistPet).ToArray();
 
     /// <summary>The Bonedancer sub-pet summons a bot knows.</summary>
     public static (Spell Spell, SpellLine Line)[] MinionSummons(GameBot bot) =>
