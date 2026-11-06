@@ -103,6 +103,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Trainers: hovering a realm ability in the trainer window shows what it does, from the server's own description (the window never asked for it before).
 - Movement: you can no longer walk up a keep wall step by step: a face steeper than 60 degrees no longer counts as ground (period: climbing keep walls was removed in 2001; from 1.42 only assassins with the Climb ability climb keeps, at their climb points).
 - Horses: at a sharp bend of a stable route (Mularn to Svasud Faste) the horse turns into the new leg instead of sliding sideways back onto it.
+- Doors: the healer doors and round doors of Jordheim open again in the server's game - clicking them never reached the server.
 
 ## 0.2 (2026-11-01)
 

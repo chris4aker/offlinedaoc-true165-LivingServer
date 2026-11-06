@@ -800,7 +800,10 @@ func _make_doors(parts: Dictionary, at: Transform3D, base := -1) -> void:
 		d.add_collision(col, LAYER_WALL)
 		d.sound_flag = _door_flag()
 		var g := String(spec.get("group", spec.name))
-		var digits := RegEx.create_from_string("(\\d+)\\s*$").search(g)
+		# the group's last number: Jordheim's healer and round doors are "door001 (healer)" / "door001 (round)" - with
+		# the number only taken at the very end they had no id, so the server was never asked and they never opened in
+		# the server's game (owner 2026-11-06, a player's "door broken in Jordheim")
+		var digits := RegEx.create_from_string("(\\d+)\\D*$").search(g)
 		if base >= 0 and digits:
 			d.door_id = base + int(digits.get_string(1))
 			if not door_by_id.has(d.door_id):
