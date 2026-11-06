@@ -5719,7 +5719,9 @@ namespace DOL.AI.Brain
             // The player's "Heal at" choice for a hired healer (AI Options): early 90%, late 50%; emergencies stay at 40%.
             int healAt = CompanionOptions165.Choice(BotBody, "healat");
             int needAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 65;
-            int healerNeedAt = healAt == 1 ? 90 : healAt == 2 ? 50 : 80;
+            // True 1.65: healers start at two-thirds health too (BotHealTriage165), normal mode at 80%
+            bool classic165 = Classic165Mode.IsOn;
+            int healerNeedAt = BotHealTriage165.HealerNeedAt(healAt, classic165);
             // Role (AI Options): an attacking healer, or an off-healer Friar in a fight, heals emergencies only
             bool emergenciesOnly = healAt == 0 &&
                 (RoleChoice == 2 && BotBody.CharacterClass?.ID is (int)eCharacterClass.Cleric or (int)eCharacterClass.Druid or
@@ -6052,11 +6054,14 @@ namespace DOL.AI.Brain
                         spellToCast = BotBody.HealOverTime;
                     else if (CheckHealSpell(BotBody.HealOverTimeInstant) && !LivingHasEffect(spellTarget, BotBody.HealOverTimeInstant))
                         spellToCast = BotBody.HealOverTimeInstant;
-                    else if (BotBody.ManaPercent >= ManaThreshold && CheckHealSpell(BotBody.HealBig)
+                    // True 1.65: the small efficient heal outside emergencies; the big heal is for under 40% (above)
+                    else if (!classic165 && BotBody.ManaPercent >= ManaThreshold && CheckHealSpell(BotBody.HealBig)
                         && (spellTarget.MaxHealth - spellTarget.Health) >= GameBot.HealAmount(BotBody.HealBig, spellTarget))
                         spellToCast = BotBody.HealBig;
                     else if (CheckHealSpell(BotBody.HealEfficient))
                         spellToCast = BotBody.HealEfficient;
+                    else if (classic165 && CheckHealSpell(BotBody.HealBig))
+                        spellToCast = BotBody.HealBig;
                     else if (CheckHealSpell(BotBody.HealGroup))
                         spellToCast = BotBody.HealGroup;
                 }
