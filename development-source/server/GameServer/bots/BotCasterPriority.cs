@@ -36,5 +36,16 @@ namespace DOL.GS
             int targetLevel, int targetHealthPercent, bool targetIsPlayerLike, int debuffsCastOnTarget) =>
             debuffsCastOnTarget < OpeningDebuffs && casterPowerPercent >= 30 && targetHealthPercent >= 60 &&
             (targetIsPlayerLike || grouped || targetLevel >= casterLevel);
+
+        public const int SavePowerBelowPercent = 50;
+        public const int FinishTargetBelowPercent = 30;
+
+        /// <summary>
+        /// True 1.65 (period forums, "Theurgist tips": stop casting at about half power, power comes back faster above it):
+        /// with the group's tank holding the monster a caster casts no optional nukes under half power, unless the monster
+        /// is nearly dead. Crowd control, debuffs and heals are not affected.
+        /// </summary>
+        public static bool SavePowerInGroup(int casterPowerPercent, int targetHealthPercent, bool tankHoldsTarget) =>
+            tankHoldsTarget && casterPowerPercent < SavePowerBelowPercent && targetHealthPercent >= FinishTargetBelowPercent;
     }
 }

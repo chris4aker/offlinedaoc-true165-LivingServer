@@ -4461,6 +4461,22 @@ namespace DOL.AI.Brain
             return !tankHolds || target.HealthPercent > 75;
         }
 
+        /// <summary>
+        /// True 1.65: a caster in a gamebot group saves its power under half while a group tank holds the monster
+        /// (BotCasterPriority.SavePowerInGroup). Hired and other player companions follow their player's fights as before.
+        /// </summary>
+        private bool SavePowerForGroup()
+        {
+            if (!Classic165Mode.IsOn || BotBody?.IsAutonomousWorldBot != true || BotBody.IsPlayerLedGroup ||
+                BotBody.IsPlayerCompanion || Body.ManaPercent >= BotCasterPriority.SavePowerBelowPercent ||
+                Body.Group == null || Body.TargetObject is not GameNPC target || target is GameBot || !target.IsAlive ||
+                !PrefersCurrentSpellRange())
+                return false;
+            bool tankHolds = target.TargetObject is GameLiving holder && holder != Body && holder.IsAlive &&
+                             Body.Group.IsInTheGroup(holder) && BotHealTriage165.IsTank(holder);
+            return BotCasterPriority.SavePowerInGroup(Body.ManaPercent, target.HealthPercent, tankHolds);
+        }
+
         private bool HardFight(GameLiving target)
         {
             if (target is GamePlayer or GameBot || target.Level >= Body.Level || Body.HealthPercent < 60)
@@ -4597,7 +4613,7 @@ namespace DOL.AI.Brain
 
                 // Check instant spells
                 bool debuffOpening = DebuffOpeningWorthwhile();
-                bool holdDamage = HoldDamageForTank();
+                bool holdDamage = HoldDamageForTank() || SavePowerForGroup();
                 if (Body.CanCastInstantHarmfulSpells)
                 {
                     IEnumerable<Spell> instantOffense = Body.InstantHarmfulSpells;
