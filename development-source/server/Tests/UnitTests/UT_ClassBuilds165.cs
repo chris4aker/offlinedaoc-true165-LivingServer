@@ -381,5 +381,14 @@ namespace DOL.UnitTests
                 }
             }
         }
+
+        [Test]
+        public void RangerMostlyTrainsTheBowAndLeansPierce()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Ranger);
+            Assert.That(Share(plans, p => Cap(p, Specs.RecurveBow) == 0), Is.EqualTo(0.1).Within(0.03));
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Piercing), Is.EqualTo(2 / 3.0).Within(0.03));
+            Assert.That(plans.Any(p => Cap(p, Specs.RecurveBow) is >= 40 and <= 45), Is.True);
+        }
     }
 }

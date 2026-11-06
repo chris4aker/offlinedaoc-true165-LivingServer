@@ -7,15 +7,15 @@ namespace DOL.GS
             SpecName = "RangerBotSpec";
             Is2H = false;
 
-            int randBaseWeap = Util.Random(1);
-
-            switch (randBaseWeap)
+            // Period Rangers leaned to piercing.
+            switch (Pick(1, 2))
             {
                 case 0: WeaponOneType = eObjectType.Blades; break;
                 case 1: WeaponOneType = eObjectType.Piercing; break;
             }
 
-            int randVariance = Util.Random(7);
+            // Bow builds (1 in 10 without a bow), one of them at bow 42 (case 8).
+            int randVariance = Pick(6, 0, 4, 0, 4, 0, 1, 1, 4);
 
             SpecType = eSpecType.DualWield;
 
@@ -59,6 +59,14 @@ namespace DOL.GS
                 Add(ObjToSpec(WeaponOneType), 25, 0.6f);
                 Add(Specs.Pathfinding, 40, 0.5f);
                 Add(Specs.Celtic_Dual, 50, 1.0f);
+                Add(Specs.Stealth, 33, 0.2f);
+                break;
+
+                case 8:
+                Add(ObjToSpec(WeaponOneType), 28, 0.4f);
+                Add(Specs.RecurveBow, 42, 0.9f);
+                Add(Specs.Pathfinding, 40, 0.5f);
+                Add(Specs.Celtic_Dual, 22, 0.3f);
                 Add(Specs.Stealth, 33, 0.2f);
                 break;
             }
