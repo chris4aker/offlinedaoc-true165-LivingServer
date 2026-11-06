@@ -2640,6 +2640,109 @@ namespace DOL.GS
                     }
                 }
             }
+
+            if (Classic165Mode.IsOn)
+                RateHeals165();
+        }
+
+        // ---- True 1.65: the single-target heals rated by what they really heal (owner 2026-11-06)
+        // A heal lands for Value x U(min, 1.25), min = 0.25 + (spec - 1) / spell level, at most 1.25
+        // (HealSpellHandler.CalculateDamageVariance). Rated by raw Value, a level 40 Shaman with Mending 14 healed with
+        // Minor Reconstruction (about 86 expected, 6.3 per power) over Major Recovery (about 165, 6.9 per power).
+        // Worked out when the spells are sorted (spec change, level, respec) and when the gear changes the heal line's
+        // spec (RefreshItemBonuses): never in the AI turn.
+
+        private int _healRatingSpecKey = int.MinValue;
+
+        /// <summary>The expected (mean) amount of a heal of <paramref name="value"/> cast with <paramref name="lineSpec"/>
+        /// in its line at spell level <paramref name="spellLevel"/>.</summary>
+        public static double ExpectedHeal165(double value, double lineSpec, int spellLevel)
+        {
+            double min = 0.25;
+            if (spellLevel > 0)
+                min = Math.Min(1.25, min + (Math.Max(1.0, lineSpec) - 1.0) / spellLevel);
+            return value * (min + 1.25) / 2.0;
+        }
+
+        /// <summary>
+        /// Pure rule: the efficient heal is the best expected health per power among the heals worth at least half the
+        /// largest expected heal (a tiny cheap heal is no heal); the big heal the best expected health per second of cast.
+        /// Returns indexes into <paramref name="heals"/>, -1 when empty.
+        /// </summary>
+        public static (int Efficient, int Big) ChooseHeals165(IReadOnlyList<(double Expected, int Power, double CastSeconds)> heals)
+        {
+            if (heals == null || heals.Count == 0)
+                return (-1, -1);
+            double largest = 0;
+            foreach (var heal in heals)
+                largest = Math.Max(largest, heal.Expected);
+            int efficient = -1, big = -1;
+            double bestPerPower = double.MinValue, bestPerSecond = double.MinValue;
+            for (int i = 0; i < heals.Count; i++)
+            {
+                (double expected, int power, double castSeconds) = heals[i];
+                double perSecond = expected / Math.Max(0.1, castSeconds);
+                if (perSecond > bestPerSecond)
+                {
+                    bestPerSecond = perSecond;
+                    big = i;
+                }
+                if (expected < largest / 2.0)
+                    continue;
+                double perPower = expected / Math.Max(1, power);
+                if (perPower > bestPerPower)
+                {
+                    bestPerPower = perPower;
+                    efficient = i;
+                }
+            }
+            return (efficient, big);
+        }
+
+        private static bool IsRatedSingleHeal165(Spell spell) =>
+            spell != null && spell.SpellType == eSpellType.Heal && spell.Target == eSpellTarget.REALM && spell.Radius <= 0 &&
+            !spell.IsInstantCast;
+
+        /// <summary>The spec level the heal's learned line gives this bot now (with item bonuses).</summary>
+        private double HealLineSpec165(Spell spell)
+        {
+            SpellLine line = ResolvePowerSpellLine(spell, null);
+            return line == null || string.IsNullOrEmpty(line.Spec) ? Level : GetModifiedSpecLevel(line.Spec);
+        }
+
+        private int HealSpecKey165()
+        {
+            int key = 17;
+            if (HealSpells != null)
+                foreach (Spell spell in HealSpells)
+                    if (IsRatedSingleHeal165(spell))
+                        key = key * 31 + (int)HealLineSpec165(spell);
+            return key;
+        }
+
+        /// <summary>Re-rates the heals when gear changed the heal line's spec (cheap when nothing changed).</summary>
+        internal void RefreshHealRatings165()
+        {
+            if (Classic165Mode.IsOn && HealSpells?.Count > 0 && HealSpecKey165() != _healRatingSpecKey)
+                RateHeals165();
+        }
+
+        private void RateHeals165()
+        {
+            _healRatingSpecKey = HealSpecKey165();
+            List<Spell> heals = HealSpells?.Where(IsRatedSingleHeal165).ToList();
+            if (heals == null || heals.Count == 0)
+                return;
+            var rated = heals.Select(spell => (
+                    Expected: spell.Value >= 0 ? ExpectedHeal165(spell.Value, HealLineSpec165(spell), spell.Level) : HealAmount(spell, this),
+                    Power: PowerCost(spell),
+                    CastSeconds: spell.CastTime / 1000.0))
+                .ToList();
+            (int efficient, int big) = ChooseHeals165(rated);
+            if (efficient >= 0)
+                HealEfficient = heals[efficient];
+            if (big >= 0)
+                HealBig = heals[big];
         }
 
         public override void SortStyles()
@@ -5352,6 +5455,13 @@ namespace DOL.GS
         }
 
         public virtual void RefreshItemBonuses()
+        {
+            RefreshItemBonusesCore();
+            // True 1.65: +Mending (or other heal line) on the gear changes what the heals heal
+            RefreshHealRatings165();
+        }
+
+        private void RefreshItemBonusesCore()
         {
             ItemBonus.Clear();
             string slotToLoad = string.Empty;
