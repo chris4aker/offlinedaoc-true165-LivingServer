@@ -60,6 +60,19 @@ def zone_local_npks(zone_id):
 HOUSING_164_TEX = ('zones/Nifs', 'zones/textures', 'phousing/nifs', 'phousing/textures')   # TextureIndex.PREFER order
 
 
+# Zone models taken from the real 1.64 client instead of the later client: the later H-gatefort.npk (Emain Macha's
+# gate forts) has its two big gates' leaves empty - their open animation without a panel or collision, so the gates
+# were never drawn, never blocked and never opened (owner 2026-11-06). Extracted by fix_gatefort_164.py into WORK_164.
+PERIOD_164_NIFS = ('h-gatefort',)
+
+
+def period_164_npks():
+    """{file name (lower case): path} of PERIOD_164_NIFS extracted from the 1.64 client (WORK_164/zones/Nifs)."""
+    d = _paths.WORK_164 / 'zones/Nifs'
+    have = {p.name.lower(): p for p in d.iterdir()} if d.is_dir() else {}
+    return {f'{b}.npk': have[f'{b}.npk'] for b in PERIOD_164_NIFS if f'{b}.npk' in have}
+
+
 def housing_164_npks():
     """{file name (lower case): path} of the extracted 1.64 models: zones/Nifs, phousing/nifs over it (the housing
     gates are in both; the later client's zones/Nifs a_phousegatein is the phousing/nifs one)."""
@@ -973,6 +986,7 @@ def build(zone_id, upscale=True):
     nifs = {int(r[0]): r for r in read_csv(dat['nifs.csv']) if r and r[0].strip().isdigit()}
     fixtures = [r for r in read_csv(dat['fixtures.csv'])[2:] if len(r) > 11 and r[1].strip().isdigit()]
     npk_files = {p.name.lower(): p for p in (CLIENT / 'zones/Nifs').iterdir()}
+    npk_files.update(period_164_npks())          # models the later client ships broken (fix_gatefort_164.py)
     npk_files.update(zone_local_npks(zone_id))   # the zone's own nifs folder first (owner 2026-10-29: Avalon Marsh's
     #   Darkness Falls portal drew zones/Nifs' generic 7 KB 'avpier' pier, solid white; the 1.64 client ships the
     #   zone's own AVPIER.npk - pillars, portal platform, purple flames - with its textures in zone009/nifs)
