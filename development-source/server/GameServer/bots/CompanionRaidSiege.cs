@@ -454,6 +454,18 @@ namespace DOL.GS
                 owned?.ReleaseControl();
                 return false;
             }
+            // True 1.65 Mode: artillery fires only with ammunition (SiegeAmmo165; rams need none). The crew leader restocks
+            // like a gamebot crew (its own coin, else its player's; at most every two minutes) and, with none, leaves the
+            // engine and works the door with its squad.
+            if (!SiegeAmmo165.Ready(bot, owned, kind, now, companion: true))
+            {
+                if (owned != null)
+                {
+                    owned.ReleaseControl();
+                    Log.Info($"RAID_SIEGE_NO_AMMO player={s.Owner.Name} bot={bot.Name} kind={kind} target=\"{target.Name}\" shots={owned.ShotsFired}");
+                }
+                return false;
+            }
             if (owned != null && !AutonomousWorldBotController.InSiegeRange(owned, target))
             {
                 // Run 24: crews abandoned working engines whenever their chosen target moved or died. Re-aim at anything
@@ -553,6 +565,7 @@ namespace DOL.GS
             {
                 (owned as GameSiegeRam)?.UpdateRamStatus(); // the squad standing at the ram crews it
                 if ((owned.CurrentState & GameSiegeWeapon.eState.Armed) == 0) owned.Arm();
+                else if (SiegeAmmo165.Feed(bot, owned) != SiegeFeed.Ready) { } // True 1.65: ammunition in, LOAD (5 s)
                 else if ((owned.CurrentState & GameSiegeWeapon.eState.Aimed) == 0) owned.Aim();
                 else
                 {
