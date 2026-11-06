@@ -37,6 +37,27 @@ namespace DOL.GS
             _ => BotPartyRoles.IsTank(bot) || !HasTankPartner(bot),
         };
 
+        /// <summary>A style that stuns (Slam and the like).</summary>
+        public static bool IsStunStyle(Style style)
+        {
+            if (style?.Procs == null)
+                return false;
+            foreach (StyleProcInfo proc in style.Procs)
+                if (proc?.Spell?.SpellType == eSpellType.StyleStun)
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// A stun style (Slam: a long stun for a lot of endurance) is used on purpose, as players did: to stop a cast, to
+        /// peel the target off a realm mate, or to open on an enemy player. Not as a filler: its growth beats every anytime
+        /// weapon style, so tanks slammed on every swing the stun allowed.
+        /// </summary>
+        public static bool StunWanted(GameLiving bot, GameLiving target, AttackData lastAttack) =>
+            bot != null && target != null && (target.IsCasting ||
+            target.TargetObject is GameLiving victim && victim != bot && victim.Realm == bot.Realm ||
+            target is GamePlayer or GameBot && lastAttack?.Target != target);
+
         /// <summary>A non-tank the monster has turned on, with a living tank (bot tank class or player) in its group: detaunt.</summary>
         public static bool ShouldDetaunt(GameBot bot)
         {
@@ -127,13 +148,16 @@ namespace DOL.GS
             // Preserve a deliberate tank taunt, but revalidate at the actual swing.
             bool mayTaunt = MayTaunt(bot);
             Style queued = bot.styleComponent.NextCombatStyle;
-            if (preserveQueued && Usable(bot, queued, lastAttack) && (mayTaunt || ThreatSign(queued) <= 0)) return queued;
+            GameLiving target = bot.TargetObject as GameLiving;
+            if (preserveQueued && Usable(bot, queued, lastAttack) && (mayTaunt || ThreatSign(queued) <= 0) &&
+                (!IsStunStyle(queued) || StunWanted(bot, target, lastAttack))) return queued;
             bool detaunt = ShouldDetaunt(bot);
             Style best = null;
             double bestValue = 0;
             Style detauntStyle = null;
             Style anytime = null;
             Style stealthOpener = null;
+            bool? stunWanted = null;
             foreach (Style style in bot.Styles)
             {
                 if (!Usable(bot, style, lastAttack)) continue;
@@ -143,6 +167,7 @@ namespace DOL.GS
                     if (stealthOpener == null || style.Level > stealthOpener.Level) stealthOpener = style;
                     continue;
                 }
+                if (IsStunStyle(style) && !(stunWanted ??= StunWanted(bot, target, lastAttack))) continue;
                 int threat = ThreatSign(style);
                 if (threat > 0 && !mayTaunt) continue;
                 if (threat < 0 && detaunt && Better(style, detauntStyle)) detauntStyle = style;

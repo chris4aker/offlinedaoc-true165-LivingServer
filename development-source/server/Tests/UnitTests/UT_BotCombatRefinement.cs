@@ -234,6 +234,53 @@ namespace DOL.UnitTests
             Assert.That(BotMeleeStylePolicy.Select(bot, null), Is.Null);
         }
 
+        // Slam's growth (0.759) beat every anytime style, so shield tanks slammed on every swing the stun allowed.
+        [Test]
+        public void StunStylesAreForCastsPeelsAndOpeningOnPlayersNotFiller()
+        {
+            var bot = (Assassin)RuntimeHelpers.GetUninitializedObject(typeof(Assassin));
+            bot.Level = 50; bot.Endurance = 100; bot.Inventory = new BotInventory(); bot.Realm = eRealm.Midgard;
+            var sword = GameInventoryItem.Create(new DbItemTemplate { Name = "sword", Object_Type = (int)eObjectType.Sword,
+                Item_Type = Slot.RIGHTHAND, DPS_AF = 150, SPD_ABS = 35, Quality = 99, Condition = 50000, MaxCondition = 50000 });
+            bot.Inventory.AddItem(eInventorySlot.RightHandWeapon, sword);
+            typeof(GameLiving).GetField("_activeWeapon", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(bot, sword);
+            bot.styleComponent = new NpcStyleComponent(bot);
+            typeof(GameLiving).GetField("m_effects", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(bot, new DOL.GS.Effects.GameEffectList(bot));
+            var enemy = (GameNPC)RuntimeHelpers.GetUninitializedObject(typeof(GameNPC));
+            enemy.attackComponent = new AttackComponent(enemy);
+            ((GameLiving)enemy).castingComponent = CastingComponent.Create(enemy);
+            typeof(GameLiving).GetField("m_effects", BindingFlags.Instance | BindingFlags.NonPublic)
+                .SetValue(enemy, new DOL.GS.Effects.GameEffectList(enemy));
+            bot.TargetObject = enemy;
+            var anytime = Style(11, growth: .5);
+            var slam = Style(11, growth: .759, level: 8);
+            slam.Procs.Add(new StyleProcInfo(new Spell(new DbSpell { SpellID = 20010, Type = "StyleStun", Target = "Enemy", Duration = 9 }, 1), 0, 100));
+            bot.Styles = new List<Style> { anytime, slam };
+            Assert.That(BotMeleeStylePolicy.IsStunStyle(slam), Is.True);
+            Assert.That(BotMeleeStylePolicy.IsStunStyle(anytime), Is.False);
+
+            enemy.TargetObject = bot;   // a monster on the bot itself: plain styles
+            Assert.That(BotMeleeStylePolicy.Select(bot, null), Is.SameAs(anytime));
+            var mate = (GameNPC)RuntimeHelpers.GetUninitializedObject(typeof(GameNPC));
+            FieldInfo brains = typeof(GameNPC).GetField("m_brains", BindingFlags.Instance | BindingFlags.NonPublic);
+            brains.SetValue(mate, new System.Collections.ArrayList());
+            brains.SetValue(bot, new System.Collections.ArrayList());
+            mate.Realm = eRealm.Midgard;
+            enemy.TargetObject = mate;  // on a realm mate: peel it
+            Assert.That(BotMeleeStylePolicy.Select(bot, null), Is.SameAs(slam));
+            bot.styleComponent.NextCombatStyle = slam;
+            enemy.TargetObject = bot;   // a queued slam is dropped once the peel is done
+            Assert.That(BotMeleeStylePolicy.Select(bot, null), Is.SameAs(anytime));
+
+            var player = (GameBot)RuntimeHelpers.GetUninitializedObject(typeof(GameBot));
+            ((GameLiving)player).castingComponent = CastingComponent.Create(player);
+            player.TargetObject = bot;
+            Assert.That(BotMeleeStylePolicy.StunWanted(bot, player, null), Is.True, "opening on an enemy player");
+            Assert.That(BotMeleeStylePolicy.StunWanted(bot, player, new AttackData { Target = player }), Is.False, "not again and again");
+            Assert.That(BotMeleeStylePolicy.StunWanted(bot, enemy, new AttackData { Target = enemy }), Is.False);
+        }
+
         [Test]
         public void TauntStylesAreKnownAndChainOpenersCountTheirFollowUp()
         {
