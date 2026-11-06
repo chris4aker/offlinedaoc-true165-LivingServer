@@ -223,9 +223,15 @@ namespace DOL.GS
                 SPD_ABS = type == eObjectType.Thrown ? 20 : type == eObjectType.Crossbow ? 33 : 40,
                 Quality = 85, Condition = 50000, MaxCondition = 50000,
                 Durability = 50000, MaxDurability = 50000, IsPickable = true,
-                IsDropable = false, IsTradable = false, MaxCount = 1,
+                // Training gear (owner 2026-11-06): never traded or listed; a vendor takes it for 1 copper.
+                IsDropable = true, IsTradable = false, Price = 1, MaxCount = 1,
             };
         }
+
+        /// <summary>Bot training gear (a training bow, throwing weapon or instrument): locked from trade and the
+        /// exchange, vendored for 1 copper once the bot owns a real item of that kind.</summary>
+        public static bool IsTrainingGear(DbInventoryItem item) =>
+            item?.Id_nb?.StartsWith("bot_starter_", StringComparison.Ordinal) == true || BotStarterInstruments.IsTraining(item);
 
         public static bool EnsureStarter(GameBot bot)
         {

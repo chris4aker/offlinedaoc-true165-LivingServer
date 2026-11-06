@@ -17,7 +17,7 @@ namespace DOL.GS
             _ => throw new ArgumentOutOfRangeException(nameof(type)),
         };
 
-        /// <summary>One of the training instruments made here (bots never sell or trade them).</summary>
+        /// <summary>One of the training instruments made here: never traded or listed, sold to a vendor for 1 copper.</summary>
         public static bool IsTraining(DbInventoryItem item) =>
             item?.Creator == nameof(BotStarterInstruments) || item?.Id_nb?.StartsWith("bot_starter_instrument_", StringComparison.Ordinal) == true;
 
@@ -52,7 +52,9 @@ namespace DOL.GS
                     DPS_AF = (int)type, Model = ModelFor(type), Level = 1, LevelRequirement = 1,
                     Realm = (int)bot.Realm, Quality = 100, Condition = 50000, MaxCondition = 50000,
                     Durability = 50000, MaxDurability = 50000, MaxCount = 1,
-                    IsPickable = true, IsDropable = false, IsTradable = false,
+                    // Training gear (owner 2026-11-06): locked from trade and the exchange, but a vendor takes it for
+                    // 1 copper so it never fills a bag after the first real instrument.
+                    IsPickable = true, IsDropable = true, IsTradable = false, Price = 1,
                 });
                 var item = GameInventoryItem.Create(template);
                 item.Creator = nameof(BotStarterInstruments);

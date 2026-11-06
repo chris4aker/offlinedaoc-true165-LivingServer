@@ -573,6 +573,34 @@ namespace DOL.GS;
             if (bot?.Inventory == null)
                 return retained;
 
+            bool TryRole(DbInventoryItem item, out (int Kind, int Type, int Shape) role)
+            {
+                eObjectType type = (eObjectType)item.Object_Type;
+                if (type == eObjectType.Instrument)
+                    // Lute/drum/flute use DPS_AF as the instrument kind; songs may
+                    // pull these from a backpack even when another is equipped.
+                    role = (1, item.DPS_AF, 0);
+                else if (type == eObjectType.Shield)
+                    role = (2, item.Item_Type, item.Hand);
+                else if (BotWeaponStats.IsMeleeWeapon(type) && BotWeaponStats.CanUseMelee(bot, item))
+                    role = (3, item.Object_Type, item.Item_Type);
+                else if (BotRangedCombat.IsRangedWeaponType(type) && BotRangedCombat.CanUse(bot, item))
+                    role = (4, item.Object_Type, item.Item_Type);
+                else
+                {
+                    role = default;
+                    return false;
+                }
+                return true;
+            }
+
+            // Training gear is no spare once the bot owns a real item of that kind, worn or carried (owner 2026-11-06:
+            // otherwise it takes a bag slot forever after the first upgrade); the vendor takes it for 1 copper.
+            HashSet<(int Kind, int Type, int Shape)> realRoles = new();
+            foreach (DbInventoryItem item in bot.Inventory.AllItems)
+                if (item != null && item.OwnerLot == 0 && !BotRangedCombat.IsTrainingGear(item) && TryRole(item, out var realRole))
+                    realRoles.Add(realRole);
+
             Dictionary<(int Kind, int Type, int Shape), DbInventoryItem> bestByRole = new();
             foreach (DbInventoryItem item in bot.Inventory.AllItems)
             {
@@ -586,19 +614,7 @@ namespace DOL.GS;
                     continue;
                 }
 
-                eObjectType type = (eObjectType)item.Object_Type;
-                (int Kind, int Type, int Shape) role;
-                if (type == eObjectType.Instrument)
-                    // Lute/drum/flute use DPS_AF as the instrument kind; songs may
-                    // pull these from a backpack even when another is equipped.
-                    role = (1, item.DPS_AF, 0);
-                else if (type == eObjectType.Shield)
-                    role = (2, item.Item_Type, item.Hand);
-                else if (BotWeaponStats.IsMeleeWeapon(type) && BotWeaponStats.CanUseMelee(bot, item))
-                    role = (3, item.Object_Type, item.Item_Type);
-                else if (BotRangedCombat.IsRangedWeaponType(type) && BotRangedCombat.CanUse(bot, item))
-                    role = (4, item.Object_Type, item.Item_Type);
-                else
+                if (!TryRole(item, out var role) || BotRangedCombat.IsTrainingGear(item) && realRoles.Contains(role))
                     continue;
 
                 if (!bestByRole.TryGetValue(role, out DbInventoryItem incumbent) ||

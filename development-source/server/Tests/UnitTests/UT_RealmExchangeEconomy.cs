@@ -236,6 +236,31 @@ namespace DOL.UnitTests
         }
 
         [Test]
+        public void TrainingInstrument_IsVendoredOnceTheBotOwnsARealOne()
+        {
+            ExchangeBot bot = Bot(9906, 100);
+            DbInventoryItem training = Item("training lute");
+            training.Object_Type = (int)eObjectType.Instrument;
+            training.DPS_AF = (int)eInstrumentType.Lute;
+            training.IsTradable = false;
+            training.Price = 1;
+            training.Creator = nameof(BotStarterInstruments);
+            Assert.That(bot.Inventory.AddItem(eInventorySlot.FirstBackpack, training), Is.True);
+
+            // its only lute: kept as the song spare
+            Assert.That(AutonomousBotEconomy.FindVendorTrashCandidate(bot), Is.Null);
+
+            DbInventoryItem real = Item("oak lute");
+            real.Object_Type = (int)eObjectType.Instrument;
+            real.DPS_AF = (int)eInstrumentType.Lute;
+            Assert.That(bot.Inventory.AddItem(eInventorySlot.TwoHandWeapon, real), Is.True);
+
+            Assert.That(AutonomousBotEconomy.FindVendorTrashCandidate(bot), Is.SameAs(training));
+            Assert.That(AutonomousBotEconomy.CalculateStandardVendorSaleCopper(training), Is.EqualTo(1));
+            Assert.That(AutonomousBotEconomy.FindValuableListingCandidate(bot), Is.Null);
+        }
+
+        [Test]
         public void FortyUsableFocusStaves_KeepOnlyBestSpare_AndLeaveSaleCandidates()
         {
             ExchangeBot bot = Bot(9904, 500);

@@ -205,7 +205,8 @@ public class UT_CompanionEquipmentDispatch
             Assert.That(bot.ActiveWeapon.Model, Is.EqualTo(BotStarterInstruments.ModelFor(type)));
             Assert.That(bot.ActiveWeapon.Level, Is.EqualTo(1));
             Assert.That(bot.ActiveWeapon.IsTradable, Is.False);
-            Assert.That(bot.ActiveWeapon.IsDropable, Is.False);
+            Assert.That(bot.ActiveWeapon.IsDropable, Is.True, "training gear vendors for 1 copper");
+            Assert.That(bot.ActiveWeapon.Price, Is.EqualTo(1));
         }
         Assert.That(bot.Inventory.AllItems, Is.EquivalentTo(original));
     }
