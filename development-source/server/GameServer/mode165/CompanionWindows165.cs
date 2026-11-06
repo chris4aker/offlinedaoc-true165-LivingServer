@@ -31,7 +31,11 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger StatsLog = Logging.LoggerManager.Create(typeof(CompanionWindows165));
 
-        public static readonly HashSet<string> Verbs = ["gear", "equip", "bag", "unequip", "swap", "stats", "repair", "select", "spec", "respec", "train", "ra", "buyra", "pick", "vault", "delve", "charm", "pet", "subpet", "song"];
+        // Every AI Options verb is routed here too, taken from CompanionOptions165 so the two lists cannot drift apart
+        // (2026-11-05: the generic "option" verb was missing here, so every new AI Options row answered "Unknown hiring command").
+        public static readonly HashSet<string> Verbs =
+            ["gear", "equip", "bag", "unequip", "swap", "stats", "repair", "select", "spec", "respec", "train", "ra", "buyra", "pick", "vault", "delve",
+             .. CompanionOptions165.Verbs];
 
         // ---- the original client's clean list windows (owner 2026-10-30: TRAIN / GEAR / REALM ABILITIES / STATS replace the
         // champion trainer window and the house-vault gear window there). Op 12 = list text [4] slot 0..63, [5..] ASCII;
@@ -245,7 +249,14 @@ namespace DOL.GS
                 Hire165.Refresh(player);
         }
 
-        private static void Problem(GamePlayer player, string text) => Hire165.Text(player, 8, text);
+        // The hire session keeps its own message and sends it again on every refresh, so it follows this one: a stale
+        // "Unknown hiring command." came back after a successful TRAIN (2026-11-05).
+        private static void Problem(GamePlayer player, string text)
+        {
+            if (Hire165.Get(player) is { } session)
+                session.Problem = text;
+            Hire165.Text(player, 8, text);
+        }
 
         /// <summary>
         /// The new client's hover tooltips in the companion window (owner 2026-11-05, reset-day C15): "delve &lt;row&gt; item

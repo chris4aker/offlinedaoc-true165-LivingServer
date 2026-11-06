@@ -1,0 +1,18 @@
+using DOL.GS;
+using NUnit.Framework;
+
+namespace DOL.UnitTests
+{
+    // 2026-11-05: the AI Options "option" verb was not routed, so every generic row answered "Unknown hiring command".
+    [TestFixture]
+    public class UT_CompanionOptionsRouting
+    {
+        [Test]
+        public void EveryAiOptionsVerbReachesTheCompanionWindows()
+        {
+            foreach (string verb in CompanionOptions165.Verbs)
+                Assert.That(CompanionWindows165.Verbs, Does.Contain(verb), verb);
+            Assert.That(CompanionWindows165.Verbs, Does.Contain("option"));
+        }
+    }
+}
