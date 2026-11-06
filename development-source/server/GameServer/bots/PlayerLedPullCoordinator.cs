@@ -23,6 +23,9 @@ namespace DOL.GS
             public GameLiving Target;
             public long Deadline;
             public int Finished;
+            // True 1.65 Mode: the tank brings the monster back to the player (AutonomousDefensivePull) instead of
+            // starting the fight at the spawn.
+            public bool BringBack;
         }
         private static readonly ConditionalWeakTable<Group, GroupState> States = new();
 
@@ -71,16 +74,48 @@ namespace DOL.GS
             }
 
             var order = new Order { Group = group, Leader = player, Tank = tank, Target = target,
-                Deadline = GameLoop.GameLoopTime + ContactTimeoutMilliseconds };
+                Deadline = GameLoop.GameLoopTime + (Classic165Mode.IsOn
+                    ? AutonomousDefensivePull.PlayerLedTimeoutMilliseconds : ContactTimeoutMilliseconds),
+                BringBack = Classic165Mode.IsOn };
             Volatile.Write(ref state.Pending, order);
             foreach (GameBot bot in helpers)
                 if (bot != tank) ((BotBrain)bot.Brain).PrepareForTankPull();
+            // True 1.65 Mode (Prima, pulling): tag it once from range and run back; with no ranged attack the tank walks
+            // up, makes contact and walks back (OnAttack). The group fights where the player stands.
+            bool tagging = order.BringBack && AutonomousDefensivePull.TryBeginPlayerLedTag(tank, target, player);
             if (!((BotBrain)tank.Brain).OrderPull(target))
             {
                 Cancel(order, false);
                 return "Pull cancelled: the tank could not engage that target.";
             }
+            if (order.BringBack)
+                return tagging
+                    ? $"{tank.Name} tags it from range and brings it back to you. The others wait here."
+                    : $"{tank.Name} walks up, makes contact and brings it back to you. The others wait here.";
             return $"{tank.Name} leads the pull. Attackers wait for tank contact; healers and buffers support.";
+        }
+
+        /// <summary>
+        /// The tank is bringing this monster back to the player: its blows on the tank on the way back don't call the
+        /// rest of the group out to the spawn (BotBrain.NotifyNearbyGroupBots).
+        /// </summary>
+        public static bool IsBringingBack(GameLiving member, GameLiving attacker)
+        {
+            if (member is not GameBot tank || tank.Group == null || !States.TryGetValue(tank.Group, out GroupState state))
+                return false;
+            Order order = Volatile.Read(ref state.Pending);
+            return order is { BringBack: true } && order.Tank == tank && order.Target == attacker &&
+                Volatile.Read(ref order.Finished) == 0 && AutonomousDefensivePull.IsBringingBack(tank, attacker);
+        }
+
+        /// <summary>The brought-back monster reached the player: the whole group engages it.</summary>
+        public static void BroughtBack(GamePlayer player, GameLiving target)
+        {
+            if (player?.Group == null || !States.TryGetValue(player.Group, out GroupState state)) return;
+            Order order = Volatile.Read(ref state.Pending);
+            if (order == null || order.Leader != player || order.Target != target ||
+                Interlocked.CompareExchange(ref order.Finished, 1, 0) != 0) return;
+            Engage(player, target, true);
         }
 
         public static bool IsWaiting(GameBot bot)
@@ -119,8 +154,13 @@ namespace DOL.GS
             {
                 Order order = Volatile.Read(ref state.Pending);
                 if (order != null && Volatile.Read(ref order.Finished) == 0 && order.Leader != player) return;
-                if (order != null && Interlocked.CompareExchange(ref order.Finished, 1, 0) == 0 && order.Target != target)
-                    (order.Tank.Brain as BotBrain)?.CancelOrderedPull(order.Target);
+                if (order != null && Interlocked.CompareExchange(ref order.Finished, 1, 0) == 0)
+                {
+                    if (order.Target != target)
+                        (order.Tank.Brain as BotBrain)?.CancelOrderedPull(order.Target);
+                    // the player started the fight: the tank stops bringing it back and joins in
+                    if (order.BringBack) AutonomousDefensivePull.Cancel(order.Group);
+                }
             }
             Engage(player, target, false, fromPet);
         }
@@ -138,7 +178,12 @@ namespace DOL.GS
             Order order = Volatile.Read(ref state.Pending);
             if (order?.Tank != tank || order.Target != target || order.Leader.Group != order.Group ||
                 !order.Group.IsInTheGroup(order.Leader) || !Available(tank, order.Leader) || !IsContact(attack.AttackResult) ||
-                Interlocked.CompareExchange(ref order.Finished, 1, 0) != 0) return;
+                Volatile.Read(ref order.Finished) != 0) return;
+            // True 1.65 Mode: contact made, the tank now walks the monster back to the player (the group waits there).
+            if (order.BringBack && (AutonomousDefensivePull.IsBringingBack(tank, target) ||
+                                    AutonomousDefensivePull.BeginPlayerLedReturn(tank, target, order.Leader)))
+                return;
+            if (Interlocked.CompareExchange(ref order.Finished, 1, 0) != 0) return;
             Engage(order.Leader, target, true);
         }
 
@@ -288,6 +333,7 @@ namespace DOL.GS
         {
             if (order == null || Interlocked.CompareExchange(ref order.Finished, 1, 0) != 0) return;
             (order.Tank.Brain as BotBrain)?.CancelOrderedPull(order.Target);
+            if (order.BringBack) AutonomousDefensivePull.Cancel(order.Group);
             if (inform && order.Leader.Group == order.Group)
                 order.Leader.Out.SendMessage("Pull cancelled: the tank could not make contact. Reposition and use /pull again.",
                     eChatType.CT_System, eChatLoc.CL_SystemWindow);

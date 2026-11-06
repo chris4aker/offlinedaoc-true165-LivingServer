@@ -26,6 +26,8 @@ namespace DOL.GS
             public bool Shot, Active;
             public GameLiving UnreachableTarget;
             public int UnreachableTries;
+            // A player-led /pull (True 1.65 Mode): the tank brings the monster back to this player.
+            public GamePlayer ReturnTo;
         }
 
         // A target the puller found no firing point for this many times in a row (a bog, a ledge) stops holding the
@@ -208,6 +210,7 @@ namespace DOL.GS
                 state.Shot = false;
                 state.Until = GameLoop.GameLoopTime + TimeoutMilliseconds;
                 state.NextMove = 0;
+                state.ReturnTo = null;
                 state.Active = true;
                 foreach (GameBot member in members)
                 {
@@ -232,17 +235,17 @@ namespace DOL.GS
         }
 
         public static bool TryFiringPoint(IPathfindingMgr nav, Zone zone, Vector3 origin, Vector3 target,
-            int range, out Vector3 point)
+            int range, out Vector3 point, float maximumAdvance = MaximumFiringAdvance)
         {
             point = origin;
             if (nav?.IsAvailable != true || zone == null || range < 1000) return false;
             float distance = Vector3.Distance(origin, target);
             float advance = Math.Max(0, distance - (range - 100));
             // No solo expedition into a pack: at most a short, proven approach from the party.
-            if (advance > MaximumFiringAdvance) return false;
+            if (advance > maximumAdvance) return false;
             Vector3 desired = advance == 0 ? origin : Vector3.Lerp(origin, target, advance / distance);
             if (!AutonomousNavigationSurface.TryFloor(nav, zone, desired, out point)) return false;
-            return Vector3.Distance(origin, point) <= 450 && Vector3.Distance(point, target) <= range - 50 &&
+            return Vector3.Distance(origin, point) <= maximumAdvance && Vector3.Distance(point, target) <= range - 50 &&
                 nav.HasLineOfSight(zone, point, target, nav.DefaultFilters) &&
                 AutonomousZoneItinerary.HasCompleteCorridor(nav, zone, origin, point) &&
                 AutonomousZoneItinerary.HasCompleteCorridor(nav, zone, point, origin);
@@ -262,13 +265,17 @@ namespace DOL.GS
                     Finish(state, false);
                     return false;
                 }
-                if (state.Members.Any(member => member.IsWithinRadius(state.Target, ContactRadius)))
+                if (state.ReturnTo != null
+                        ? PlayerLedArrived(state.Shot, state.Target.GetDistanceTo(state.ReturnTo),
+                            state.Shooter.GetDistanceTo(state.ReturnTo))
+                        : state.Members.Any(member => member.IsWithinRadius(state.Target, ContactRadius)))
                 {
                     Finish(state, true);
                     return false;
                 }
                 if (bot != state.Shooter) return true;
-                Vector3 destination = state.Shot ? state.Anchor : state.FiringPoint;
+                Vector3 destination = !state.Shot ? state.FiringPoint
+                    : state.ReturnTo != null ? new(state.ReturnTo.X, state.ReturnTo.Y, state.ReturnTo.Z) : state.Anchor;
                 if (Vector3.DistanceSquared(new(bot.X, bot.Y, bot.Z), destination) > 45 * 45)
                 {
                     if (!bot.IsCasting && GameLoop.GameLoopTime >= state.NextMove)
@@ -314,8 +321,110 @@ namespace DOL.GS
         {
             if (member?.Group == null || !States.TryGetValue(member.Group, out State state)) return;
             lock (state)
-                if (state.Active && (attacker != state.Target || member.IsWithinRadius(attacker, ContactRadius)))
+                if (state.Active && !IgnoresThreatWhileBringingBack(state.ReturnTo != null, attacker == state.Target,
+                        member == state.Shooter) &&
+                    (attacker != state.Target || member.IsWithinRadius(attacker, ContactRadius)))
                     Finish(state, attacker == state.Target);
+        }
+
+        // ---- True 1.65 Mode player-led /pull (PlayerLedPullCoordinator) ----
+        // Prima's pulling appendix: tag the monster once with your lightest ranged attack, then turn and run back to the
+        // group; a tank with no ranged attack walks up, makes contact, then walks back. The group fights at the player.
+
+        /// <summary>How far a hired tank walks out to get its tag in range of a /pull target.</summary>
+        public const float PlayerLedMaximumAdvance = 1_800;
+        /// <summary>Out to the monster and back takes longer than a party pull from its camp.</summary>
+        public const long PlayerLedTimeoutMilliseconds = 45_000;
+        public const int PlayerLedArrivalRadius = 200;
+
+        /// <summary>Pure rule: the brought-back monster has reached the player, or the tank is back with it behind.</summary>
+        public static bool PlayerLedArrived(bool tagged, int targetToPlayer, int tankToPlayer) =>
+            targetToPlayer <= ContactRadius || tagged && tankToPlayer <= PlayerLedArrivalRadius;
+
+        /// <summary>Pure rule: the tagged monster hitting the tank on the way back does not end the pull there.</summary>
+        public static bool IgnoresThreatWhileBringingBack(bool bringingBack, bool attackerIsTarget, bool memberIsShooter) =>
+            bringingBack && attackerIsTarget && memberIsShooter;
+
+        /// <summary>The weakest ranged pull the tank knows: its lowest-level pull spell, else its bow.</summary>
+        private static Spell LightestPullSpell(GameBot bot) => bot.Spells?.Where(spell => IsPullSpell(spell, bot.Level) &&
+                bot.Mana >= bot.PowerCost(spell) && bot.GetSkillDisabledDuration(spell) == 0)
+            .OrderBy(spell => spell.Level).ThenByDescending(spell => spell.Range).FirstOrDefault();
+
+        /// <summary>The tank goes out to tag the monster from range, then brings it back to the player.</summary>
+        public static bool TryBeginPlayerLedTag(GameBot tank, GameLiving target, GamePlayer player)
+        {
+            if (tank?.Group == null || player == null || target?.IsAlive != true || tank.CurrentRegion != target.CurrentRegion ||
+                !HasRangedPull(tank))
+                return false;
+            State state = States.GetOrCreateValue(tank.Group);
+            lock (state)
+            {
+                if (state.Active) return false;
+                Spell spell = HasUsableDistanceWeapon(tank) ? null : LightestPullSpell(tank);
+                if (spell == null && !HasUsableDistanceWeapon(tank)) return false;
+                int range = spell?.Range ?? BotRangedCombat.EstimatedRange(tank);
+                Vector3 origin = new(tank.X, tank.Y, tank.Z), enemy = new(target.X, target.Y, target.Z);
+                if (!TryFiringPoint(PathfindingProvider.Instance, tank.CurrentZone, origin, enemy, range, out Vector3 point,
+                        PlayerLedMaximumAdvance))
+                    return false;
+                Start(state, tank, target, player, point, spell, false);
+                if (spell == null)
+                    tank.SwitchWeapon(eActiveWeaponSlot.Distance);
+                return true;
+            }
+        }
+
+        /// <summary>A tank with no ranged attack made melee contact: it now walks back to the player with the monster.</summary>
+        public static bool BeginPlayerLedReturn(GameBot tank, GameLiving target, GamePlayer player)
+        {
+            if (tank?.Group == null || player == null || target?.IsAlive != true) return false;
+            State state = States.GetOrCreateValue(tank.Group);
+            lock (state)
+            {
+                if (state.Active) return false;
+                Start(state, tank, target, player, new(tank.X, tank.Y, tank.Z), null, true);
+                return true;
+            }
+        }
+
+        /// <summary>This tank is bringing this monster back to its player right now.</summary>
+        public static bool IsBringingBack(GameBot tank, GameLiving target)
+        {
+            if (tank?.Group == null || !States.TryGetValue(tank.Group, out State state)) return false;
+            lock (state)
+                return state.Active && state.ReturnTo != null && state.Shooter == tank && state.Target == target;
+        }
+
+        private static void Start(State state, GameBot tank, GameLiving target, GamePlayer player, Vector3 firingPoint,
+            Spell spell, bool tagged)
+        {
+            state.Members = [tank];
+            state.Shooter = tank;
+            state.Target = target;
+            state.Anchor = new(player.X, player.Y, player.Z);
+            state.FiringPoint = firingPoint;
+            state.Spell = spell;
+            state.PreviousWeapon = tank.ActiveWeaponSlot;
+            state.Shot = tagged;
+            state.Until = GameLoop.GameLoopTime + PlayerLedTimeoutMilliseconds;
+            state.NextMove = 0;
+            state.ReturnTo = player;
+            state.Active = true;
+            tank.WakeRecoveryRest();
+            Holding.Remove(tank);
+            Holding.Add(tank, state);
+            tank.StopAttack();
+            tank.StopFollowing();
+            tank.StopMovingOnPath();
+            tank.StopMoving();
+            var visited = new HashSet<IControlledBrain>();
+            foreach (GameNPC pet in BotGroupPetBuffTargets.AttachedTree(tank.ControlledBrain, tank, visited))
+                if (pet.Brain is IControlledBrain brain && state.Pets.TryAdd(brain, brain.AggressionState))
+                {
+                    brain.Disengage();
+                    brain.SetAggressionState(eAggressionState.Passive);
+                    brain.FollowOwner();
+                }
         }
 
         public static void Cancel(Group group)
@@ -348,6 +457,10 @@ namespace DOL.GS
                     else brain.RemoveFromAggroList(state.Target);
                 }
             }
+            GamePlayer returnTo = state.ReturnTo;
+            state.ReturnTo = null;
+            if (engage && returnTo != null)
+                PlayerLedPullCoordinator.BroughtBack(returnTo, state.Target);
         }
     }
 }

@@ -528,6 +528,10 @@ namespace DOL.AI.Brain
                 !attacker.IsAlive || !group.IsInTheGroup(groupMember))
                 return;
 
+            // A hired tank bringing a /pull monster back to its player: the group waits for it there (True 1.65 Mode).
+            if (PlayerLedPullCoordinator.IsBringingBack(groupMember, attacker))
+                return;
+
             // Record the encounter synchronously so even a very short roadside
             // fight pauses autonomous travel for whole-party recovery afterward.
             AutonomousBotGroupCoordinator.MarkCombatObserved(group);

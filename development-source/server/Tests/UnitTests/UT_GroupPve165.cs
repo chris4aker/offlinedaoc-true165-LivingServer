@@ -36,6 +36,23 @@ namespace DOL.GS.Tests
         });
 
         [Test]
+        public void APlayerLedPullIsBroughtBackToThePlayer() => Assert.Multiple(() =>
+        {
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(false, 1500, 1200), Is.False, "still going out to tag it");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, 900, 600), Is.False, "on the way back");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, AutonomousDefensivePull.ContactRadius, 500), Is.True,
+                "the monster reached the player");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, 800, AutonomousDefensivePull.PlayerLedArrivalRadius), Is.True,
+                "the tank is back; the monster is behind it");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(false, 900, 100), Is.False, "back without a tag is no arrival");
+            // its blows on the tank on the way back don't end the pull at the spawn; anything else does
+            Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(true, true, true), Is.True);
+            Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(true, false, true), Is.False, "an add");
+            Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(true, true, false), Is.False, "it hit someone else");
+            Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(false, true, true), Is.False, "gamebot party pull");
+        });
+
+        [Test]
         public void PartyMembersFollowTheKillTargetUnlessLowAndHit() => Assert.Multiple(() =>
         {
             Assert.That(BotBrain.AssistsKillTarget(true, false, 100, true), Is.True, "hit but healthy: stay on the kill target");
