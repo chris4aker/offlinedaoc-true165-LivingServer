@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             int doorType = doorId / 100000000;
 
             // Interaction distance for border keep doors needs to be higher than 512.
-            int radius = Properties.WORLD_PICKUP_DISTANCE * (GameDoor.IsBorderKeepDoor(doorId) ? 3 : 2);
+            int radius = Properties.WORLD_PICKUP_DISTANCE * (GameRealmGate.IsBorderKeepFixture(doorId) ? 3 : 2);
             int zoneDoor = doorId / 1000000;
             string debugText = string.Empty;
 
@@ -112,7 +112,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 return;
                             }
 
-                            // True 1.65 Mode: an enemy's milegate stays shut (it says so); it has to be broken.
+                            // True 1.65 Mode: a milegate opens for anyone (period); an enemy's border keep door stays shut
+                            // (it says so).
                             if (door is GameRealmGate)
                                 door.Open(client.Player);
                             else if (door is GameKeepDoor enemyKeepDoor && Classic165Mode.IsOn)

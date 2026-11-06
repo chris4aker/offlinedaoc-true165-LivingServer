@@ -26,10 +26,12 @@ public sealed class AutonomousKeepApproachNavigation : PathfindingMgrBase
         var doors = GameServer.KeepManager?.GetKeepsOfRegion(region.ID)
             .SelectMany(k => k.Doors.Values.Where(d => k.Realm == realm || d.IsAttackableDoor && !d.IsAlive || d.State == eDoorState.Open))
             .Select(d => new Vector3(d.X,d.Y,d.Z)).ToArray() ?? [];
-        // True 1.65 Mode (owner 2026-11-06): a milegate is no wall for a plan. Its own realm walks through it, and an enemy
-        // army breaks it when it gets there (the mover stops at it: Pathfinder.BlockingGate, AutonomousRouteGates), so
-        // a route through it is a route. Every realm's planner passes the gates of the region.
-        doors = doors.Concat(GameRealmGate.InRegion(region.ID).Select(gate => new Vector3(gate.X, gate.Y, gate.Z))).ToArray();
+        // True 1.65 Mode (owner 2026-11-06, period rules): a milegate opens for everyone, so the navmesh never shuts it and
+        // nothing here needs it. A border keep door is its realm's: its realm plans through it (or anyone while it stands
+        // open); for every other realm it is a wall, also where the navmesh has no door polygons for it (below).
+        GameRealmGate[] gates = GameRealmGate.InRegion(region.ID);
+        doors = doors.Concat(gates.Where(gate => gate.IsBorderKeep && gate.MayPass(realm))
+            .Select(gate => new Vector3(gate.X, gate.Y, gate.Z))).ToArray();
         // Relic audit 2026-10-31 (B3): the navmesh has no door polygons at the six relic gates (door 02 of each relic
         // keep), so a shut relic gate of an enemy keep did not block a planned walk at all (UT_RelicShrineReach: it lies
         // on the open walk to every shrine). Such doors are checked against the planned walk below.
@@ -37,7 +39,10 @@ public sealed class AutonomousKeepApproachNavigation : PathfindingMgrBase
             .OfType<DOL.GS.Keeps.GameKeepDoor>()
             .Where(d => d.CurrentRegionID == region.ID && d.IsAlive && d.State == eDoorState.Closed &&
                         d.Component?.Keep is { } keep && keep.Realm != realm)
-            .Select(d => new Vector3(d.X,d.Y,d.Z)).ToArray();
+            .Select(d => new Vector3(d.X,d.Y,d.Z))
+            .Concat(GameRealmGate.OffMeshInRegion(region.ID).Where(gate => gate.IsBorderKeep && !gate.MayPass(realm))
+                .Select(gate => new Vector3(gate.X, gate.Y, gate.Z)))
+            .ToArray();
         return new AutonomousKeepApproachNavigation(nav, doors, unregistered);
     }
 

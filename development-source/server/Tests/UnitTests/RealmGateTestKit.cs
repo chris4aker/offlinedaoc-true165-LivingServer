@@ -59,9 +59,15 @@ internal static class RealmGateTestKit
         public override ushort CurrentRegionID { get => 1; set { } }
     }
 
-    internal static Gate NewGate(eRealm realm, int x = 0, int y = 0, int z = 0)
+    /// <summary>Hadrian's Wall's milegate door 01.</summary>
+    internal const int MilegateId = 15000401;
+    /// <summary>Castle Sauvage's border keep door 01.</summary>
+    internal const int BorderKeepId = 11020501;
+
+    internal static Gate NewGate(eRealm realm, int x = 0, int y = 0, int z = 0, int doorId = MilegateId)
     {
         var gate = (Gate)RuntimeHelpers.GetUninitializedObject(typeof(Gate));
+        gate.DoorId = doorId;
         gate.Realm = realm;
         gate.State = eDoorState.Closed;
         gate.Standing = true;
@@ -79,11 +85,14 @@ internal static class RealmGateTestKit
         return bot;
     }
 
-    internal static KeepDoor NewKeepDoor(byte keepRealm)
+    internal static KeepDoor NewKeepDoor(byte keepRealm, bool portalKeep = false)
     {
         var door = (KeepDoor)RuntimeHelpers.GetUninitializedObject(typeof(KeepDoor));
         door.State = eDoorState.Closed;
-        door.Component = new GameKeepComponent { Keep = new GameKeep { DBKeep = new DbKeep { Realm = keepRealm } } };
+        door.Component = new GameKeepComponent
+        {
+            Keep = new GameKeep { DBKeep = new DbKeep { Realm = keepRealm, BaseLevel = (byte)(portalKeep ? 255 : 50) } }
+        };
         return door;
     }
 }

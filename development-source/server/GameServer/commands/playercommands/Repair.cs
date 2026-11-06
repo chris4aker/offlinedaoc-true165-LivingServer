@@ -55,8 +55,8 @@ namespace DOL.GS.Commands
 				StartRepair(client.Player, door);
 			}
 
-			// True 1.65 Mode: milegates and border keep doors are repaired by their realm like keep doors.
-			if (client.Player.TargetObject is GameRealmGate gate)
+			// True 1.65 Mode: milegates are repaired by their realm like keep doors (border keep doors are never damaged).
+			if (client.Player.TargetObject is GameRealmGate { IsMilegate: true } gate)
 			{
 				if (!PreFireChecks(client.Player, gate))
 					return;

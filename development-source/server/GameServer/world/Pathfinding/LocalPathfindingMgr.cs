@@ -356,9 +356,10 @@ namespace DOL.GS
         public override bool RegisterDoor(GameDoorBase door)
         {
             const int MAX_DOOR_POLYS = 12;
-            // True 1.65 Mode: a gate fort's gate spans its passage (~234 wide, the BuildNav DoorSize); the usual 64 box
-            // around the door row left the passage's side polygons open (1.64 Emain mesh, 2026-11-06: a sealed walk ran
-            // past 214000101 75 from its row). A gate takes the polygons of its whole doorway.
+            // True 1.65 Mode: a border keep's gate spans its passage (up to 619 wide, the BuildNav DoorSize); the usual 64
+            // box around the door row leaves the passage's side polygons open (1.64 Emain mesh, 2026-11-06: a sealed walk
+            // ran past a gate 75 from its row). A realm gate takes the polygons of its whole doorway (milegates open for
+            // everyone and are not registered).
             bool gate = door is GameRealmGate;
 
             Zone zone = door.CurrentZone;

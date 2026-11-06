@@ -303,10 +303,6 @@ namespace DOL.GS
         /// <summary>The pathfinder's last result (diagnostics).</summary>
         public PathfindingStatus LastPathfindingStatus => _pathfinder.PathfindingStatus;
 
-        /// <summary>True 1.65 Mode: the shut enemy milegate the route last stopped at, and when (Pathfinder.BlockingGate).</summary>
-        public GameRealmGate RouteBlockingGate => _pathfinder.BlockingGate;
-        public long RouteBlockingGateTick => _pathfinder.BlockingGateTick;
-
         public bool TryConsumeAutonomousPathFailure(out PathfindingStatus status, out Vector3 destination)
         {
             status = _autonomousPathFailureStatus;

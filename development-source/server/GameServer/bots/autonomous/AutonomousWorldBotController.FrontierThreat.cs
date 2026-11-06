@@ -151,15 +151,11 @@ public sealed partial class AutonomousWorldBotController
         var nav = PathfindingProvider.Instance;
         if (!nav.IsAvailable || !nav.HasNavmesh(bot.CurrentZone)) return false;
         bool callsTargets = mainAssist == bot;
-        // True 1.65 Mode: an enemy milegate that shuts this bot's route (its pathfinder walked it up to the gate) is broken
-        // when nobody is to be fought (AutonomousRouteGates; no scan of its own).
-        GameRealmGate routeGate = AutonomousRouteGates.Find(bot);
         if (mainAssist != null && !callsTargets && MainAssistNearby(bot, mainAssist))
         {
             // A member /assists: no scan of its own while its main assist is close by.
             GameLiving called = AutonomousRvrAssist.CalledTarget(bot.Group, GameLoop.GameLoopTime);
-            if (called == null || !bot.IsWithinRadius(called, TargetSearchRadius) || !EligibleRvrTarget(bot, called))
-                return routeGate != null && EngageFrontierEnemy(brain, bot, routeGate, defending: false, previousEngine: null);
+            if (called == null || !bot.IsWithinRadius(called, TargetSearchRadius) || !EligibleRvrTarget(bot, called)) return false;
             return EngageFrontierEnemy(brain, bot, called, defending: false, previousEngine: null);
         }
         // Cheap rejections first (most nearby livings are friendly bots); the area lookup last
@@ -197,8 +193,7 @@ public sealed partial class AutonomousWorldBotController
             ? AutonomousRvrAssist.Pick(visibleTargets, operatorThreats.Contains, GameRelic.IsPlayerCarryingRelic,
                 target => AutonomousRvrAssist.KillOrderRank(AutonomousRvrAssist.ClassOf(target)), target => bot.GetDistanceTo(target))
             : SelectDistributedRvrTarget(bot, operatorThreats.Length>0 ? operatorThreats : visibleTargets);
-        if (enemy == null || !Eligible(enemy))
-            return routeGate != null && EngageFrontierEnemy(brain, bot, routeGate, defending, previousEngine);
+        if (enemy == null || !Eligible(enemy)) return false;
         if (previousEngine != null && enemy is GameSiegeWeapon) return false;
         if (callsTargets) AutonomousRvrAssist.CallTarget(bot.Group, enemy, GameLoop.GameLoopTime);
         return EngageFrontierEnemy(brain, bot, enemy, defending, previousEngine);

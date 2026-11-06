@@ -19,6 +19,7 @@ namespace DOL.GS
         public const int NODE_REACHED_DISTANCE_STRICT = 2;
         public const int NODE_MAX_SKIP_DISTANCE = 80;
         public const int DOOR_SEARCH_DISTANCE = 128;
+        public const int WIDE_DOOR_SEARCH_DISTANCE = 400;
 
         public GameNPC Owner { get; }
         public bool ForceReplot { get; set; }
@@ -38,11 +39,6 @@ namespace DOL.GS
         private static long _nextDoorHoldReportTick;
         private static int _doorHoldsSinceReport;
         private PathVisualization _pathVisualization;
-
-        /// <summary>True 1.65 Mode: the shut enemy milegate this autonomous bot's route last ran into. The bot walks up to
-        /// it (the route stops in front of it) and the world controller has it break the gate (AutonomousRouteGates).</summary>
-        public GameRealmGate BlockingGate { get; private set; }
-        public long BlockingGateTick { get; private set; }
 
         public static EDtPolyFlags[] DefaultFilters => PathfindingProvider.Instance.DefaultFilters;
         public static EDtPolyFlags[] BlockingDoorAvoidanceFilters => PathfindingProvider.Instance.BlockingDoorAvoidanceFilters;
@@ -147,6 +143,10 @@ namespace DOL.GS
                         Point3D point = new(node.Position.X, node.Position.Y, node.Position.Z);
                         pathBuffer.Doors[node] = new(1);
                         Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, pathBuffer.Doors[node]);
+                        // A shut door's polygon with no door object near: a wide doorway (a border keep's gate is up to 619
+                        // wide) crossed at its side. Look as far as its door row can be (a rare node: only shut doors).
+                        if (pathBuffer.Doors[node].Count == 0 && (node.Flags & EDtPolyFlags.BlockingDoor) != 0)
+                            Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, WIDE_DOOR_SEARCH_DISTANCE, pathBuffer.Doors[node]);
                     }
 
                     // True 1.65 Mode: milegates the navmesh has no door polygons for are found on the walk itself.
@@ -215,13 +215,6 @@ namespace DOL.GS
         public bool TryGetNextNode(Zone zone, Vector3 position, Vector3 target, out Vector3? nextNode,
             bool allowPartialContinuation = true)
         {
-            // The gate this route stopped at stands open now (broken, or opened by its realm): the way through is new.
-            if (BlockingGate != null && BlockingGate.State == eDoorState.Open)
-            {
-                BlockingGate = null;
-                ForceReplot = true;
-            }
-
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different pos.
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
             {
@@ -246,22 +239,10 @@ namespace DOL.GS
                         _doorDetourFailedUntil = now + DoorDetourRetryMilliseconds;
                         ReportDoorHold(closedDoor, position, target, now);
                     }
-                    // True 1.65 Mode: an enemy milegate on an autonomous bot's route is not a dead end. The route goes up to
-                    // the gate and stops there; the bot breaks it (AutonomousRouteGates) and the route goes on once it is open.
-                    bool breakGate = closedDoor is GameRealmGate gate && WalksUpToGate(Owner, gate);
-                    if (breakGate)
-                    {
-                        BlockingGate = (GameRealmGate) closedDoor;
-                        BlockingGateTick = now;
-                    }
-                    if (!breakGate || !StopAtDoor(_activePath.Nodes, _activePath.Doors, closedDoor))
-                    {
-                        PathfindingStatus = PathfindingStatus.NoPathFound;
-                        _lastNoPathTick = now;
-                        nextNode = null;
-                        return false;
-                    }
-                    PathfindingStatus = PathfindingStatus.PartialPathFound;
+                    PathfindingStatus = PathfindingStatus.NoPathFound;
+                    _lastNoPathTick = now;
+                    nextNode = null;
+                    return false;
                 }
             }
 
@@ -320,18 +301,14 @@ namespace DOL.GS
             door?.Component?.Keep != null && bot.Realm != eRealm.None && door.Realm == bot.Realm;
 
         /// <summary>
-        /// A shut door on the route that this actor cannot get through: not openable by interaction, not its own realm's
-        /// keep door it may use, not its own realm's milegate (True 1.65 Mode: own-realm bots, companions and pets walk
-        /// through their gates; the gate stays shut for everyone else).
+        /// A shut door on the route that this actor cannot get through: not openable by interaction (a True 1.65 milegate
+        /// is: it opens for everyone), not its own realm's keep door it may use, not its own realm's border keep door (its
+        /// realm's bots, companions and pets walk through; it stays shut for everyone else).
         /// </summary>
         public static bool BlocksActor(GameNPC actor, GameDoorBase door) =>
             door != null && door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction &&
             !(door is GameKeepDoor keepDoor && CanUseFriendlyKeepDoor(actor, keepDoor)) &&
             !(door is GameRealmGate gate && gate.MayPass(actor));
-
-        /// <summary>An autonomous bot of an enemy realm walks up to a shut milegate to break it.</summary>
-        public static bool WalksUpToGate(GameNPC actor, GameRealmGate gate) =>
-            actor is GameBot { IsAutonomousWorldBot: true, IsAlive: true } && gate != null && gate.MayBreak(actor);
 
         /// <summary>A milegate on the route that shuts this actor out (only a milegate without door polygons can be on a
         /// route planned round the shut doors; other doors stay as they were).</summary>
@@ -404,32 +381,6 @@ namespace DOL.GS
             foreach (WrappedPathfindingNode node in rebuilt)
                 nodes.Enqueue(node);
             return crossings.Count;
-        }
-
-        /// <summary>
-        /// Cuts the route at the door: the nodes up to the first one at the door stay (the last one is where the door's
-        /// polygons begin, in front of it), everything beyond goes. False when the route does not reach the door.
-        /// </summary>
-        public static bool StopAtDoor(RingQueue<WrappedPathfindingNode> nodes, Dictionary<WrappedPathfindingNode, List<GameDoorBase>> doors,
-            GameDoorBase door)
-        {
-            int stop = -1;
-            for (int i = 0; i < nodes.Count && stop < 0; i++)
-                if (doors.TryGetValue(nodes.Peek(i), out List<GameDoorBase> near) && near.Contains(door))
-                    stop = i;
-            if (stop < 0)
-                return false;
-            var kept = new WrappedPathfindingNode[stop + 1];
-            for (int i = 0; i <= stop; i++)
-                kept[i] = nodes.Peek(i);
-            for (int i = stop + 1; i < nodes.Count; i++)
-                doors.Remove(nodes.Peek(i));
-            // The stop itself no longer leads through the door.
-            doors.Remove(kept[stop]);
-            nodes.Clear();
-            foreach (WrappedPathfindingNode node in kept)
-                nodes.Enqueue(node);
-            return true;
         }
 
         private bool TryUsePathDoor()
@@ -586,6 +537,7 @@ namespace DOL.GS
                 {
                     // Owner 2026-10-07: bots kept working the border keep door levers, so the player could not use
                     // them. Bots walk through openable doors anyway; only other NPCs open them on the way.
+                    // True 1.65 Mode milegates included (owner 2026-11-06: bots just walk through them).
                     if (Owner is GameBot) continue;
                     foreach (GameDoorBase door in doors)
                     {
