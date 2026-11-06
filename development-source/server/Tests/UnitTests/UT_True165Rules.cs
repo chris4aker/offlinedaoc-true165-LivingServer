@@ -34,7 +34,6 @@ namespace DOL.UnitTests
         [TestCase("&spawn")]
         [TestCase("&tele")]
         [TestCase("&raid")]
-        [TestCase("&AUTOLOOT")]
         public void CheatCommandsAreGmOnlyIn165Mode(string command)
         {
             Properties.CLASSIC165_MODE = true;
@@ -44,6 +43,7 @@ namespace DOL.UnitTests
         }
 
         [TestCase("&say")]
+        [TestCase("&AUTOLOOT")]   // a player option again (Autoloot165, owner 2026-11-05)
         [TestCase("&stuck")]
         [TestCase("&summon")]
         [TestCase(null)]

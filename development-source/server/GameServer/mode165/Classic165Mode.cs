@@ -83,7 +83,8 @@ namespace DOL.GS
         private static readonly string[] GmOnlyCommands =
         [
             "&tele", "&tc", "&grind",                                           // travel and auto-play
-            "&freelevel", "&level", "&vault", "&autoloot",                      // free levels, vault anywhere, autoloot
+            "&freelevel", "&level", "&vault",                                   // free levels, vault anywhere
+                                                                                // (/autoloot is a player option again: Autoloot165)
             "&mobs", "&bountylocation", "&bountyrent", "&classrog", "&buff",    // monster finder, bounties, ROGs, buffs
             "&hardcore", "&xp", "&rp", "&dropmr", "&api",                       // freeshard toggles and the web API
             "&raid",                                                            // /raid 40 and /raid 80 (plan section 17)

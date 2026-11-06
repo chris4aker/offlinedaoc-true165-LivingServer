@@ -36,15 +36,26 @@ namespace DOL.GS.Commands
 				return;
 			}
 
+			// "quiet": the new client's settings send it at every login and toggle, without a chat line (True 1.65, owner
+			// 2026-11-05); in True 1.65 Mode the choice is the session's (Autoloot165), off until the client says on
+			bool quiet = args.Length > 2 && args[2].ToLower().Equals("quiet");
 			if (args[1].ToLower().Equals("on"))
 			{
-				client.Player.Autoloot = true;
-				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autoloot.On"));
+				if (Classic165Mode.IsOn)
+					Autoloot165.Set(client.Player, true);
+				else
+					client.Player.Autoloot = true;
+				if (!quiet)
+					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autoloot.On"));
             }
 			else if (args[1].ToLower().Equals("off"))
 			{
-				client.Player.Autoloot = false;
-				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autoloot.Off"));
+				if (Classic165Mode.IsOn)
+					Autoloot165.Set(client.Player, false);
+				else
+					client.Player.Autoloot = false;
+				if (!quiet)
+					DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Autoloot.Off"));
             }
 		}
 	}

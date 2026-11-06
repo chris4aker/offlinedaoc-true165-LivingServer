@@ -1707,8 +1707,10 @@ namespace DOL.GS.ServerRules
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
                 {
                     money.AddOwner(itemOwner.Owner);
-                    if (Classic165Mode.IsOn)
-                        continue;   // no autoloot in True 1.65 Mode: the coin stays on the ground for its owners
+                    // True 1.65 Mode: no autoloot unless the player turned the option on (Autoloot165); otherwise the coin
+                    // stays on the ground for its owners
+                    if (Classic165Mode.IsOn && !Autoloot165.Wants(itemOwner.Owner))
+                        continue;
                     TryPickUpResult result = money.TryAutoPickUp(itemOwner.Owner);
 
                     if (result is TryPickUpResult.Success)
@@ -1761,8 +1763,10 @@ namespace DOL.GS.ServerRules
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
                 {
                     item.AddOwner(itemOwner.Owner);
-                    if (Classic165Mode.IsOn)
-                        continue;   // no autoloot in True 1.65 Mode: the bag stays on the ground for its owners
+                    // True 1.65 Mode: no autoloot unless the player turned the option on (Autoloot165); otherwise the bag
+                    // stays on the ground for its owners
+                    if (Classic165Mode.IsOn && !Autoloot165.Wants(itemOwner.Owner))
+                        continue;
                     TryPickUpResult result = item.TryAutoPickUp(itemOwner.Owner);
 
                     if (result is TryPickUpResult.Success)
