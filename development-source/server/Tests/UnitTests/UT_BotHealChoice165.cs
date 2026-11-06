@@ -1,4 +1,8 @@
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using DOL.Database;
+using DOL.GS.Spells;
 using NUnit.Framework;
 
 namespace DOL.GS.Tests
@@ -51,5 +55,56 @@ namespace DOL.GS.Tests
             Assert.That(efficient, Is.EqualTo(1));
             Assert.That(GameBot.ChooseHeals165([]), Is.EqualTo((-1, -1)));
         }
+
+        // A bot casts every spell through the "Mob Spells" line, which is no spec: its heals varied 0.25-1.25 whatever its
+        // Mending. The heal handler now takes the spec of the bot's learned line, as a player's does.
+        private sealed class SpecBot : GameBot
+        {
+            private SpecBot() : base((OfflineWorldBotRecord)null) { }
+            public override int GetModifiedSpecLevel(string keyName) => keyName == "Mending" ? 14 : 0;
+        }
+
+        [Test]
+        public void ABotsHealVariesWithTheSpecOfItsLearnedLine()
+        {
+            bool mode = DOL.GS.ServerProperties.Properties.CLASSIC165_MODE;
+            using var server = new DOL.UnitTests.EpicTestServerScope();   // GameObject's quest cache needs a database
+            try
+            {
+                DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = true;
+                var bot = (SpecBot)RuntimeHelpers.GetUninitializedObject(typeof(SpecBot));
+                Spell recovery = new(new DbSpell { SpellID = 99971, Name = "Major Recovery", Type = "Heal", Target = "Realm", Value = 136 }, 14);
+                var mob = new SpellLine(GlobalSpellsLines.Mob_Spells, GlobalSpellsLines.Mob_Spells, GlobalSpellsLines.Mob_Spells, true);
+                var mending = new SpellLine("Shaman Mend Spec", "Mending", "Mending", false);
+                typeof(GameBot).GetField("_powerSpellLines", BindingFlags.Instance | BindingFlags.NonPublic)
+                    .SetValue(bot, new Dictionary<int, SpellLine> { [recovery.ID] = mending });
+
+                new HealSpellHandler(bot, recovery, mob).CalculateDamageVariance(bot, out double min, out double max);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(min, Is.EqualTo(HealSpellHandler.SpecVarianceMin(14, 14)).Within(1e-9), "Mending 14, as a player's");
+                    Assert.That(min, Is.EqualTo(0.25 + 13.0 / 14).Within(1e-9));
+                    Assert.That(max, Is.EqualTo(1.25));
+                    Assert.That(HealSpellHandler.SpecLineFor(bot, recovery, mob), Is.SameAs(mending));
+                });
+
+                // a spell it has no learned line for keeps the line it was cast from
+                Spell unknown = new(new DbSpell { SpellID = 99972, Name = "Unknown", Type = "Heal", Target = "Realm", Value = 50 }, 10);
+                Assert.That(HealSpellHandler.SpecLineFor(bot, unknown, mob), Is.SameAs(mob));
+            }
+            finally
+            {
+                DOL.GS.ServerProperties.Properties.CLASSIC165_MODE = mode;
+            }
+        }
+
+        [Test]
+        public void TheHealVarianceBoundIsThePlayerFormula() => Assert.Multiple(() =>
+        {
+            Assert.That(HealSpellHandler.SpecVarianceMin(0, 20), Is.EqualTo(0.25), "no spec");
+            Assert.That(HealSpellHandler.SpecVarianceMin(11, 20), Is.EqualTo(0.75));
+            Assert.That(HealSpellHandler.SpecVarianceMin(50, 20), Is.EqualTo(1.25), "capped at the upper bound");
+            Assert.That(HealSpellHandler.SpecVarianceMin(30, 0), Is.EqualTo(0.25), "a level 0 spell");
+        });
     }
 }

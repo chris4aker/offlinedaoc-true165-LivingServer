@@ -253,27 +253,39 @@ namespace DOL.GS.Spells
             }
 
             if (PlayerRules165.IsPlayerLike(Caster))   // True 1.65 Mode: a bot's heal varies with its spec like a player's
-            {
-                double lineSpec = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-
-                if (lineSpec < 1)
-                    lineSpec = 1;
-
-                min = 0.25;
-
-                if (Spell.Level > 0)
-                {
-                    min += (lineSpec - 1.0) / Spell.Level;
-
-                    if (min > 1.25)
-                        min = 1.25;
-                }
-            }
+                min = SpecVarianceMin(Caster.GetModifiedSpecLevel(SpecLineFor(Caster, Spell, m_spellLine).Spec), Spell.Level);
             else
                 min = 1.25;
 
             max = 1.25;
             return;
+        }
+
+        /// <summary>
+        /// The line whose specialization scales the spell: the one it was cast from, except for a bot, which casts every
+        /// spell through the generic "Mob Spells" line (no such spec: 0) - its learned line then (owner 2026-11-06: a bot's
+        /// heal varied 0.25-1.25 whatever its Mending; a player's varies with its spec).
+        /// </summary>
+        public static SpellLine SpecLineFor(GameLiving caster, Spell spell, SpellLine castLine) =>
+            caster is GameBot bot ? bot.ResolvePowerSpellLine(spell, castLine) ?? castLine : castLine;
+
+        /// <summary>The lower bound of a player's heal: 0.25 + (spec - 1) / spell level, at most 1.25 (the upper bound).</summary>
+        public static double SpecVarianceMin(double lineSpec, int spellLevel)
+        {
+            if (lineSpec < 1)
+                lineSpec = 1;
+
+            double min = 0.25;
+
+            if (spellLevel > 0)
+            {
+                min += (lineSpec - 1.0) / spellLevel;
+
+                if (min > 1.25)
+                    min = 1.25;
+            }
+
+            return min;
         }
 
         private static bool ShouldSendMessageAsSelfHeal(GameLiving caster, GameLiving target)

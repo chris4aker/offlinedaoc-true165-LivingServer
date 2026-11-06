@@ -2658,9 +2658,7 @@ namespace DOL.GS
         /// in its line at spell level <paramref name="spellLevel"/>.</summary>
         public static double ExpectedHeal165(double value, double lineSpec, int spellLevel)
         {
-            double min = 0.25;
-            if (spellLevel > 0)
-                min = Math.Min(1.25, min + (Math.Max(1.0, lineSpec) - 1.0) / spellLevel);
+            double min = DOL.GS.Spells.HealSpellHandler.SpecVarianceMin(lineSpec, spellLevel);   // what the heal handler uses
             return value * (min + 1.25) / 2.0;
         }
 
