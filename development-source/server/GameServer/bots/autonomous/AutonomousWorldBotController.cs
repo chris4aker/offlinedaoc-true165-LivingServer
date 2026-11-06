@@ -3255,7 +3255,8 @@ namespace DOL.GS
                     sawGrey = true;
                     return false;
                 })
-                .OrderByDescending(npc => _groupDirective?.IsDynamic == true ? npc.EffectiveLevel : 0)
+                // a party pulls the monster standing apart first, then the highest level (AutonomousGroupPullOrder)
+                .OrderForPull(_groupDirective?.IsDynamic == true, Classic165Mode.IsOn)
                 .ThenBy(npc => bot.GetDistanceTo(npc) + Math.Abs((int)ConLevels.GetConColor(bot.GetConLevel(npc))) * 220)
                 // Run native checks only after cheap filters and sorting, and
                 // stop at the first reachable target. Self-defense is handled
