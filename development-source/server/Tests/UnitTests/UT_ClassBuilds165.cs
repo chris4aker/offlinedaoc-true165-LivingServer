@@ -85,5 +85,19 @@ namespace DOL.UnitTests
             Assert.That(Share(plans, p => p.WeaponTwoType == eObjectType.PolearmWeapon), Is.EqualTo(0.85).Within(0.03));
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.CrushingWeapon), Is.EqualTo(0.05).Within(0.02));
         }
+
+        [Test]
+        public void TheurgistIsHalfAirAndIceTakesEarthSecond()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Theurgist);
+            Assert.That(Share(plans, p => p.SpecType == eSpecType.AirTheur), Is.EqualTo(0.5).Within(0.03));
+            foreach (BotSpec plan in plans.Where(p => p.SpecType == eSpecType.IceTheur).Take(100))
+            {
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Theurgist, 50);
+                Assert.That(at50[Specs.Cold_Magic], Is.GreaterThanOrEqualTo(46));
+                Assert.That(at50[Specs.Earth_Magic], Is.InRange(20, 26));
+                Assert.That(at50[Specs.Earth_Magic], Is.GreaterThan(at50[Specs.Wind_Magic]));
+            }
+        }
     }
 }
