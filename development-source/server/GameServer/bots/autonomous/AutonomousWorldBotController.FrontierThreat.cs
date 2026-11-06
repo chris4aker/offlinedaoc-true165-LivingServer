@@ -79,7 +79,7 @@ public sealed partial class AutonomousWorldBotController
         if (now < _nextReachCheck) return false;
         _nextReachCheck = now + UnreachableCheckMilliseconds;
         if (AutonomousRvrDefense.IsRangedDefender(bot) || bot.TargetObject is not GameLiving target || !target.IsAlive ||
-            target.Realm == bot.Realm || target is GameSiegeWeapon or GameKeepDoor || bot.IsWithinRadius(target, 250) ||
+            target.Realm == bot.Realm || target is GameSiegeWeapon or GameKeepDoor or GameRealmGate || bot.IsWithinRadius(target, 250) ||
             // Only a target up on a wall or cliff (run 20 also dropped level-ground PvP targets 2-72 units apart).
             Math.Abs(target.Z - bot.Z) < 150)
         {
@@ -151,11 +151,15 @@ public sealed partial class AutonomousWorldBotController
         var nav = PathfindingProvider.Instance;
         if (!nav.IsAvailable || !nav.HasNavmesh(bot.CurrentZone)) return false;
         bool callsTargets = mainAssist == bot;
+        // True 1.65 Mode: an enemy milegate that shuts this bot's route (its pathfinder walked it up to the gate) is broken
+        // when nobody is to be fought (AutonomousRouteGates; no scan of its own).
+        GameRealmGate routeGate = AutonomousRouteGates.Find(bot);
         if (mainAssist != null && !callsTargets && MainAssistNearby(bot, mainAssist))
         {
             // A member /assists: no scan of its own while its main assist is close by.
             GameLiving called = AutonomousRvrAssist.CalledTarget(bot.Group, GameLoop.GameLoopTime);
-            if (called == null || !bot.IsWithinRadius(called, TargetSearchRadius) || !EligibleRvrTarget(bot, called)) return false;
+            if (called == null || !bot.IsWithinRadius(called, TargetSearchRadius) || !EligibleRvrTarget(bot, called))
+                return routeGate != null && EngageFrontierEnemy(brain, bot, routeGate, defending: false, previousEngine: null);
             return EngageFrontierEnemy(brain, bot, called, defending: false, previousEngine: null);
         }
         // Cheap rejections first (most nearby livings are friendly bots); the area lookup last
@@ -193,7 +197,8 @@ public sealed partial class AutonomousWorldBotController
             ? AutonomousRvrAssist.Pick(visibleTargets, operatorThreats.Contains, GameRelic.IsPlayerCarryingRelic,
                 target => AutonomousRvrAssist.KillOrderRank(AutonomousRvrAssist.ClassOf(target)), target => bot.GetDistanceTo(target))
             : SelectDistributedRvrTarget(bot, operatorThreats.Length>0 ? operatorThreats : visibleTargets);
-        if (enemy == null || !Eligible(enemy)) return false;
+        if (enemy == null || !Eligible(enemy))
+            return routeGate != null && EngageFrontierEnemy(brain, bot, routeGate, defending, previousEngine);
         if (previousEngine != null && enemy is GameSiegeWeapon) return false;
         if (callsTargets) AutonomousRvrAssist.CallTarget(bot.Group, enemy, GameLoop.GameLoopTime);
         return EngageFrontierEnemy(brain, bot, enemy, defending, previousEngine);
