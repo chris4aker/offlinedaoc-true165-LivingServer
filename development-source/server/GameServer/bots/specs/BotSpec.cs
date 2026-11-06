@@ -108,7 +108,7 @@ namespace DOL.GS
             eCharacterClass.Runemaster => [eSpecType.DarkRune, eSpecType.SuppRune, eSpecType.RuneRune],
             eCharacterClass.Savage => [eSpecType.TwoHanded, eSpecType.DualWield],
             eCharacterClass.Shadowblade => [eSpecType.LeftAxe, eSpecType.TwoHanded],
-            eCharacterClass.Shaman => [eSpecType.MendShaman, eSpecType.AugShaman, eSpecType.SubtShaman],
+            eCharacterClass.Shaman => [eSpecType.AugShaman, eSpecType.SubtShaman],
             eCharacterClass.Spiritmaster => [eSpecType.DarkSpirit, eSpecType.SuppSpirit, eSpecType.SummSpirit],
             eCharacterClass.Thane => [eSpecType.OneHandAndShield, eSpecType.TwoHanded],
             eCharacterClass.Skald => [eSpecType.OneHandAndShield, eSpecType.TwoHanded],

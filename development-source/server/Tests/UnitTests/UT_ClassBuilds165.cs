@@ -232,5 +232,19 @@ namespace DOL.UnitTests
             }
             Assert.That(checkedPlans, Is.GreaterThan(0));
         }
+
+        [Test]
+        public void ShamanBuildsArePeriodAugAndCaveShapes()
+        {
+            Assert.That(BotSpec.GetSpecializationChoices(eCharacterClass.Shaman), Is.EqualTo(new[] { eSpecType.AugShaman, eSpecType.SubtShaman }));
+            HashSet<(int, int, int)> seen = new();
+            foreach (BotSpec plan in Roll(eCharacterClass.Shaman).Take(400))
+            {
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Shaman, 50);
+                seen.Add((at50[Specs.Augmentation], at50[Specs.Subterranean], at50[Specs.Mending]));
+                Assert.That(at50[Specs.Mending], Is.LessThanOrEqualTo(17), "no Mending-first build");
+            }
+            Assert.That(seen, Is.SupersetOf(new[] { (37, 39, 4), (43, 27, 14), (32, 41, 14), (22, 46, 17) }));
+        }
     }
 }
