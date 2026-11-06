@@ -203,6 +203,17 @@ namespace DOL.GS
                 _siegeNextAttempt = now + 60_000;
                 return false;
             }
+            // True 1.65 Mode: artillery fires only with ammunition (SiegeAmmo165; rams need none). The crew restocks when it
+            // takes the job (muster time) and again after a supply run of RestockRetryMilliseconds; with none it leaves the
+            // engine (ammunition still in it stays for another crew) and goes back to the door work of ordinary RvR.
+            if (!SiegeAmmo165.Ready(bot, owned, _siegeKind, now))
+            {
+                SiegeStatus(bot, "Out of siege ammunition", target);
+                SiegeLog(bot, "no_ammo", owned, $"kind={_siegeKind}; back to the door, restock in {SiegeAmmo165.RestockRetryMilliseconds / 1000}s");
+                ReleaseSiegeJob(bot);
+                _siegeNextAttempt = now + SiegeAmmo165.RestockRetryMilliseconds;
+                return false;
+            }
             bool synthetic = BotSiegeRuntime.Item(bot, kitId) == null;
             if (owned == null)
             {
@@ -267,6 +278,7 @@ namespace DOL.GS
             {
                 (owned as GameSiegeRam)?.UpdateRamStatus(); // crew at the ram shortens the reload
                 if ((owned.CurrentState & GameSiegeWeapon.eState.Armed) == 0) owned.Arm();
+                else if (SiegeAmmo165.Feed(bot, owned) != SiegeFeed.Ready) { } // True 1.65: ammunition in, LOAD (5 s)
                 else if ((owned.CurrentState & GameSiegeWeapon.eState.Aimed) == 0) owned.Aim();
                 else owned.Fire();
             }

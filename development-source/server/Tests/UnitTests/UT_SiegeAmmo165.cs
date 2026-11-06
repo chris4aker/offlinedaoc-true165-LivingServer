@@ -231,6 +231,21 @@ namespace DOL.UnitTests
         }
 
         [Test]
+        public void BotOperatorFeedsAnEmptyEngineBeforeAiming()
+        {
+            Assert.That(SiegeAmmo165.Feed(null, new GameSiegeRam()), Is.EqualTo(SiegeFeed.Ready), "a ram fires without");
+            var catapult = new GameSiegeCatapult();
+            Assert.That(SiegeAmmo165.Feed(null, catapult), Is.EqualTo(SiegeFeed.Empty), "nothing in the engine or the pack");
+            catapult.StoreAmmo(Stone, 1);
+            Assert.That(SiegeAmmo165.Feed(null, catapult), Is.EqualTo(SiegeFeed.Loading), "a piece in the engine: LOAD it");
+            BeginLoading(catapult, Stone);
+            catapult.AmmoLoaded();
+            Assert.That(SiegeAmmo165.Feed(null, catapult), Is.EqualTo(SiegeFeed.Ready), "loaded: aim and fire");
+            Properties.CLASSIC165_MODE = false;
+            Assert.That(SiegeAmmo165.Feed(null, new GameSiegeCatapult()), Is.EqualTo(SiegeFeed.Ready), "normal mode");
+        }
+
+        [Test]
         public void BotCrewWithoutAmmunitionIsNotReadyAndRamCrewAlwaysIs()
         {
             // No bot, no engine, nothing carried: an artillery crew has nothing to fire (and makes no restock attempt).
