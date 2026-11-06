@@ -65,6 +65,10 @@ namespace DOL.GS
                 secondary = new[] { secondary[selectedIndex] };
             }
 
+            // Period players often took the second line (Suppression for the healer pet) to about 20-24 while
+            // levelling. This plan keeps the primary first on purpose: at 1x a ratio for the secondary would only
+            // trickle in by slowing the primary, the problem described above. Totals match anyway: a 50 primary
+            // leaves 220 points at 50, so the secondary ends at 20.
             Add(primary, 50, 1.0f);
             Add(secondary[0], 50, 0.0f);
         }

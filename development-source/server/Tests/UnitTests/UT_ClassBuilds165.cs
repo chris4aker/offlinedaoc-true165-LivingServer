@@ -300,5 +300,18 @@ namespace DOL.UnitTests
             }
             Assert.That(found, Is.True);
         }
+
+        [TestCase(eSpecType.DarkBone)]
+        [TestCase(eSpecType.SuppBone)]
+        [TestCase(eSpecType.ArmyBone)]
+        public void BonedancerFocusedPlanEndsAtFiftyAndTwenty(eSpecType family)
+        {
+            BonedancerBotSpec plan = new(family, 183, true);
+            string primary = plan.SpecLines.First(l => l.levelRatio >= 1.0f).Spec;
+            string secondary = plan.SpecLines.First(l => l.levelRatio <= 0.0f).Spec;
+            Assert.That(At(plan, eCharacterClass.Bonedancer, 49)[secondary], Is.EqualTo(1));
+            Dictionary<string, int> at50 = At(plan, eCharacterClass.Bonedancer, 50);
+            Assert.That((at50[primary], at50[secondary]), Is.EqualTo((50, 20)));
+        }
     }
 }
