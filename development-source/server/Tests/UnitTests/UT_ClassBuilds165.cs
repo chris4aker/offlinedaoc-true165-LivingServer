@@ -349,5 +349,22 @@ namespace DOL.UnitTests
             Dictionary<string, int> at50 = At(plan, eCharacterClass.Enchanter, 50);
             Assert.That((at50[Specs.Mana], at50[Specs.Enchantments]), Is.EqualTo((50, 20)));
         }
+
+        [Test]
+        public void HeroTwoHanderWithShieldTakesParry39()
+        {
+            bool found = false;
+            for (int i = 0; i < 100; i++)
+            {
+                BotSpec plan = BotSpec.GetSpec(eCharacterClass.Hero, eSpecType.TwoHandHybrid);
+                if (Cap(plan, SkillBase.ObjectTypeToSpec(plan.WeaponTwoType)) != 50)
+                    continue;
+                found = true;
+                Dictionary<string, int> at50 = At(plan, eCharacterClass.Hero, 50);
+                Assert.That((at50[Specs.Shields], at50[Specs.Parry]), Is.EqualTo((42, 39)));
+                Assert.That(at50[SkillBase.ObjectTypeToSpec(plan.WeaponOneType)], Is.LessThanOrEqualTo(6));
+            }
+            Assert.That(found, Is.True);
+        }
     }
 }

@@ -42,14 +42,15 @@ namespace DOL.GS
                 Add(Specs.Parry, 28, 0.1f);
                 break;
 
+                // Period two-hander with shield: weapon 50 / shield 42 / parry 39, a few points in a one-hander.
                 case 1:
                 case 2:
                 Is2H = true;
                 SpecType = eSpecType.TwoHandHybrid;
-                Add(ObjToSpec(WeaponOneType), 39, 0.8f);
+                Add(ObjToSpec(WeaponOneType), 6, 0.1f);
                 Add(ObjToSpec(WeaponTwoType), 50, 1.0f);
                 Add(Specs.Shields, 42, 0.5f);
-                Add(Specs.Parry, 6, 0.1f);
+                Add(Specs.Parry, 39, 0.4f);
                 break;
 
                 case 3:
