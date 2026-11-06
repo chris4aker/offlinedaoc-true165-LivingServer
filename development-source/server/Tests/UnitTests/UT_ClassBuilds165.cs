@@ -151,5 +151,13 @@ namespace DOL.UnitTests
             List<BotSpec> plans = Roll(eCharacterClass.Reaver);
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Flexible), Is.EqualTo(0.9).Within(0.03));
         }
+
+        [Test]
+        public void MinstrelIsMostlySlashAndKeepsStealth18To31()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Minstrel);
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.SlashingWeapon), Is.EqualTo(160 / 222.0).Within(0.03));
+            Assert.That(plans.All(p => Cap(p, Specs.Stealth) is >= 18 and <= 31), Is.True);
+        }
     }
 }
