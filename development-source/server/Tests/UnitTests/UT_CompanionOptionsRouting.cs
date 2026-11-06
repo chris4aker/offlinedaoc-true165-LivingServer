@@ -18,9 +18,9 @@ namespace DOL.UnitTests
         [Test]
         public void EveryGenericOptionKindIsKnown()
         {
-            for (byte kind = 5; kind <= CompanionOptions165.KindSavePower; kind++)
+            for (byte kind = 5; kind <= CompanionOptions165.KindPositioning; kind++)
                 Assert.That(CompanionOptions165.Option(kind), Is.Not.Null, $"kind {kind}");
-            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindSavePower + 1), Is.Null);
+            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindPositioning + 1), Is.Null);
         }
     }
 }

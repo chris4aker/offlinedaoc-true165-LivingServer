@@ -29,7 +29,7 @@ namespace DOL.GS
             KindShroomSpore = 23, KindShroomBurst = 24, KindShroomHeal = 25;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
             KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
-            KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18, KindSavePower = 26;
+            KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18, KindSavePower = 26, KindPositioning = 27;
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -97,6 +97,11 @@ namespace DOL.GS
             // monster): on, no damage spells under 50% power unless the monster is under 30%; off, nukes freely
             new(KindSavePower, "savepower", "Save power", ["Automatic (on)", "Off"],
                 bot => HasDamageSpell((bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Concat(bot.BoltSpells ?? []))),
+            // melee with a back or side style (owner 2026-11-06; Prima: Berserkers, Blademasters, Mercenaries, Infiltrators
+            // attack from behind while the tank holds the monster): Automatic steps behind a monster the main tank holds;
+            // Flank behind any monster that is not on it; Stay in front never moves for a style (BotBrain.Flank)
+            new(KindPositioning, "position", "Positioning", ["Automatic", "Flank (side/back styles)", "Stay in front"],
+                BotBrain.KnowsFlankStyle),
         ];
 
         /// <summary>A generic AI option's stored key and choices (choice 0 Automatic), or null for an unknown kind.</summary>
