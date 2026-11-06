@@ -3599,7 +3599,10 @@ namespace DOL.AI.Brain
             // protecting a group member. Generic aggro may still contain the
             // previous pull and used to make archers/casters repeatedly switch
             // away from the fight their pet had already started.
-            Body.TargetObject = protectionTarget ?? directAttacker ?? activePetTarget ?? CalculateNextAttackTarget();
+            // A gamebot party's members follow its kill target (BotBrain.MainAssist); the tank sets it.
+            GameLiving assistTarget = protectionTarget == null ? MainAssistTarget(directAttacker) : null;
+            Body.TargetObject = protectionTarget ?? assistTarget ?? directAttacker ?? activePetTarget ?? CalculateNextAttackTarget();
+            OfferKillTarget(Body.TargetObject as GameLiving);
             RedirectPetFromControlledTarget(Body.TargetObject as GameLiving);
             MaintainTankPeel();
             // A tethered boss outside its tether is immune: stop hitting it and lead it home (AutonomousTetherReset).

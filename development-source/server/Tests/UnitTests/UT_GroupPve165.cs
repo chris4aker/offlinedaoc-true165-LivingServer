@@ -36,6 +36,26 @@ namespace DOL.GS.Tests
         });
 
         [Test]
+        public void PartyMembersFollowTheKillTargetUnlessLowAndHit() => Assert.Multiple(() =>
+        {
+            Assert.That(BotBrain.AssistsKillTarget(true, false, 100, true), Is.True, "hit but healthy: stay on the kill target");
+            Assert.That(BotBrain.AssistsKillTarget(true, false, 40, false), Is.True);
+            Assert.That(BotBrain.AssistsKillTarget(true, false, 40, true), Is.False, "low and being hit: fight back");
+            Assert.That(BotBrain.AssistsKillTarget(true, true, 100, false), Is.False, "never onto a mezzed kill target");
+            Assert.That(BotBrain.AssistsKillTarget(false, false, 100, false), Is.False);
+        });
+
+        [Test]
+        public void TheFirstTanksTargetStaysTheKillTarget() => Assert.Multiple(() =>
+        {
+            Assert.That(BotBrain.ReplacesKillTarget(true, false, true, 1_000), Is.False, "a second tank on an add does not take over");
+            Assert.That(BotBrain.ReplacesKillTarget(false, false, true, 1_000), Is.True, "the kill target died");
+            Assert.That(BotBrain.ReplacesKillTarget(true, true, true, 1_000), Is.True, "the main tank switched");
+            Assert.That(BotBrain.ReplacesKillTarget(true, false, false, 1_000), Is.True, "the main tank left it (dead or elsewhere)");
+            Assert.That(BotBrain.ReplacesKillTarget(true, false, true, BotBrain.KillTargetStaleMilliseconds + 1), Is.True);
+        });
+
+        [Test]
         public void PartiesPullTheMonsterStandingApartFirst() => Assert.Multiple(() =>
         {
             var monsters = new (System.Numerics.Vector3 Position, int AggroRange)[]
