@@ -19,13 +19,11 @@ namespace DOL.GS
                 return;
             }
 
-            int randBaseWeap = Util.Random(2);
-
-            switch (randBaseWeap)
+            // About 9 in 10 period Hunters used a spear: 8 in 10 here, plus the Spear build (always spear).
+            switch (Pick(4, 1))
             {
-                case 0:
-                case 1: WeaponOneType = eObjectType.Spear; break;
-                case 2: WeaponOneType = eObjectType.Sword; break;
+                case 0: WeaponOneType = eObjectType.Spear; break;
+                case 1: WeaponOneType = eObjectType.Sword; break;
             }
 
             Is2H = true;
@@ -52,11 +50,12 @@ namespace DOL.GS
                 Add(Specs.Stealth, 38, 0.3f);
                 break;
 
+                // Melee Hunter (period): weapon 44 / bow 35 / Beastcraft 32 / stealth 40.
                 case 4:
                 Add(ObjToSpec(WeaponOneType), 44, 0.9f);
                 Add(Specs.CompositeBow, 35, 0.7f);
-                Add(Specs.Beastcraft, 50, 0.8f);
-                Add(Specs.Stealth, 37, 0.5f);
+                Add(Specs.Beastcraft, 32, 0.6f);
+                Add(Specs.Stealth, 40, 0.5f);
                 break;
             }
         }

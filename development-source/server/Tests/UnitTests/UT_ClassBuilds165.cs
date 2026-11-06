@@ -265,5 +265,13 @@ namespace DOL.UnitTests
             Assert.That(at50[SkillBase.ObjectTypeToSpec(weapon)], Is.EqualTo(weaponLevel));
             Assert.That(at50[Specs.Savagery], Is.EqualTo(savagery));
         }
+
+        [Test]
+        public void HunterIsNineInTenSpear()
+        {
+            List<BotSpec> plans = Roll(eCharacterClass.Hunter);
+            Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.Spear), Is.EqualTo(0.9).Within(0.03));
+            Assert.That(plans.All(p => Cap(p, Specs.Beastcraft) <= 40), Is.True, "no Beastcraft 50 build");
+        }
     }
 }
