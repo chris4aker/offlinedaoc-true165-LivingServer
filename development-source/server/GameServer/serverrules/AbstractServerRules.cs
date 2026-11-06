@@ -3054,8 +3054,17 @@ namespace DOL.GS.ServerRules
         public virtual void MessageToLiving(GameLiving living, string message, eChatType type, eChatLoc loc)
         {
             if (living is GamePlayer)
+            {
+                MessagesToPlayers++;
                 ((GamePlayer)living).Out.SendMessage(message, type, loc);
+            }
         }
+
+        /// <summary>
+        /// Messages the rules sent to players on this thread: a refused attack the rules said nothing about gets a plain
+        /// reason (AttackComponent, True 1.65 Mode).
+        /// </summary>
+        [ThreadStatic] public static int MessagesToPlayers;
         #endregion
     }
 }

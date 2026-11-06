@@ -5,6 +5,9 @@ using DOL.GS.Styles;
 
 namespace DOL.GS
 {
+    /// <summary>Why a melee swing was held back with attack on (feedback for the player, True 1.65 Mode).</summary>
+    public enum AttackHeldBack { NoTarget, Stunned, Mezzed, Engaging, Casting }
+
     public class AttackAction
     {
         // Next tick interval for when the current tick doesn't result in an attack.
@@ -155,7 +158,15 @@ namespace DOL.GS
 
         public virtual void OnAimInterrupt(GameObject attacker) { }
 
+        /// <summary>A melee round with nothing to swing at, or a swing held back for this reason.</summary>
+        protected virtual void OnAttackHeldBack(AttackHeldBack reason) { }
+
         public virtual void OnForcedWeaponSwitch() { }
+
+        /// <summary>Why no swing is allowed (see IsAllowedToTick), or null. The order is the reported one.</summary>
+        public static AttackHeldBack? HeldBackReason(bool stunned, bool mezzed, bool engaging, bool castingInterruptible) =>
+            stunned ? AttackHeldBack.Stunned : mezzed ? AttackHeldBack.Mezzed : castingInterruptible ? AttackHeldBack.Casting :
+            engaging ? AttackHeldBack.Engaging : null;
 
         public virtual bool OnOutOfRangeOrNoLosRangedAttack()
         {
@@ -170,6 +181,9 @@ namespace DOL.GS
             if (!IsAllowedToTick())
             {
                 _firstTick = true; // Important to not buffer attacks.
+                if (_owner is GamePlayer && HeldBackReason(_owner.IsStunned, _owner.IsMezzed, _owner.IsEngaging,
+                        (_owner.CurrentSpellHandler?.Spell.Uninterruptible) == false) is AttackHeldBack reason)
+                    OnAttackHeldBack(reason);
                 return false;
             }
 
@@ -230,6 +244,7 @@ namespace DOL.GS
             if (_target == null)
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                OnAttackHeldBack(AttackHeldBack.NoTarget);
                 return false;
             }
 

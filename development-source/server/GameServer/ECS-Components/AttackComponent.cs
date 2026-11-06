@@ -1089,9 +1089,17 @@ namespace DOL.GS
                 }
             }
 
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
+            bool quietRefusal = GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500;
+            int rulesMessages = DOL.GS.ServerRules.AbstractServerRules.MessagesToPlayers;
+            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, quietRefusal))
             {
                 ad.AttackResult = eAttackResult.NotAllowed_ServerRules;
+                // True 1.65 Mode: the rules refused without a word (a peaceful creature, a companion on a horse route...)
+                // and the attack now stops: say so (owner 2026-11-06: no feedback at all before)
+                if (Classic165Mode.IsOn && !quietRefusal && owner is GamePlayer refused &&
+                    DOL.GS.ServerRules.AbstractServerRules.MessagesToPlayers == rulesMessages)
+                    refused.Out.SendMessage(RefusedAttackMessage(AutonomousNameMask.NameFor(refused, ad.Target, 0, false)), eChatType.CT_System,
+                        eChatLoc.CL_SystemWindow);
                 SendAttackingCombatMessages(action, ad);
                 return ad;
             }
@@ -1896,6 +1904,9 @@ namespace DOL.GS
 
             return 0.25 + attacker.GetAbilityLevel(Abilities.PenetratingArrow) * 0.25;
         }
+
+        /// <summary>The plain reason for a refused attack the server rules said nothing about.</summary>
+        public static string RefusedAttackMessage(string targetName) => $"You can't attack {targetName}!";
 
         private static readonly IReadOnlyDictionary<eAttackResult, string> _simpleAttackMessageKeys = new Dictionary<eAttackResult, string>
         {

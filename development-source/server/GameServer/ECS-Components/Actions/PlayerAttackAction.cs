@@ -29,6 +29,38 @@ namespace DOL.GS
                 _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), attackTypeMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
         }
 
+        public const long HeldBackMessageMilliseconds = 1500;
+        private long _nextHeldBackMessage;
+        private AttackHeldBack? _lastHeldBack;
+
+        /// <summary>
+        /// True 1.65 Mode (owner 2026-11-06: the player drew a weapon next to a monster and nothing happened, no message):
+        /// say why no swing comes - stunned, mesmerized, engaging, casting a spell, no target - in the system window, at
+        /// most every 1.5 seconds for the same reason (as "too far away" and "not in view" are).
+        /// </summary>
+        protected override void OnAttackHeldBack(AttackHeldBack reason)
+        {
+            if (!Classic165Mode.IsOn || _playerOwner.Client?.Account == null ||
+                !ShouldSayHeldBack(reason, _lastHeldBack, GameLoop.GameLoopTime, _nextHeldBackMessage))
+                return;
+            _lastHeldBack = reason;
+            _nextHeldBackMessage = GameLoop.GameLoopTime + HeldBackMessageMilliseconds;
+            string language = _playerOwner.Client.Account.Language;
+            string message = reason switch
+            {
+                AttackHeldBack.Stunned => LanguageMgr.GetTranslation(language, "GamePlayer.StartAttack.CantAttackStunned"),
+                AttackHeldBack.Mezzed => LanguageMgr.GetTranslation(language, "GamePlayer.StartAttack.CantAttackmesmerized"),
+                AttackHeldBack.Casting => "You can't attack while casting a spell!",
+                AttackHeldBack.Engaging => "You can't attack while you are engaging your target!",
+                _ => LanguageMgr.GetTranslation(language, "GamePlayer.Attack.NeedTarget"),
+            };
+            _playerOwner.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        }
+
+        /// <summary>Pure rule: a held-back message goes out for a new reason, or the same one after 1.5 seconds.</summary>
+        public static bool ShouldSayHeldBack(AttackHeldBack reason, AttackHeldBack? last, long now, long next) =>
+            reason != last || now >= next;
+
         protected override bool PrepareMeleeAttack()
         {
             _combatStyle = StyleComponent.GetStyleToUse();
