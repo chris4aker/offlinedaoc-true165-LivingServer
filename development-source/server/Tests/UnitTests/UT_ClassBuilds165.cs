@@ -166,5 +166,16 @@ namespace DOL.UnitTests
             List<BotSpec> plans = Roll(eCharacterClass.Infiltrator);
             Assert.That(Share(plans, p => p.WeaponOneType == eObjectType.ThrustWeapon), Is.EqualTo(0.75).Within(0.03));
         }
+
+        [Test]
+        public void FireWizardTakesEarthSecond()
+        {
+            for (int i = 0; i < 20; i++)
+            {
+                Dictionary<string, int> at50 = At(BotSpec.GetSpec(eCharacterClass.Wizard, eSpecType.FireWiz), eCharacterClass.Wizard, 50);
+                Assert.That(at50[Specs.Fire_Magic], Is.InRange(48, 50));
+                Assert.That(at50[Specs.Earth_Magic], Is.InRange(18, 23));
+            }
+        }
     }
 }
