@@ -194,6 +194,9 @@ namespace DOL.GS
         private Zone _failedApproachZone;
         private int _failedApproachRadius;
         private long _failedApproachUntilTick;
+        // a service's failed approach is kept for the service and target, wherever the bot stood (ServiceApproachFailureMilliseconds)
+        private string _failedApproachKey;
+        private readonly AutonomousServiceReachability.FarApproach _serviceFarApproach = new();
 
         private sealed record CampDestination(
             string Id,
@@ -1110,6 +1113,12 @@ namespace DOL.GS
                     _verifiedApproachZone = _serviceNpc.CurrentZone;
                     _verifiedApproachRadius = interactionRadius;
                 }
+                else if (!_serviceFarApproach.ShouldSearch(AutonomousServiceReachability.Key(_serviceNpc), distance, GameLoop.GameLoopTime))
+                {
+                    // Far from it and getting closer: walk toward the service; the spot beside it is searched once the bot
+                    // is near or stops making progress (2026-11-06: one bot searched every turn for 2.5 min, ~237 ms each)
+                    point = rawPoint;
+                }
                 else
                 {
                     // Use the same connected interaction-point resolver already
@@ -1120,7 +1129,8 @@ namespace DOL.GS
                     if (!TryResolveConnectedApproach(bot, rawPoint, Math.Max(16, interactionRadius - 16), out point,
                             needed == eWorldServiceKind.RealmExchange
                                 ? AutonomousZonePointApproach.ClearSightOf(PathfindingProvider.Instance, _serviceNpc.CurrentZone, rawPoint)
-                                : null) &&
+                                : null,
+                            "service:" + AutonomousServiceReachability.Key(_serviceNpc), ServiceApproachCandidates) &&
                         _serviceApproachFailures.Observe(AutonomousServiceReachability.Key(_serviceNpc),
                             Vector3.Distance(new(bot.X, bot.Y, bot.Z), rawPoint), GameLoop.GameLoopTime))
                     {
@@ -4176,12 +4186,30 @@ namespace DOL.GS
             return false;
         }
 
+        /// <summary>A failed approach search for a service is not repeated for this long, wherever the bot stands.</summary>
+        public const long ServiceApproachFailureMilliseconds = 25_000;
+        /// <summary>Points beside a service tested per search, nearest to the bot first.</summary>
+        public const int ServiceApproachCandidates = 4;
+
+        /// <summary>
+        /// The failed-search cache: the same target from the same spot within 3 s, or with a service key (failureKey)
+        /// the same service and target within <see cref="ServiceApproachFailureMilliseconds"/> from anywhere.
+        /// </summary>
+        public static bool FailedApproachCached(string cachedKey, Vector3 cachedTarget, Vector3 cachedFrom, long until,
+            string failureKey, Vector3 target, Vector3 from, long now) =>
+            now < until && Vector3.DistanceSquared(cachedTarget, target) <= 16 * 16 &&
+            (failureKey != null
+                ? string.Equals(cachedKey, failureKey, StringComparison.Ordinal)
+                : cachedKey == null && Vector3.DistanceSquared(cachedFrom, from) <= 16 * 16);
+
         private bool TryResolveConnectedApproach(
             GameBot bot,
             Vector3 rawTarget,
             int arrivalRadius,
             out Vector3 approach,
-            Func<Vector3, bool> preferredCandidate = null)
+            Func<Vector3, bool> preferredCandidate = null,
+            string failureKey = null,
+            int maxCandidates = int.MaxValue)
         {
             approach = rawTarget;
             Region region = bot.CurrentRegion;
@@ -4214,11 +4242,10 @@ namespace DOL.GS
 
             Vector3 from = new(bot.X, bot.Y, bot.Z);
             long now = GameLoop.GameLoopTime;
-            if (!_routeInterruptedByCombat && now < _failedApproachUntilTick &&
-                _failedApproachTarget.HasValue && _failedApproachZone == currentZone &&
+            if (!_routeInterruptedByCombat && _failedApproachTarget.HasValue && _failedApproachZone == currentZone &&
                 _failedApproachRadius == arrivalRadius &&
-                Vector3.DistanceSquared(_failedApproachTarget.Value, rawTarget) <= 16 * 16 &&
-                Vector3.DistanceSquared(_failedApproachFrom, from) <= 16 * 16)
+                FailedApproachCached(_failedApproachKey, _failedApproachTarget.Value, _failedApproachFrom, _failedApproachUntilTick,
+                    failureKey, rawTarget, from, now))
             {
                 approach = rawTarget;
                 return false;
@@ -4228,9 +4255,9 @@ namespace DOL.GS
             // A preferred-candidate rule is tried first; without a match the
             // unfiltered search runs exactly as before.
             bool Resolve(Func<Vector3, bool> filter, out Vector3 point) =>
-                AutonomousZonePointApproach.TryResolve(nav, currentZone, from, rawTarget, searchRadius, out point, filter) ||
+                AutonomousZonePointApproach.TryResolve(nav, currentZone, from, rawTarget, searchRadius, out point, filter, maxCandidates) ||
                 searchRadius != arrivalRadius && AutonomousZonePointApproach.TryResolve(nav, currentZone,
-                    from, rawTarget, arrivalRadius, out point, filter);
+                    from, rawTarget, arrivalRadius, out point, filter, maxCandidates);
             if (!(preferredCandidate != null && Resolve(preferredCandidate, out approach)) &&
                 !Resolve(null, out approach))
             {
@@ -4238,7 +4265,8 @@ namespace DOL.GS
                 _failedApproachFrom = from;
                 _failedApproachZone = currentZone;
                 _failedApproachRadius = arrivalRadius;
-                _failedApproachUntilTick = now + 3_000;
+                _failedApproachKey = failureKey;
+                _failedApproachUntilTick = now + (failureKey != null ? ServiceApproachFailureMilliseconds : 3_000);
                 return false;
             }
             _failedApproachTarget = null;

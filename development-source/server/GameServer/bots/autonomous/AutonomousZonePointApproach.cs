@@ -15,7 +15,8 @@ public static class AutonomousZonePointApproach
     public const int RoadCandidates = 2;
 
     public static bool TryResolve(IPathfindingMgr nav, Zone zone, Vector3 actor,
-        Vector3 portal, int arrivalRadius, out Vector3 approach, Func<Vector3, bool> candidateFilter = null)
+        Vector3 portal, int arrivalRadius, out Vector3 approach, Func<Vector3, bool> candidateFilter = null,
+        int maxCandidates = int.MaxValue)
     {
         approach = portal;
         if (nav == null || zone == null || !nav.IsAvailable || !nav.HasNavmesh(zone))
@@ -55,8 +56,10 @@ public static class AutonomousZonePointApproach
                 portal.Y + MathF.Sin(radians) * radius, portal.Z), 36, 128);
         }
 
+        // maxCandidates: only the nearest few are tested (a bot's planning search tested up to 38 points, each with full
+        // corridor searches, in one call; 2026-11-06)
         Vector3[] ordered = candidates.OrderBy(point => Vector3.DistanceSquared(start, point))
-            .Where(point => candidateFilter == null || candidateFilter(point)).ToArray();
+            .Take(Math.Max(1, maxCandidates)).Where(point => candidateFilter == null || candidateFilter(point)).ToArray();
         foreach (Vector3 candidate in ordered)
         {
             if (!AutonomousZoneItinerary.HasCompleteCorridor(nav, zone, start, candidate))

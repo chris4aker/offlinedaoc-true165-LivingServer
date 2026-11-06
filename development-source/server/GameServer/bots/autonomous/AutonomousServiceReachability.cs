@@ -83,6 +83,39 @@ namespace DOL.GS
             public void Reset() => _service = null;
         }
 
+        public const int FarSearchDistance = 800;
+        public const long FarStallMilliseconds = 25_000;
+
+        /// <summary>
+        /// Whether a bot walking to a service should search for a spot beside it now. Within
+        /// <see cref="FarSearchDistance"/> it always may (the failed-search cache limits repeats); farther away it walks
+        /// toward the service and searches only after <see cref="FarStallMilliseconds"/> without getting
+        /// <see cref="ProgressDistance"/> closer, so a service it cannot reach is still given up (ApproachFailures).
+        /// </summary>
+        public sealed class FarApproach
+        {
+            private string _service;
+            private long _sinceTick;
+            private float _bestDistance;
+
+            public bool ShouldSearch(string service, float distance, long now)
+            {
+                if (distance <= FarSearchDistance)
+                    return true;
+                if (!string.Equals(service, _service, System.StringComparison.Ordinal) || distance < _bestDistance - ProgressDistance)
+                {
+                    _service = service;
+                    _sinceTick = now;
+                    _bestDistance = distance;
+                    return false;
+                }
+                if (now - _sinceTick < FarStallMilliseconds)
+                    return false;
+                _sinceTick = now;
+                return true;
+            }
+        }
+
         /// <summary>Tests only.</summary>
         public static void Clear()
         {
