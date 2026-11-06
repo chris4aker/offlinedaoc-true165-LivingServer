@@ -4323,10 +4323,11 @@ namespace DOL.AI.Brain
                 .Concat(Body.GetNPCsInRadius(2600).Cast<GameLiving>())
                 .Concat(Body.GetPlayersInRadius(2600).Cast<GameLiving>())
                 .Distinct();
+            // A mesmerized monster still points at its last victim: never protect against it (that broke the mez).
             return candidates
                 .Where(candidate => candidate?.IsAlive == true &&
                                     candidate.TargetObject is GameLiving victim &&
-                                    protectedMembers.Contains(victim) &&
+                                    IsProtectionThreat(protectedMembers.Contains(victim), IsBreakablyControlled(candidate)) &&
                                     CanAggroTarget(candidate))
                 .OrderByDescending(candidate => candidate.TargetObject == leader)
                 .ThenByDescending(candidate => candidate.TargetObject is GameBot bot && bot.Brain is BotBrain { IsHealer: true })
@@ -4334,9 +4335,14 @@ namespace DOL.AI.Brain
                 .FirstOrDefault();
         }
 
+        /// <summary>A monster on a group member is a protection threat unless it is mesmerized or rooted (don't break mez).</summary>
+        public static bool IsProtectionThreat(bool targetsProtectedMember, bool breakablyControlled) =>
+            targetsProtectedMember && !breakablyControlled;
+
         private bool TryPriorityTaunt(GameLiving target)
         {
             if (!IsTankClass || target?.TargetObject is not GameLiving victim || Body.Group == null ||
+                IsBreakablyControlled(target) ||
                 victim.Group != Body.Group || !Body.Group.IsInTheGroup(victim) ||
                 victim.CurrentRegionID != Body.CurrentRegionID ||
                 !Body.IsWithinRadius(victim, GROUP_DEFENSE_ASSIST_RADIUS))
