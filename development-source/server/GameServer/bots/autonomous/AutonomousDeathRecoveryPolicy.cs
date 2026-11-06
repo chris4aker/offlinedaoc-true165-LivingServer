@@ -24,6 +24,28 @@ namespace DOL.GS
         public static int RetryDelayMilliseconds(int noExperienceDeathStreak) =>
             noExperienceDeathStreak < 3 ? 0 : Math.Min(120_000, (noExperienceDeathStreak - 2) * 30_000);
 
+        /// <summary>
+        /// The death fallback over widening sets of camps (nearest ring first): the first set whose safest camp is blue or
+        /// easier wins; with none anywhere, the nearest set's safest camp (it may be yellow) as before.
+        /// </summary>
+        public static AutonomousBotDecisionEngine.Camp SafestWidening(IEnumerable<AutonomousBotDecisionEngine.Camp[]> widening,
+            Func<AutonomousBotDecisionEngine.Camp[], AutonomousBotDecisionEngine.Camp> safestIn)
+        {
+            AutonomousBotDecisionEngine.Camp nearest = null;
+            foreach (AutonomousBotDecisionEngine.Camp[] set in widening)
+            {
+                if (set == null || set.Length == 0)
+                    continue;
+                AutonomousBotDecisionEngine.Camp camp = safestIn(set);
+                if (camp == null)
+                    continue;
+                if (camp.TypicalCon <= ConColor.BLUE)
+                    return camp;
+                nearest ??= camp;
+            }
+            return nearest;
+        }
+
         public static AutonomousBotDecisionEngine.Camp[] PreferFreshTargets(
             IEnumerable<AutonomousBotDecisionEngine.Camp> candidates,
             IReadOnlyDictionary<string, long> failedTargetUntil,

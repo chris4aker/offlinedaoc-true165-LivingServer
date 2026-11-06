@@ -92,5 +92,28 @@ namespace DOL.UnitTests
             cache.Prune(100_000);
             Assert.That(cache.Count, Is.Zero);
         }
+
+        private static AutonomousBotDecisionEngine.Camp Camp(string id, ConColor con) =>
+            new(id, "Zone", id, eRealm.Midgard, 100, con, con, true, false, false, 4, 0, 1);
+
+        [Test]
+        public void TheDeathFallbackLooksFartherOutBeforeTakingAYellowCamp()
+        {
+            var yellowNear = Camp("yellow-near", ConColor.YELLOW);
+            var blueFar = Camp("blue-far", ConColor.BLUE);
+            var greenRegion = Camp("green-elsewhere", ConColor.GREEN);
+            AutonomousBotDecisionEngine.Camp Safest(AutonomousBotDecisionEngine.Camp[] set) =>
+                AutonomousBotDecisionEngine.SelectSafestAvailableAfterDeath(set, null, null, new System.Random(1));
+
+            // the nearest ring has only yellow; the second ring has a blue one
+            Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening(
+                [[yellowNear], [yellowNear, blueFar], [yellowNear, blueFar, greenRegion]], Safest), Is.SameAs(blueFar));
+            // empty near rings are skipped
+            Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening([[], [], [greenRegion, yellowNear]], Safest), Is.SameAs(greenRegion));
+            // yellow everywhere: the nearest yellow, as before
+            var yellowFar = Camp("yellow-far", ConColor.YELLOW);
+            Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening([[yellowNear], [yellowNear, yellowFar]], Safest), Is.SameAs(yellowNear));
+            Assert.That(AutonomousDeathRecoveryPolicy.SafestWidening([[], []], Safest), Is.Null);
+        }
     }
 }

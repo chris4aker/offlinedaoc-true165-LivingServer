@@ -3652,18 +3652,24 @@ namespace DOL.GS
             bool usedDeathFallback = false;
             if (chosen == null && !sharedGroup && _deathDifficultySteps > 0)
             {
-                chosen = AutonomousBotDecisionEngine.SelectSafestAvailableAfterDeath(
-                    AutonomousDeathRecoveryPolicy.PreferFreshTargets(
-                        // the nearest camps, but not crowded ones while a quiet one is near (owner 2026-11-05: bots back
-                        // from a death all went to the same nearest green camp)
-                        AutonomousCampCompetition.PreferQuiet(
-                            NearbyFirst(bot, AvoidNoGo(bot, camps.Where(camp => camp.TypicalCon <= naturalMaximumTargetCon).ToArray(), destinations),
-                                destinations, planningLevel).ToArray(),
-                            camp => camp.Id, camp => camp.LiveMobCount, bot.PersistentRecord?.CurrentCampId, 1),
-                        _recentFailedSoloTargets, GameLoop.GameLoopTime),
-                    _lastFailedCampId,
-                    _lastFailedTargetName,
-                    Random.Shared);
+                AutonomousBotDecisionEngine.Camp SafestIn(AutonomousBotDecisionEngine.Camp[] near) =>
+                    AutonomousBotDecisionEngine.SelectSafestAvailableAfterDeath(
+                        AutonomousDeathRecoveryPolicy.PreferFreshTargets(
+                            // the nearest camps, but not crowded ones while a quiet one is near (owner 2026-11-05: bots back
+                            // from a death all went to the same nearest green camp)
+                            AutonomousCampCompetition.PreferQuiet(near,
+                                camp => camp.Id, camp => camp.LiveMobCount, bot.PersistentRecord?.CurrentCampId, 1),
+                            _recentFailedSoloTargets, GameLoop.GameLoopTime),
+                        _lastFailedCampId,
+                        _lastFailedTargetName,
+                        Random.Shared);
+                AutonomousBotDecisionEngine.Camp[] fallbackCamps =
+                    AvoidNoGo(bot, camps.Where(camp => camp.TypicalCon <= naturalMaximumTargetCon).ToArray(), destinations);
+                // True 1.65 Mode: a yellow camp only when no blue or green one is anywhere the bot can go; the nearest
+                // ring alone picked yellow about 30% of the time while blue camps stood a little farther out (2026-11-06)
+                chosen = Classic165Mode.IsOn && planningLevel < NearbyCampLevelLimit
+                    ? AutonomousDeathRecoveryPolicy.SafestWidening(WideningCamps(bot, fallbackCamps, destinations), SafestIn)
+                    : SafestIn(NearbyFirst(bot, fallbackCamps, destinations, planningLevel).ToArray());
                 usedDeathFallback = chosen != null;
                 if (usedDeathFallback)
                 {
@@ -5833,6 +5839,16 @@ namespace DOL.GS
                     return inRing;
             }
             return camps;
+        }
+
+        /// <summary>The death fallback's camps from near to far: each ring, the bot's region, then every reachable camp.</summary>
+        private IEnumerable<AutonomousBotDecisionEngine.Camp[]> WideningCamps(GameBot bot, AutonomousBotDecisionEngine.Camp[] camps,
+            Dictionary<string, CampDestination> destinations)
+        {
+            foreach (int ring in NearbyCampRings)
+                yield return InRing(bot, camps, destinations, ring);
+            yield return camps.Where(camp => destinations.TryGetValue(camp.Id, out CampDestination d) && d.RegionId == bot.CurrentRegionID).ToArray();
+            yield return camps;
         }
 
         private static int Distance(int ax, int ay, int bx, int by) =>
