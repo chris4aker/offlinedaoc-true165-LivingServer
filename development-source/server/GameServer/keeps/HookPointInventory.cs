@@ -50,7 +50,8 @@ namespace DOL.GS.Keeps
 
 				HookPointInventory.LightGreenHPInventory.AddFirstFreeSlot(new HookPointItem("Ballista", 20, 0x0A2C, "DOL.GS.GameSiegeBallista", 0x4b00));
 
-				HookPointInventory.YellowHPInventory.AddFirstFreeSlot(new HookPointItem("Boiling Oil", 70, 0x0A40, "DOL.GS.GameSiegeCauldron", 0x2800));
+				if (OfferedInMode(BoilingOilType, Classic165Mode.IsOn))
+					HookPointInventory.YellowHPInventory.AddFirstFreeSlot(new HookPointItem("Boiling Oil", 70, 0x0A40, BoilingOilType, 0x2800));
 
 				/*
 				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Healer", 10, 0x0A40, "DOL.GS.GameHealer", 0));
@@ -62,6 +63,16 @@ namespace DOL.GS.Keeps
 				*/
 			}
 		}
+
+		public const string BoilingOilType = "DOL.GS.GameSiegeCauldron";
+
+		/// <summary>
+		/// True 1.65 Mode has no boiling oil: through September 2003 the Freddyshouse siege and RvR boards still asked
+		/// Mythic for "boiling oil for the defenders" as a wish, and the Prima guides never mention it (it came with
+		/// New Frontiers). Its yellow hookpoint stays empty and a saved one is not put back.
+		/// </summary>
+		public static bool OfferedInMode(string objectType, bool classic165) =>
+			!(classic165 && objectType == BoilingOilType);
 
 		public HookPointInventory()
 		{
@@ -306,7 +317,7 @@ namespace DOL.GS.Keeps
 
 		public static void Invoke(GameKeepHookPoint hookpoint, string objectType)
 		{
-			if (!hookpoint.IsFree)
+			if (!hookpoint.IsFree || !HookPointInventory.OfferedInMode(objectType, Classic165Mode.IsOn))
 				return;
 
 			GameLiving hookPointObj = CreateHPInstance(objectType);
