@@ -76,7 +76,7 @@ namespace DOL.GS.Keeps
                         return true;
                 }
                 else if (Component.Keep is GameKeep or RelicGameKeep)
-                    return !IsPostern;
+                    return IsAttackableKeepDoor(Classic165Mode.IsOn, Component.Keep.IsPortalKeep, IsPostern);
 
                 return false;
             }
@@ -107,7 +107,7 @@ namespace DOL.GS.Keeps
                 if (IsAttackableDoor)
                     name = IsRelic ? "Relic Gate" : "Keep Door";
                 else
-                    name = "Postern Door";
+                    name = IsPostern || Component?.Keep?.IsPortalKeep != true ? "Postern Door" : "Keep Door";
 
                 if (Properties.ENABLE_DEBUG)
                     name += " ( C:" + ComponentID + " T:" + TemplateID + ")";
@@ -285,55 +285,16 @@ namespace DOL.GS.Keeps
             return base.Interact(player);
         }
 
-        /// <summary>True 1.65 Mode: how long a keep door its own realm opened by hand stays open.</summary>
-        public const int FriendlyOpenMilliseconds = 5_000;
-        private ECSGameTimer _friendlyCloseTimer;
-
-        /// <summary>Who may open a keep door or postern by hand: the keep's own realm (the door stays the keep's), or anyone
-        /// once it is broken (it already stands open).</summary>
-        public static bool MayOpenByHand(eRealm actor, eRealm keep, bool broken) =>
-            broken || actor != eRealm.None && actor == keep;
-
-        /// <summary>The door is broken: an attackable door at or under the close threshold.</summary>
-        public bool IsBrokenOpen => IsAttackableDoor && HealthPercent <= DOOR_CLOSE_THRESHOLD;
-
         /// <summary>
-        /// True 1.65 Mode (owner 2026-11-06: "friendly players can get thru them"): a player's DoorRequest. The keep's own
-        /// realm opens it (DoorState goes to the clients and the navmesh opens with it) and it shuts again after
-        /// <see cref="FriendlyOpenMilliseconds"/>; an enemy is refused and has to break it. A broken door stays open.
+        /// True 1.65 Mode (period rules, owner 2026-11-06): a keep door is never opened by hand; its realm is ported through
+        /// it (Interact, the gatekeeper's service in 1.6x: "you chat to the gatekeeper and he ports you inside", 2003-05-07;
+        /// "be able to open the inner door... Which you cant", 2002-11-14). Its realm's bots and companions use TryTraverse.
         /// </summary>
-        public bool UseForRealm(GamePlayer player, bool open)
-        {
-            if (player == null || Component?.Keep == null)
-                return false;
+        public static bool PortsOnRequest(bool classic165, bool towerWithComponents) => towerWithComponents || classic165;
 
-            if (!MayOpenByHand(player.Realm, Realm, IsBrokenOpen) && (player.Client?.Account?.PrivLevel ?? 1) <= 1)
-            {
-                player.Out.SendMessage($"{GetName(0, true)} is shut; it belongs to an enemy realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            if (!open)
-            {
-                if (!IsBrokenOpen && State == eDoorState.Open)
-                    CloseDoor();
-                return true;
-            }
-
-            if (State == eDoorState.Open)
-                return true;
-
-            State = eDoorState.Open;
-            BroadcastDoorStatus();
-            _friendlyCloseTimer ??= new ECSGameTimer(this, _ =>
-            {
-                if (!IsBrokenOpen && State == eDoorState.Open)
-                    CloseDoor();
-                return 0;
-            });
-            _friendlyCloseTimer.Start(FriendlyOpenMilliseconds);
-            return true;
-        }
+        /// <summary>True 1.65 Mode: a portal keep's doors cannot be damaged (period: "you cant take a ram to a PK door",
+        /// Thidranki 2003-01-09; "you can't open the pk doors yourself", 2002-12-10). Only its realm passes (traverse).</summary>
+        public static bool IsAttackableKeepDoor(bool classic165, bool portalKeep, bool postern) => !postern && !(classic165 && portalKeep);
 
         public bool TryTraverse(GameBot bot)
         {
@@ -520,7 +481,7 @@ namespace DOL.GS.Keeps
             // HealthPercent relies on MaxHealth, which returns 0 if used before adding the door to the world and setting Component.Keep
             // Keep doors are always closed if they have more than DOOR_CLOSE_THRESHOLD% health. Otherwise the value is retrieved from the DB.
             // Postern doors are always closed.
-            if (IsPostern || HealthPercent > DOOR_CLOSE_THRESHOLD)
+            if (IsPostern || !IsAttackableDoor || HealthPercent > DOOR_CLOSE_THRESHOLD)
                 State = eDoorState.Closed;
             else
                 State = (eDoorState) dbDoor.State;
