@@ -131,6 +131,26 @@ namespace DOL.UnitTests
         public void RestockBuysUpToAStackItCanPayFor(int held, long money, long unit, int count) =>
             Assert.That(SiegeAmmo165.RestockCount(held, money, unit), Is.EqualTo(count));
 
+        // ---- siegecrafters
+
+        [Test]
+        public void CraftedAmmunitionCostsItsRecipeMaterialsElseItsPrice()
+        {
+            // No recipe rows in this database: the item's own price (the 1.64 recipes' ingredient cost).
+            Assert.That(CrafterBots165.AmmoMaterials(new DbItemTemplate { Id_nb = "ut_ammo_price_only", Price = 1820 }), Is.EqualTo(1820));
+            Assert.That(CrafterBots165.AmmoMaterials(new DbItemTemplate { Id_nb = "ut_ammo_free", Price = 0 }), Is.EqualTo(1), "never free");
+        }
+
+        [Test]
+        public void OnlySiegecraftersCraftTheirOwnAndNothingInNormalMode()
+        {
+            var purse = new SiegeAmmo165.Purse(_ => true, _ => { }, () => 1_000_000);
+            Assert.That(CrafterBots165.CraftOwnAmmo(null, Stone, 20, purse), Is.EqualTo(0));
+            Assert.That(CrafterBots165.SellAmmo(null, Stone, 20, purse), Is.EqualTo(0));
+            Properties.CLASSIC165_MODE = false;
+            Assert.That(SiegeAmmo165.Restock(null, BotSiegeKind.Catapult, purse), Is.EqualTo(0));
+        }
+
         // ---- the engine
 
         [Test]

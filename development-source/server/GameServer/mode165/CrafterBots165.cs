@@ -163,9 +163,121 @@ namespace DOL.GS
                 Log.Info($"BOT_CRAFTED_165 bot={bot.Name} id={bot.DatabaseID} craft=SiegeCrafting skill={record.CraftLevel} kit={kind}");
                 return;
             }
+            // then the realm's catapult stones and ballista bolts for its siege crews (owner 2026-11-06: "they will use ammo and
+            // craft ammo and restock ammo before a siege")
+            if (skill >= SiegeAmmo165.BasicRecipeSkill && CraftAmmoStock(bot, record, skill))
+                return;
             // nothing to build: practise on the cheapest kit's parts for skill (materials only)
             if (skill < MaxSkill && AutonomousBotEconomy.TrySpend(bot.DatabaseID, 5_000))
                 Gain(bot, record, 0);
+        }
+
+        /// <summary>Pieces of each merchant ammunition (stone, bolt) a siegecrafter keeps for crews: one period stack.</summary>
+        public const int AmmoKept = 20;
+
+        private static readonly ConcurrentDictionary<string, long> AmmoMaterialCost = new();
+
+        /// <summary>The materials of one piece by its 1.64 recipe (each ingredient's price x count), else the item's price.</summary>
+        public static long AmmoMaterials(DbItemTemplate ammo) => AmmoMaterialCost.GetOrAdd(ammo.Id_nb, id =>
+        {
+            long cost = 0;
+            foreach (DbCraftedXItem part in DOLDB<DbCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(id)))
+                cost += (GameServer.Database.FindObjectByKey<DbItemTemplate>(part.IngredientId_nb)?.Price ?? 0) * Math.Max(1, part.Count);
+            return cost > 0 ? cost : Math.Max(1, ammo.Price);
+        });
+
+        /// <summary>A siegecrafter tops up its stock of the realm's stones or bolts in one batch (one combine).</summary>
+        private static bool CraftAmmoStock(GameBot bot, OfflineWorldBotRecord record, int skill)
+        {
+            foreach (SiegeAmmoKind kind in new[] { SiegeAmmoKind.CatapultStone, SiegeAmmoKind.BallistaBolt })
+            {
+                DbItemTemplate ammo = SiegeAmmo165.Template(SiegeAmmo165.AmmoId(bot.Realm, kind));
+                if (ammo == null)
+                    continue;
+                long unit = AmmoMaterials(ammo);
+                int have = bot.Inventory.CountItemTemplate(ammo.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                int count = SiegeAmmo165.RestockCount(have, AutonomousBotEconomy.GetMoney(bot.DatabaseID), unit, AmmoKept);
+                if (count <= 0)
+                    continue;
+                long cost = checked(unit * count);
+                if (!AutonomousBotEconomy.TrySpend(bot.DatabaseID, cost))
+                    return false;
+                if (!SiegeAmmo165.Give(bot, ammo, count))
+                {
+                    AutonomousBotEconomy.AddMoney(bot.DatabaseID, cost);
+                    return false;
+                }
+                Gain(bot, record, SiegeAmmo165.BasicRecipeSkill - skill);
+                Log.Info($"BOT_CRAFTED_165 bot={bot.Name} id={bot.DatabaseID} craft=SiegeCrafting skill={record.CraftLevel} ammo={ammo.Id_nb} count={count}");
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>A siegecrafter crew makes its own stones or bolts, paying the recipe's materials. Returns the pieces made.</summary>
+        public static int CraftOwnAmmo(GameBot crew, DbItemTemplate ammo, int want, SiegeAmmo165.Purse purse)
+        {
+            if (!Classic165Mode.IsOn || ammo == null || want <= 0 || crew?.PersistentRecord is not { } record ||
+                CraftOf(record) != eCraftingSkill.SiegeCrafting || record.CraftLevel < SiegeAmmo165.BasicRecipeSkill)
+                return 0;
+            long unit = AmmoMaterials(ammo);
+            int count = SiegeAmmo165.RestockCount(0, purse.Money(), unit, want);
+            if (count <= 0)
+                return 0;
+            long cost = checked(unit * count);
+            if (!purse.Spend(cost))
+                return 0;
+            if (!SiegeAmmo165.Give(crew, ammo, count))
+            {
+                purse.Refund(cost);
+                return 0;
+            }
+            Gain(crew, record, SiegeAmmo165.BasicRecipeSkill - record.CraftLevel);
+            return count;
+        }
+
+        /// <summary>A crew buys stones or bolts from the stock of a siegecrafter gamebot of its realm (at the merchant price,
+        /// handed over as SupplySiege hands over kits). Returns the pieces bought.</summary>
+        public static int SellAmmo(GameBot crew, DbItemTemplate ammo, int want, SiegeAmmo165.Purse purse)
+        {
+            if (!Classic165Mode.IsOn || ammo == null || want <= 0 || crew?.Inventory == null)
+                return 0;
+            long unit = Math.Max(1, ammo.Price);
+            foreach (GameBot crafter in AutonomousBotRegistry.Snapshot())
+            {
+                if (crafter == crew || crafter.Realm != crew.Realm || crafter.Inventory == null ||
+                    CraftOf(crafter.PersistentRecord) != eCraftingSkill.SiegeCrafting)
+                    continue;
+                int stock = crafter.Inventory.CountItemTemplate(ammo.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                if (stock <= 0)
+                    continue;
+                int count = SiegeAmmo165.RestockCount(0, purse.Money(), unit, Math.Min(want, stock));
+                if (count <= 0)
+                    return 0;
+                long cost = checked(unit * count);
+                lock (crafter.Inventory.Lock)
+                {
+                    if (!crafter.Inventory.RemoveTemplate(ammo.Id_nb, count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                        continue;
+                }
+                if (!purse.Spend(cost))
+                {
+                    SiegeAmmo165.Give(crafter, ammo, count);
+                    return 0;
+                }
+                if (!SiegeAmmo165.Give(crew, ammo, count))
+                {
+                    purse.Refund(cost);
+                    SiegeAmmo165.Give(crafter, ammo, count);
+                    return 0;
+                }
+                AutonomousBotEconomy.AddMoney(crafter.DatabaseID, cost);
+                AutonomousBotEconomy.MarkInventoryChanged(crafter);
+                crafter.MarkAutonomousStateDirty();
+                AutonomousBotStatusPersistence.Queue(crafter, true);
+                return count;
+            }
+            return 0;
         }
 
         /// <summary>Skill gain like a player's: likelier the harder the recipe compared to the skill, none when grey.</summary>

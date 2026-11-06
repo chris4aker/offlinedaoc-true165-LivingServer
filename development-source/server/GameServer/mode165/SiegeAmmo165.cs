@@ -247,8 +247,10 @@ namespace DOL.GS
             int held = bot.Inventory.CountItemTemplate(id, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             int want = RestockTarget - held;
             if (want <= 0) return 0;
-            string source = "merchant";
-            int got = Buy(bot, template, want, purse);
+            string source = "crafted";
+            int got = CrafterBots165.CraftOwnAmmo(bot, template, want, purse);
+            if (got == 0) { source = "siegecrafter"; got = CrafterBots165.SellAmmo(bot, template, want, purse); }
+            if (got == 0) { source = "merchant"; got = Buy(bot, template, want, purse); }
             if (got > 0)
                 Log.Info($"SIEGE_AMMO_RESTOCK bot={bot.Name} id={bot.DatabaseID} realm={bot.Realm} item={id} count={got} source={source}");
             return got;
