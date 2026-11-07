@@ -63,5 +63,34 @@ namespace DOL.UnitTests
             Assert.That(CelainEirich165.MillisecondsToNineAm(9 * hour, 1), Is.EqualTo(24L * hour), "at 09:00 -> the next day");
             Assert.That(CelainEirich165.MillisecondsToNineAm(8 * hour, 24), Is.EqualTo(hour / 24), "game time runs 24x faster");
         });
+
+        [Test]
+        public void OgreArmyMarchesDownTheWestCoastToTheOrcCamp() => Assert.Multiple(() =>
+        {
+            var last = ThergusOgreWarBrain.March[^1];
+            var camp = ThergusOgreWarBrain.OrcCamp;
+            Assert.That(Math.Sqrt(Math.Pow(last.X - camp.X, 2) + Math.Pow(last.Y - camp.Y, 2)), Is.LessThan(4000), "the march ends facing the orc camp");
+            for (int i = 1; i < ThergusOgreWarBrain.March.Length; i++)
+            {
+                var a = ThergusOgreWarBrain.March[i - 1];
+                var b = ThergusOgreWarBrain.March[i];
+                Assert.That(Math.Sqrt(Math.Pow(b.X - a.X, 2) + Math.Pow(b.Y - a.Y, 2)), Is.LessThan(3000), $"leg {i} is short enough to walk");
+            }
+            Assert.That(ThergusOgreWarBrain.Slots, Has.Length.EqualTo(4), "4 squads of a leader and 9 threshers");
+        });
+
+        [Test]
+        public void GormrorsDiseaseCloudsAreInsideDyrfjell() => Assert.Multiple(() =>
+        {
+            Assert.That(GormrorRaidBrain.CloudSpots, Has.Length.EqualTo(27));
+            Assert.That(GormrorRaidBrain.CloudSpots.Distinct().Count(), Is.EqualTo(27));
+            foreach (var c in GormrorRaidBrain.CloudSpots)
+            {
+                Assert.That(c.X, Is.InRange(275000, 279800));
+                Assert.That(c.Y, Is.InRange(322500, 327500));
+            }
+            Assert.That(GormrorRaidBrain.Route[^1], Is.EqualTo((277276, 325107, 5136)), "the raid ends in the town centre");
+            Assert.That(GormrorRaidBrain.Lieutenants.Select(l => l.Name), Is.EqualTo(new[] { "Horgal", "Oireg", "Kargil", "Rulod" }));
+        });
     }
 }
