@@ -54,5 +54,14 @@ namespace DOL.UnitTests
                 Assert.That(after, Is.GreaterThan(before), "the first leg leads away from the nest");
             }
         }
+        [Test]
+        public void CelainComesBackAtNineInTheMorning() => Assert.Multiple(() =>
+        {
+            const uint hour = 60 * 60 * 1000;
+            Assert.That(CelainEirich165.MillisecondsToNineAm(8 * hour, 1), Is.EqualTo(hour), "08:00 -> one game hour");
+            Assert.That(CelainEirich165.MillisecondsToNineAm(10 * hour, 1), Is.EqualTo(23L * hour), "10:00 -> tomorrow");
+            Assert.That(CelainEirich165.MillisecondsToNineAm(9 * hour, 1), Is.EqualTo(24L * hour), "at 09:00 -> the next day");
+            Assert.That(CelainEirich165.MillisecondsToNineAm(8 * hour, 24), Is.EqualTo(hour / 24), "game time runs 24x faster");
+        });
     }
 }

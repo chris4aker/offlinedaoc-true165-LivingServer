@@ -24,10 +24,12 @@ namespace DOL.GS.Scripts
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165666);
             LoadTemplate(npcTemplate);
 
-            //seedling
+            //seedling: the lure looks like a lower-level monster until the scourgin reveals itself (Prima SI 2002, Domnann
+            //'Enhanced Monster AI'; Allakhazam 2003-01-03) - level 3 like the plain seedlings, not the scourgin's 6-9
             Model = 818;
             Size = 9;
             Name = "botonid seedling";
+            Level = 3;
 
             Faction = FactionMgr.GetFactionByID(69);
 
@@ -64,14 +66,15 @@ namespace DOL.GS.Scripts
                 {
                     if (!Body.IsWithinRadius(Body.TargetObject, 150)) return;
                     if (transformed) return;
+                    // the period message (Allakhazam 2003-01-03), once to the players near; the transform happens once
+                    // (it ran inside the loop and flipped back and forth with two or more players near)
+                    string who = Body.TargetObject?.Name ?? "you";
                     foreach (GamePlayer player in Body.GetPlayersInRadius(400))
-                    {
-                        player.Out.SendMessage("The lure dissapears and a scourgin jumps out at " + player.Name + ".",
+                        player.Out.SendMessage("The lure disappears and the scourgin jumps out at " + who + "!",
                             eChatType.CT_Say,
                             eChatLoc.CL_ChatWindow);
-                        Transform(transformed); // scourgin
-                        transformed = true;
-                    }
+                    Transform(transformed); // scourgin
+                    transformed = true;
                 }
                 else if (!Body.InCombatInLast(30 * 1000) && !HasAggro)
                 {
@@ -90,12 +93,17 @@ namespace DOL.GS.Scripts
                     Body.Size = 9;
                     Body.Model = 818;
                     Body.Name = "botonid seedling";
+                    Body.Level = 3;
+                    Body.Faction = FactionMgr.GetFactionByID(69);    // Botonids
                 }
                 else
                 {
-                    Body.Size = 50;
+                    // the scourgin: Prima levels 6-7, the template's size, Predators of Hy Brasil
+                    Body.Size = (byte)Util.Random(23, 28);
                     Body.Model = 914;
                     Body.Name = "scourgin";
+                    Body.Level = (byte)Util.Random(6, 7);
+                    Body.Faction = FactionMgr.GetFactionByID(100);
                 }
             }
         }
