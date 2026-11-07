@@ -702,6 +702,8 @@ namespace DOL.GS
 
             if (!_pathfinder.ShouldPath(zone, destination))
             {
+                if (TryCompanionBorderStep(zone, destination, speed))
+                    return;
                 if (IsPersistentAutonomous(this))
                     PauseMovement(this, destination);
                 else
@@ -893,6 +895,37 @@ namespace DOL.GS
                 if (component.IsMoving)
                     component.UpdateMovement(0);
             }
+        }
+
+        /// <summary>
+        /// A hired companion following its player over a zone border (owner 2026-11-06, Lyonesse to Cornwall: they stopped
+        /// in place until the 2,000-unit recall teleported them). Paths are planned inside one zone, and a companion is a
+        /// gamebot, so a spot in the next zone paused it. It now paths to the border inside its own zone, then takes a short
+        /// straight step over it; its next turn plans the rest in the new zone. Other bots and NPCs are unchanged.
+        /// </summary>
+        private bool TryCompanionBorderStep(Zone zone, Vector3 destination, short speed)
+        {
+            if (Owner is not GameBot bot || !CompanionFollowPolicy.Applies(bot) || zone == null || !zone.IsPathfindingEnabled)
+                return false;
+            Zone next = Owner.CurrentRegion?.GetZone((int) destination.X, (int) destination.Y);
+            if (next == null || next == zone ||
+                !CompanionFollowPolicy.TryZoneExit(_ownerPosition, destination, zone.XOffset, zone.YOffset, zone.Width, zone.Height,
+                    out Vector3 exit))
+                return false;
+            Vector3 direction = Vector3.Normalize(destination - _ownerPosition);
+            Vector3 inside = exit - direction * CompanionFollowPolicy.BorderInset;
+            if (Vector3.DistanceSquared(_ownerPosition, inside) > CompanionFollowPolicy.BorderOutset * CompanionFollowPolicy.BorderOutset &&
+                TrySnapToMesh(ref inside) && Owner.CurrentRegion.GetZone((int) inside.X, (int) inside.Y) == zone)
+            {
+                PathToInternal(inside, speed);
+                return true;
+            }
+            // At the border: one short straight step into the next zone.
+            Vector3 outside = exit + direction * CompanionFollowPolicy.BorderOutset;
+            TrySnapToMesh(ref outside);
+            UnsetFlag(MovementState.Pathfinding);
+            WalkToInternal(outside, speed);
+            return true;
         }
 
         private void ClearAutonomousPathFailure()

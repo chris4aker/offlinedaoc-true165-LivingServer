@@ -61,5 +61,23 @@ namespace DOL.UnitTests
             Assert.That(CompanionFollowPolicy.Predict(Vector3.Zero, new(10000, 0, 0), 3000), Is.EqualTo(new Vector3(80, 0, 0)));
             Assert.That(CompanionFollowPolicy.Predict(new(1, 2, 3), Vector3.Zero, 390), Is.EqualTo(new Vector3(1, 2, 3)));
         }
+
+        // owner 2026-11-06: companions stopped at the Lyonesse / Cornwall border (Lyonesse: x 286720-352256, y 630784-696320)
+        [Test]
+        public void ZoneExitIsWhereTheLineLeavesTheZone()
+        {
+            const int x0 = 286720, y0 = 630784, size = 65536;
+            Assert.That(CompanionFollowPolicy.TryZoneExit(new(350300, 667330, 6100), new(353900, 667460, 6150), x0, y0, size, size,
+                out Vector3 exit), Is.True, "Lyonesse into Cornwall (east)");
+            Assert.That(exit.X, Is.EqualTo(352256).Within(0.5));
+            Assert.That(exit.Y, Is.InRange(667330f, 667460f));
+            Assert.That(CompanionFollowPolicy.TryZoneExit(new(300000, 640000, 0), new(300000, 620000, 0), x0, y0, size, size,
+                out exit), Is.True, "out to the north");
+            Assert.That(exit.Y, Is.EqualTo(630784).Within(0.5));
+            Assert.That(CompanionFollowPolicy.TryZoneExit(new(300000, 640000, 0), new(310000, 650000, 0), x0, y0, size, size, out _),
+                Is.False, "the spot is in the same zone");
+            Assert.That(CompanionFollowPolicy.TryZoneExit(new(353000, 640000, 0), new(360000, 640000, 0), x0, y0, size, size, out _),
+                Is.False, "the companion is not in this zone");
+        }
     }
 }

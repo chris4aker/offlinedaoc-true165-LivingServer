@@ -186,6 +186,32 @@ namespace DOL.GS
                 PathfindingProvider.Instance.DefaultFilters) ?? origin;
         }
 
+        /// <summary>How far inside its own zone a companion stops before stepping over a zone border.</summary>
+        public const float BorderInset = 48;
+        /// <summary>How far into the next zone the straight step over the border goes.</summary>
+        public const float BorderOutset = 64;
+
+        /// <summary>
+        /// Pure: where the straight line from a point inside a zone (x0, y0, width, height) towards a point outside it
+        /// leaves that zone. False when the line never leaves it (the point is inside) or starts outside it.
+        /// </summary>
+        public static bool TryZoneExit(Vector3 from, Vector3 to, int x0, int y0, int width, int height, out Vector3 exit)
+        {
+            exit = default;
+            if (from.X < x0 || from.Y < y0 || from.X >= x0 + width || from.Y >= y0 + height)
+                return false;
+            Vector3 d = to - from;
+            float t = 1f;
+            if (d.X > 0) t = Math.Min(t, (x0 + width - from.X) / d.X);
+            else if (d.X < 0) t = Math.Min(t, (x0 - from.X) / d.X);
+            if (d.Y > 0) t = Math.Min(t, (y0 + height - from.Y) / d.Y);
+            else if (d.Y < 0) t = Math.Min(t, (y0 - from.Y) / d.Y);
+            if (t < 0 || t >= 1)
+                return false;
+            exit = from + d * t;
+            return true;
+        }
+
         public static bool SendsDruidPet(GameBot bot) => Applies(bot) &&
             bot.CharacterClass?.ID == (int)eCharacterClass.Druid && bot.Stance != eBotStance.Passive;
 
