@@ -37,7 +37,10 @@ namespace DOL.GS
         public static bool Allows(GameLiving actor, GameLiving target)
         {
             GamePlayer leader = DefensiveLeader(actor);
-            return leader == null || target != null && target.CurrentRegionID == leader.CurrentRegionID &&
+            // The /pull puller may reach past the leash for the monster it was sent for (owner 2026-11-06; aggressive
+            // mode has no leash and is unchanged).
+            return leader == null || PlayerLedPullCoordinator.IsOrderedPuller(actor, target) ||
+                target != null && target.CurrentRegionID == leader.CurrentRegionID &&
                 (leader.IsWithinRadius(target, DefensiveRadius) || CompanionPvpEngagement.Defending(actor, target) ||
                  CompanionPvpEngagement.FrontierRoamerInRange(leader, target, true));
         }

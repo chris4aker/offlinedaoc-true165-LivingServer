@@ -85,15 +85,6 @@ namespace DOL.GS
         private static bool HasUsableDistanceWeapon(GameBot bot) =>
             BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon));
 
-        /// <summary>A companion that can pull with a low-aggro spell (debuff, Nearsight, root): a preferred puller.</summary>
-        public static bool HasLowAggroPull(GameBot bot) => bot?.CharacterClass != null &&
-            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
-            PullSpell(bot) is Spell spell && IsLowAggroPullSpell(spell);
-
-        /// <summary>A companion that can pull with a bow, crossbow or thrown weapon it carries ammunition for.</summary>
-        public static bool CanShootPull(GameBot bot) => bot?.CharacterClass != null &&
-            !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) && HasUsableDistanceWeapon(bot);
-
         public static bool HasRangedPull(GameBot bot) => bot?.CharacterClass != null &&
             !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
             (PullSpell(bot) != null || BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon)));

@@ -370,7 +370,7 @@ namespace DOL.GS.Commands
     }
 
     [CmdAttribute("&pull", ePrivLevel.Player,
-        "Orders your companions to pull your target: one pulls it and brings it back (name one, or they choose)",
+        "Orders your companions to pull your target: the tank pulls it and brings it back, or name the puller",
         "/pull", "/pull <companion name>")]
     public sealed class PullGroupCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -385,7 +385,7 @@ namespace DOL.GS.Commands
             if (!GameServer.ServerRules.IsAllowedToAttack(player, target, false))
                 return;
 
-            // "/pull Bob": Bob pulls (owner 2026-11-06); "/pull" alone lets the companions choose
+            // "/pull Bob": Bob pulls (owner 2026-11-06); "/pull" alone: the tank pulls
             string puller = args.Length > 1 ? string.Join(" ", args, 1, args.Length - 1) : null;
             DisplayMessage(client, PlayerLedPullCoordinator.Begin(player, target, puller));
         }

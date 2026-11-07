@@ -73,7 +73,7 @@ namespace DOL.GS
             {
                 tank = FindNamed(helpers, pullerName.Trim());
                 if (tank == null)
-                    return $"No companion named {pullerName.Trim()} is near enough to pull. Type /pull alone to let them choose.";
+                    return $"No companion named {pullerName.Trim()} is near enough to pull. Type /pull alone and the tank pulls.";
                 if (tank.IsCrowdControlled)
                     return $"{tank.Name} can't pull right now.";
                 if (BotPartyRoles.IsSupport(tank))
@@ -116,56 +116,26 @@ namespace DOL.GS
                 .OrderBy(bot => bot.Name.Length).FirstOrDefault();
 
         /// <summary>
-        /// Who pulls. True 1.65 Mode (Prima, pulling: the designated puller - an archer, or a tank - shoots once with the
-        /// lightest shot and runs back; period forums: debuff, Nearsight and root pulls bring the monster with little anger):
-        /// the tank if it has a ranged pull, else a companion with a low-aggro pull spell, else an archer or thrower, else
-        /// the tank walks up, else the nearest melee companion that is no healer; nearest first in each. Before 2026-11-06
-        /// only a tank ever pulled, and with no tank the whole group charged. Normal mode: the nearest tank.
+        /// Who pulls on a plain "/pull": the nearest tank that is free, as always (owner 2026-11-06: "regular /pull still
+        /// works as before - tank goes in, group follows after"; a ranked pick that preferred casters and archers over the
+        /// tank was taken back). With no tank the group engages at once. Any other puller is named: "/pull (name)".
         /// </summary>
-        public static GameBot ChoosePuller(GameBot[] helpers, GameLiving target)
-        {
-            var free = helpers.Where(bot => !bot.IsCrowdControlled);
-            if (!Classic165Mode.IsOn)
-                return free.Where(BotPartyRoles.IsTank)
-                    .OrderBy(bot => bot.GetDistanceTo(target)).ThenBy(bot => bot.ObjectID).FirstOrDefault();
-            return free
-                .Select(bot => (Bot: bot, Rank: PullerRank(bot)))
-                .Where(entry => entry.Rank >= 0)
-                .OrderBy(entry => entry.Rank).ThenBy(entry => entry.Bot.GetDistanceTo(target)).ThenBy(entry => entry.Bot.ObjectID)
-                .Select(entry => entry.Bot).FirstOrDefault();
-        }
-
-        private static int PullerRank(GameBot bot)
-        {
-            if (bot?.CharacterClass == null)
-                return -1;
-            var characterClass = (eCharacterClass)bot.CharacterClass.ID;
-            bool tank = BotPartyRoles.IsTank(bot);
-            return PullerRank(tank, tank && AutonomousDefensivePull.HasRangedPull(bot),
-                AutonomousDefensivePull.HasLowAggroPull(bot), AutonomousDefensivePull.CanShootPull(bot),
-                BotPartyRoles.IsSupport(bot), BotPartyRoles.IsHealingClass(characterClass),
-                BotBrain.PrefersSpellRange(bot.CharacterClass, true));
-        }
+        public static GameBot ChoosePuller(GameBot[] helpers, GameLiving target) =>
+            helpers.Where(bot => !bot.IsCrowdControlled).Where(BotPartyRoles.IsTank)
+                .OrderBy(bot => bot.GetDistanceTo(target)).ThenBy(bot => bot.ObjectID).FirstOrDefault();
 
         /// <summary>
-        /// Pure rule: the puller's rank (lower pulls first), or -1 for a companion that does not pull: 0 the tank with a
-        /// ranged pull, 1 a low-aggro pull spell, 2 a bow or thrown weapon, 3 the tank walking up, 4 a melee companion that
-        /// is no healer walking up. A support class (Cleric, Druid, Healer) never pulls (it refuses pull orders).
+        /// This companion is the puller of its group's open /pull order, and this is the monster it was sent for. Defensive
+        /// mode lets it past the 350-unit leash for that pull only (owner 2026-11-06: the puller goes out, tags the
+        /// monster and comes back to the group's spot; nobody else fights until the monster is within 350 units).
         /// </summary>
-        public static int PullerRank(bool tank, bool tankRangedPull, bool lowAggroPullSpell, bool shoots, bool support,
-            bool healingClass, bool caster)
+        public static bool IsOrderedPuller(GameLiving actor, GameLiving target)
         {
-            if (support)
-                return -1;
-            if (tankRangedPull)
-                return 0;
-            if (lowAggroPullSpell)
-                return 1;
-            if (shoots)
-                return 2;
-            if (tank)
-                return 3;
-            return healingClass || caster ? -1 : 4;
+            if (actor is not GameBot puller || target == null || puller.Group == null ||
+                !States.TryGetValue(puller.Group, out GroupState state))
+                return false;
+            Order order = Volatile.Read(ref state.Pending);
+            return order != null && order.Tank == puller && order.Target == target && Volatile.Read(ref order.Finished) == 0;
         }
 
         /// <summary>

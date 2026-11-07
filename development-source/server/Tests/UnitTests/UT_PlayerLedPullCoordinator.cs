@@ -888,26 +888,49 @@ namespace DOL.UnitTests
             Assert.That(PlayerLedPullCoordinator.FindNamed(new[] { tank, damage }, "pala"), Is.SameAs(tank), "the start of a name");
         }
 
-        [Test] public void AutomaticPullerOrder() => Assert.Multiple(() =>
+        // owner 2026-11-06: a plain /pull works as before - the tank pulls, even with a caster nearer the monster
+        [Test] public void PlainPullIsTheNearestTankNotACloserCaster()
         {
-            // (tank, tank's ranged pull, low-aggro pull spell, bow/thrown, support class, healing class, caster)
-            Assert.That(PlayerLedPullCoordinator.PullerRank(true, true, false, true, false, false, false), Is.EqualTo(0),
-                "the tank with a ranged pull");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, true, false, false, false, true), Is.EqualTo(1),
-                "a debuff / Nearsight / root pull caster");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, true, false, false, false), Is.EqualTo(2),
-                "an archer or thrower");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(true, false, false, false, false, false, false), Is.EqualTo(3),
-                "the tank walks up");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, false, false), Is.EqualTo(4),
-                "a melee companion walks up");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, true, false), Is.EqualTo(-1),
-                "a healer does not walk up");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, false, false, false, false, true), Is.EqualTo(-1),
-                "a caster with only a nuke does not walk up");
-            Assert.That(PlayerLedPullCoordinator.PullerRank(false, false, true, true, true, true, true), Is.EqualTo(-1),
-                "a Cleric, Druid or Healer never pulls");
-        });
+            var (player, tank, damage, _, enemy) = Party();
+            tank.TestX = 900;
+            damage.TestX = 10;
+            Assert.That(PlayerLedPullCoordinator.ChoosePuller(new[] { damage, tank }, enemy), Is.SameAs(tank));
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy), Does.Contain(tank.Name));
+            Assert.That(B(tank).Pulls, Is.EqualTo(1));
+            Assert.That(B(damage).Pulls, Is.Zero);
+        }
+
+        // owner 2026-11-06: in defensive mode the /pull puller goes past the 350-unit leash, tags the monster and comes
+        // back; the others keep the leash and wait. Aggressive mode has no leash and is unchanged.
+        [Test] public void DefensivePullerReachesPastTheLeash_TheOthersWait()
+        {
+            var (player, tank, damage, _, _) = PvpParty(true);
+            Enemy mob = Actor<Enemy>();
+            mob.TestX = 1000;
+            Assert.That(CompanionEngagementMode.Allows(damage, mob), Is.False, "out of the leash before the order");
+            string reply = PlayerLedPullCoordinator.Begin(player, mob, damage.Name);
+            Assert.That(reply, Does.Contain(damage.Name).And.Not.Contain("cancelled"));
+            Assert.That(B(damage).HasAggro, Is.True, "the puller took the order");
+            Assert.That(CompanionEngagementMode.Allows(damage, mob), Is.True, "the puller may reach it");
+            Assert.That(CompanionEngagementMode.Allows(tank, mob), Is.False, "the others keep the 350-unit leash");
+            Assert.That(B(tank).HasAggro, Is.False);
+            Assert.That(PlayerLedPullCoordinator.IsWaiting(tank), Is.True);
+            Enemy other = Actor<Enemy>();
+            other.TestX = 1000;
+            Assert.That(CompanionEngagementMode.Allows(damage, other), Is.False, "only that monster");
+        }
+
+        [Test] public void DefensivePullerLeashReturnsWhenThePullEnds()
+        {
+            var (player, _, damage, _, _) = PvpParty(true);
+            Enemy mob = Actor<Enemy>();
+            mob.TestX = 1000;
+            PlayerLedPullCoordinator.Begin(player, mob, damage.Name);
+            PlayerLedPullCoordinator.OnAttack(damage, Hit(damage, mob));
+            Assert.That(CompanionEngagementMode.Allows(damage, mob), Is.False, "the pull is over: back on the leash");
+            mob.TestX = 300;
+            Assert.That(CompanionEngagementMode.Allows(damage, mob), Is.True, "within 350 everyone fights");
+        }
 
         private (Player, Bot, Bot, Bot, Enemy) Party()
         {
