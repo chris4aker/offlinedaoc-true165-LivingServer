@@ -18,6 +18,9 @@ A fix for v0.4, applied in place like the other updates (from v0.1, v0.2, v0.3 o
   mantid warlocks as mantid protectors, and about 290 spawns in all; their loot followed the wrong name too.
 - Thergus the Inspirer and the ogre squad leader show their own names; the Unseelie Envoy and his stallions, Celain
   Eirich and Weaponmaster Zargin keep the level, look and faction their encounters give them.
+- Loot that sold for a flat 50c sells for its period value, or for what period loot of the same monster level fetched:
+  gems like Black Opal (2g 48s), Blue Spinel and the tourmalines pay properly again, and about 30 other drops are priced
+  by the level of the monsters that drop them.
 - Trees in Avalon Marsh, Myrkwood Forest and Shannon Estuary stop you at their trunk again, as everywhere else - you could walk into them and stand inside the willows.
 
 ## 0.4 (2026-11-07)
