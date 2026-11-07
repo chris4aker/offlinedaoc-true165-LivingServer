@@ -30,6 +30,21 @@ def _mesh(zone):
 import functools
 
 
+def _server_zones():
+    """The zones the 1.64 client's zones.dat lacks (the Shrouded Isles and the later dungeons, which DO have navmeshes),
+    from the server world's Zones table (owner 2026-11-07: SI has navmeshes; bots walk Aegir's Landing)."""
+    import sqlite3
+    db = os.path.join(ROOT, 'runtime', 'data', 'opendaoc-165.sqlite3.db')
+    if not os.path.exists(db):
+        return {}
+    con = sqlite3.connect('file:' + db.replace(os.sep, '/') + '?mode=ro', uri=True)
+    try:
+        return {int(z): dict(name=n, region=int(r), x=int(ox) * 8192, y=int(oy) * 8192, w=int(w) * 8192, h=int(h) * 8192)
+                for z, r, n, ox, oy, w, h in con.execute('select ZoneID, RegionID, Name, OffsetX, OffsetY, Width, Height from Zones')}
+    finally:
+        con.close()
+
+
 @functools.lru_cache(maxsize=4_000_000)
 def floors(region, x, y):
     """Every walkable floor height at (x, y) (a bridge deck and the river bed under it are two), sorted; cached, as the
@@ -37,6 +52,7 @@ def floors(region, x, y):
     global _zones
     if _zones is None:
         _zones = load_zones(ZONES_DAT)
+        _zones.update({z: d for z, d in _server_zones().items() if z not in _zones})
     hs = set()
     for zid, z in _zones.items():
         if z['region'] != region or not (z['x'] <= x < z['x'] + z['w'] and z['y'] <= y < z['y'] + z['h']):

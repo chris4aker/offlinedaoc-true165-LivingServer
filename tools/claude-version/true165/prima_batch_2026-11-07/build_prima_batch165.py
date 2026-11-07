@@ -384,24 +384,14 @@ for z in res['spawns']:
                 if m.get('respawn_seconds'):
                     row['RespawnInterval'] = m['respawn_seconds']
                 spawn_rows.append(row); seen_ids.add(mid); ent['rows'] += 1
-# every spawn on walkable ground (owner 2026-11-07: bots must be able to hunt them). groundz165 reads the 1.65 / classic
-# navmeshes; it cannot read the Shrouded Isles ones (no floor even under monsters that stood there all along), so those
-# are checked against the nearest existing monster instead
+# every spawn on walkable ground (owner 2026-11-07: bots must be able to hunt them). groundz165 reads every zone's navmesh,
+# the Shrouded Isles too (owner 2026-11-07: SI has navmeshes; its zones come from the server's Zones table)
 sys.path.insert(0, T165)
 import groundz165 as GZ   # noqa: E402
-report['ground'] = {'snapped': [], 'not_on_ground': [], 'si_far_from_others': []}
-SI_REGIONS = {51, 151, 181, 50, 60, 62, 150, 160, 161, 180, 190, 191}   # SI zones and dungeons
-pre = collections.defaultdict(list)
-for rg, x, y, z in con.execute('select Region, X, Y, Z from Mob'):
-    if rg in SI_REGIONS:
-        pre[rg].append((x, y, z))
+report['ground'] = {'snapped': [], 'dropped_to_floor': [], 'not_on_ground': []}
 for r in spawn_rows:
-    if r['Region'] in SI_REGIONS:
-        near = min(((math.hypot(x - r['X'], y - r['Y']), abs(z - r['Z'])) for x, y, z in pre[r['Region']]
-                    if abs(x - r['X']) < 2000 and abs(y - r['Y']) < 2000), default=None)
-        if not near or near[0] > 1500 or near[1] > 400:
-            report['ground']['si_far_from_others'].append({'name': r['Name'], 'region': r['Region'], 'x': r['X'], 'y': r['Y'], 'z': r['Z']})
-        continue
+    if int(r.get('Flags') or 0) & 32:
+        continue                      # flying (Arr): meant to be in the air
     fl = GZ.floors(r['Region'], r['X'], r['Y'])
     if fl and min(abs(f - r['Z']) for f in fl) <= 64:
         continue
@@ -419,6 +409,10 @@ for r in spawn_rows:
     if moved:
         report['ground']['snapped'].append({'name': r['Name'], 'from': (r['X'], r['Y'], r['Z']), 'to': moved})
         r['X'], r['Y'], r['Z'] = moved
+    elif fl:                          # floating over (or sunk under) the mesh with no floor near its height: onto the floor
+        fz = int(min(fl, key=lambda v: abs(v - r['Z'])))
+        report['ground']['dropped_to_floor'].append({'name': r['Name'], 'from': (r['X'], r['Y'], r['Z']), 'to': (r['X'], r['Y'], fz)})
+        r['Z'] = fz
     else:
         report['ground']['not_on_ground'].append({'name': r['Name'], 'region': r['Region'], 'x': r['X'], 'y': r['Y'], 'z': r['Z']})
 RADAR = {}
