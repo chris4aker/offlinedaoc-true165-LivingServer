@@ -2817,7 +2817,7 @@ namespace DOL.GS
 				// primary weapon before starting the swing cycle.
 				bool standardUsable = BotWeaponStats.CanUseMelee(bot, rightHand);
 				bool twoHandUsable = BotWeaponStats.CanUseMelee(bot, twoHand);
-				bool preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(bot, twoHandUsable, standardUsable, bot.BotSpec?.Is2H == true);
+				bool preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(bot, twoHandUsable, standardUsable, bot.PlansTwoHandedSet);
 
 				if (!standardUsable && !twoHandUsable)
 				{
@@ -2826,7 +2826,7 @@ namespace DOL.GS
 					twoHand = Inventory?.GetItem(eInventorySlot.TwoHandWeapon);
 					standardUsable = BotWeaponStats.CanUseMelee(bot, rightHand);
 					twoHandUsable = BotWeaponStats.CanUseMelee(bot, twoHand);
-					preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(bot, twoHandUsable, standardUsable, bot.BotSpec?.Is2H == true);
+					preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(bot, twoHandUsable, standardUsable, bot.PlansTwoHandedSet);
 				}
 
 				if (!standardUsable && !twoHandUsable)

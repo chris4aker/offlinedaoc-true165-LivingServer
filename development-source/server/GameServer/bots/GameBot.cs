@@ -3310,6 +3310,11 @@ namespace DOL.GS
         /// <summary>The melee set a hired companion's player readied last in the companion window (BotWeaponSetPolicy).</summary>
         public eActiveWeaponSlot? PlayerReadiedSlot { get; set; }
 
+        /// <summary>The build's own set when nothing else decides (BotWeaponSetPolicy step 4): a two-handed plan, a list
+        /// caster, a Friar or a Valewalker.</summary>
+        public bool PlansTwoHandedSet => BotSpec?.Is2H == true || CharacterClass?.ClassType == eClassType.ListCaster ||
+            CharacterClass?.ID is (int)eCharacterClass.Friar or (int)eCharacterClass.Valewalker;
+
         // ---- Quick Cast, as a player uses it (owner 2026-11-05): the next spell takes a flat 2 s and cannot be
         // interrupted, at double power, then 30 s before the next one. The brain arms it for one cast that matters
         // while the bot is being hit (BotBrain.QuickCastWorthwhile / the emergency heal).
@@ -5298,8 +5303,16 @@ namespace DOL.GS
 
             bool primaryReady = BotWeaponStats.FitsConfiguredSlot(this, Inventory.GetItem(target), target);
             if (primaryReady)
-                SwitchWeapon(target == eInventorySlot.TwoHandWeapon
-                    ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
+            {
+                // With both sets usable the same rule as in a fight picks the one shown (BotWeaponSetPolicy), so a
+                // companion trained in its two-hander holds it after a summon instead of flipping at the first fight.
+                bool standardUsable = BotWeaponStats.CanUseMelee(this, Inventory.GetItem(eInventorySlot.RightHandWeapon));
+                bool twoHandUsable = BotWeaponStats.CanUseMelee(this, Inventory.GetItem(eInventorySlot.TwoHandWeapon));
+                bool twoHanded = standardUsable && twoHandUsable
+                    ? BotWeaponSetPolicy.PreferTwoHanded(this, true, true, PlansTwoHandedSet)
+                    : target == eInventorySlot.TwoHandWeapon;
+                SwitchWeapon(twoHanded ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
+            }
             else
             {
                 // A full backpack can make it impossible to stow an old item

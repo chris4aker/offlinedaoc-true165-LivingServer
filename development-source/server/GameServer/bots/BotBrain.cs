@@ -4288,9 +4288,7 @@ namespace DOL.AI.Brain
             // reconciliation will move/create a legal primary weapon instead.
             bool oneHandUsable = rightUsable;
             bool preferTwoHand = BotWeaponSetPolicy.PreferTwoHanded(BotBody, twoHandUsable, oneHandUsable,
-                BotBody.BotSpec?.Is2H == true ||
-                BotBody.CharacterClass.ClassType == eClassType.ListCaster ||
-                BotBody.CharacterClass.ID is (int)eCharacterClass.Friar or (int)eCharacterClass.Valewalker);
+                BotBody.PlansTwoHandedSet);
 
             if (preferTwoHand)
             {

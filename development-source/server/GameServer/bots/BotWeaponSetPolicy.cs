@@ -10,7 +10,10 @@ namespace DOL.GS
     ///    but never a two-hander it is trained in less than its one-hander (UntrainedTwoHander);
     /// 2. the group's only tank fights with weapon and shield when it has Guard (Prima: the defensive Armsman, Warrior,
     ///    Hero, Thane tank and guard with a shield; the offensive one, with another tank present, takes the two-hander);
-    /// 3. otherwise its build (BotSpec.Is2H) and class as before.
+    /// 3. the set whose weapon line it has trained higher (owner 2026-11-07: Osbert, Two Handed 9 against 1 in every
+    ///    one-hand line, went back to sword and shield after a relog - the readied choice is not saved and his
+    ///    generation-time build said sword and shield). Both sets stay equipped; a tie leaves it to
+    /// 4. its build (BotSpec.Is2H) and class as before.
     /// A set that is not usable is never chosen.
     /// </summary>
     public static class BotWeaponSetPolicy
@@ -27,8 +30,33 @@ namespace DOL.GS
                 return readied == eActiveWeaponSlot.TwoHanded;
             if (GuardDuty(bot))
                 return false;
+            if (TrainedSet(bot) is bool trainedTwoHand)
+                return trainedTwoHand;
             return twoHandedBuild;
         }
+
+        /// <summary>
+        /// The set the bot is trained in more: true for the two-hander, false for the right-hand weapon, null with no
+        /// opinion (one set missing, a dual-wield set, specializations not loaded, or the same line trained alike - a
+        /// Midgard two-handed and one-handed sword share Sword). Shields does not count: it is a defensive line.
+        /// </summary>
+        public static bool? TrainedSet(GameBot bot)
+        {
+            if (bot?.Inventory == null)
+                return null;
+            DbInventoryItem twoHand = bot.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+            DbInventoryItem rightHand = bot.Inventory.GetItem(eInventorySlot.RightHandWeapon);
+            DbInventoryItem leftHand = bot.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            if (twoHand == null || rightHand == null)
+                return null;
+            return TrainedSet(bot.TrainedWeaponSpec((eObjectType)twoHand.Object_Type, twoHand.SlotPosition),
+                bot.TrainedWeaponSpec((eObjectType)rightHand.Object_Type, rightHand.SlotPosition),
+                leftHand != null && leftHand.Object_Type != (int)eObjectType.Shield);
+        }
+
+        /// <summary>The trained-set rule on its numbers (see <see cref="TrainedSet(GameBot)"/>).</summary>
+        public static bool? TrainedSet(int twoHandSpec, int rightHandSpec, bool dualWieldSet) =>
+            dualWieldSet || twoHandSpec == rightHandSpec ? null : twoHandSpec > rightHandSpec;
 
         /// <summary>
         /// A hired companion fights with the weapon it is trained in (owner 2026-11-06: an Armsman trained in slash, shield

@@ -485,6 +485,10 @@ namespace DOL.GS
             // a two-hander it isn't trained in goes on its back: it keeps its trained weapon set (owner 2026-11-06)
             if (want == eActiveWeaponSlot.TwoHanded && oneHand && BotWeaponSetPolicy.UntrainedTwoHander(bot))
                 want = eActiveWeaponSlot.Standard;
+            // with both sets usable it fights with the one it is trained in more; what it was just given decides only a
+            // tie (owner 2026-11-07: hand Osbert a sword and shield, he keeps using his trained two-hander)
+            if (oneHand && twoHand && BotWeaponSetPolicy.TrainedSet(bot) is bool trainedTwoHand)
+                want = trainedTwoHand ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard;
             if (changed != eInventorySlot.DistanceWeapon)
             {
                 bot.SwitchWeapon(want);
