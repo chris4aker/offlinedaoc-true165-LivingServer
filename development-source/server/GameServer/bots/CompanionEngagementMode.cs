@@ -18,6 +18,10 @@ namespace DOL.GS
             // 0 aggressive; owner 2026-10-30). The original client keeps /aggressive and /defensive.
             Hire165.Send(player, 30, [(byte)(defensive ? 1 : 0)]);
         }
+        /// <summary>The player has /defensive on.</summary>
+        public static bool IsDefensive(GamePlayer player) =>
+            player != null && Modes.TryGetValue(player, out Mode mode) && mode.Defensive;
+
         public static GamePlayer DefensiveLeader(GameLiving actor)
         {
             // Include companion pets, never human pets or autonomous bots.

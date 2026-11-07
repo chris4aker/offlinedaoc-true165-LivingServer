@@ -269,7 +269,7 @@ namespace DOL.GS
                 }
                 if (state.ReturnTo != null
                         ? PlayerLedArrived(state.Shot, state.Target.GetDistanceTo(state.ReturnTo),
-                            state.Shooter.GetDistanceTo(state.ReturnTo))
+                            state.Shooter.GetDistanceTo(state.ReturnTo), CompanionEngagementMode.IsDefensive(state.ReturnTo))
                         : state.Members.Any(member => member.IsWithinRadius(state.Target, ContactRadius)))
                 {
                     Finish(state, true);
@@ -339,9 +339,15 @@ namespace DOL.GS
         public const long PlayerLedTimeoutMilliseconds = 45_000;
         public const int PlayerLedArrivalRadius = 200;
 
-        /// <summary>Pure rule: the brought-back monster has reached the player, or the tank is back with it behind.</summary>
-        public static bool PlayerLedArrived(bool tagged, int targetToPlayer, int tankToPlayer) =>
-            targetToPlayer <= ContactRadius || tagged && tankToPlayer <= PlayerLedArrivalRadius;
+        /// <summary>
+        /// Pure rule: the brought-back monster has reached the player, or the tank is back with it behind. In /defensive
+        /// mode only the monster within the 350-unit range counts (owner 2026-11-06: a puller that tagged from range and ran
+        /// back ended the pull with the monster still far out, and the player's pet ran out to it); the puller waits at
+        /// the player until then.
+        /// </summary>
+        public static bool PlayerLedArrived(bool tagged, int targetToPlayer, int tankToPlayer, bool defensive = false) =>
+            defensive ? targetToPlayer <= CompanionEngagementMode.DefensiveRadius
+                : targetToPlayer <= ContactRadius || tagged && tankToPlayer <= PlayerLedArrivalRadius;
 
         /// <summary>Pure rule: the tagged monster hitting the tank on the way back does not end the pull there.</summary>
         public static bool IgnoresThreatWhileBringingBack(bool bringingBack, bool attackerIsTarget, bool memberIsShooter) =>

@@ -296,7 +296,10 @@ namespace DOL.GS
                     !(onlyIdle && InOwnFight(bot)))
                     brain.AssistPlayerAttack(target);
             }
-            if (orderHumanPet) player.ControlledBrain?.Attack(target);
+            // /defensive: the player's pet is not sent past the 350-unit range either (owner 2026-11-06)
+            if (orderHumanPet && (!CompanionEngagementMode.IsDefensive(player) ||
+                                  player.IsWithinRadius(target, CompanionEngagementMode.DefensiveRadius)))
+                player.ControlledBrain?.Attack(target);
         }
 
         /// <summary>A companion already fighting a live, unheld monster of its own.</summary>

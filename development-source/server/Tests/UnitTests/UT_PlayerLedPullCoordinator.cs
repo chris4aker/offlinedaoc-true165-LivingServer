@@ -920,6 +920,30 @@ namespace DOL.UnitTests
             Assert.That(CompanionEngagementMode.Allows(damage, other), Is.False, "only that monster");
         }
 
+        // owner 2026-11-06: "/pull isolde still makes my pet attack" - in /defensive the player's pet waits for 350 units too
+        [TestCase(1000, 0)] [TestCase(300, 1)]
+        public void DefensiveBroughtBackSendsThePlayersPetOnlyWithinRange(int distance, int petAttacks)
+        {
+            var (player, _, damage, _, _) = PvpParty(true);
+            PetBrain pet = AttachPet(player);
+            Enemy mob = Actor<Enemy>();
+            mob.TestX = distance;
+            PlayerLedPullCoordinator.Begin(player, mob, damage.Name);
+            PlayerLedPullCoordinator.BroughtBack(player, mob);
+            Assert.That(pet.Attacks, Is.EqualTo(petAttacks));
+        }
+
+        [Test] public void AggressiveBroughtBackStillSendsThePlayersPet()
+        {
+            var (player, _, damage, _, _) = PvpParty(false);
+            PetBrain pet = AttachPet(player);
+            Enemy mob = Actor<Enemy>();
+            mob.TestX = 1000;
+            PlayerLedPullCoordinator.Begin(player, mob, damage.Name);
+            PlayerLedPullCoordinator.BroughtBack(player, mob);
+            Assert.That(pet.Attacks, Is.EqualTo(1), "aggressive mode is unchanged");
+        }
+
         [Test] public void DefensivePullerLeashReturnsWhenThePullEnds()
         {
             var (player, _, damage, _, _) = PvpParty(true);

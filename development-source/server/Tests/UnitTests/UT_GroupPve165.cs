@@ -45,6 +45,13 @@ namespace DOL.GS.Tests
             Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, 800, AutonomousDefensivePull.PlayerLedArrivalRadius), Is.True,
                 "the tank is back; the monster is behind it");
             Assert.That(AutonomousDefensivePull.PlayerLedArrived(false, 900, 100), Is.False, "back without a tag is no arrival");
+            // /defensive (owner 2026-11-06): only the monster within 350 units ends it; the puller waits at the player
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, 800, 100, defensive: true), Is.False,
+                "the puller is back but the monster is still out of range");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, CompanionEngagementMode.DefensiveRadius, 100, defensive: true),
+                Is.True, "the monster is within 350 units");
+            Assert.That(AutonomousDefensivePull.PlayerLedArrived(true, AutonomousDefensivePull.ContactRadius, 100, defensive: true),
+                Is.False, "400 is past the defensive range");
             // its blows on the tank on the way back don't end the pull at the spawn; anything else does
             Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(true, true, true), Is.True);
             Assert.That(AutonomousDefensivePull.IgnoresThreatWhileBringingBack(true, false, true), Is.False, "an add");
