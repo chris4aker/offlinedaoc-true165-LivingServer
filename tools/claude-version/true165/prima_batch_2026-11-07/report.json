@@ -22022,7 +22022,7 @@
    "evidence": "Atlas DF line 45000: 'naburite drinker [47] (16%) Polished Daemon Sapphire Seal (x4)' ([49] plain seal, [51] Stone seal)",
    "notes": "A DF seal grade, not vendor trash. Copy SapphireSeal (Daemon Sapphire Seal) as the template; the DF seal merchants may need to accept it. No period page for this grade",
    "look_from": "FreeEmeraldSeal (same last word \"seal\")",
-   "price_source": "invented: builder estimate, median of 95 built trash items within 3 levels",
+   "price_source": "invented: builder estimate, median of 94 built trash items within 3 levels",
    "Id_nb": "p165_prima_polished_daemon_sapphire_seal"
   },
   {
@@ -24479,7 +24479,7 @@
    "evidence": "Atlas arachite hatchling [1] Myrkwood (26%) (line 28797); Uthgard load=4496 sell value blank",
    "notes": "Uthgard lists no merchant value; if a nonzero price is wanted, arachite silk gland is 27c on Uthgard",
    "look_from": "p165_uth_3942 (same last word \"silk\")",
-   "price_source": "invented: builder estimate, median of 87 built trash items within 3 levels",
+   "price_source": "invented: builder estimate, median of 88 built trash items within 3 levels",
    "Id_nb": "p165_prima_weak_arachite_silk"
   },
   {
@@ -30285,7 +30285,7 @@
    "evidence": "Atlas Legion [83] / Beliathan [99] '(98-99%) Seal of the Master Daemon (x10)'. Freddyshouse 2002 Legion threads (e.g. 'Legion is no more!': 'stacks of 50 diamond seals'; 'Status on Legion drops!': '10 Seals'). Uthgard load=1709 'pack of 25' has an empty sell value. No period price anywhere.",
    "notes": "Currency item like the existing Daemon seals (Object_Type 0, Item_Type 40, model 623).",
    "look_from": "DiamondSeal (chosen by the re-check: Daemon Diamond Seal)",
-   "price_source": "invented: builder estimate, median of 122 built trash items within 3 levels",
+   "price_source": "invented: builder estimate, median of 121 built trash items within 3 levels",
    "Id_nb": "p165_prima_seal_of_the_master_daemon"
   },
   {
@@ -31029,7 +31029,7 @@
    "evidence": "Atlas layout l.16112 (own column, not bleed-through): 'naburite drinker [47] (16%) Polished Daemon Sapphire Seal (x4)'. Plain seals drop at [49] and 'Stone' seals at [51]. Freddyshouse thread 95003 (Aug 2002): prefixed 'Fiery' diamond seals count as several seal units at DF merchants ('you need 16 units of diamond').",
    "notes": "Not a stat item, and no invented price is needed: copy SapphireSeal and keep price 0. Prefixed seals (Polished, Stone, Glowing, Shimmering) are probably multi-unit sapphire seals, but no source gives how many units a Polished seal is worth. The owner needs to decide whether DF merchants take it as 1 unit or more.",
    "look_from": "SapphireSeal (chosen by the re-check: Daemon Sapphire Seal)",
-   "price_source": "invented: builder estimate, median of 138 built trash items within 3 levels",
+   "price_source": "invented: builder estimate, median of 137 built trash items within 3 levels",
    "Id_nb": "p165_prima_polished_daemon_sapphire_seal"
   },
   {

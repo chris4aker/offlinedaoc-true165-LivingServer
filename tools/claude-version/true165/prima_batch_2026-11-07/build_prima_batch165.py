@@ -53,6 +53,8 @@ for z in rc['monsters']:
 SCRIPT_FREE_BOSSES = {'yecats', 'aine', 'bodb', 'earl gerald'}
 # scripted encounters whose scripts exist (scripts/true165/PrimaEncounters165.cs): their own spawn rows, with the brain
 ENC = json.load(open(os.path.join(HERE, 'encounters165.json'), encoding='utf-8'))
+UTHGARD_TRASH_LEVEL = json.load(open(os.path.join(HERE, 'uthgard_trash_levels.json'), encoding='utf-8'))   # prep/uthgard_trash_levels.py
+TRASH_EST_LEVEL = {}
 SCRIPT_FREE_BOSSES |= set(ENC['spawn_overrides'])
 for z in rc['boss']:
     keep = [m for m in z.get('monsters', []) if (m.get('final_name') or m['prima_name']).lower() in SCRIPT_FREE_BOSSES]
@@ -200,7 +202,7 @@ for b in res['items']:
             sell = it.get('sell_value_copper')
             if not sell or sell <= 0:
                 lvl = int(it.get('level') or 1)
-                pool = sorted(r['Price'] // 2 for r in built.values() if r['Object_Type'] == 0 and r['Price'] and abs(r['Level'] - lvl) <= 3)
+                pool = sorted(r['Price'] // 2 for r in built.values() if r['Object_Type'] == 0 and r['Price'] and abs(TRASH_EST_LEVEL.get(r['Id_nb'], 0) - lvl) <= 3)
                 sell = pool[len(pool) // 2] if pool else max(1, lvl * lvl // 2)
                 it = dict(it, price_source=f'invented: builder estimate, median of {len(pool)} built trash items within 3 levels')
             if False:
@@ -211,7 +213,10 @@ for b in res['items']:
                 iid = 'p165_prima_' + slug(name)
                 row = {c: None for c in item_cols}
                 row.update({c: sib[c] for c in item_cols if c in sib.keys()})
-                row.update({'Id_nb': iid, 'ItemTemplate_ID': iid, 'Name': name, 'Level': int(it.get('level') or 1),
+                # vendor trash is level 0 (cons gray) as on the period pages, unless the Uthgard page gives a level (the DF
+                # seals, a bone flute); the research level only steers the price estimate (owner 2026-11-07)
+                TRASH_EST_LEVEL[iid] = int(it.get('level') or 1)
+                row.update({'Id_nb': iid, 'ItemTemplate_ID': iid, 'Name': name, 'Level': UTHGARD_TRASH_LEVEL.get(name.lower(), 0),
                             'Price': price, 'Realm': 0, 'Object_Type': 0, 'Item_Type': 40, 'Description': None,
                             'TranslationId': None, 'ClassType': None, 'SpellID': 0, 'Charges': 0, 'MaxCharges': 0,
                             'ProcSpellID': 0, 'Bonus': 0})
@@ -537,6 +542,9 @@ for r in spawn_rows:
         mob_levels[n(r['Name'])].append(r['Level'])
 item_level = {r['Id_nb'].lower(): r['Level'] for r in W.rows}
 item_level.update({k.lower(): r['Level'] for k, r in built.items()})
+# vendor trash shows level 0, but the 15-level rule still judges it by the research level (a seed pod meant for a level 40
+# tree spirit stays off a level 10 namesake; owner 2026-11-07: only the con colour changes)
+item_level.update({k.lower(): v for k, v in TRASH_EST_LEVEL.items()})
 report['level_gap_skipped'] = []
 # owner 2026-11-07: the frukta warg row at level 1 (of 93 in Varulvhamn, the rest 39-43) is a data error -> 39
 LEVEL_FIX = {'0e7c959a-c258-485d-9c4d-5d7e884efcfa': 39}
