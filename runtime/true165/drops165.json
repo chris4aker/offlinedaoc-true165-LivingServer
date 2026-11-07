@@ -1244,7 +1244,7 @@
    ]
   },
   "arachite hatchling": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "p165_drop_1449",
@@ -1252,6 +1252,10 @@
     ],
     [
      "p165_prima_arachite_silk_gland",
+     26
+    ],
+    [
+     "p165_prima_weak_arachite_silk",
      26
     ]
    ]
@@ -2304,7 +2308,7 @@
    ]
   },
   "Arawnite headhunter": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Deathward",
@@ -2317,6 +2321,10 @@
     [
      "Bright_Arawnite_Longsword",
      2
+    ],
+    [
+     "p165_item_pa_morbid_mantle",
+     1
     ],
     [
      "p165_prima_carved_bone_key",
@@ -2413,6 +2421,10 @@
      1
     ],
     [
+     "p165_item_pa_morbid_mantle",
+     1
+    ],
+    [
      "p165_prima_carved_bone_key",
      50
     ],
@@ -2453,7 +2465,7 @@
    ]
   },
   "archer": {
-   "drop_count": 1,
+   "drop_count": 8,
    "items": [
     [
      "Peridot",
@@ -2481,6 +2493,10 @@
     ],
     [
      "Luminous_Felled_Archers_Dagger",
+     1
+    ],
+    [
+     "p165_item_pa_fallen_archer_s_stiletto",
      1
     ]
    ]
@@ -3671,7 +3687,7 @@
    ]
   },
   "Banghaisgidheach": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Feline's_Tail",
@@ -3688,6 +3704,10 @@
     [
      "p165_uth_456",
      68
+    ],
+    [
+     "p165_item_pa_aotrom_pearls",
+     1
     ],
     [
      "p165_prima_pristine_luch_hide",
@@ -4657,7 +4677,7 @@
    ]
   },
   "black orm": {
-   "drop_count": 8,
+   "drop_count": 9,
    "items": [
     [
      "Black_Orm_Gland",
@@ -4674,6 +4694,10 @@
     [
      "p165_drop_1310",
      2
+    ],
+    [
+     "p165_item_pa_serrated_black_tooth",
+     1
     ],
     [
      "p165_prima_black_orm_hide",
@@ -5199,7 +5223,7 @@
    ]
   },
   "blodfelag soothsayer": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Ring_of_Redhands",
@@ -5211,6 +5235,10 @@
     ],
     [
      "p165_item_pa_helm_of_future_visions",
+     1
+    ],
+    [
+     "p165_item_pa_soothsayer_s_ring",
      1
     ],
     [
@@ -8829,7 +8857,7 @@
    ]
   },
   "clay jotun guard": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Runed_Hollow_Clay_Boots",
@@ -8854,6 +8882,10 @@
     [
      "Runed_Hollow_Clay_Jerkin",
      2
+    ],
+    [
+     "p165_item_pa_runic_clay_war_hammer",
+     1
     ],
     [
      "p165_prima_hardened_clay_heart",
@@ -8870,7 +8902,7 @@
    ]
   },
   "clay jotun hunter": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Runed_Hollow_Clay_Jerkin",
@@ -8897,6 +8929,10 @@
      2
     ],
     [
+     "p165_item_pa_runed_clay_buckler",
+     1
+    ],
+    [
      "p165_prima_hardened_clay_heart",
      5
     ],
@@ -8911,7 +8947,7 @@
    ]
   },
   "clay jotun retainer": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Runed_Hollow_Clay_Helm",
@@ -8938,6 +8974,10 @@
      2
     ],
     [
+     "p165_item_pa_runic_clay_war_hammer",
+     1
+    ],
+    [
      "p165_prima_hardened_clay_heart",
      3
     ],
@@ -8952,7 +8992,7 @@
    ]
   },
   "clay jotun runner": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Runed_Hollow_Clay_Boots",
@@ -8977,6 +9017,10 @@
     [
      "Runed_Hollow_Clay_Helm",
      2
+    ],
+    [
+     "p165_item_pa_runed_clay_buckler",
+     1
     ],
     [
      "p165_prima_hardened_clay_heart",
@@ -9136,11 +9180,15 @@
    ]
   },
   "cliff dweller spearman": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "Gold_Lined_Drinking_Horn",
      12
+    ],
+    [
+     "p165_item_pa_cliff_dweller_hammer",
+     1
     ],
     [
      "p165_prima_carved_granite_bracer",
@@ -9293,6 +9341,22 @@
      1
     ],
     [
+     "p165_item_pa_lucky_bootsyn",
+     1
+    ],
+    [
+     "p165_item_pa_lucky_failm",
+     1
+    ],
+    [
+     "p165_item_pa_lucky_perree",
+     1
+    ],
+    [
+     "p165_item_pa_lucky_rhusag",
+     1
+    ],
+    [
      "p165_prima_forgetful_dust",
      80
     ],
@@ -9340,7 +9404,7 @@
    ]
   },
   "Clywd": {
-   "drop_count": 2,
+   "drop_count": 10,
    "items": [
     [
      "Runic_Granite_Boots",
@@ -9377,6 +9441,10 @@
     [
      "Magmas_Imbued_Leggings",
      1
+    ],
+    [
+     "p165_item_pa_magmas_imbued_helm",
+     3
     ]
    ]
   },
@@ -10199,6 +10267,10 @@
     [
      "p165_uth_1335",
      50
+    ],
+    [
+     "p165_item_pa_hunter_s_vest",
+     1
     ],
     [
      "p165_prima_agate_studded_waterskin",
@@ -11270,7 +11342,7 @@
    ]
   },
   "cursed mora": {
-   "drop_count": 4,
+   "drop_count": 11,
    "items": [
     [
      "p165_drop_7005",
@@ -11311,6 +11383,10 @@
     [
      "scroll_of_eternal_sorrow",
      1
+    ],
+    [
+     "p165_item_pa_mora_staff_of_runecarving",
+     2
     ]
    ]
   },
@@ -11777,7 +11853,7 @@
    ]
   },
   "cyclops": {
-   "drop_count": 1,
+   "drop_count": 8,
    "items": [
     [
      "Yellow_Tourmaline",
@@ -11802,6 +11878,10 @@
     [
      "girdleofcat-likemovement",
      2
+    ],
+    [
+     "p165_item_pa_cyclops_headsman_s_axe",
+     1
     ]
    ]
   },
@@ -11911,7 +11991,7 @@
    ]
   },
   "cythraul": {
-   "drop_count": 8,
+   "drop_count": 9,
    "items": [
     [
      "Cythraul_Essence",
@@ -11939,6 +12019,10 @@
     ],
     [
      "p165_drop_7006",
+     1
+    ],
+    [
+     "p165_item_pa_razor_bone_edge",
      1
     ],
     [
@@ -12834,6 +12918,10 @@
     ],
     [
      "p165_item_pa_infernal_cloak",
+     1
+    ],
+    [
+     "p165_item_pa_infernal_edge",
      1
     ],
     [
@@ -14079,7 +14167,7 @@
    ]
   },
   "dergan enchanter": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "Dergan_Enchanter's_Cap",
@@ -14095,6 +14183,10 @@
     ],
     [
      "Studied_Mentalist_Staff",
+     1
+    ],
+    [
+     "p165_item_pa_enchanter_s_fine_cap",
      1
     ],
     [
@@ -14202,7 +14294,7 @@
    ]
   },
   "Desukva": {
-   "drop_count": 7,
+   "drop_count": 8,
    "items": [
     [
      "Luminescent_Diamond_Necklace",
@@ -14231,6 +14323,10 @@
     [
      "p165_item_4974",
      5
+    ],
+    [
+     "p165_item_pa_runed_bloodbound_cap",
+     3
     ]
    ]
   },
@@ -14359,7 +14455,7 @@
    ]
   },
   "dew sheerie": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "p165_drop_6979",
@@ -14392,6 +14488,10 @@
     [
      "p165_drop_2433",
      1
+    ],
+    [
+     "p165_prima_intricate_sea_shell_bracelet",
+     5
     ],
     [
      "p165_prima_waterproof_satchel",
@@ -15578,6 +15678,10 @@
      1
     ],
     [
+     "p165_item_pa_crackling_ebon_gloves",
+     1
+    ],
+    [
      "p165_prima_executioner_s_tooth_necklace",
      19
     ]
@@ -15628,6 +15732,10 @@
     ],
     [
      "p165_item_2687",
+     1
+    ],
+    [
+     "p165_item_pa_spirit_bone_staff",
      1
     ],
     [
@@ -15818,6 +15926,10 @@
      1
     ],
     [
+     "Soulbinder's_Boots",
+     1
+    ],
+    [
      "Soulrager's_Gauntlets",
      1
     ],
@@ -15980,7 +16092,7 @@
    ]
   },
   "Dread Lord Aryon": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6969",
@@ -15997,6 +16109,10 @@
     [
      "p165_drop_6971",
      1
+    ],
+    [
+     "p165_item_pa_night_s_fall_halberd",
+     2
     ]
    ]
   },
@@ -16212,6 +16328,10 @@
     [
      "TatteredTannedBrownGloves",
      5
+    ],
+    [
+     "p165_item_pa_boots_of_the_lost",
+     1
     ],
     [
      "p165_prima_bottle_of_elderberry_wine",
@@ -17574,6 +17694,10 @@
      1
     ],
     [
+     "p165_prima_ekyps_orb_of_command",
+     10
+    ],
+    [
      "p165_prima_phosphorescent_fungus",
      20
     ],
@@ -18281,6 +18405,10 @@
      25
     ],
     [
+     "p165_item_pa_diamond_dusted_robe",
+     1
+    ],
+    [
      "p165_prima_ellyll_silken_hair",
      50
     ],
@@ -18537,7 +18665,7 @@
    ]
   },
   "empyrean guardian": {
-   "drop_count": 7,
+   "drop_count": 12,
    "items": [
     [
      "Empyreal_Ranger_Boots",
@@ -18557,6 +18685,26 @@
     ],
     [
      "p165_item_3153",
+     1
+    ],
+    [
+     "p165_item_pa_empyreal_helm",
+     1
+    ],
+    [
+     "p165_item_pa_empyreal_leggings",
+     1
+    ],
+    [
+     "p165_item_pa_empyreal_ranger_gauntlets",
+     1
+    ],
+    [
+     "p165_item_pa_empyreal_sleeves",
+     1
+    ],
+    [
+     "p165_item_pa_spectral_flight",
      1
     ],
     [
@@ -19071,7 +19219,7 @@
    ]
   },
   "eriu waylayer": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "p165_drop_6994",
@@ -19080,6 +19228,10 @@
     [
      "siabra_waylayer_sash",
      7
+    ],
+    [
+     "p165_item_pa_waylayer_short_sword",
+     1
     ],
     [
      "p165_prima_bandit_mask",
@@ -19352,7 +19504,7 @@
    ]
   },
   "Eye of Arawn": {
-   "drop_count": 2,
+   "drop_count": 7,
    "items": [
     [
      "Yellow_Tourmaline",
@@ -19377,6 +19529,10 @@
     [
      "Kornerupine",
      10
+    ],
+    [
+     "p165_item_pa_cyclops_headsman_s_axe",
+     1
     ]
    ]
   },
@@ -19603,11 +19759,15 @@
    ]
   },
   "faerie steed": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "Faerie Saddle Cloak",
      3
+    ],
+    [
+     "p165_item_pa_faerie_eye",
+     2
     ],
     [
      "p165_prima_faerie_steed_mane",
@@ -19624,7 +19784,7 @@
    ]
   },
   "faerie wolf-crier": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "TatteredWoolenQuiltedSleeves",
@@ -19637,6 +19797,10 @@
     [
      "Tattered_Woolen_Quilted_Pants",
      13
+    ],
+    [
+     "TatteredWoolenQuiltedVest",
+     19
     ],
     [
      "p165_prima_bronze_rose_pin",
@@ -20439,11 +20603,15 @@
    ]
   },
   "fee lion": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Blackened_Feelion_Paw",
      4
+    ],
+    [
+     "p165_item_pa_feelion_razor",
+     1
     ],
     [
      "p165_prima_fee_lion_claw",
@@ -23616,7 +23784,7 @@
    ]
   },
   "giant lusus": {
-   "drop_count": 7,
+   "drop_count": 8,
    "items": [
     [
      "Shimmering_Twisted_Lusus_Helm",
@@ -23644,6 +23812,10 @@
     ],
     [
      "p165_item_pa_twisted_lusus_boots",
+     1
+    ],
+    [
+     "p165_item_pa_twisted_melody_helm",
      1
     ]
    ]
@@ -26978,6 +27150,10 @@
      1
     ],
     [
+     "p165_item_pa_stonewatch_gauntlets",
+     1
+    ],
+    [
      "p165_prima_cracked_granite_horseshoe",
      6
     ],
@@ -27243,6 +27419,10 @@
      1
     ],
     [
+     "p165_item_pa_ilmenite_laced_chain_sleeves",
+     1
+    ],
+    [
      "p165_prima_ilmenite_shard",
      20
     ]
@@ -27346,6 +27526,10 @@
     ],
     [
      "Shimmering_Feather_Light_Granite_Gauche",
+     1
+    ],
+    [
+     "p165_item_pa_magmas_imbued_helm",
      1
     ],
     [
@@ -28597,6 +28781,14 @@
      1
     ],
     [
+     "p165_item_pa_ring_of_alteration",
+     1
+    ],
+    [
+     "p165_item_pa_ring_of_elemental_fury",
+     1
+    ],
+    [
      "p165_prima_blue_mushroom",
      30
     ],
@@ -28769,7 +28961,7 @@
    ]
   },
   "Gundron McCory": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Stolen_Bear_Tooth",
@@ -28778,6 +28970,10 @@
     [
      "p165_uth_688",
      30
+    ],
+    [
+     "p165_item_pa_iron_strapped_shield",
+     70
     ],
     [
      "p165_prima_flask_of_whiskey",
@@ -28840,7 +29036,7 @@
    ]
   },
   "gurite assailer": {
-   "drop_count": 8,
+   "drop_count": 10,
    "items": [
     [
      "p165_drop_6971",
@@ -28861,6 +29057,14 @@
     [
      "p165_drop_6970",
      20
+    ],
+    [
+     "p165_item_2896",
+     1
+    ],
+    [
+     "p165_item_pa_soiagh_blade",
+     1
     ],
     [
      "p165_prima_bracelet_of_twisted_silver",
@@ -28939,7 +29143,7 @@
    ]
   },
   "gurite seeker": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6971",
@@ -28952,6 +29156,10 @@
     [
      "p165_uth_442",
      35
+    ],
+    [
+     "p165_item_2665",
+     1
     ],
     [
      "p165_prima_siog_brandy",
@@ -29005,6 +29213,10 @@
     [
      "siabra_waylayer_sash",
      6
+    ],
+    [
+     "p165_item_pa_waylayer_short_sword",
+     1
     ],
     [
      "p165_prima_bandit_mask",
@@ -30211,7 +30423,7 @@
    ]
   },
   "hill avenger": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "BrightMelodicLute",
@@ -30220,6 +30432,10 @@
     [
      "Bright_Preserved_Studded_Vest",
      5
+    ],
+    [
+     "p165_item_pa_herb_gatherer_s_gloves",
+     2
     ],
     [
      "p165_prima_50_feet_of_rope",
@@ -30253,11 +30469,15 @@
    ]
   },
   "hill chief": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "AncientBodyShield",
      5
+    ],
+    [
+     "p165_item_pa_herb_gatherer_s_gloves",
+     2
     ],
     [
      "p165_prima_50_feet_of_rope",
@@ -30274,11 +30494,15 @@
    ]
   },
   "hill guard": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "BrightForestRunnersBoots",
      5
+    ],
+    [
+     "p165_item_pa_herb_gatherer_s_gloves",
+     2
     ],
     [
      "p165_prima_50_feet_of_rope",
@@ -30369,11 +30593,15 @@
    ]
   },
   "hill shaman": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "EbonyStaff",
      5
+    ],
+    [
+     "p165_item_pa_herb_gatherer_s_gloves",
+     2
     ],
     [
      "p165_prima_50_feet_of_rope",
@@ -30403,7 +30631,7 @@
    ]
   },
   "hill warrior": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Gem_Studded_Long_Sword",
@@ -30411,6 +30639,10 @@
     ],
     [
      "PilferedJerkin",
+     2
+    ],
+    [
+     "p165_item_pa_herb_gatherer_s_gloves",
      2
     ],
     [
@@ -30984,6 +31216,10 @@
     ],
     [
      "p165_item_pa_furlined_cloak",
+     1
+    ],
+    [
+     "p165_item_pa_snowdonia_bandit_warmer",
      1
     ],
     [
@@ -32142,7 +32378,7 @@
    ]
   },
   "irewood sapling": {
-   "drop_count": 7,
+   "drop_count": 8,
    "items": [
     [
      "Shadowsilk_Vest",
@@ -32171,6 +32407,10 @@
     [
      "p165_uth_111",
      55
+    ],
+    [
+     "p165_item_pa_pitted_glowing_ire_wood_sapling_staff",
+     5
     ]
    ]
   },
@@ -34367,6 +34607,10 @@
      35
     ],
     [
+     "p165_item_pa_sidhe_spine_barbed_spear",
+     1
+    ],
+    [
      "p165_prima_green_sapphire",
      5
     ],
@@ -35347,7 +35591,7 @@
    ]
   },
   "Lecherous Gress": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "Flawless_Lecherous_Gress_Skin",
@@ -35356,6 +35600,10 @@
     [
      "Lecherous_Gress_Skin",
      15
+    ],
+    [
+     "p165_prima_seal_of_the_master_daemon",
+     99
     ]
    ]
   },
@@ -36079,7 +36327,7 @@
    ]
   },
   "lesser zephyr": {
-   "drop_count": 8,
+   "drop_count": 9,
    "items": [
     [
      "p165_drop_4956",
@@ -36104,6 +36352,10 @@
     [
      "wind_swept_leaves",
      6
+    ],
+    [
+     "p165_item_pa_ethereal_zephyr_bracelet",
+     1
     ],
     [
      "p165_prima_swirling_crystal",
@@ -36729,7 +36981,7 @@
    ]
   },
   "Lord Fire": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "Cerus",
@@ -36738,6 +36990,10 @@
     [
      "p165_uth_2566",
      80
+    ],
+    [
+     "p165_prima_circlet_of_flames",
+     50
     ],
     [
      "p165_prima_glowing_red_orb",
@@ -36985,7 +37241,7 @@
    ]
   },
   "luch catcher": {
-   "drop_count": 6,
+   "drop_count": 10,
    "items": [
     [
      "Luch_Paw",
@@ -37008,13 +37264,29 @@
      55
     ],
     [
+     "p165_item_pa_caster_s_missing_eye",
+     1
+    ],
+    [
+     "p165_item_pa_missing_caster_s_belt",
+     1
+    ],
+    [
+     "p165_item_pa_missing_caster_s_cap",
+     2
+    ],
+    [
+     "p165_item_pa_missing_caster_s_gloves",
+     1
+    ],
+    [
      "p165_prima_pristine_luch_hide",
      22
     ]
    ]
   },
   "luch hunter": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Puinesean Fang",
@@ -37031,6 +37303,10 @@
     [
      "p165_uth_456",
      68
+    ],
+    [
+     "p165_item_pa_aotrom_pearls",
+     1
     ],
     [
      "p165_prima_pristine_luch_hide",
@@ -37070,12 +37346,48 @@
      5
     ],
     [
+     "p165_item_pa_fainne_necklace",
+     1
+    ],
+    [
+     "p165_item_pa_lucky_striker",
+     1
+    ],
+    [
+     "p165_item_pa_nearahd_boots",
+     1
+    ],
+    [
      "p165_item_pa_nearahd_coif",
      1
     ],
     [
+     "p165_item_pa_nearahd_gloves",
+     1
+    ],
+    [
+     "p165_item_pa_nearahd_hauberk",
+     1
+    ],
+    [
+     "p165_item_pa_nearahd_leggings",
+     1
+    ],
+    [
+     "p165_item_pa_nearahd_sleeves",
+     1
+    ],
+    [
+     "p165_item_pa_odd_ball",
+     2
+    ],
+    [
      "p165_item_pa_pitted_dirk",
      5
+    ],
+    [
+     "p165_item_pa_pluc",
+     1
     ],
     [
      "p165_prima_copper_spinel_bracelet",
@@ -37852,7 +38164,7 @@
    ]
   },
   "Malroch the Cook": {
-   "drop_count": 2,
+   "drop_count": 5,
    "items": [
     [
      "Brilliant_Malroch's_Flaying_Knife",
@@ -37865,6 +38177,10 @@
     [
      "Malroch's_Cleaver",
      15
+    ],
+    [
+     "Luminous_Malrochs_Flawless_Tenderizer",
+     10
     ]
    ]
   },
@@ -38781,6 +39097,10 @@
     ],
     [
      "p165_item_1463",
+     1
+    ],
+    [
+     "p165_item_pa_sidhe_spine_barbed_spear",
      1
     ],
     [
@@ -40266,7 +40586,7 @@
    ]
   },
   "mountain mephit": {
-   "drop_count": 6,
+   "drop_count": 8,
    "items": [
     [
      "Mantle_of_Regalia",
@@ -40274,6 +40594,14 @@
     ],
     [
      "Ring_of_Satin_Ribbon",
+     1
+    ],
+    [
+     "p165_item_pa_aeiry_belt",
+     1
+    ],
+    [
+     "p165_item_pa_forked_mephit_tail",
      1
     ],
     [
@@ -41517,11 +41845,15 @@
    ]
   },
   "Nasco": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6994",
      45
+    ],
+    [
+     "p165_item_pa_waylayer_short_sword",
+     1
     ],
     [
      "p165_prima_bandit_mask",
@@ -41851,7 +42183,7 @@
    ]
   },
   "Oldest": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "Oldest's_Remains",
@@ -41868,6 +42200,10 @@
     [
      "p165_uth_487",
      35
+    ],
+    [
+     "p165_item_pa_lost_sword_of_the_eternals",
+     2
     ]
    ]
   },
@@ -45097,7 +45433,7 @@
    ]
   },
   "raven wraith": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "Lucent_Spirit_Boots",
@@ -45113,6 +45449,10 @@
     ],
     [
      "Chrysoberyl",
+     1
+    ],
+    [
+     "p165_item_pa_noble_overlord_pendant",
      1
     ],
     [
@@ -45582,7 +45922,7 @@
    ]
   },
   "reincarnate orm": {
-   "drop_count": 8,
+   "drop_count": 9,
    "items": [
     [
      "Giant_Alexandrite_Ring",
@@ -45598,6 +45938,10 @@
     ],
     [
      "Black_Sapphire",
+     1
+    ],
+    [
+     "p165_item_pa_wispy_rigid_orm_spine",
      1
     ],
     [
@@ -45903,7 +46247,7 @@
    ]
   },
   "roaming corpse": {
-   "drop_count": 8,
+   "drop_count": 11,
    "items": [
     [
      "p165_drop_7005",
@@ -45934,7 +46278,19 @@
      1
     ],
     [
+     "p165_item_pa_stormcaller_woeful_gloves",
+     1
+    ],
+    [
+     "p165_item_pa_woeful_chain_coif",
+     1
+    ],
+    [
      "p165_item_pa_woeful_chain_gloves",
+     1
+    ],
+    [
+     "p165_item_pa_woeful_melody_gloves",
      1
     ]
    ]
@@ -46768,6 +47124,10 @@
      1
     ],
     [
+     "p165_item_4663",
+     1
+    ],
+    [
      "p165_prima_dented_defenders_helm",
      20
     ]
@@ -47397,7 +47757,7 @@
    ]
   },
   "scragger": {
-   "drop_count": 7,
+   "drop_count": 8,
    "items": [
     [
      "p165_drop_6968",
@@ -47422,6 +47782,10 @@
     [
      "Scragger's_Primitive_Necklace",
      3
+    ],
+    [
+     "p165_item_pa_large_stone_mace",
+     1
     ],
     [
      "p165_prima_scragger_s_pouch",
@@ -47570,7 +47934,7 @@
    ]
   },
   "Scurry": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "p165_drop_6972",
@@ -47591,6 +47955,10 @@
     [
      "p165_drop_6994",
      13
+    ],
+    [
+     "p165_item_pa_large_stone_mace",
+     1
     ],
     [
      "p165_prima_scragger_s_pouch",
@@ -48652,6 +49020,10 @@
      1
     ],
     [
+     "p165_item_pa_noble_overlord_pendant",
+     1
+    ],
+    [
      "p165_prima_diamond_dust",
      32
     ],
@@ -48965,7 +49337,7 @@
    ]
   },
   "siabra seeker": {
-   "drop_count": 10,
+   "drop_count": 12,
    "items": [
     [
      "p165_drop_6971",
@@ -48994,6 +49366,18 @@
     [
      "p165_uth_444",
      30
+    ],
+    [
+     "p165_item_2655",
+     1
+    ],
+    [
+     "p165_item_2665",
+     1
+    ],
+    [
+     "p165_item_pa_spectral_arms",
+     1
     ],
     [
      "p165_prima_luminescent_orb",
@@ -50082,6 +50466,18 @@
      30
     ],
     [
+     "p165_item_2655",
+     1
+    ],
+    [
+     "p165_item_2665",
+     1
+    ],
+    [
+     "p165_item_pa_spectral_arms",
+     1
+    ],
+    [
      "p165_prima_luminescent_orb",
      30
     ],
@@ -50096,11 +50492,15 @@
    ]
   },
   "siog waylayer": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6994",
      10
+    ],
+    [
+     "p165_item_pa_waylayer_short_sword",
+     1
     ],
     [
      "p165_prima_bandit_mask",
@@ -51310,7 +51710,7 @@
    ]
   },
   "Sloithi": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "p165_drop_6979",
@@ -51327,6 +51727,10 @@
     [
      "p165_uth_55",
      70
+    ],
+    [
+     "p165_item_pa_ethereal_zephyr_bracelet",
+     1
     ],
     [
      "p165_prima_siabrian_footpad_s_head",
@@ -51397,11 +51801,15 @@
    ]
   },
   "small black orm": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Giant_Green_Sapphire_Ring",
      11
+    ],
+    [
+     "p165_item_pa_serrated_black_tooth",
+     1
     ],
     [
      "p165_prima_black_orm_hide",
@@ -51819,6 +52227,10 @@
     [
      "p165_uth_1346",
      80
+    ],
+    [
+     "p165_item_pa_soot_encrusted_cap",
+     1
     ],
     [
      "p165_prima_chunk_of_soot",
@@ -52248,7 +52660,7 @@
    ]
   },
   "spectral manslayer": {
-   "drop_count": 11,
+   "drop_count": 12,
    "items": [
     [
      "p165_drop_6982",
@@ -52280,6 +52692,10 @@
     ],
     [
      "p165_drop_6609",
+     2
+    ],
+    [
+     "p165_item_pa_spectral_crusher",
      2
     ],
     [
@@ -53182,7 +53598,7 @@
    ]
   },
   "spraggonale": {
-   "drop_count": 9,
+   "drop_count": 10,
    "items": [
     [
      "p165_drop_6971",
@@ -53207,6 +53623,10 @@
     [
      "p165_drop_7007",
      5
+    ],
+    [
+     "p165_item_pa_dusty_leggings",
+     1
     ],
     [
      "p165_prima_bottle_of_grog",
@@ -53803,7 +54223,7 @@
    ]
   },
   "spriggarn howler": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_drop_6968",
@@ -53812,6 +54232,10 @@
     [
      "Skullcracker",
      12
+    ],
+    [
+     "HardLeatherVest",
+     1
     ],
     [
      "p165_drop_6970",
@@ -54171,7 +54595,7 @@
    ]
   },
   "stor ekyps": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "2_SSO_Jewel",
@@ -54184,6 +54608,10 @@
     [
      "2_STM_Hauberk",
      1
+    ],
+    [
+     "p165_prima_ekyps_orb_of_command",
+     10
     ],
     [
      "p165_prima_phosphorescent_fungus",
@@ -55453,7 +55881,7 @@
    ]
   },
   "sylvan goblin warrior": {
-   "drop_count": 8,
+   "drop_count": 9,
    "items": [
     [
      "p165_drop_6980",
@@ -55470,6 +55898,10 @@
     [
      "p165_drop_6968",
      1
+    ],
+    [
+     "p165_item_pa_filthy_hide_pants",
+     5
     ],
     [
      "p165_prima_crude_stone_idol",
@@ -56535,6 +56967,10 @@
     [
      "p165_uth_572",
      25
+    ],
+    [
+     "p165_item_pa_pitted_hard_leather_shield",
+     1
     ],
     [
      "p165_prima_canteen_of_water",
@@ -57729,7 +58165,7 @@
    ]
   },
   "tomte thug": {
-   "drop_count": 7,
+   "drop_count": 8,
    "items": [
     [
      "Pillager's_Sleeves",
@@ -57758,6 +58194,10 @@
     [
      "cq_tomte_bracer",
      30
+    ],
+    [
+     "p165_item_pa_large_tomte_axe",
+     2
     ]
    ]
   },
@@ -60697,7 +61137,7 @@
    ]
   },
   "vapor wraith": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Vaporous_Crown",
@@ -60714,6 +61154,10 @@
     [
      "p165_uth_2566",
      80
+    ],
+    [
+     "p165_item_pa_vaporous_sleeves",
+     1
     ],
     [
      "p165_prima_bracelet_of_hot_vapor",
@@ -63609,7 +64053,7 @@
    ]
   },
   "wild boar": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "Pristine_Boars_Hide",
@@ -63618,6 +64062,10 @@
     [
      "p165_uth_215",
      100
+    ],
+    [
+     "p165_item_pa_small_tusk",
+     20
     ],
     [
      "p165_prima_cloven_hoof",
@@ -64571,7 +65019,7 @@
    ]
   },
   "wood ogre lord": {
-   "drop_count": 10,
+   "drop_count": 12,
    "items": [
     [
      "p165_drop_6979",
@@ -64600,6 +65048,18 @@
     [
      "p165_uth_572",
      16
+    ],
+    [
+     "p165_item_pa_wormskin_gloves",
+     1
+    ],
+    [
+     "p165_item_pa_wormskin_jerkin",
+     1
+    ],
+    [
+     "p165_item_pa_wormskin_sleeves",
+     1
     ],
     [
      "p165_prima_bottle_of_elderberry_wine",
@@ -65403,7 +65863,7 @@
    ]
   },
   "zephyr wraith": {
-   "drop_count": 11,
+   "drop_count": 12,
    "items": [
     [
      "p165_drop_6987",
@@ -65439,6 +65899,10 @@
     ],
     [
      "Crystaline Band of Wind",
+     1
+    ],
+    [
+     "p165_item_pa_windy_crusher",
      1
     ],
     [
@@ -65823,7 +66287,7 @@
    ]
   },
   "Grurk": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "GiantsToothpick",
@@ -65835,6 +66299,10 @@
     ],
     [
      "p165_drop_7006",
+     1
+    ],
+    [
+     "p165_item_pa_boots_of_the_lost",
      1
     ],
     [
@@ -66363,11 +66831,15 @@
    ]
   },
   "ashen spirit": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_1346",
      100
+    ],
+    [
+     "p165_item_pa_ashen_axe",
+     2
     ],
     [
      "p165_prima_charred_leg_bone",
@@ -67545,7 +68017,7 @@
    ]
   },
   "empyrean keeper": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_442",
@@ -67556,13 +68028,17 @@
      20
     ],
     [
+     "p165_item_pa_keeper_s_shade",
+     1
+    ],
+    [
      "p165_prima_empyrean_silk",
      10
     ]
    ]
   },
   "empyrean sentinel": {
-   "drop_count": 2,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_444",
@@ -67575,6 +68051,10 @@
     [
      "p165_uth_3093",
      7
+    ],
+    [
+     "p165_item_pa_twined_sentinel",
+     1
     ]
    ]
   },
@@ -67592,7 +68072,7 @@
    ]
   },
   "enslaved orm": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_7158",
@@ -67601,6 +68081,10 @@
     [
      "p165_uth_7159",
      35
+    ],
+    [
+     "p165_item_pa_enslaved_orm_s_collar",
+     2
     ],
     [
      "p165_prima_enriched_black_orm_hide",
@@ -67779,7 +68263,7 @@
    ]
   },
   "fog phantom": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_3314",
@@ -67792,6 +68276,10 @@
     [
      "p165_uth_445",
      25
+    ],
+    [
+     "p165_item_pa_phantom_short_bow",
+     1
     ]
    ]
   },
@@ -68967,7 +69455,7 @@
    ]
   },
   "magmatasm": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "p165_uth_2566",
@@ -68980,6 +69468,10 @@
     [
      "p165_uth_2560",
      70
+    ],
+    [
+     "p165_item_pa_flame_of_the_earth_pants",
+     1
     ],
     [
      "p165_item_pa_gloves_of_living_flame",
@@ -69217,11 +69709,15 @@
    ]
   },
   "oaken fellwood": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "p165_uth_1525",
      61
+    ],
+    [
+     "p165_item_pa_pitted_fellwood_cudgel",
+     5
     ],
     [
      "p165_uth_2284",
@@ -69595,11 +70091,15 @@
    ]
   },
   "Riocard": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "p165_uth_2168",
      75
+    ],
+    [
+     "p165_item_pa_empathetic_jewel",
+     1
     ],
     [
      "p165_prima_faerie_gem",
@@ -70106,7 +70606,7 @@
    ]
   },
   "sulphuric ghoul": {
-   "drop_count": 5,
+   "drop_count": 7,
    "items": [
     [
      "p165_uth_1357",
@@ -70126,6 +70626,14 @@
     ],
     [
      "p165_item_2847",
+     1
+    ],
+    [
+     "p165_item_pa_acid_etched_gauntlets",
+     1
+    ],
+    [
+     "p165_item_pa_acid_etched_sleeves",
      1
     ]
    ]
@@ -71201,7 +71709,7 @@
    ]
   },
   "young irewood": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "p165_uth_110",
@@ -71210,6 +71718,10 @@
     [
      "p165_uth_111",
      65
+    ],
+    [
+     "p165_item_pa_pitted_glowing_ire_wood_sapling_staff",
+     5
     ]
    ]
   },
@@ -71859,11 +72371,15 @@
    ]
   },
   "morass leech": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "morass_leech_blood",
      15
+    ],
+    [
+     "p165_item_2463",
+     2
     ],
     [
      "p165_prima_pristine_leech_skin",
@@ -71957,7 +72473,7 @@
    ]
   },
   "Aengus Osrithe": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "Eluvium_Belt",
@@ -71980,13 +72496,17 @@
      1
     ],
     [
+     "p165_item_pa_windy_crusher",
+     1
+    ],
+    [
      "p165_prima_zephyr_wraith_essence",
      20
     ]
    ]
   },
   "Arachneida": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_1301",
@@ -71999,6 +72519,10 @@
     [
      "p165_uth_1303",
      60
+    ],
+    [
+     "p165_item_pa_lost_soul_s_gauche",
+     2
     ]
    ]
   },
@@ -72061,7 +72585,7 @@
    ]
   },
   "Brimstone": {
-   "drop_count": 5,
+   "drop_count": 7,
    "items": [
     [
      "p165_uth_1357",
@@ -72077,6 +72601,14 @@
     ],
     [
      "p165_item_2847",
+     1
+    ],
+    [
+     "p165_item_pa_acid_etched_gauntlets",
+     1
+    ],
+    [
+     "p165_item_pa_acid_etched_sleeves",
      1
     ],
     [
@@ -72154,11 +72686,19 @@
    ]
   },
   "Elder Fellwood": {
-   "drop_count": 2,
+   "drop_count": 4,
    "items": [
     [
      "p165_uth_2284",
      7
+    ],
+    [
+     "p165_item_pa_elder_fellwood_staff",
+     7
+    ],
+    [
+     "p165_item_pa_elder_staff_of_wintry_winds",
+     1
     ],
     [
      "p165_prima_elder_fellwood_branch",
@@ -72244,7 +72784,7 @@
    ]
   },
   "Guardian Cahal": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "Empyreal_Golden_Reaver",
@@ -72252,6 +72792,10 @@
     ],
     [
      "Soul_Reaver",
+     1
+    ],
+    [
+     "p165_item_pa_noble_overlord_pendant",
      1
     ],
     [
@@ -72294,7 +72838,7 @@
    ]
   },
   "Heretical Hermit": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
     [
      "p165_drop_6971",
@@ -72303,6 +72847,10 @@
     [
      "p165_drop_6994",
      1
+    ],
+    [
+     "p165_item_pa_mace_of_the_meek",
+     2
     ],
     [
      "p165_prima_pearl",
@@ -72378,7 +72926,7 @@
    ]
   },
   "Keeper Rasa": {
-   "drop_count": 3,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6994",
@@ -72387,6 +72935,14 @@
     [
      "p165_uth_442",
      35
+    ],
+    [
+     "p165_item_pa_guardian_shield_of_the_keeper",
+     1
+    ],
+    [
+     "p165_item_pa_keeper_s_friend",
+     1
     ],
     [
      "p165_prima_empyrean_silk",
@@ -72462,11 +73018,15 @@
    ]
   },
   "Lusmorebane": {
-   "drop_count": 4,
+   "drop_count": 5,
    "items": [
     [
      "p165_drop_6971",
      15
+    ],
+    [
+     "p165_item_pa_wrathfully_righteous_beads",
+     2
     ],
     [
      "p165_prima_bleached_leg_bone",
@@ -72818,7 +73378,7 @@
    ]
   },
   "Sacrificer Harish": {
-   "drop_count": 10,
+   "drop_count": 12,
    "items": [
     [
      "p165_drop_6972",
@@ -72847,6 +73407,14 @@
     [
      "p165_item_1074",
      6
+    ],
+    [
+     "p165_item_pa_sacrificial_dagger",
+     5
+    ],
+    [
+     "p165_item_pa_sleeves_of_the_lost",
+     1
     ],
     [
      "p165_prima_bottle_of_elderberry_wine",
@@ -73287,7 +73855,7 @@
    ]
   },
   "enslaved orm biter": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "Giant_Pink_Sapphire_Ring",
@@ -73306,6 +73874,10 @@
      21
     ],
     [
+     "p165_item_pa_enslaved_biter_s_muzzle_wrap",
+     2
+    ],
+    [
      "p165_prima_crystalized_jotun_hand",
      2
     ],
@@ -73316,7 +73888,7 @@
    ]
   },
   "enslaved orm runner": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "Giant_Pink_Sapphire_Ring",
@@ -73333,6 +73905,10 @@
     [
      "p165_uth_7159",
      24
+    ],
+    [
+     "p165_item_pa_enslaved_orm_s_collar",
+     2
     ],
     [
      "p165_prima_crystalized_jotun_hand",
@@ -73880,7 +74456,7 @@
    ]
   },
   "sinach": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
     [
      "p165_uth_6366",
@@ -73897,6 +74473,10 @@
     [
      "p165_uth_6370",
      38
+    ],
+    [
+     "p165_item_pa_sinach_s_great_tooth",
+     2
     ],
     [
      "p165_prima_pristine_sinach_hide",
@@ -73943,11 +74523,19 @@
    ]
   },
   "sylvan goblin chief": {
-   "drop_count": 4,
+   "drop_count": 6,
    "items": [
     [
      "p165_drop_6971",
      40
+    ],
+    [
+     "p165_item_4229",
+     1
+    ],
+    [
+     "p165_item_pa_sure_shot_crossbow",
+     1
     ],
     [
      "p165_prima_bloody_scepter",
@@ -74002,6 +74590,31 @@
     [
      "p165_prima_smooth_bone_totem",
      20
+    ]
+   ]
+  },
+  "Aine": {
+   "drop_count": 5,
+   "items": [
+    [
+     "p165_drop_6978",
+     60
+    ],
+    [
+     "p165_item_pa_deo_hauberk",
+     1
+    ],
+    [
+     "p165_item_pa_leather_deo_jerkin",
+     1
+    ],
+    [
+     "p165_item_pa_reinforced_deo_vest",
+     1
+    ],
+    [
+     "p165_prima_jewel_encrusted_eye",
+     80
     ]
    ]
   },
@@ -74148,8 +74761,40 @@
    ]
   },
   "Basher": {
-   "drop_count": 1,
+   "drop_count": 9,
    "items": [
+    [
+     "p165_item_pa_basher_s_finger",
+     1
+    ],
+    [
+     "p165_item_pa_basher_s_sash",
+     1
+    ],
+    [
+     "p165_item_pa_beater_s_bludgeon",
+     1
+    ],
+    [
+     "p165_item_pa_beater_s_poked_eye",
+     1
+    ],
+    [
+     "p165_item_pa_conquerer_s_cloak",
+     1
+    ],
+    [
+     "p165_item_pa_cyclop_s_pupil",
+     1
+    ],
+    [
+     "p165_item_pa_flattened_eye_shield",
+     1
+    ],
+    [
+     "p165_item_pa_pulsing_gem",
+     1
+    ],
     [
      "p165_prima_cyclops_toes",
      80
@@ -74157,11 +74802,70 @@
    ]
   },
   "Beater": {
-   "drop_count": 1,
+   "drop_count": 9,
    "items": [
+    [
+     "p165_item_pa_basher_s_finger",
+     1
+    ],
+    [
+     "p165_item_pa_basher_s_sash",
+     1
+    ],
+    [
+     "p165_item_pa_beater_s_bludgeon",
+     1
+    ],
+    [
+     "p165_item_pa_beater_s_poked_eye",
+     1
+    ],
+    [
+     "p165_item_pa_conquerer_s_cloak",
+     1
+    ],
+    [
+     "p165_item_pa_cyclop_s_pupil",
+     1
+    ],
+    [
+     "p165_item_pa_flattened_eye_shield",
+     1
+    ],
+    [
+     "p165_item_pa_pulsing_gem",
+     1
+    ],
     [
      "p165_prima_cyclops_toes",
      80
+    ]
+   ]
+  },
+  "Bodb": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Chrysoberyl",
+     80
+    ]
+   ]
+  },
+  "Breadlebane": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_item_pa_frozen_staff",
+     1
+    ]
+   ]
+  },
+  "Breeze": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_prima_windblown_crystal",
+     58
     ]
    ]
   },
@@ -74179,6 +74883,48 @@
     [
      "p165_uth_2282",
      20
+    ]
+   ]
+  },
+  "Cachia": {
+   "drop_count": 5,
+   "items": [
+    [
+     "p165_drop_6971",
+     50
+    ],
+    [
+     "p165_drop_6994",
+     5
+    ],
+    [
+     "p165_prima_seal_skin_bag",
+     80
+    ],
+    [
+     "p165_prima_silver_pearl_necklace",
+     40
+    ],
+    [
+     "p165_prima_silver_pearl_ring",
+     60
+    ]
+   ]
+  },
+  "Caelis Manoi": {
+   "drop_count": 3,
+   "items": [
+    [
+     "p165_prima_sun_pendant",
+     70
+    ],
+    [
+     "p165_prima_wand_of_yarrow",
+     80
+    ],
+    [
+     "p165_uth_1968",
+     70
     ]
    ]
   },
@@ -74233,6 +74979,35 @@
     ]
    ]
   },
+  "Celtic brehon": {
+   "drop_count": 6,
+   "items": [
+    [
+     "Right_Bracer_of_Skill",
+     1
+    ],
+    [
+     "Siabrian_Mystic_Shield",
+     1
+    ],
+    [
+     "p165_drop_6989",
+     10
+    ],
+    [
+     "p165_prima_eagle_head_brooch",
+     70
+    ],
+    [
+     "p165_prima_jeweled_scabard",
+     60
+    ],
+    [
+     "p165_prima_siabrian_raider_s_head",
+     2
+    ]
+   ]
+  },
   "Cheshire": {
    "drop_count": 2,
    "items": [
@@ -74264,6 +75039,27 @@
     ]
    ]
   },
+  "Cornwall Leader": {
+   "drop_count": 4,
+   "items": [
+    [
+     "footed_bodkin_arrows4",
+     20
+    ],
+    [
+     "p165_item_pa_hunter_s_vest",
+     1
+    ],
+    [
+     "p165_prima_agate_studded_waterskin",
+     40
+    ],
+    [
+     "p165_uth_1335",
+     50
+    ]
+   ]
+  },
   "Danaoin priest": {
    "drop_count": 1,
    "items": [
@@ -74286,6 +75082,15 @@
     ]
    ]
   },
+  "Dread Lichess": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_item_pa_dread_lichess_demolisher",
+     1
+    ]
+   ]
+  },
   "Envy Drake Dorga": {
    "drop_count": 1,
    "items": [
@@ -74305,6 +75110,15 @@
     [
      "p165_item_1962",
      10
+    ]
+   ]
+  },
+  "Fanin": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Malefic_Tooth",
+     8
     ]
    ]
   },
@@ -74342,8 +75156,12 @@
    ]
   },
   "Fomorian goblern": {
-   "drop_count": 5,
+   "drop_count": 6,
    "items": [
+    [
+     "p165_item_pa_fomorian_staff_of_light",
+     2
+    ],
     [
      "p165_prima_cask_of_fomorian_swill",
      4
@@ -74451,6 +75269,15 @@
     [
      "Shimmering_Glimmer_Geist_Spear",
      5
+    ]
+   ]
+  },
+  "Goborchen Vindicator": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_item_pa_vindicator_s_staff_of_the_void",
+     1
     ]
    ]
   },
@@ -74736,6 +75563,19 @@
     ]
    ]
   },
+  "Manstrale": {
+   "drop_count": 2,
+   "items": [
+    [
+     "p165_item_pa_varulv_icy_spear",
+     1
+    ],
+    [
+     "p165_item_pa_wicked_wulf_belt",
+     1
+    ]
+   ]
+  },
   "Master Amiate": {
    "drop_count": 2,
    "items": [
@@ -74746,6 +75586,15 @@
     [
      "p165_prima_pendant_of_calling",
      25
+    ]
+   ]
+  },
+  "Master of Ceremonies": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_item_pa_imperial_golden_hammer",
+     2
     ]
    ]
   },
@@ -74809,7 +75658,7 @@
    ]
   },
   "Natyl": {
-   "drop_count": 6,
+   "drop_count": 7,
    "items": [
     [
      "p165_drop_6979",
@@ -74818,6 +75667,10 @@
     [
      "p165_drop_7004",
      50
+    ],
+    [
+     "p165_item_pa_ethereal_zephyr_bracelet",
+     1
     ],
     [
      "p165_prima_siabrian_footpad_s_head",
@@ -75382,8 +76235,12 @@
    ]
   },
   "cailleach priest": {
-   "drop_count": 1,
+   "drop_count": 2,
    "items": [
+    [
+     "p165_item_pa_cailiondar_bracer_of_piety",
+     1
+    ],
     [
      "p165_prima_jeweled_coffer",
      10
@@ -75519,6 +76376,40 @@
     ]
    ]
   },
+  "cronsidhe": {
+   "drop_count": 5,
+   "items": [
+    [
+     "p165_item_pa_cronsidhe_biter",
+     1
+    ],
+    [
+     "p165_item_pa_cronsidhe_s_red_eye",
+     1
+    ],
+    [
+     "p165_prima_giant_hide_loin_cloth",
+     90
+    ],
+    [
+     "p165_prima_giant_water_skin",
+     60
+    ],
+    [
+     "p165_prima_rotten_fanged_tooth",
+     50
+    ]
+   ]
+  },
+  "cursed mora weeper": {
+   "drop_count": 1,
+   "items": [
+    [
+     "p165_item_pa_mora_staff_of_suppression",
+     1
+    ]
+   ]
+  },
   "cursed necyomancer": {
    "drop_count": 2,
    "items": [
@@ -75555,8 +76446,12 @@
    ]
   },
   "empyrean wisp": {
-   "drop_count": 1,
+   "drop_count": 2,
    "items": [
+    [
+     "p165_item_pa_celestial_pearl_necklace",
+     2
+    ],
     [
      "p165_prima_softly_glowing_orb",
      45
@@ -75649,10 +76544,14 @@
    ]
   },
   "fallen sea queen": {
-   "drop_count": 1,
+   "drop_count": 2,
    "items": [
     [
      "p165_item_pa_coral_crown",
+     5
+    ],
+    [
+     "p165_item_pa_light_coral_crown",
      5
     ]
    ]
@@ -75752,10 +76651,18 @@
    ]
   },
   "granite giant oracle": {
-   "drop_count": 4,
+   "drop_count": 6,
    "items": [
     [
      "Granite Seer`s Pants",
+     1
+    ],
+    [
+     "p165_item_pa_granite_seer_s_gloves_of_the_spirit",
+     1
+    ],
+    [
+     "p165_item_pa_wind_imbued_gloves",
      1
     ],
     [
@@ -75885,6 +76792,23 @@
     ]
    ]
   },
+  "kraken": {
+   "drop_count": 3,
+   "items": [
+    [
+     "p165_item_pa_kraken_s_maw",
+     1
+    ],
+    [
+     "p165_prima_flask_of_potency",
+     60
+    ],
+    [
+     "p165_prima_green_decaying_finger",
+     80
+    ]
+   ]
+  },
   "lake adder": {
    "drop_count": 3,
    "items": [
@@ -75951,8 +76875,12 @@
    ]
   },
   "little unicorn": {
-   "drop_count": 3,
+   "drop_count": 4,
    "items": [
+    [
+     "p165_item_pa_hollowed_unicorn_horn",
+     1
+    ],
     [
      "p165_prima_faerie_horse_mane",
      80
@@ -76031,12 +76959,45 @@
     ]
    ]
   },
+  "murrisk": {
+   "drop_count": 6,
+   "items": [
+    [
+     "p165_drop_6989",
+     20
+    ],
+    [
+     "p165_prima_50ft_of_kelp_rope",
+     80
+    ],
+    [
+     "p165_prima_seal_skin_bag",
+     80
+    ],
+    [
+     "p165_prima_silver_pearl_necklace",
+     25
+    ],
+    [
+     "p165_prima_silver_pearl_ring",
+     25
+    ],
+    [
+     "p165_uth_311",
+     1
+    ]
+   ]
+  },
   "naburite drinker": {
-   "drop_count": 2,
+   "drop_count": 3,
    "items": [
     [
      "SapphireSeal",
      20
+    ],
+    [
+     "p165_prima_polished_daemon_sapphire_seal",
+     16
     ]
    ]
   },
@@ -76346,7 +77307,7 @@
    ]
   },
   "tomb raider commander": {
-   "drop_count": 5,
+   "drop_count": 9,
    "items": [
     [
      "p165_drop_6971",
@@ -76354,6 +77315,22 @@
     ],
     [
      "p165_drop_7005",
+     1
+    ],
+    [
+     "p165_item_pa_ring_of_alteration",
+     1
+    ],
+    [
+     "p165_item_pa_ring_of_elemental_fury",
+     1
+    ],
+    [
+     "p165_item_pa_shield_of_spirit_might",
+     1
+    ],
+    [
+     "p165_item_pa_spirit_crafted_shortbow",
      1
     ],
     [

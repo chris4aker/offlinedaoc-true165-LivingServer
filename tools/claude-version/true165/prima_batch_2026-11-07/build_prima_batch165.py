@@ -41,6 +41,29 @@ def slug(s):
 
 
 res = json.load(open(RESULTS, encoding='utf-8'))
+# the re-check (owner 2026-11-07: a second, more thorough pass over what the first skipped): its item verdicts come after
+# the first pass's (a build wins over a skip), its looks fix the icons, its monsters and the script-free bosses are added
+RECHECK = os.path.join(HERE, 'recheck_results.json')
+rc = json.load(open(RECHECK, encoding='utf-8')) if os.path.exists(RECHECK) else {'items': [], 'icons': [], 'monsters': [], 'boss': []}
+res['items'] = res['items'] + rc['items']
+ZONE_REGION = json.load(open(os.path.join(HERE, 'zone_regions.json'), encoding='utf-8'))
+for z in rc['monsters']:
+    res['spawns'].append(dict(z, region=ZONE_REGION.get(z['label'])))
+# owner 2026-11-07: the encounters with no period script go in now; the scripted ones come with their scripts
+SCRIPT_FREE_BOSSES = {'yecats', 'aine', 'bodb', 'earl gerald'}
+# scripted encounters whose scripts exist (scripts/true165/PrimaEncounters165.cs): their own spawn rows, with the brain
+ENC = json.load(open(os.path.join(HERE, 'encounters165.json'), encoding='utf-8'))
+SCRIPT_FREE_BOSSES |= set(ENC['spawn_overrides'])
+for z in rc['boss']:
+    keep = [m for m in z.get('monsters', []) if (m.get('final_name') or m['prima_name']).lower() in SCRIPT_FREE_BOSSES]
+    if keep:
+        res['spawns'].append({'label': 'boss: ' + z['label'], 'monsters': keep, 'region': keep[0].get('region')})
+LOOK_FIX = {}     # Id_nb -> look_from (the icon re-check)
+for b in rc['icons']:
+    for it in b.get('items', []):
+        m = re.search(r'Id_nb:\s*([A-Za-z0-9_]+)', it.get('notes') or '')
+        if m and it.get('look_from'):
+            LOOK_FIX[m.group(1)] = it['look_from']
 os.makedirs(OUT, exist_ok=True)
 con = sqlite3.connect('file:' + SNAP.replace(chr(92), '/') + '?mode=ro', uri=True)
 con.row_factory = sqlite3.Row
@@ -76,6 +99,43 @@ def trash_sibling(name, price):
     if shared:
         return min(shared, key=lambda r: abs((r['Price'] or 0) - price)), 'shared name word'
     return min(plain, key=lambda r: abs((r['Price'] or 0) - price)), 'nearest price (look is a guess)'
+
+
+def build_with_look(rec, p, st, bon, unknown, e2, sname, look_id):
+    look = next((r for r in W.rows if r['Id_nb'].lower() == look_id.lower()), None)
+    if look is None:
+        return None, f'look_from {look_id} not in the world'
+    keep = V.siblings
+    V.siblings = lambda *a, **k: [look]
+    try:
+        return V.build(rec, p, st, bon, unknown, e2, sname, parsed, pages, NOW)
+    finally:
+        V.siblings = keep
+
+
+_atlas = json.load(open(os.path.join(PT, 'atlas_loot.json'), encoding='utf-8'))['entries']
+
+
+def atlas_low_level(item_name):
+    k = n(item_name)
+    lows = []
+    for e in _atlas:
+        if any(k == n(x) for ro in e['rolls'] for band in (ro.get('items_by_band') or []) for x in band):
+            m = re.findall(r'\d+', e.get('levels') or '')
+            if m:
+                lows.append(min(int(v) for v in m))
+    return min(lows) if lows else None
+
+
+def apply_look(row, look_id, ent=None):
+    src_row = next((r for r in W.rows if r['Id_nb'].lower() == (look_id or '').lower()), None)
+    if src_row is None or not src_row['Model']:
+        return False
+    for col in ('Model', 'Extension', 'Color', 'Effect', 'Emblem'):
+        row[col] = src_row[col]
+    if ent is not None:
+        ent['look_from'] = f'{src_row["Id_nb"]} (chosen by the re-check: {src_row["Name"]})'
+    return True
 
 
 def finish(row):
@@ -116,6 +176,8 @@ for b in res['items']:
             bon, unknown = V.map_bonuses(p)
             e2 = {'derived': {}}
             row, why = V.build(rec, p, st, bon, unknown, e2, V.strip_suffix(rec['name']), parsed, pages, NOW)
+            if row is None and (why or '').startswith('no existing sibling') and it.get('look_from'):
+                row, why = build_with_look(rec, p, st, bon, unknown, e2, V.strip_suffix(rec['name']), it['look_from'])
             ent['derived'] = e2.get('derived')
         elif v == 'BUILD_RAW' and it.get('raw'):
             key = 'pa_' + slug(it.get('item') or it['atlas_name'])
@@ -128,6 +190,8 @@ for b in res['items']:
                 bon, unknown = V.map_bonuses(p)
                 e2 = {'derived': {}}
                 row, why = V.build(rec, p, st, bon, unknown, e2, rec['name'], parsed, pages, NOW)
+                if row is None and (why or '').startswith('no existing sibling') and it.get('look_from'):
+                    row, why = build_with_look(rec, p, st, bon, unknown, e2, rec['name'], it['look_from'])
                 ent['derived'] = e2.get('derived')
             except Exception as ex:          # a raw string the parser cannot read
                 row, why = None, f'raw not readable: {ex!r}'
@@ -135,7 +199,12 @@ for b in res['items']:
             name = (it.get('item') or it['atlas_name']).strip()
             sell = it.get('sell_value_copper')
             if not sell or sell <= 0:
-                row, why = None, 'no sell value'
+                lvl = int(it.get('level') or 1)
+                pool = sorted(r['Price'] // 2 for r in built.values() if r['Object_Type'] == 0 and r['Price'] and abs(r['Level'] - lvl) <= 3)
+                sell = pool[len(pool) // 2] if pool else max(1, lvl * lvl // 2)
+                it = dict(it, price_source=f'invented: builder estimate, median of {len(pool)} built trash items within 3 levels')
+            if False:
+                pass
             else:
                 price = int(sell) * 2            # merchants pay half (ITEM_SELL_RATIO 50)
                 sib, how = trash_sibling(name, price)
@@ -156,6 +225,15 @@ for b in res['items']:
         if v != 'BUILD_TRASH' and it.get('sell_value_copper') and not row.get('Price'):
             row['Price'] = int(it['sell_value_copper']) * 2
             ent['price_source'] = 'source sell value x 2'
+        if it.get('look_from'):
+            apply_look(row, it['look_from'], ent)
+        # a level the page did not give was copied from the borrowed look's item (e.g. 51 for a ring from a level 14
+        # monster): the level the research found, else the lowest Atlas level of the monsters that drop it
+        if str((ent.get('derived') or {}).get('Level', '')).startswith('from '):
+            lv = it.get('level') or atlas_low_level(it.get('item') or it['atlas_name'])
+            if lv:
+                row['Level'] = int(lv)
+                ent['derived']['Level'] = f'research / dropping monster level ({lv}); the page gives none'
         row = finish(row)
         if row['Id_nb'].lower() in existing_ids:
             ent['problem'] = f'Id {row["Id_nb"]} already exists'
@@ -182,6 +260,11 @@ for row in built.values():
         e = next((x for x in report['items'] if x.get('Id_nb') == row['Id_nb']), None)
         if e is not None:
             e['price_source'] = f'derived: median of {len(near)} existing items of the same type and slot, level +-2'
+for iid, look in LOOK_FIX.items():
+    if iid in built and apply_look(built[iid], look):
+        e = next((x for x in report['items'] if x.get('Id_nb') == iid), None)
+        if e is not None:
+            e['look_from'] = f'{look} (icon re-check)'
 report['counts']['item_verdicts'] = dict(ic)
 report['counts']['items_built'] = len(built)
 
@@ -192,6 +275,9 @@ arch_cols = [r[1] for r in con.execute('pragma table_info(offline_classic165_rem
 
 
 def mob_row(kind, bid):
+    own = next((dict(r) for r in spawn_rows if r['Mob_ID'] == bid), None) if bid else None
+    if own and kind in ('live', 'family'):
+        return own
     if kind == 'live':
         r = con.execute('select * from Mob where Mob_ID=?', (bid,)).fetchone()
         return dict(r) if r else None
@@ -224,6 +310,12 @@ def mob_row(kind, bid):
     return None
 
 
+NAMED_ONE = {'baugi', 'urkart', 'caoranach', 'grakin'}
+LOWER = {'tempered fetters', 'weathered rope', 'shredded fabrication'}   # ordinary constructs (Prima SI tables Title Case every name)
+world_spelling = {}                           # a name the world already has keeps the world's spelling
+for (nm,) in con.execute("select Name from Mob where Realm=0 and Name is not null"):
+    world_spelling.setdefault(nm.lower(), nm)
+named_done = set()                            # a named monster gets one spawn, whichever agents placed it
 spawn_rows, sc = [], collections.Counter()
 seen_ids = set()
 for z in res['spawns']:
@@ -235,6 +327,9 @@ for z in res['spawns']:
         report['spawns'].append(ent)
         lo, hi = m.get('level_min'), m.get('level_max')
         name = (m.get('final_name') or m['prima_name']).strip()
+        if name.lower() in LOWER:
+            name = name.lower()
+        name = world_spelling.get(name.lower(), name)
         if a == 'RESTORE':
             for mid in m.get('restore_mob_ids') or []:
                 if mid in live_ids or mid in seen_ids:
@@ -260,7 +355,17 @@ for z in res['spawns']:
                 continue
             pts = m.get('spawns') or []
             lv = list(range(lo, hi + 1)) if lo and hi and hi >= lo else [base['Level'] or 1]
-            for i, s in enumerate(pts[:1] if m.get('named') else pts):
+            one = m.get('named') or name.lower() in NAMED_ONE
+            if one and name.lower() in named_done:
+                ent['problem'] = 'named monster already placed by another agent'
+                continue
+            if one:
+                named_done.add(name.lower())
+            if m.get('model'):
+                base['Model'] = m['model']
+            if m.get('size'):
+                base['Size'] = m['size']
+            for i, s in enumerate(pts[:1] if one else pts):
                 row = dict(base)
                 mid = str(uuid.uuid5(NS, f'{name}|{m.get("region")}|{s["x"]}|{s["y"]}'))
                 if mid in seen_ids:
@@ -279,6 +384,61 @@ for z in res['spawns']:
                 if m.get('respawn_seconds'):
                     row['RespawnInterval'] = m['respawn_seconds']
                 spawn_rows.append(row); seen_ids.add(mid); ent['rows'] += 1
+# every spawn on walkable ground (owner 2026-11-07: bots must be able to hunt them). groundz165 reads the 1.65 / classic
+# navmeshes; it cannot read the Shrouded Isles ones (no floor even under monsters that stood there all along), so those
+# are checked against the nearest existing monster instead
+sys.path.insert(0, T165)
+import groundz165 as GZ   # noqa: E402
+report['ground'] = {'snapped': [], 'not_on_ground': [], 'si_far_from_others': []}
+SI_REGIONS = {51, 151, 181, 50, 60, 62, 150, 160, 161, 180, 190, 191}   # SI zones and dungeons
+pre = collections.defaultdict(list)
+for rg, x, y, z in con.execute('select Region, X, Y, Z from Mob'):
+    if rg in SI_REGIONS:
+        pre[rg].append((x, y, z))
+for r in spawn_rows:
+    if r['Region'] in SI_REGIONS:
+        near = min(((math.hypot(x - r['X'], y - r['Y']), abs(z - r['Z'])) for x, y, z in pre[r['Region']]
+                    if abs(x - r['X']) < 2000 and abs(y - r['Y']) < 2000), default=None)
+        if not near or near[0] > 1500 or near[1] > 400:
+            report['ground']['si_far_from_others'].append({'name': r['Name'], 'region': r['Region'], 'x': r['X'], 'y': r['Y'], 'z': r['Z']})
+        continue
+    fl = GZ.floors(r['Region'], r['X'], r['Y'])
+    if fl and min(abs(f - r['Z']) for f in fl) <= 64:
+        continue
+    moved = None
+    for rad in (50, 100, 200, 300, 400):
+        for ang in range(0, 360, 15):
+            x = int(r['X'] + rad * math.cos(math.radians(ang))); y = int(r['Y'] + rad * math.sin(math.radians(ang)))
+            f = GZ.floors(r['Region'], x, y)
+            if f:
+                fz = min(f, key=lambda v: abs(v - r['Z']))
+                if abs(fz - r['Z']) <= 450:
+                    moved = (x, y, int(fz)); break
+        if moved:
+            break
+    if moved:
+        report['ground']['snapped'].append({'name': r['Name'], 'from': (r['X'], r['Y'], r['Z']), 'to': moved})
+        r['X'], r['Y'], r['Z'] = moved
+    else:
+        report['ground']['not_on_ground'].append({'name': r['Name'], 'region': r['Region'], 'x': r['X'], 'y': r['Y'], 'z': r['Z']})
+RADAR = {}
+for v in json.load(open(os.path.join(CV, 'development-source', 'research', 'period-data', 'archive', 'capnbry', 'sightings_index.json'),
+                        encoding='utf-8')).values():
+    RADAR.setdefault(v['name'].lower(), v['name'])
+by_low = collections.defaultdict(collections.Counter)
+for r in spawn_rows:
+    by_low[r['Name'].lower()][r['Name']] += 1
+for low, spellings in by_low.items():
+    if len(spellings) > 1 or low in RADAR:
+        want = RADAR.get(low) or world_spelling.get(low) or spellings.most_common(1)[0][0]
+        if low in LOWER:
+            want = low
+        for r in spawn_rows:
+            if r['Name'].lower() == low:
+                r['Name'] = want
+for r in spawn_rows:
+    for col, val in ENC['spawn_overrides'].get(r['Name'].lower(), {}).items():
+        r[col] = val
 report['counts']['spawn_actions'] = dict(sc)
 report['counts']['spawn_rows'] = len(spawn_rows)
 
@@ -435,6 +595,11 @@ for mob, its in sorted(wanted.items()):
     added_rows += len(add)
     report['drops'].append({'monster': key, 'created': created, 'old_drop_count': old,
                             'drop_count': mons[key]['drop_count'], 'added': add})
+for mob, d in ENC['drops'].items():
+    key = mkeys.get(mob.lower()) or mob
+    mons[key] = {'drop_count': d['drop_count'], 'items': d['items']}
+    report['drops'].append({'monster': key, 'created': True, 'old_drop_count': None, 'drop_count': d['drop_count'],
+                            'added': d['items'], 'note': d['note']})
 drops['source'] += ' + Prima batch 2026-11-07 (Atlas drops of the new monsters and of the Atlas items built)'
 report['counts']['drop_rows_added'] = added_rows
 report['counts']['level_gap_skipped'] = len(report['level_gap_skipped'])
@@ -452,6 +617,10 @@ fix = [
 fix.append({'sql': "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
             'reason': 'True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are '
                       '39-43) is a data error'})
+fix += ENC['rules']
+GEN = os.path.join(HERE, 'encounters165_generated.json')
+if os.path.exists(GEN):
+    fix += json.load(open(GEN, encoding='utf-8'))['rules']
 have_sql = {u.get('sql') for u in rules['updates']}
 for f in fix:
     if f['sql'] not in have_sql:

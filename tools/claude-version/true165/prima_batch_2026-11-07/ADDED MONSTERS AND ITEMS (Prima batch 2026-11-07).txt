@@ -3,9 +3,9 @@ TRUE 1.65 PRIMA BATCH (2026-11-07) - EVERYTHING ADDED
 Monsters the Prima guides list that the world lacked, the Atlas drop items it lacked, their Atlas drop tables,
 and the wolf drop stack fix. Applied by the launcher at the next START SERVER (True 1.65 content files).
 
-Monsters added: 281 kinds, 810 spawns (591 new at period positions, 219 restored archived rows)
-Items added: 1311 (1193 plain loot, 118 equipment)
-Drop tables: 3146 Atlas drop rows added on 1141 monsters
+Monsters added: 357 kinds, 972 spawns (753 new at period positions, 219 restored archived rows)
+Items added: 1523 (1200 plain loot, 323 equipment)
+Drop tables: 3369 Atlas drop rows added on 1172 monsters
 Drops never come from a monster 15+ levels below the item (owner rule; exceptions: Darkness Falls seals, and the two
 very rare Atlas drops Spirit Crafted Shield 0.1% / Ether Ring 0.02% the owner kept).
 Wolf fix: wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time; the "(20)/(100)" ones in bags become 1.
@@ -13,6 +13,10 @@ Wolf fix: wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time; th
 MONSTERS ADDED (by zone)
 ------------------------------------------------------------
 Avalon Marsh
+  dryad                              lvl 7       x3   new      Prima Atlas AvM map label 'DRYAD' (PDF page 9, text at 403.27,310.32).
+  fading spirit                      lvl 8       x3   new      Prima Atlas AvM map label 'FADING SPIRIT' (PDF page 9, text at 285.61,
+  river drakeling                    lvl 5       x3   new      Prima Atlas AvM map label 'RIVER DRAKELING' (PDF page 9, text at 409.7
+  river sprite                       lvl 6       x3   new      Prima Atlas AvM map label 'RIVER SPRITE' (PDF page 9, text at 414.11,3
   rotting skeleton                   lvl 1       x2   new      map label estimate: Kirstena 2002 AvM 'Undead' label at zone-local ~42
 
 Black Mountains South
@@ -54,28 +58,35 @@ Campacorentin Forest
   tree snake                         lvl 1       x2   new      map label estimate: Kirstena 2002 Campacorentin 'Snakes' label at loca
 
 Cliffs of Moher
+  cronsidhe                          lvl 41      x1   new      Prima Atlas Cliffs of Moher map p79: a 'CRONSIDHE' label the first pas
   Myntaugh                           lvl 19      x1   new      map label estimate: Kirstena 2002 Cliffs of Moher map labels 'Myntaugh
   Scaird                             lvl 39      x1   new      Period quest walkthrough (walkthroughs.jsonl id 565, 'Search For The M
 
 Connacht
+  Cachia                             lvl 30      x1   new      zam quest 'Cachia One Time Drop' (cquest=2039, allakhazam-live quest.j
   enchanted wind ghoul               lvl 7       x1   new      CapnBry radar sightings_index 2448, zone 207: (31938,33487,5688) and (
+  Fearg                              lvl 6       x1   new      Landmark: the period quest text places Fearg at the abandoned camp wit
   great scourge                      lvl 30      x1   new      map label estimate: Prima Atlas Connacht map (PDF page 83). The vector
   Little Wind                        lvl 8       x1   new      CapnBry radar sightings_index 2453, zone 207: (32457,31327,5688) lv8 a
   Red                                lvl 15      x1   new      map label estimate: Prima Atlas Connacht map (PDF page 83). The vector
 
 Cornwall
   Arisus princeps                    lvl 24      x1   new      map label estimate: Prima Atlas Cornwall map label 'ARISUS LEGIONNAIRE
+  Cornwall Leader                    lvl 25      x1   new      Prima Atlas Cornwall map (Atlas PDF page 30, printed p.28-29). It carr
   Hastur                             lvl 60      x1   new      map label estimate: Freddyshouse post 1287057 (2002-07) 'near the boge
 
 Cruachan Gorge
   bean sidhe                         lvl 39-40   x2   new      map label estimate: Prima Atlas map labels BEAN SIDHE at local ~39.4k,
   Briton woodcutter                  lvl 37      x10  restored archived rows (zone 211 local 41.6-43.6k, 49.7-52.1k)
+  Celtic brehon                      lvl 37      x2   new      Prima Atlas CG map has two 'CELTIC BREHON' labels. From the PDF text m
   corpan side                        lvl 39      x2   new      map label estimate: Prima Atlas map labels CORPAN SIDE at local ~36.0k
   corybantic skeleton                lvl 46      x27  restored archived rows zone 211 (local 37.8-39.8k, 19.9-21.2k)
   Cruachan warrior                   lvl 46-47   x2   new      map label estimate: Prima Atlas Cruachan map label CRUACHAN WARRIOR at
   dullahan                           lvl 48-49   x2   new      map label estimate: Prima Atlas Cruachan Gorge map label DULLAHAN (PDF
   earthshaker                        lvl 47      x2   new      map label estimate: Prima Atlas CG map label EARTHSHAKER (~43.6k,50.9k
   empyrean elder                     lvl 41-44   x11  restored archived rows zone 211 (local 61.4-62.6k, 7.8-10.2k)
+  empyrean sentinel                  lvl 27-28   x4   new      Period zam comment (2002-09-24): 'camp in the Gorge. If you follow the
+  faerie badger                      lvl 32      x2   new      The first pass missed a Prima Atlas CG map label, 'FAERIE BADGER' (the
   fallen Hibernian defender          lvl 45      x16  restored archived rows zone 211 named 'hibernia fallen defender' (local 54.2-56
   fuath                              lvl 46      x30  restored archived rows zone 211 (local 4.8-6.9k, 28.0-30.7k)
   ghastly Midgard invader            lvl 44      x21  restored archived rows zone 211 named 'ghastly hibernia invader' (local 42.6-45
@@ -89,9 +100,12 @@ Cruachan Gorge
   megafelid                          lvl 39-42   x5   new      map label estimate: 5 Prima Atlas CG map labels MEGAFELID (local ~15.2
   morass leech                       lvl 42      x2   new      map label estimate: Prima Atlas CG map label MORASS LEECH (local ~48.3
   Naermaggin                         lvl 40      x1   new      map label estimate: Prima Atlas map label NAERMAGGIN at local ~14.9k,1
+  Norseman chopper                   lvl 37      x2   new      Prima Atlas CG map has two 'NORSEMAN CHOPPER' labels, at local about 3
+  Rat Trap                           lvl 33      x1   new      Prima Atlas CG map label 'RAT TRAP' at local about 13.4k,30.8k (PDF te
   sett dweller                       lvl 30-31   x4   new      map label estimate: Kirstena 2002 Cruachan Gorge map, two 'Sett Dwelle
   Shaemis                            lvl 43      x1   new      map label estimate: Prima Atlas map label SHAEMIS (with SHARPTOOTHED b
   siabra anchorite                   lvl 41      x3   new      map label estimate: Kirstena 2002 map 'Siabra Anchorite' label at ~loc
+  siog raider                        lvl 37      x2   new      The first pass missed a Prima Atlas Cruachan Gorge map label, 'SIOG RA
   skeletal dwarf invader             lvl 43      x14  restored archived rows in zone 211 (9 at local 46.3-48.0k,52.6-53.9k
   speghoul                           lvl 40      x9   restored archived rows in zone 211 at local 18.0-21.0k,11.9-14.3k (Prima map 'P
   Thistle                            lvl 32      x1   new      map label estimate: Prima Atlas map label THISTLE at local ~5.7k,24.1k
@@ -107,7 +121,11 @@ Cursed Forest
 
 DARKNESS FALLS DUNGEON
   Commander Abgar                    lvl 61      x1   new      map label estimate: Prima Atlas DF map spot 18 'Commander Abgar, Lieut
+  Inquisitor Kireasil                lvl 74      x1   new      Allakhazam mob 3081 loc screenshot (camelot.allakhazam.com/Mobs/locs/m
+  Inquisitor Yonzael                 lvl 74      x1   new      Allakhazam mob 3088 ('Inquisitor Yonzeal') loc screenshot (Mobs/locs/m
   Mutilator Axalnam                  lvl 68      x1   new      CapnBry radar (DF capture stored as radar zone 0
+  soultorn hibernian tiarna          lvl 48      x1   new      Allakhazam mob 3581 loc screenshot (Mobs/locs/m04/df-Soultorn-Hibernia
+  soultorn norse stormur herra       lvl 48      x1   new      Allakhazam mob 2972 loc screenshot (Mobs/locs/m04/df-Soultorn-Norse-St
 
 Dartmoor
   draconic ancilla                   lvl 50      x1   new      map label estimate: Kirstena 2002 Dartmoor map 'Draconic Ancilla' labe
@@ -117,6 +135,9 @@ Dartmoor
 Dungeon: Catacombs of Cardova
   centurio princeps praetorii        lvl 32      x18  restored archived rows (offline_classic165_removed_mobs, region 23)
 
+Dungeon: Stonehenge Barrows
+  goblin imperator                   lvl 31      x1   new      Landmark only. The period Allakhazam quest comment 'Hidden Insurrectio
+
 Dungeon: Tomb of Mithra
   rotting tombraider                 lvl 9       x2   new      CapnBry radar zone 21: 2 sightings (local 22016,23808 lvl 9 and 21122,
 
@@ -124,12 +145,19 @@ Dungeon: Varulvhamn
   Grimnought Ejnar                   lvl 45      x1   new      CapnBry radar id 3466, zone 127: local (18675,16771,13707) L45 and (19
 
 Emain Macha
+  Atax                               lvl 61      x1   new      Uthgard bestiary map dot for monster 18154 (disorder.dk map.php?monste
   Norseman chopper                   lvl 37      x2   new      CapnBry radar zone 214: 2 sightings, level 37, at local (54934,26081) 
+  Quinlan                            lvl 53      x1   new      Uthgard map dot for monster 8232 (diffed in the browser): one dot at l
+  Taman                              lvl 62      x1   new      Uthgard map dot for monster 18152 (diffed in the browser): one dot at 
 
 Forest Sauvage
+  Anne Fhitich                       lvl 60      x1   new      CapnBry radar zone 15 local (57639,25549,2912) L60. The +16384 X dupli
   Broecia                            lvl 16      x1   new      CapnBry radar zone 11 local (49448,20571,2835) L16, navmesh floor 2839
+  Ceriallen                          lvl 40      x1   new      Hadrian's Wall, zone 15 local (32000,55000). Kirstena 2002 HW map labe
+  Evian Fhitich                      lvl 59      x1   new      CapnBry radar zone 15 local (57325,25754,2912), seen at L59 and L61. T
   Hibernian waylayer                 lvl 35      x7   new      CapnBry radar zone 15 (128 sightings). Most of them carry the radar's 
   Legionnaire Commander              lvl 42      x1   new      CapnBry radar zone 15 local (27489,53940,4200) L42 (floor 4202). This 
+  master hunter                      lvl 33      x2   new      Prima Atlas FS map (PDF p.204): the page's text stream has TWO 'MASTER
   Midgard waylayer                   lvl 35      x8   new      CapnBry radar zone 15 (79 sightings), with the same -16384 X shift cor
   Miles Heberman                     lvl 50      x1   new      CapnBry radar zone 15: 4 L50 sightings at local 39-40k / 47.9-49.8k. T
 
@@ -137,10 +165,12 @@ Gotar
   Dotta                              lvl 5       x1   new      CapnBry radar id 968, 1 sighting in zone 103 at local (8210,12996) Z 4
   drifting spirit                    lvl 13      x2   new      map label estimate: Prima Atlas Gotar map, 'DRIFTING SPIRIT' label jus
   Ick                                lvl 8       x1   new      CapnBry radar id 962: 22 sightings, all in zone 103, lvl 8-9, spread o
+  kraken                             lvl 20      x1   new      CapnBry radar id 2596: the only sighting in Gotar, at local (48503,440
   Witch                              lvl 22      x1   new      map label estimate: Prima Atlas Gotar map, 'WITCH' label 2 lines below
   wolfhound                          lvl 6       x2   new      map label estimate: Prima Atlas Gotar map, 'WOLFHOUND' label in north-
 
 Jamtland Mountains
+  Fanin                              lvl 36      x1   new      CapnBry radar mob 1854 (XML: zone 113, local 47170,31913, z3471, L36),
   fenrir prime                       lvl 49      x1   new      map label estimate: Prima Atlas Jamtland spot 4 'Fenrir Hide Out' (Loc
   Great Fylgja                       lvl 53      x1   new      CapnBry radar id 705 (3 sightings, all L53, zone 113): local (39989,34
   Strykr                             lvl 52      x1   new      CapnBry radar id 703, zone 113 local (31696,27082,z4312) L52
@@ -154,6 +184,7 @@ Llyn Barfog
 
 Lough Derg
   Driss                              lvl 21      x1   restored archived row (381161,537242,Z 4762
+  Swiftfoot                          lvl 9       x1   new      Prima Atlas p.92 Lough Derg creature map: a 'SWIFTFOOT' label, directl
   wiggle worm                        lvl 1       x8   new      CapnBry radar zone 200: 18 lvl-0 sightings at world X 350091-353761, Y
 
 Lough Gur
@@ -171,11 +202,13 @@ Lough Gur
   large eirebug                      lvl 10      x3   new      map label estimate: Kirstena 2002 'Large Eirebug' label at local 49.4k
   large red wolfhound                lvl 17-18   x2   new      map label estimate: Kirstena 2002 'Large Red Wolfhound' label at local
   lugradan                           lvl 27-30   x2   new      map label estimate: Kirstena 2002 Lough Gur map 'Lugradan' label at lo
+  mist wraith                        lvl 27-28   x2   new      Prima Atlas LG map label (PDF page 96). I rendered the page on a fixed
   phantom wickerman                  lvl 28      x2   new      map label estimate: Kirstena 2002 'Phantom Wickerman' label at local ~
   rage wolf                          lvl 31-32   x4   new      map label estimate: two Kirstena 2002 'Rage Wolf' labels at local ~14.
   red wolfhound                      lvl 13      x2   new      map label estimate: Kirstena 2002 'Red Wolfhound' label at local ~56.3
   stone sheerie                      lvl 22      x4   new      map label estimate: Kirstena 2002 'Stone Sheerie' labels (with camp do
   Suarachan                          lvl 42      x1   new      map label estimate: Prima Atlas LG map label SUARACHAN beside CORPAN S
+  wild lucradan                      lvl 10      x3   new      Prima Atlas LG map label (PDF page 96). 'W ILD / LUCRADAN' sits at gri
 
 Lyonesse
   Breadlebane                        lvl 45      x1   new      map label estimate: Prima Atlas Lyonesse map p.41 'BREADLEBANE' label 
@@ -199,6 +232,7 @@ Mt. Collory
   boogie man                         lvl 34      x2   new      map label estimate: Prima Atlas p.227 label BOOGIE MAN (SE, next to FA
   Briton woodcutter                  lvl 37      x2   new      map label estimate: two Prima Atlas p.227 labels BRITON WOODCUTTER (ea
   Carafathach                        lvl 35      x1   new      map label estimate: Prima Atlas p.227 label CARAFATHACH (west), from t
+  Celtic brehon                      lvl 37      x2   new      Atlas p.227 map labels CELTIC BREHON. Re-extracted from the PDF conten
   cliff hanger                       lvl 39      x4   new      map label estimate: two Prima p.227 labels CLIFF HANGER on the east si
   Cubby                              lvl 24      x1   new      map label estimate: Prima Atlas p.227 label CUBBY (south-centre), from
   Dodger                             lvl 33      x1   new      map label estimate: Prima Atlas p.227 label DODGER (far west edge, sou
@@ -207,16 +241,20 @@ Mt. Collory
   evanescer                          lvl 33-35   x6   new      map label estimate: three Prima p.227 labels EVANESCER in the south-ea
   far darrig                         lvl 46-48   x4   new      map label estimate: two Prima p.227 labels FAR DARRIG (with DULLAHAN) 
   far dorocha                        lvl 53-56   x4   new      map label estimate: two Prima p.227 labels FAR DOROCHA (north-centre u
+  far liath                          lvl 32      x2   new      Period Allakhazam page (capture 2003-03-27, updated 2003-02-18, Old Fr
   fee lion                           lvl 25-26   x2   new      CapnBry radar zone 210: (31115,16873) L27 and (32195,17311) L25
   greater luch                       lvl 25      x1   new      CapnBry radar zone 210: (29901,16168) L25
+  Gualach                            lvl 34      x1   new      Atlas p.227 map label GUALACH, re-extracted from the PDF: local (56975
   Hatred                             lvl 50      x1   new      map label estimate: Prima Atlas p.227 label HATRED, directly under the
   Irusan                             lvl 49      x1   new      map label estimate: Prima Atlas p.227 label IRUSAN (far NE, beside COR
   juvenile megafelid                 lvl 35-38   x5   new      map label estimate: five Prima p.227 labels JUVENILE MEGAFELID (west e
   lugradan                           lvl 27-30   x4   new      CapnBry radar zone 210: (32947,2426) L29, (29074,6578) L27, (31516,107
   megafelid                          lvl 39-42   x5   new      map label estimate: five Prima p.227 labels MEGAFELID (NE, north-centr
+  Norseman chopper                   lvl 37      x2   new      Atlas p.227 map labels NORSEMAN CHOPPER, re-extracted from the PDF: lo
   oak man                            lvl 43      x3   new      map label estimate: three Prima Atlas p.227 labels OAK MAN, each paire
   One                                lvl 39      x1   new      map label estimate: Prima Atlas p.227 label ONE (west, by TWO and THRE
   pookha                             lvl 33      x4   new      map label estimate: two Prima Atlas p.227 POOKHA labels (layout-text e
+  Scuab                              lvl 38      x1   new      Allakhazam bestiary description 'loc=15, 17 in Mount Collory' (cmob 83
   sett matriarch                     lvl 41      x1   new      map label estimate: Prima Atlas p.227 SETT MATRIARCH label, north-west
   siog raider                        lvl 37      x13  restored archived OpenDAoC rows (offline_classic165_removed_mobs, 'Post-legacy 
   siog seeker                        lvl 30-31   x3   restored archived rows (3) + CapnBry radar zone 210 sighting (local 31133,11005
@@ -240,7 +278,10 @@ Myrkwood Forest
   Haglion                            lvl 18      x1   new      CapnBry radar id 958: 2 sightings L18 (787208,920794 and 785084,921078
   Howl                               lvl 20      x1   restored archived row (offline_classic165_removed_mobs) in zone 105
   Lone Weeping Willow                lvl 10      x1   new      CapnBry radar id 960: 9 sightings L10 (794811-796759, 915111-916817) =
+  Nik                                lvl 20      x1   new      Comment of 3 Aug 2002: 'on the small mound where jophsef dohmer is, in
+  Ralsen                             lvl 16      x1   new      Illia's Camelot Bestiary, 'Raslen' (wayback cmob=3648, Oct 2002): 'Des
   Red Dagger                         lvl 14-16   x3   new      CapnBry radar id 929: 3 sightings in zone 105 (L15, L14, L19), 3 separ
+  Ria                                lvl 13      x1   new      Prima Atlas map label RIA (line 'TROLL RIA') two lines below JOSEPH DO
   Salix                              lvl 14      x1   new      map label estimate: Prima Atlas Myrkwood map label SALIX (PDF text pos
   shadow                             lvl 10-11   x4   new      map label estimate: the two Prima Atlas map labels SHADOW (west one by
   sharpfang worg                     lvl 12-14   x3   new      map label estimate: Prima Atlas map label SHARPFANG WORG (centre on th
@@ -248,13 +289,21 @@ Myrkwood Forest
   Ta'Thaliur                         lvl 17      x1   new      map label estimate: Prima Atlas map label TA'THALIUR in the SE svartal
   Tikixis                            lvl 6       x1   new      map label estimate: Prima Atlas map label TIKIXIS (NE corner) and Kirs
   undead armswoman                   lvl 13      x2   new      map label estimate: Prima Atlas Myrkwood map (atlas pdftotext -layout)
+  Yip                                lvl 4       x1   new      Same 9 Jul 2003 comment: 'his /loc is 62505, 10988', and 'he was surro
   Ykxat                              lvl 17      x1   new      map label estimate: Prima Atlas map label YKXAT (OCR 'ARACHITE PRIEST 
   young envy drake                   lvl 20-22   x4   new      map label estimate: Kirstena 2002 Myrkwood map has two 'Young Envy Dra
 
 Pennine Mountains
   Blue Man                           lvl 53      x1   new      map label estimate: Kirstena 2002 Pennine map 'Blue Man' dot at about 
   Corryn                             lvl 46      x1   new      CapnBry radar zone 14 (local 40582,64912, Z 5908, lvl 46), floor 5939 
+  Destrier Ceingalad                 lvl 31      x1   new      Prima Atlas p.209 label DESTRIER CEINGALAD, directly beside the GWALCH
+  Eildon                             lvl 53      x1   new      Prima Atlas p.209 label EILDON sits directly under GNARLED FELLWOOD/TR
+  Glipin                             lvl 49      x1   new      Prima Atlas p.209 map label GLIPIN, converted with a linear fit of the
+  grimwood keeper                    lvl 43-47   x6   new      Prima Atlas p.209 has two GRIMWOOD KEEPER labels. (1) Beside TREEFALL,
   Gristle                            lvl 61      x1   new      CapnBry radar zone 14 (local 28511,4008, Z 7206, lvl 63), floor 7212 (
+  Gwalchmai                          lvl 42      x1   new      Prima Atlas p.209 label GWALCHMAI, beside DESTRIER CEINGALAD, on the f
+  Hawthorn                           lvl 53      x1   new      Prima Atlas p.209 label HAWTHORN, directly right of EILDON and under T
+  Hwch Ddu Gota                      lvl 55      x1   new      CapnBry zone-14 sighting (10832,21153,Z7711) with the +16384 X radar s
 
 Raumarik
   Red Dagger lookout                 lvl 41      x2   new      map label estimate: Prima Atlas Raumarik map p.161 label 'RED DAGGER L
@@ -266,7 +315,8 @@ Salisbury Plains
 Shannon Estuary
   Aod                                lvl 16      x1   new      map label estimate: Prima Atlas Shannon map puts AOD beside the ERIU F
   Caora                              lvl 10      x1   new      map label estimate: Connla's Well pond (Kirstena 2002 map label, a rin
-  Caoranach                          lvl 7-9     x3   new      map label estimate: Connla's Well pond (Kirstena 2002 map), the EC are
+  Caoranach                          lvl 7       x1   new      map label estimate: Connla's Well pond (Kirstena 2002 map), the EC are
+  Ciar the Merrow Maiden             lvl 20      x1   new      Prima Atlas Shannon Estuary map label (PDF page 100). I extracted the 
 
 Sheeroe Hills
   glimmer avenger                    lvl 65      x3   new      map label estimate: Prima Atlas Sheeroe map (PDF p.104, obj 605). Ther
@@ -277,11 +327,13 @@ Sheeroe Hills
 Silvermine Mountains
   enchanted spraggonoll              lvl 7       x1   new      CapnBry radar id 2480: 1 sighting zone 201 local 48843,53601 Z5313 L8 
   fishing bear cub                   lvl 11-12   x2   new      map label estimate: Kirstena 2002 Silvermine map label 'Fishing Bear C
+  murrisk                            lvl 28      x1   new      Prima Atlas Silvermine Mountains monster map (PDF page 107). The label
   wiggle worm                        lvl 1       x9   new      CapnBry radar id 2283: 20 sightings in zone 201 (local X 15532-19969, 
 
 Skona Ravine
   Ash Tree                           lvl 33      x1   new      CapnBry radar 'Ash Tree' zone 106 local (4533,60815,z1720) L33
   Avund                              lvl 22      x1   new      map label estimate: Prima Atlas map p.163, AVUND label directly under 
+  Caelis Manoi                       lvl 39      x1   new      Prima Atlas Skona Ravine map (PDF p.164): the 'CAELIS MANOI' label sit
   envy drakeling                     lvl 9       x14  restored archived rows
   gray worg                          lvl 10      x4   new      map label estimate: Kirstena 2002 Skona map 'Gray Wargs' labels at abo
   Headsman Yantu                     lvl 37      x1   new      map label estimate: Prima Atlas map p.163 'HEADSMAN YANTU' between WER
@@ -313,6 +365,7 @@ Snowdonia
   Twidgo                             lvl 35      x1   new      Prima Atlas map label 'TWIDGO' at local (32.5k, 24.1k)
 
 Svealand East
+  Breeze                             lvl 7       x1   new      There is no position for Breeze itself. It is placed at the only perio
   Klippa                             lvl 8       x1   new      CapnBry radar zone 101: 2 sightings clustered at local (16491,47827,z4
 
 Svealand West
@@ -325,28 +378,36 @@ Uppland
   isalf scryer                       lvl 33      x1   new      CapnBry radar zone 111 (9060,37149,Z5728,lvl35), sightings_index id 72
   Shyf                               lvl 46      x1   new      map label estimate: Kirstena 2002 label SHYF at local (23.1k,5.6k) jus
   Sigum                              lvl 32      x1   new      map label estimate: Prima Atlas camp 'Location 33,11' (snowshoe bandit
+  undead minion                      lvl 20      x1   new      CapnBry radar zone 111 has one sighting at local 22337,11367,Z8546, L2
 
 Vale of Mularn
+  enoga                              lvl 25      x1   new      CapnBry radar zone 100 (6 sightings, all lvl 25, along one wander path
   Red-eye                            lvl 13      x1   new      map label estimate (Prima Atlas Mularn map p.175 'RED-EYE' label
 
 Valley of Bri Leith
+  Blaieseach                         lvl 21      x1   new      Prima Atlas VBL map label 'BLAIESEOCH' in the SE, just right of (east 
   Midar                              lvl 61      x1   new      map label estimate: Prima Atlas VBL map label MIDAR directly under PHR
   Natyl                              lvl 17      x1   new      map label estimate: Prima Atlas VBL map label NATYL just above SLOITHI
   Phra the Elder                     lvl 47      x1   new      map label estimate: Prima Atlas VBL map top-right row 'GUARDIAN HRU / 
+  Tracker                            lvl 17-19   x6   new      Kirstena 2002 Bri Leith map: a 'Tracker' label at the east end of Moon
 
 Vanern Swamp
+  Major Terentius                    lvl 52      x1   new      Prima Atlas Vanern map, PDF page 180. The text was extracted with pdft
   shadowy werewolf                   lvl 40      x2   new      map label estimate (Prima Atlas Vanern map, label SHADOWY WEREWOLF, la
   werewolf brute                     lvl 45      x2   new      map label estimate (Prima Atlas Vanern map, label WEREWOLF BRUTE besid
 
 Yggdra Forest
-  Baugi                              lvl 34      x1   new      map label estimate: Kirstena 2002 Yggdra map 'Baugi' label at local ~5
+  Frej                               lvl 27      x1   new      CapnBry id 740, zone 112 local 40398,55246 Z7337 lv27 -> region 695758
   ice creature                       lvl 39      x6   new      CapnBry radar id 721, 21 zone-112 sightings (lv39-43). Grouped (~2.6k)
   Kodi                               lvl 51      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Kodi' label at loca
   Norna                              lvl 34      x1   new      CapnBry radar id 731, zone 112 local 58640,43382 Z9756 lv34 (navmesh f
+  Sir Charles                        lvl 30      x1   new      CapnBry id 739, zone 112 local 33256,58565 Z7654 lv30 -> region 688616
   Sjor                               lvl 46      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Sjor' label at loca
   Ulfgar                             lvl 44      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Ulfgar' label at lo
 
 Iarnvidiur  (Shrouded Isles)
+  carnitaur                          lvl 51-58   x2   new      Prima SI Iarnwood map (page 139). The map is vector, so I read exact l
+  spinolich                          lvl 65      x1   new      Prima SI Iarnwood vector map (page 139). The SPINOLICH label (x428.50 
   Urkart                             lvl 55      x1   new      CapnBry radar mob 3371 (Urkart L55): zone 156 Iarnwood, local 59007,96
 
 Trollheim  (Shrouded Isles)
@@ -360,6 +421,22 @@ Avalon Isle  (Shrouded Isles)
   Advisor Belias                     lvl 50      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30 / book p.2
   Smithy Olivan                      lvl 55      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30) label 'SM
   Yorvan                             lvl 34      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30) encounter
+
+Caillte Garran  (Shrouded Isles)
+  fomorian radden                    lvl 30-33   x10  new      The SI Prima Caillte Garran map (book p.200, PDF page 201) has five 'F
+  fomorian radiac                    lvl 21-22   x2   new      SI Prima Caillte Garran map label 'FOMORIAN GEDDON FOMORIAN RADIAC' (l
+  greater anglator                   lvl 33-34   x2   new      SI Prima Caillte Garran map label '3 GREAT ANGLER' (POI 3 = tip 'Fishi
+  mantid dissembler                  lvl 39-42   x6   new      The SI Prima Caillte Garran map draws six mantid group labels. Each li
+  mantid exterminator                lvl 40-44   x6   new      SI Prima Caillte Garran map: 'EXTERMINATOR' appears in all six mantid 
+  mantid priest                      lvl 40-42   x6   new      SI Prima Caillte Garran map: 'PRIEST' appears in all six mantid group 
+  mantid warlock                     lvl 48      x6   new      SI Prima Caillte Garran map: 'WARLOCK' appears in all six mantid group
+  rapacious shriller                 lvl 28-31   x4   new      The SI Prima Caillte Garran map has two 'RAPACIOUS SHRILLER' labels: l
+
+Caldey  (Shrouded Isles)
+  lich lord                          lvl 59-60   x2   new      The Prima SI Caldey map (PDF page 49, printed p.48) has two 'LICH LORD
+
+Cothrom Gorge  (Shrouded Isles)
+  Urpont                             lvl 48      x1   new      Two sources agree. (1) Prima SI map page 217 (Cothrom Gorge) has the l
 
 Dales of Devwy  (Shrouded Isles)
   Alwin Lindon                       lvl 53      x1   new      Prima SI map p.35 label 'LINDON FAMILY' plus tip 'Families That Slay T
@@ -377,17 +454,22 @@ Dales of Devwy  (Shrouded Isles)
   ragged construct                   lvl 25-26   x2   new      Prima SI Dales map p.35 labels: block 'CRAFTED GIANT ELF / RAGGED CONS
   Refuse                             lvl 36      x1   new      map label estimate: Prima SI Dales of Devwy map (PDF p.36) label 'CONT
   Shredded Fabrication               lvl 29-31   x3   new      map label estimate: Prima SI Dales map (PDF p.36) labels SHREDDED FABR
+  Spindle                            lvl 50      x2   new      Allakhazam quest 686 'Restoring the Magic' walkthrough (patch 1.60, co
   Tempered Fetters                   lvl 36-37   x2   new      map label estimate: Prima SI Dales map (PDF p.36) labels TEMPERED FETT
   Weathered Rope                     lvl 25-26   x2   new      map label estimate: Prima SI Dales map (PDF p.36) labels WEATHERED ROP
 
 Delling Crater  (Shrouded Isles)
   Grakin                             lvl 48      x1   new      CapnBry radar mob 3506, zone 156 (Iarnwood) local (35278,7689,7030), l
   griffon formation carrier          lvl 41      x1   new      formation sibling: placed between the live griffon sweep leader (10002
+  hrimthursa trophy-hunter           lvl 60      x2   new      Same landmark text as Peralt (Prima SI p.137): 'Peralt the Griffon-sla
   Mayor Berald                       lvl 52      x1   new      map label estimate: the Prima SI Delling map (PDF p.134) has the label
-  Urkart                             lvl 55      x1   new      CapnBry radar mob 3371, zone 156 (Iarnwood) local (59007,9661,7098), l
+  Peralt Griffon-slayer              lvl 65      x1   new      Landmark text, Prima SI p.137 tip: 'On his rare outings, Peralt makes 
 
 Domnann  (Shrouded Isles)
   young botonid rencanraider         lvl 38-40   x5   new      map label estimate: 5 YOUNG BOTONID RENCANRAIDER labels on the Prima S
+
+Faraheim  (Shrouded Isles)
+  carnitaur                          lvl 51-58   x6   new      Prima Shrouded Isles PDF, Faraheim map page (PDF page 124, content str
 
 Gripklosa Mountains  (Shrouded Isles)
   very chilly skelett                lvl 28      x1   new      CapnBry radar zone 152 sighting id 3285 (local 9196,46970 Z5216, radar
@@ -395,6 +477,7 @@ Gripklosa Mountains  (Shrouded Isles)
 Gwyddneau  (Shrouded Isles)
   blood lich                         lvl 56-57   x8   new      map label estimate: Prima SI Gwyddneau map (layout text p.42), BLOOD L
   cliff serpent                      lvl 48-49   x2   new      map label estimate: Prima SI Gwyddneau map CLIFF SERPENT label col 96/
+  dissolver                          lvl 60-61   x2   new      The Prima SI Gwyddneau map has the label DISSOLVER at the left map edg
   lammia bowmaiden                   lvl 48-51   x4   new      map label estimate: CLIFFTON label on the Prima SI Gwyddneau map + Pri
   lammia swordswoman                 lvl 48-51   x4   new      map label estimate: CLIFFTON label on the Prima SI map + Prima faction
   marooned viking                    lvl 48-50   x4   new      map label estimate: Prima SI Gwyddneau map MAROONED VIKING labels at c
@@ -409,7 +492,23 @@ Isle of Glass  (Shrouded Isles)
   sea cur                            lvl 6-8     x4   new      map label estimate: SI Prima Isle of Glass map (vector page, obj 75 of
 
 Munin Sound  (Shrouded Isles)
+  ancient shale golem                lvl 33      x1   new      Prima SI Munin Sound map page (PDF p.130, Aegir Zone Maps): encounter 
   granulator                         lvl 12-14   x9   new      CapnBry radar id 3084: 89 sightings in zone 151 (Aegir's Landing, regi
+  sand ooze                          lvl 9-11    x3   new      Two period sources agree. (1) Illia/Allakhazam comment of Jun 30 2003,
+
+Vale of Balor  (Shrouded Isles)
+  Cichol Grichnos                    lvl 63      x1   new      The only period position is in CURSED FOREST (zone 208, region 200), n
+
+Vigilant Rock  (Shrouded Isles)
+  cniogcrag annoyance                lvl 25-26   x6   new      Prima Shrouded Isles VR zone map, printed page 211 (PDF page 212). I p
+
+Lough Gur lake legends
+  Aine                               lvl 61      x1   new      Same Prima Atlas Lough Gur label stack (Atlas p.94, PDF p.96) as Earl 
+  Bodb                               lvl 63      x1   new      Prima Atlas Lough Gur label stack (Atlas p.94, PDF p.96). BODB is the 
+  Earl Gerald                        lvl 60      x1   new      Prima Atlas Lough Gur map (Atlas book p.94, PDF p.96). EARL / GERALD /
+
+Skona Yecats
+  Yecats                             lvl 50      x1   new      No radar or Uthgard data: CapnBry radar_any('yecats') = {} and Uthgard
 
 ITEMS ADDED
 ------------------------------------------------------------
@@ -629,6 +728,7 @@ ITEMS ADDED
   Chunk of Silver                          loot              21  any            40s  Uthgard
   Chunk of Soot                            loot              20  any             7s  Uthgard
   Chunk of Sulfur                          loot               6  any         1s 10c  estimated
+  Circlet of Flames                        loot              31  any            28s  Uthgard
   Clan Crest                               loot               6  any             3s  Uthgard
   Clear Blue Orb                           loot               9  any             2s  Uthgard
   Clear Oval Stone                         loot              35  any            53s  Uthgard
@@ -740,6 +840,7 @@ ITEMS ADDED
   Eel Poison Gland                         loot              10  any         1s 20c  estimated
   Eirebug Carapace                         loot               4  any         1s 20c  estimated
   Eirebug Mandible                         loot               4  any            90c  estimated
+  Ekyps Orb of Command                     loot              45  any         1g 20s  estimated
   Elder Fellwood Branch                    loot              21  any             8s  estimated
   Elder Head                               loot              24  any            24s  estimated
   Ellyll Silken Hair                       loot              45  any            68s  Uthgard
@@ -800,6 +901,7 @@ ITEMS ADDED
   Fiery Diamond Orb                        loot              49  any         4g 50s  Uthgard
   Fiery Hound Skin                         loot              40  any         1g 20s  estimated
   Fiery Red Stone                          loot              15  any             5s  Uthgard
+  Fiery Sapphire Seal                      loot              50  any             2g  estimated
   Fiery Stem                               loot              20  any         8s 24c  Uthgard
   Fine Unworked Stone                      loot              18  any            30s  Uthgard
   Fire Ant Larva                           loot              21  any            10s  Uthgard
@@ -987,6 +1089,7 @@ ITEMS ADDED
   Impling Claw                             loot               1  any            14c  Uthgard
   Impling Eye                              loot               1  any            12c  estimated
   Impling Wing                             loot               1  any            10c  Uthgard
+  Intricate Sea Shell Bracelet             loot               1  any        19s 50c  estimated
   Ircon Stone                              loot              52  any         1g 20s  estimated
   Ire Wolf Pelt                            loot              25  any            70s  Uthgard
   Ire Wolf Tooth                           loot              25  any             9s  Uthgard
@@ -1172,6 +1275,7 @@ ITEMS ADDED
   Polished and Painted Seashell            loot              49  any             4g  estimated
   Polished Blood Runed Tablets             loot              39  any         1g 20s  Uthgard
   Polished Bones                           loot              23  any            20s  estimated
+  Polished Daemon Sapphire Seal            loot              47  any             2g  estimated
   Polished Eldspar Stone                   loot              62  any             2g  estimated
   Polished Granite Stone                   loot              51  any             1g  estimated
   Polished River Rock                      loot               6  any            44c  Uthgard
@@ -1319,6 +1423,7 @@ ITEMS ADDED
   Scroll of Worshipping Rites              loot              51  any            10g  estimated
   Scrying Mirror                           loot              13  any             4s  Uthgard
   Sea Serpent Totem                        loot              40  any             2g  Uthgard
+  Seal of the Master Daemon                loot              50  any             2g  estimated
   Seal Skin Bag                            loot              20  any             6s  Uthgard
   Seared Bone Nosering                     loot              27  any            20s  Uthgard
   Seared Skull                             loot              27  any        19s 50c  Uthgard
@@ -1564,6 +1669,7 @@ ITEMS ADDED
   Water Snakeskin                          loot               1  any            20c  estimated
   Waterproof Satchel                       loot              16  any            12s  Uthgard
   Wayward Traveler Pouch                   loot              42  any            80s  estimated
+  Weak Arachite Silk                       loot               1  any            46c  estimated
   Web Proof Mixture                        loot              30  any            40s  estimated
   Wee Were Pelt                            loot              48  any             2g  estimated
   Werewolf Ear                             loot              23  any            20s  estimated
@@ -1607,24 +1713,64 @@ ITEMS ADDED
   Yellowed Bone Nosering                   loot               5  any            52c  Uthgard
   Yowler's Blood Runed Bear-Skin           loot              29  any            21s  Uthgard
   Zephyr Wraith Essence                    loot              29  any            12s  Uthgard
+  Acid Etched Gauntlets                    studded armor     21  Midgard  2g 8s 80c  derived (same type/slot/level)
   Acid Etched Leggings                     studded armor     23  Midgard     6g 12s  derived (same type/slot/level)
+  Acid Etched Sleeves                      studded armor     21  Midgard     4g 32s  derived (same type/slot/level)
+  Aeiry Belt                               jewelry           21  Hibernia       32c  period page / sibling
   Aged Mithrian Cloth Vest                 cloth armor       13  Albion      2g 40s  derived (same type/slot/level)
   Ancient Bloodbound Gloves                cloth armor       49  Midgard        18c  period page / sibling
+  Aotrom Pearls                            jewelry           34  Hibernia 3g 24s 96c  derived (same type/slot/level)
+  Ashen Axe                                weapon            22  Midgard  6g 31s 33c  derived (same type/slot/level)
+  Basher's Finger                          weapon            42  Albion   8g 22s 90c  derived (same type/slot/level)
+  Basher's Sash                            jewelry           42  Albion   4g 95s 12c  derived (same type/slot/level)
+  Beater's Bludgeon                        weapon            42  Albion   78g 48s 90c  derived (same type/slot/level)
+  Beater's Poked Eye                       jewelry           42  Albion   4g 13s 36c  derived (same type/slot/level)
   Belt of the Dread Glow                   jewelry           31  Midgard  2g 25s 86c  derived (same type/slot/level)
+  Bilk's Spear                             weapon            26  Hibernia   18g 36s  derived (same type/slot/level)
+  Bloodstone Left Eye                      jewelry           22  Hibernia 1g 21s 70c  derived (same type/slot/level)
+  Bloodstone Right Eye                     jewelry           22  Hibernia 1g 21s 70c  derived (same type/slot/level)
+  Bog Strider Boots                        scale armor       42  Hibernia       28c  period page / sibling
+  Bog Strider Coif                         scale armor       42  Hibernia 28g 80s 9c  derived (same type/slot/level)
+  Bog Strider Gloves                       scale armor       42  Hibernia 11g 53s 79c  derived (same type/slot/level)
+  Bog Strider Hauberk                      scale armor       42  Hibernia 6g 27s 59c  derived (same type/slot/level)
+  Bog Strider Leggings                     scale armor       42  Hibernia 35g 2s 90c  derived (same type/slot/level)
+  Bog Strider Sleeves                      scale armor       42  Hibernia 10g 91s 99c  derived (same type/slot/level)
   Bone Shard Boots                         studded armor     22  Midgard     2g 88s  derived (same type/slot/level)
   Bone Shard Gloves                        studded armor     22  Midgard  2g 12s 40c  derived (same type/slot/level)
   Bone Shard Helm                          studded armor     22  Midgard  4g 39s 20c  derived (same type/slot/level)
   Bone Shard Jerkin                        studded armor     22  Midgard     8g 64s  derived (same type/slot/level)
   Bone Shard Sleeves                       studded armor     22  Midgard  4g 3s 20c  derived (same type/slot/level)
   Boots of the Blackheart                  studded armor     37  Albion   6g 80s 40c  derived (same type/slot/level)
+  Boots of the Lost                        cloth armor       14  Albion         72s  derived (same type/slot/level)
+  Bracer of Restless Souls                 jewelry           50  Albion         24c  period page / sibling
   Braided Kelp Belt                        jewelry           36  Hibernia     3g 6s  derived (same type/slot/level)
   Brilliant Oro's Stiletto of Night        weapon            50  Hibernia 11g 14s 28c  derived (same type/slot/level)
   Bwcan Beads                              jewelry           35  Albion   3g 45s 12c  derived (same type/slot/level)
+  Cailiondar Bracer of Piety               jewelry           50  Albion          1g  period page / sibling
+  Caster's Missing Eye                     jewelry           25  Hibernia 4g 15s 99c  derived (same type/slot/level)
+  Celestial Pearl Necklace                 jewelry           13  Hibernia       38c  period page / sibling
+  Chain Boots of Disparity                 chain armor       16  Albion      1g 44s  derived (same type/slot/level)
+  Chain Coif of Disparity                  chain armor       18  Albion      6g 18s  derived (same type/slot/level)
+  Chain Leggings of Disparity              chain armor       17  Albion      4g 32s  derived (same type/slot/level)
+  Chain of Rage                            jewelry           18  Hibernia 2g 17s 45c  derived (same type/slot/level)
+  Cliff Dweller Drum                       instrument        36  Hibernia       34c  period page / sibling
+  Cliff Dweller Hammer                     weapon            40  Hibernia 44g 63s 10c  derived (same type/slot/level)
+  Cliff Dweller Lute                       instrument        36  Hibernia       21c  period page / sibling
+  Cliff Dweller Recurved Bow               weapon            40  Hibernia 5g 38s 42c  derived (same type/slot/level)
+  Cliff Dweller Skewer                     weapon            36  Hibernia 4g 13s 36c  derived (same type/slot/level)
+  Cliff Dweller Sword                      weapon            40  Hibernia       30c  period page / sibling
+  Conquerer's Cloak                        jewelry           42  Albion   4g 95s 12c  derived (same type/slot/level)
   Coral Crown                              leather armor     50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Crackling Ebon Gloves                    chain armor       49  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Cronsidhe Biter                          weapon            41  Hibernia 4g 66s 22c  derived (same type/slot/level)
+  Cronsidhe's Red Eye                      jewelry           41  Hibernia 4g 1s 30c  derived (same type/slot/level)
   Crown of the Darkheart                   studded armor     49  Midgard        10g  derived (same type/slot/level)
-  Cursed Lute                              instrument        30  Hibernia       21c  period page / sibling
+  Cursed Lute                              instrument        36  Hibernia       21c  period page / sibling
+  Cyclop's Pupil                           jewelry           42  Albion   4g 13s 36c  derived (same type/slot/level)
+  Cyclops Headsman's Axe                   weapon            42  Albion   57g 34s 80c  derived (same type/slot/level)
   Dark Bone Staff                          weapon            36  Midgard        28c  period page / sibling
   Deathly Lochaber Axe                     weapon            39  Albion         30c  period page / sibling
+  Deo Hauberk                              scale armor       49  Hibernia       22c  period page / sibling
   Diabolical Eldritch Boots                cloth armor       49  Hibernia 8g 1s 12c  derived (same type/slot/level)
   Diabolical Fomorian Robe                 cloth armor       49  Hibernia 7g 54s 38c  derived (same type/slot/level)
   Diabolical Fomorian Vest                 cloth armor       49  Hibernia       22c  period page / sibling
@@ -1632,90 +1778,254 @@ ITEMS ADDED
   Diabolical Formorian Pants               cloth armor       49  Hibernia       22c  period page / sibling
   Diabolical Formorian Sleeves             cloth armor       49  Hibernia       20c  period page / sibling
   Diabolical Mentalist Boots               cloth armor       49  Hibernia 8g 1s 12c  derived (same type/slot/level)
+  Diamond Dusted Robe                      cloth armor       49  Albion   7g 54s 38c  derived (same type/slot/level)
   Dommel's Fiery Gauntlets                 chain armor       49  Albion         18c  period page / sibling
   Dommel's Fiery Gauntlets                 reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
   Drakulv Militia Axe                      weapon            50  Midgard  11g 49s 36c  derived (same type/slot/level)
   Drakulv Militia Spear                    weapon            45  Midgard  76g 30s 20c  derived (same type/slot/level)
   Drakulv Militia Sword                    weapon            50  Midgard        16c  period page / sibling
+  Draoi Shield                             shield            22  Hibernia 5g 11s 20c  derived (same type/slot/level)
+  Draoish Sickle                           weapon            22  Hibernia    8g 64s  derived (same type/slot/level)
+  Dread Lichess Demolisher                 weapon            26  Midgard    21g 24s  derived (same type/slot/level)
+  Dusk Dweller Boots                       leather armor     49  Hibernia       18c  period page / sibling
+  Dusk Dweller Gloves                      leather armor     49  Hibernia       20c  period page / sibling
+  Dusk Dweller Helm                        leather armor     49  Hibernia       18c  period page / sibling
+  Dusk Dweller Jerkin                      leather armor     49  Hibernia       22c  period page / sibling
+  Dusk Dweller Leggings                    leather armor     49  Hibernia       22c  period page / sibling
+  Dusk Dweller Sleeves                     leather armor     49  Hibernia       20c  period page / sibling
+  Dusty Leggings                           leather armor     21  Hibernia    4g 32s  derived (same type/slot/level)
   Earth Crafted Molded Leggings            leather armor     24  Hibernia    7g 92s  derived (same type/slot/level)
   Earth Crafted Root Leggings              reinforced armor  24  Hibernia   12g 96s  derived (same type/slot/level)
   Earth Crafted Root Vest                  reinforced armor  24  Hibernia   21g 60s  derived (same type/slot/level)
   Earth Crafted Scale Gloves               scale armor       24  Hibernia 7g 41s 60c  derived (same type/slot/level)
   Earth Crafted Scale Leggings             scale armor       24  Hibernia   24g 30s  derived (same type/slot/level)
+  Elder Fellwood Staff                     weapon            21  Albion     14g 40s  derived (same type/slot/level)
+  Elder Staff of Earthen Fire              weapon            16  Albion      4g 80s  period page / sibling
+  Elder Staff of Wintry Winds              weapon            16  Albion      4g 80s  derived (same type/slot/level)
   Emerald Moonshone Boots                  leather armor     44  Midgard        28c  period page / sibling
+  Empathetic Jewel                         jewelry           28  Hibernia 1g 84s 48c  derived (same type/slot/level)
+  Empyreal Helm                            reinforced armor  37  Hibernia       25c  period page / sibling
+  Empyreal Leggings                        reinforced armor  35  Hibernia       26c  period page / sibling
+  Empyreal Ranger Gauntlets                reinforced armor  35  Hibernia 2g 49s 92c  derived (same type/slot/level)
+  Empyreal Sleeves                         reinforced armor  35  Hibernia       25c  period page / sibling
   Empyreal Vest                            reinforced armor  37  Hibernia       26c  period page / sibling
-  Ether Ring                               jewelry           51  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Enchanter's Fine Boots                   cloth armor       11  Hibernia   25s 76c  derived (same type/slot/level)
+  Enchanter's Fine Cap                     cloth armor       11  Hibernia       68s  derived (same type/slot/level)
+  Enchanter's Fine Gloves                  cloth armor       11  Hibernia   27s 52c  derived (same type/slot/level)
+  Enchanter's Fine Pants                   cloth armor       11  Hibernia   61s 70c  derived (same type/slot/level)
+  Enchanter's Fine Robe                    cloth armor       11  Hibernia 1g 10s 40c  derived (same type/slot/level)
+  Enchanter's Fine Sleeves                 cloth armor       11  Hibernia    37s 2c  derived (same type/slot/level)
+  Enchanter's Fine Vest                    cloth armor       11  Hibernia 1g 10s 40c  derived (same type/slot/level)
+  Enslaved Biter's Muzzle Wrap             jewelry           44  Midgard  5g 58s 42c  derived (same type/slot/level)
+  Enslaved Orm's Collar                    jewelry           40  Midgard  4g 39s 2c  derived (same type/slot/level)
+  Ether Cloak                              jewelry           29  Hibernia 2g 4s 12c  derived (same type/slot/level)
+  Ether Ring                               jewelry           26  Hibernia 1g 66s 74c  derived (same type/slot/level)
+  Ethereal Zephyr Bracelet                 jewelry           24  Hibernia 2g 5s 10c  derived (same type/slot/level)
   Eucail Eye                               jewelry           30  Hibernia 2g 4s 12c  derived (same type/slot/level)
   Faded Chain Silksteel Gloves             chain armor       36  Midgard  3g 66s 50c  derived (same type/slot/level)
   Faded Chain Silksteel Leggings           chain armor       36  Midgard  3g 45s 12c  derived (same type/slot/level)
   Faded Silksteel Bound Boots              leather armor     36  Midgard  1g 72s 56c  source sell value x 2
   Faded Silksteel Bound Gloves             leather armor     36  Midgard  1g 72s 56c  source sell value x 2
+  Faerie Eye                               jewelry           22  Hibernia 1g 21s 70c  derived (same type/slot/level)
+  Fainne Necklace                          jewelry           30  Hibernia 1g 84s 48c  derived (same type/slot/level)
+  Fallen Archer's Stiletto                 weapon            45  Albion   35g 39s 25c  derived (same type/slot/level)
+  Fanged Tooth                             weapon            22  Hibernia 8g 85s 60c  derived (same type/slot/level)
+  Feelion Razor                            weapon            27  Hibernia 1g 36s 18c  source sell value x 2
   Feral Fiery Axe                          weapon            35  Midgard        34c  period page / sibling
+  Fiery Staff                              weapon            31  Albion         20c  period page / sibling
+  Filthy Hide Pants                        leather armor      5  Albion          8s  derived (same type/slot/level)
+  Flame of the Earth Boots                 cloth armor       31  Midgard  3g 45s 60c  derived (same type/slot/level)
+  Flame of the Earth Pants                 cloth armor       31  Midgard  10g 36s 80c  derived (same type/slot/level)
+  Flattened Eye Shield                     shield            42  Albion   10g 69s 20c  derived (same type/slot/level)
+  Flawed Gem                               jewelry           22  Hibernia 1g 21s 70c  derived (same type/slot/level)
+  Fomorian Staff of Light                  weapon            50  Hibernia       19c  period page / sibling
+  Fomorian Staff of Mana                   weapon            50  Hibernia       17c  period page / sibling
+  Forked Mephit Tail                       weapon            21  Hibernia 5g 85s 60c  derived (same type/slot/level)
+  Frozen Staff                             weapon            29  Albion   4g 32s 54c  derived (same type/slot/level)
   Furlined Cloak                           jewelry           15  Albion     59s 75c  derived (same type/slot/level)
   Giant Ring of Tenacity                   jewelry           40  Albion   3g 89s 24c  derived (same type/slot/level)
   Gloves of Living Flame                   cloth armor       29  Midgard  3g 24s 96c  derived (same type/slot/level)
   Glowing Guile Boots                      leather armor     36  Hibernia 4g 21s 20c  derived (same type/slot/level)
   Gnarled Staff                            weapon            12  Albion      1g 60s  derived (same type/slot/level)
   Gossamer Seolc Pants                     cloth armor       49  Hibernia       22c  period page / sibling
-  Granite Drum                             instrument        37  Albion         32c  period page / sibling
+  Granite Drum                             instrument        36  Albion         32c  period page / sibling
+  Granite Seer's Gloves of the Spirit      cloth armor       49  Albion   8g 1s 12c  derived (same type/slot/level)
   Granite Seer's Sleeves of Matter         cloth armor       50  Albion   8g 1s 12c  derived (same type/slot/level)
+  Guardian Shield of the Keeper            shield            25  Hibernia    5g 76s  derived (same type/slot/level)
+  Hard Leather Boots                       leather armor     12  Albion      27s 6c  derived (same type/slot/level)
+  Hard Leather Gloves                      leather armor     12  Albion     30s 40c  derived (same type/slot/level)
+  Hard Leather Leggings                    leather armor     12  Albion     67s 20c  derived (same type/slot/level)
+  Hard Leather Sleeves                     leather armor     12  Albion     44s 80c  derived (same type/slot/level)
   Heart Piercer                            weapon            15  Albion   1g 41s 60c  derived (same type/slot/level)
   Helm of Future Visions                   leather armor     13  Midgard        96s  derived (same type/slot/level)
+  Herb Gatherer's Gloves                   leather armor     12  Albion     30s 40c  derived (same type/slot/level)
+  Hollowed Unicorn Horn                    jewelry           23  Hibernia 3g 63s 99c  derived (same type/slot/level)
   Hound Tooth                              weapon            20  Albion     74s 22c  derived (same type/slot/level)
+  Hunter's Vest                            studded armor     25  Albion   15g 55s 20c  derived (same type/slot/level)
+  Huntsman's Jerkin                        studded armor     20  Midgard  6g 76s 80c  derived (same type/slot/level)
+  Ilmenite Laced Chain Sleeves             chain armor       49  Albion         25c  period page / sibling
+  Imperial Golden Hammer                   weapon            22  Hibernia 9g 62s 40c  derived (same type/slot/level)
   Infernal Cloak                           jewelry           41  Hibernia       20c  period page / sibling
+  Infernal Edge                            weapon            42  Hibernia 86g 50s 80c  derived (same type/slot/level)
   Iridescent Sylph Coif                    scale armor       49  Hibernia       20c  period page / sibling
+  Iridescent Sylph Druid Gloves            scale armor       49  Hibernia       10g  derived (same type/slot/level)
   Iridescent Sylph Hauberk                 scale armor       51  Hibernia       10g  derived (same type/slot/level)
+  Iron-Strapped Shield                     shield             6  Albion      6s 60c  derived (same type/slot/level)
+  Kedger Flute                             instrument        16  Hibernia       20c  period page / sibling
+  Kedger Lute                              instrument        16  Hibernia       21c  period page / sibling
+  Kedger Staff of Enchantment              weapon            18  Hibernia    4g 80s  derived (same type/slot/level)
+  Kedger Staff of Mentalism                weapon            18  Hibernia    4g 80s  derived (same type/slot/level)
+  Kedger Staff of Void Magic               weapon            18  Hibernia    4g 80s  derived (same type/slot/level)
+  Keeper's Friend                          weapon            25  Hibernia 24g 33s 60c  derived (same type/slot/level)
+  Keeper's Shade                           jewelry           23  Hibernia    2g 99s  derived (same type/slot/level)
+  Keltoi Infiltraitors Disguise            leather armor     24  Albion     13g 32s  derived (same type/slot/level)
   Kobil's Fiery Gauntlets                  scale armor       49  Hibernia       10g  derived (same type/slot/level)
   Kobil's Fiery Gauntlets                  plate armor       49  Albion   7g 54s 38c  derived (same type/slot/level)
+  Kraken's Lost Tooth                      weapon            25  Hibernia   18g 72s  derived (same type/slot/level)
+  Kraken's Maw                             scale armor       20  Hibernia 7g 17s 60c  derived (same type/slot/level)
+  Large Stone Mace                         weapon            32  Hibernia 40g 17s 60c  derived (same type/slot/level)
+  Large Tomte Axe                          weapon             5  Midgard     4s 50c  derived (same type/slot/level)
   Lava Etched Sleeves                      chain armor       24  Midgard  9g 79s 20c  derived (same type/slot/level)
   Lava Forged Boots                        chain armor       26  Midgard  6g 22s 80c  derived (same type/slot/level)
+  Leather Deo Jerkin                       leather armor     49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Leech Husk Braver                        jewelry           42  Hibernia 4g 66s 22c  derived (same type/slot/level)
   Leggings of Mortification                plate armor       37  Albion   56g 5s 20c  derived (same type/slot/level)
+  Light Coral Crown                        cloth armor       50  Midgard  8g 1s 12c  derived (same type/slot/level)
+  Longsword of Rancor                      weapon            45  Albion   6g 17s 50c  derived (same type/slot/level)
+  Lost Soul's Gauche                       weapon            15  Albion   1g 36s 40c  derived (same type/slot/level)
+  Lost Sword of the Eternals               weapon            22  Albion   10g 65s 60c  derived (same type/slot/level)
+  Lucky Bootsyn                            reinforced armor  24  Hibernia 4g 17s 60c  derived (same type/slot/level)
+  Lucky Failm                              reinforced armor  22  Hibernia    6g 12s  derived (same type/slot/level)
+  Lucky Perree                             reinforced armor  24  Hibernia   21g 60s  derived (same type/slot/level)
+  Lucky Rhusag                             jewelry           25  Hibernia 4g 15s 99c  derived (same type/slot/level)
+  Lucky Striker                            weapon            30  Hibernia 39g 31s 20c  derived (same type/slot/level)
+  Mace of the Meek                         weapon            20  Albion   3g 99s 60c  derived (same type/slot/level)
+  Magmas Imbued Helm                       leather armor     47  Albion   7g 6s 16c  derived (same type/slot/level)
+  Malroch's Tenderizer (Midgard hammer)    weapon            40  Midgard    55g 89s  derived (same type/slot/level)
+  Mephit Eye                               jewelry           23  Hibernia 3g 63s 99c  derived (same type/slot/level)
   Mind Staff                               weapon            35  Albion         34c  period page / sibling
   Miscreant's Boots                        chain armor       13  Midgard    81s 20c  derived (same type/slot/level)
+  Missing Caster's Belt                    jewelry           26  Hibernia 2g 5s 10c  derived (same type/slot/level)
+  Missing Caster's Cap                     cloth armor       25  Hibernia 5g 18s 40c  derived (same type/slot/level)
+  Missing Caster's Gloves                  cloth armor       25  Hibernia    2g 88s  derived (same type/slot/level)
+  Mora Staff of Runecarving                weapon            23  Midgard    14g 40s  derived (same type/slot/level)
+  Mora Staff of Suppression                weapon            24  Midgard    28g 80s  derived (same type/slot/level)
+  Morbid Mantle                            jewelry           34  Albion   3g 24s 96c  derived (same type/slot/level)
   Musty Leather Helm                       leather armor     13  Albion   1g 34s 40c  period page / sibling
+  Nearahd Boots                            scale armor       29  Hibernia 14g 83s 20c  derived (same type/slot/level)
   Nearahd Coif                             scale armor       27  Hibernia   30g 60s  derived (same type/slot/level)
+  Nearahd Gloves                           scale armor       27  Hibernia 11g 37s 60c  derived (same type/slot/level)
+  Nearahd Hauberk                          scale armor       29  Hibernia 72g 86s 40c  derived (same type/slot/level)
+  Nearahd Leggings                         scale armor       29  Hibernia 44g 20s 80c  derived (same type/slot/level)
+  Nearahd Sleeves                          scale armor       27  Hibernia 20g 44s 80c  derived (same type/slot/level)
+  Night's Fall Halberd                     weapon            15  Albion   1g 99s 60c  derived (same type/slot/level)
+  Noble Overlord Pendant                   jewelry           50  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Odd Ball                                 jewelry           25  Hibernia 4g 15s 99c  derived (same type/slot/level)
   Ominous Moonstruck Hammer                weapon            39  Midgard        32c  period page / sibling
   Pants of the Malignant                   cloth armor       13  Midgard     1g 44s  derived (same type/slot/level)
   Parthanon Fist                           weapon            26  Hibernia 19g 4s 40c  derived (same type/slot/level)
+  Perfect Gem                              jewelry           22  Hibernia 1g 21s 70c  derived (same type/slot/level)
+  Phantom Short Bow                        weapon            21  Hibernia 3g 88s 80c  derived (same type/slot/level)
   Pitted Dirk                              weapon             2  Hibernia        8c  source sell value x 2
   Pitted Elm Ashen Fellwood Staff          weapon             6  Albion         40s  derived (same type/slot/level)
+  Pitted Fellwood Cudgel                   weapon             2  Albion      1s 80c  derived (same type/slot/level)
+  Pitted Glowing Ire Wood Sapling Staff    weapon             1  Hibernia        2s  derived (same type/slot/level)
+  Pitted Hard Leather Shield               shield            13  Albion      5g 76s  period page / sibling
   Pitted Stiletto                          weapon             3  Hibernia        8c  source sell value x 2
-  Ring of the Stonewatch                   jewelry           50  Albion      1s 50c  period page / sibling
+  Pluc                                     weapon            28  Hibernia 28g 22s 40c  derived (same type/slot/level)
+  Pulsing Gem                              jewelry           42  Albion   4g 13s 36c  derived (same type/slot/level)
+  Rage Sprite Belt                         jewelry           18  Hibernia    2g 13s  derived (same type/slot/level)
+  Razor Bone Edge                          weapon            21  Albion   1g 98s 34c  derived (same type/slot/level)
+  Reinforced Deo Vest                      reinforced armor  49  Hibernia 6g 29s 80c  derived (same type/slot/level)
+  Ring of Alteration                       jewelry           20  Albion         22c  period page / sibling
+  Ring of Elemental Fury                   jewelry           20  Albion      2g 73s  derived (same type/slot/level)
+  Ring of the Stonewatch                   jewelry           39  Albion      1s 50c  period page / sibling
   Ringed Darksteel Gloves                  chain armor       41  Midgard  5g 45s 37c  derived (same type/slot/level)
   Roman Gladius                            weapon            13  Albion   1g 41s 60c  derived (same type/slot/level)
+  Runed Bloodbound Cap                     cloth armor       49  Midgard  7g 54s 38c  derived (same type/slot/level)
   Runed Bloodhound Cap                     cloth armor       49  Midgard        20c  period page / sibling
   Runed Bone Staff                         weapon            39  Midgard        28c  period page / sibling
+  Runed Clay Buckler                       shield            50  Midgard        10g  derived (same type/slot/level)
   Runic Clay Axe                           weapon            42  Midgard        21c  period page / sibling
+  Runic Clay War Hammer                    weapon            46  Midgard  57g 59s 10c  derived (same type/slot/level)
   Runic Rigid Orm Spine                    weapon            50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Sacrificial Dagger                       weapon            11  Albion         52s  derived (same type/slot/level)
+  Sapphire Dusted Robe                     cloth armor       49  Albion   7g 54s 38c  derived (same type/slot/level)
   Sentinel's Ring                          jewelry           37  Hibernia 3g 45s 12c  derived (same type/slot/level)
-  Sheet of Aged Beech Bark                 shield            43  Albion   7g 54s 36c  derived (same type/slot/level)
+  Serrated Black Tooth                     weapon            37  Midgard  4g 13s 36c  derived (same type/slot/level)
+  Sheet of Aged Beech Bark                 shield            30  Albion   6g 94s 80c  derived (same type/slot/level)
+  Shield of Spirit Might                   shield            20  Albion      3g 60s  derived (same type/slot/level)
   Shimmering Iridescent Sylph Druid Gloves scale armor       50  Hibernia       10g  derived (same type/slot/level)
   Shimmering Sturdy Crushed Breastplate    plate armor       50  Albion   8g 1s 12c  derived (same type/slot/level)
   Shimmering Sword of Soulshade            weapon            50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Shining Cur Shaghey                      weapon            24  Hibernia   14g 40s  derived (same type/slot/level)
   Shining Earth Crafted Scale Coif         scale armor       24  Hibernia 22g 10s 40c  derived (same type/slot/level)
   Shining Sheeroe Coif                     scale armor       47  Hibernia 6g 29s 80c  derived (same type/slot/level)
   Shining Sheeroe Gloves                   scale armor       47  Hibernia 5g 93s 4c  derived (same type/slot/level)
-  Silvered Eye                             jewelry           51  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Sidhe Spine Barbed Spear                 weapon            36  Hibernia   38g 88s  derived (same type/slot/level)
+  Silvered Eye                             jewelry           29  Hibernia 1g 84s 48c  derived (same type/slot/level)
+  Silvered Stolen Hunting Bow              weapon             7  Midgard         5s  derived (same type/slot/level)
+  Sinach's Great Tooth                     weapon            50  Hibernia 14g 95s 41c  derived (same type/slot/level)
+  Siog's Might                             weapon            31  Hibernia 2g 4s 12c  source sell value x 2
   Slaver Axe                               weapon            15  Albion      1g 48s  derived (same type/slot/level)
-  Smoldering Ebon Shield                   shield            51  Midgard        10g  derived (same type/slot/level)
-  Spirit Crafted Shield                    shield            51  Albion     29s 76c  source sell value x 2
-  Stick-figure Totem                       jewelry           19  Albion     93s 33c  derived (same type/slot/level)
+  Sleeves of the Lost                      cloth armor       18  Albion      2g 88s  derived (same type/slot/level)
+  Small Tusk                               weapon            10  Albion     25s 30c  derived (same type/slot/level)
+  Smoldering Ebon Shield                   shield            50  Midgard        10g  derived (same type/slot/level)
+  Snivel                                   weapon            17  Albion      1g 60s  derived (same type/slot/level)
+  Snowdonia Bandit Warmer                  jewelry           26  Albion   1g 66s 72c  derived (same type/slot/level)
+  Soiagh Blade                             weapon            24  Hibernia   19g 44s  derived (same type/slot/level)
+  Soot Encrusted Cap                       cloth armor       20  Midgard  2g 37s 60c  derived (same type/slot/level)
+  Soothsayer's Ring                        jewelry           14  Midgard  1g 11s 85c  derived (same type/slot/level)
+  Spectral Arms                            reinforced armor  28  Hibernia    9g 18s  derived (same type/slot/level)
+  Spectral Crusher                         weapon            50  Hibernia 8g 23s 38c  derived (same type/slot/level)
+  Spectral Flight                          weapon            40  Hibernia 5g 38s 42c  derived (same type/slot/level)
+  Spirit Bone Staff                        weapon            41  Midgard        28c  period page / sibling
+  Spirit Crafted Shield                    shield            14  Albion     29s 76c  source sell value x 2
+  Spirit Crafted Shortbow                  weapon            20  Albion   3g 88s 80c  derived (same type/slot/level)
+  Stick-figure Totem                       jewelry           14  Albion      1g 30s  derived (same type/slot/level)
+  Stonewatch Gauntlets                     plate armor       38  Albion         25c  period page / sibling
   Stonewatch Leggings                      plate armor       40  Albion   31g 99s 63c  derived (same type/slot/level)
+  Stormcaller Woeful Gloves                chain armor       20  Midgard  4g 10s 40c  derived (same type/slot/level)
+  Sure Shot Crossbow                       weapon            17  Albion   3g 21s 60c  derived (same type/slot/level)
+  Sword of Valor                           weapon            48  Hibernia 10g 19s 4c  derived (same type/slot/level)
   Tattered Cured Leather Hood              leather armor     10  Albion         48s  period page / sibling
   Tattered Silk Boned Arms                 studded armor      8  Albion     22s 40c  derived (same type/slot/level)
+  Thumper                                  weapon            29  Hibernia 44g 6s 40c  derived (same type/slot/level)
+  Tiny Unicorn Horn                        weapon            16  Hibernia 1g 41s 60c  derived (same type/slot/level)
   Tomb Priestess Bracelet                  jewelry           24  Midgard  2g 5s 10c  derived (same type/slot/level)
-  Topaz Studded Shell Flute                instrument        30  Hibernia       20c  period page / sibling
+  Topaz Studded Shell Flute                instrument        36  Hibernia       20c  period page / sibling
   Troika's Cursed Axe                      weapon            24  Midgard  17g 56s 80c  derived (same type/slot/level)
   Troll Hide Sleeves                       leather armor     12  Albion     44s 80c  derived (same type/slot/level)
+  Twined Sentinel                          weapon            28  Hibernia 28g 22s 40c  derived (same type/slot/level)
   Twisted Forestdweller Boots              reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
   Twisted Lusus Boots                      reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Twisted Melody Helm                      reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Valorous Hauberk                         scale armor       47  Hibernia 7g 54s 36c  derived (same type/slot/level)
+  Valorous Mane                            jewelry           48  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Vaporous Sleeves                         cloth armor       30  Midgard        25c  period page / sibling
+  Varulv Icy Spear                         weapon            39  Midgard  68g 36s 40c  derived (same type/slot/level)
+  Vest of Living Flame                     cloth armor       29  Midgard  4g 39s 63c  derived (same type/slot/level)
   Vest of the Vile Dominion                studded armor     51  Albion         10g  derived (same type/slot/level)
   Vest of the Vile Dominion                reinforced armor  49  Hibernia 6g 29s 80c  derived (same type/slot/level)
+  Vindicator's Staff of Mentalism          weapon            50  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Vindicator's Staff of the Void           weapon            50  Hibernia       21c  period page / sibling
   Warden's Sword                           weapon            19  Albion     57s 80c  source sell value x 2
+  Waylayer Short Sword                     weapon            26  Hibernia 11g 37s 60c  period page / sibling
+  Wicked Wulf Belt                         jewelry           39  Midgard  4g 26s 18c  derived (same type/slot/level)
+  Will Shatterer                           weapon            26  Hibernia 24g 98s 40c  derived (same type/slot/level)
+  Wind Imbued Gloves                       cloth armor       49  Albion   8g 1s 12c  derived (same type/slot/level)
   Wind Swept Staff                         weapon            29  Midgard  4g 32s 54c  derived (same type/slot/level)
+  Windy Crusher                            weapon            29  Hibernia       21c  period page / sibling
+  Windy Staff                              weapon            31  Albion         20c  period page / sibling
+  Wispy Rigid Orm Spine                    weapon            50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Woeful Chain Coif                        chain armor       19  Midgard  7g 17s 60c  derived (same type/slot/level)
   Woeful Chain Gloves                      chain armor       20  Midgard  4g 10s 40c  derived (same type/slot/level)
+  Woeful Melody Gloves                     chain armor       18  Midgard  2g 48s 40c  derived (same type/slot/level)
   Wormskin Boots                           leather armor     14  Albion     45s 60c  derived (same type/slot/level)
+  Wormskin Gloves                          leather armor     15  Albion     45s 60c  derived (same type/slot/level)
+  Wormskin Jerkin                          leather armor     15  Albion   2g 23s 20c  derived (same type/slot/level)
   Wormskin Leggings                        leather armor     12  Albion     25s 92c  source sell value x 2
+  Wormskin Sleeves                         leather armor     15  Albion     89s 20c  derived (same type/slot/level)
   Worn Boots of Dissolution                chain armor       36  Albion   3g 55s 80c  derived (same type/slot/level)
   Worn Sleeves of Dissolution              chain armor       36  Albion   3g 45s 12c  derived (same type/slot/level)
   Woven Elemental Boots                    cloth armor       41  Albion   5g 45s 99c  derived (same type/slot/level)
@@ -1725,17 +2035,18 @@ ITEMS ADDED
   Woven Elemental Sleeves                  cloth armor       41  Albion   7g 54s 38c  source sell value x 2
   Woven Elemental Vest                     cloth armor       41  Albion         26c  period page / sibling
   Woven Silksteel Cap                      cloth armor       41  Midgard  3g 66s 48c  source sell value x 2
+  Wrathfully Righteous Beads               jewelry           27  Hibernia 2g 62s 34c  derived (same type/slot/level)
 
 Price note: "value" is the item price; merchants pay half. "estimated" = vendor trash with no period price (owner
 allowed); equipment stats are only from period pages (Allakhazam <= 2003-11 or Uthgard), never invented.
 
 NOT ADDED (for reference)
 ------------------------------------------------------------
-Monsters skipped: no position 202, no model 40, boss or scripted 29, other 4, duplicate 2
-  no position: Adimedus (Trollheim); Agorn (Emain Macha); Apparition (Dales of Devwy); Apple Wood Spirit (Caldey); Apple Wood Spirit (Dales of Devwy); Apple Wood Spirit (Gwyddneau); Arawn Commander (Pennine Mountains); Arawnite Assassin (Snowdonia); Archived Souls (DARKNESS FALLS DUNGEON); Breeze (Svealand East); Briton woodcutter (Breifine); Caoranach (Lough Derg); Carnage Ghoul (Gwyddneau); Celtic brehon (Breifine); Ceriallen (Forest Sauvage); Cichol Grichnos (Vale of Balor); Cornwall Leader (Cornwall); Crudely Crafted Dwarf (Dales of Devwy); Darlin the Ablastere (Delling Crater); Destrier Ceingalad (Pennine Mountains); Drakoran Thaumaturge (Dales of Devwy); Eildon (Pennine Mountains); Eli Twigg (Pennine Mountains); Fallen (Llyn Barfog); Famuel, Kireasil, Yonzael (DARKNESS FALLS DUNGEON); First Run Assembly (Dales of Devwy); Fomorian underling (Breifine); Forsaken (Llyn Barfog); Glimmer Spass (Sheeroe Hills); Glipin (Pennine Mountains); Gwalchmai (Pennine Mountains); Hawthorn (Pennine Mountains); Heap (Dales of Devwy); Hwch Ddu Gota (Pennine Mountains); Ice Sculptor (Gripklosa Mountains); Intimidator (Gwyddneau); LULId Ulylll Lunger (Dales of Devwy); Lich Lord (Caldey); Mathair (Mt. Collory); Norseman chopper (Breifine); Old Scrap Pile (Dales of Devwy); Orin Coldtoes (Gripklosa Mountains); Parg the Hunter (Gripklosa Mountains); Peralt Griffon-slayer (Delling Crater); Remadun den Laerd (Trollheim); Rognar (Delling Crater); Rognar (Iarnvidiur); Scuab (Mt. Collory); Shade of Adimedus (Trollheim); Spindle (Dales of Devwy); Sr'ral's Shadow (Dales of Devwy); Swiftfoot (Lough Derg); Taman (Emain Macha); Undeath Walking (Gwyddneau); Urpont (Cothrom Gorge); Yrial (Emain Macha); alp luachra (Cruachan Gorge); amadan touched (Mt. Collory); ancient shale golem (Munin Sound); balorian ansgar (Tur Suil); balorian batair (Tur Suil); balorian conlaoch (Tur Suil); balorian diolmhain (Tur Suil); balorian ewyn (Tur Suil); balorian ferdiad (Tur Suil); balorian liosliath (Tur Suil); balorian owin (Tur Suil); bird-eating frog (Mt. Collory); bocaidhe (Mt. Collory); bodach (Cruachan Gorge); bodach (Mt. Collory); botonid displacer (Domnann); carnitaur (Faraheim); celt spirit (Sheeroe Hills); cluricaun (Cruachan Gorge); cluricaun (Mt. Collory); cniogcrag annoyance (Vigilant Rock); cronsidhe (Cliffs of Moher); domnann angler (Domnann); drau'gyn advowee / drau'gyn armourer (Avalon City); drau'gyn calciner (Avalon City); drau'gyn courier (Avalon City); drau'gyn domesman (Avalon City); drau'gyn herbalist (Avalon City); drau'gyn jongleur (Avalon City); drau'gyn scribe (Avalon City); dry'ak accompant (Avalon City); dry'ak artificer (Avalon City); dry'ak scrivener (Avalon City); dry'ak zouave (Avalon City); dryad (Avalon Marsh); elf spirit (Sheeroe Hills); empyrean sentinel (Cruachan Gorge); etvarg packleader (Delling Crater); etvarg packleader (Iarnvidiur); fading spirit (Avalon Marsh); faerie badger (Cruachan Gorge); far liath (Mt. Collory); firbolg spirit (Sheeroe Hills); fire giant spirit (Muspelheim); fishing bear forager (Lough Gur); fomorian carnivian (Fomor); fomorian chapestian (Fomor); fomorian cruerrior (Fomor); fomorian depressoer (Fomor); fomorian dibreer (Fomor); fomorian ferad (Fomor); fomorian hiccor (Fomor); fomorian insipistruct (Vale of Balor); fomorian marhoder (Fomor); fomorian nelmar (Fomor); fomorian pecitor / fomorian pelistruct (Fomor); fomorian radden (Caillte Garran); fomorian radiac (Caillte Garran); fomorian saveast (Fomor); fomorian zasser (Fomor); forest grazer calf (Vigilant Rock); frosty colt (Uppland); frosty colt (Yggdra Forest); fungal shredder (Faraheim); ghoulie (Cruachan Gorge); ghoulie (Mt. Collory); giant ant (Mt. Collory); giant beetle (Lough Gur); giant beetle (Mt. Collory); glimmer spirit (Sheeroe Hills); goblin imperator (Dungeon: Stonehenge Barrows); graugach (Mt. Collory); greater angler (Caillte Garran); greater zephyr (Mt. Collory); grimwood keeper (Pennine Mountains); gungledar (Trollheim); hibernian tiarna (DARKNESS FALLS DUNGEON); hill hound (Cruachan Gorge); hrimthursa trophy-hunter (Delling Crater); juvenile megafelid (Breifine); lesser angler (Caillte Garran); lough wolf (Lough Gur); luch catcher (Mt. Collory); lunger (Bog of Cullen); lurikeen spirit (Sheeroe Hills); mantid dissembler (Caillte Garran); mantid exterminator (Caillte Garran); mantid priest (Caillte Garran); mantid warlock (Caillte Garran); master hunter (Forest Sauvage); mist wraith (Lough Gur); morghoul (Mt. Collory); mountain mephit (Cruachan Gorge); mountain mephit (Mt. Collory); murrisk (Silvermine Mountains); norse stormur herra (DARKNESS FALLS DUNGEON); pixie imp (Campacorentin Forest); poisonous sylvanshade (Caillte Garran); rage sprite (Cruachan Gorge); rage wolf (Mt. Collory); rapacious shriller (Caillte Garran); river drakeling (Avalon Marsh); river sprite (Avalon Marsh); roane companion (Shannon Estuary); robber (Campacorentin Forest); rock guardian (Mt. Collory); rot (Trollheim); sand ooze (Munin Sound); serpentine shard (Gripklosa Mountains); sett dweller (Breifine); sett youngling (Mt. Collory); siog raider (Cruachan Gorge); skimmer (Domnann); spirit (Avalon Isle); spraggonale (Cruachan Gorge); spraggonale (Mt. Collory); squabbler (Mt. Collory); starving trained guagaran (Avalon City); streaming wisp (Cruachan Gorge); streaming wisp (Mt. Collory); syhr'phint caird (Avalon City); syhr'phint crozier (Avalon City); syhr'phint gaoler (Avalon City); syhr'phint verger (Avalon City); thrawn modig beorn (Caer Sidi); thrawn ogre attacker (Caer Sidi); torcan (Mt. Collory); tree spirit (Vigilant Rock); undead hem'varn (Trollheim); vindictive bocan (Cruachan Gorge); vindictive bocan (Lough Gur); vyr'em bloodman (Avalon City); vyr'em ordinary (Avalon City); vyr'em ostler (Avalon City); vyr'em riftere (Avalon City); walking rock (Mt. Collory); wi'voron alchemist (Avalon City); wi'voron archiller (Avalon City); wi'voron bowyer (Avalon City); wi'voron gynour (Avalon City); wicked sylvanshade (Vale of Balor); wight (Dungeon: Stonehenge Barrows); wild lucradan (Lough Gur); wrath sprite (Cruachan Gorge); young forest runner (Forest Sauvage); zephyr wraith (Mt. Collory)
-  no model: Anne Fhitich (Forest Sauvage); Atax (Emain Macha); Blaieseach (Valley of Bri Leith); Cachia (Connacht); Caelis Manoi (Skona Ravine); Celtic brehon (Cruachan Gorge); Celtic brehon (Mt. Collory); Dissolver (Gwyddneau); Evian Fhitich (Forest Sauvage); Fanin (Jamtland Mountains); Fearg (Connacht); Frej (Yggdra Forest); Frykte (Vale of Mularn); Grakin (Iarnvidiur); Gualach (Mt. Collory); Krisen Flek (Gotar); Major Terentius (Vanern Swamp); Maol (Cruachan Gorge); Nik (Myrkwood Forest); Norseman chopper (Cruachan Gorge); Norseman chopper (Mt. Collory); Quinlan (Emain Macha); Ralsen (Myrkwood Forest); Rat Trap (Cruachan Gorge); Ria (Myrkwood Forest); Sir Charles (Yggdra Forest); Smerte (Vale of Mularn); Sunderer (Breifine); Tracker (Valley of Bri Leith); Yip (Myrkwood Forest); carnitaur (Delling Crater); carnitaur (Iarnvidiur); elf-eater (Domnann); enoga (Vale of Mularn); kraken (Gotar); rack of spikes (Tur Suil); spinolich (Delling Crater); spinolich (Iarnvidiur); undead minion (Uppland); wall spike (Tur Suil)
+Monsters skipped: no position 344, no model 51, boss or scripted 29, other 15, duplicate 5
+  no position: Adimedus (Trollheim); Agorn (Emain Macha); Apparition (Dales of Devwy); Apple Wood Spirit (Caldey); Apple Wood Spirit (Dales of Devwy); Apple Wood Spirit (Gwyddneau); Arawn Commander (Pennine Mountains); Arawnite Assassin (Snowdonia); Archived Souls (DARKNESS FALLS DUNGEON); Breeze (Svealand East); Briton woodcutter (Breifine); Caoranach (Lough Derg); Carnage Ghoul (Gwyddneau); Celtic brehon (Breifine); Ceriallen (Forest Sauvage); Cichol Grichnos (Vale of Balor); Cornwall Leader (Cornwall); Crudely Crafted Dwarf (Dales of Devwy); Darlin the Ablastere (Delling Crater); Destrier Ceingalad (Pennine Mountains); Drakoran Thaumaturge (Dales of Devwy); Eildon (Pennine Mountains); Eli Twigg (Pennine Mountains); Fallen (Llyn Barfog); Famuel, Kireasil, Yonzael (DARKNESS FALLS DUNGEON); First Run Assembly (Dales of Devwy); Fomorian underling (Breifine); Forsaken (Llyn Barfog); Glimmer Spass (Sheeroe Hills); Glipin (Pennine Mountains); Gwalchmai (Pennine Mountains); Hawthorn (Pennine Mountains); Heap (Dales of Devwy); Hwch Ddu Gota (Pennine Mountains); Ice Sculptor (Gripklosa Mountains); Intimidator (Gwyddneau); LULId Ulylll Lunger (Dales of Devwy); Lich Lord (Caldey); Major Terentius (Raumarik); Mathair (Mt. Collory); Norseman chopper (Breifine); Old Scrap Pile (Dales of Devwy); Orin Coldtoes (Gripklosa Mountains); Parg the Hunter (Gripklosa Mountains); Peralt Griffon-slayer (Delling Crater); Remadun den Laerd (Trollheim); Remandun den Laerd (Trollheim); Rognar (Delling Crater); Rognar (Iarnvidiur); Rot (Trollheim); Scuab (Mt. Collory); Serpentine Shard (Gripklosa Mountains); Shade of Adimedus (Trollheim); Shade of Adimendus (Trollheim); Spindle (Dales of Devwy); Sr'ral's Shadow (Dales of Devwy); Swiftfoot (Lough Derg); Taman (Emain Macha); Undead Hem'varn (Trollheim); Undeath Walking (Gwyddneau); Urpont (Cothrom Gorge); Yrial (Emain Macha); alp luachra (Cruachan Gorge); amadan touched (Mt. Collory); ancient shale golem (Munin Sound); balorian ansgar (Tur Suil); balorian batair (Tur Suil); balorian conlaoch (Tur Suil); balorian diolmhain (Tur Suil); balorian ewyn (Tur Suil); balorian ferdiad (Tur Suil); balorian liosliath (Tur Suil); balorian owin (Tur Suil); bird-eating frog (Mt. Collory); bocaidhe (Mt. Collory); bodach (Cruachan Gorge); bodach (Mt. Collory); botonid displacer (Domnann); carnitaur (Faraheim); celt spirit (Sheeroe Hills); cluricaun (Cruachan Gorge); cluricaun (Mt. Collory); cniogcrag annoyance (Vigilant Rock); cronsidhe (Cliffs of Moher); domnann angler (Domnann); drakoran thaumaturge (Dales of Devwy); drau'gyn advowee / drau'gyn armourer (Avalon City); drau'gyn calciner (Avalon City); drau'gyn courier (Avalon City); drau'gyn domesman (Avalon City); drau'gyn herbalist (Avalon City); drau'gyn jongleur (Avalon City); drau'gyn scribe (Avalon City); dry'ak accompant (Avalon City); dry'ak artificer (Avalon City); dry'ak scrivener (Avalon City); dry'ak zouave (Avalon City); dryad (Avalon Marsh); elf spirit (Sheeroe Hills); empyrean sentinel (Cruachan Gorge); etvarg packleader (Delling Crater); etvarg packleader (Iarnvidiur); fading spirit (Avalon Marsh); faerie badger (Cruachan Gorge); far liath (Mt. Collory); firbolg spirit (Sheeroe Hills); fire giant spirit (Muspelheim); fishing bear forager (Lough Gur); fomorian carnivian (Fomor); fomorian chapestian (Fomor); fomorian cruerrior (Fomor); fomorian depressoer (Fomor); fomorian dibreer (Fomor); fomorian ferad (Fomor); fomorian hiccor (Fomor); fomorian insipistruct (Vale of Balor); fomorian marhoder (Fomor); fomorian nelmar (Fomor); fomorian pecitor (Fomor); fomorian pecitor / fomorian pelistruct (Fomor); fomorian pelistruct (Fomor); fomorian radden (Caillte Garran); fomorian radiac (Caillte Garran); fomorian saveast (Fomor); fomorian zasser (Fomor); forest grazer calf (Vigilant Rock); frosty colt (Uppland); frosty colt (Yggdra Forest); fungal shredder (Faraheim); ghoulie (Cruachan Gorge); ghoulie (Mt. Collory); giant ant (Mt. Collory); giant beetle (Lough Gur); giant beetle (Mt. Collory); glimmer spirit (Sheeroe Hills); goblin imperator (Dungeon: Stonehenge Barrows); graugach (Mt. Collory); greater angler (Caillte Garran); greater zephyr (Mt. Collory); grimwood keeper (Pennine Mountains); gungledar (Trollheim); hibernian tiarna (DARKNESS FALLS DUNGEON); hill hound (Cruachan Gorge); hrimthursa trophy-hunter (Delling Crater); juvenile megafelid (Breifine); lesser anglator (Caillte Garran); lesser angler (Caillte Garran); lough wolf (Lough Gur); luch catcher (Mt. Collory); lunger (Bog of Cullen); lunger (Dales of Devwy); lurikeen spirit (Sheeroe Hills); mantid dissembler (Caillte Garran); mantid exterminator (Caillte Garran); mantid priest (Caillte Garran); mantid warlock (Caillte Garran); master hunter (Forest Sauvage); mist wraith (Lough Gur); morghoul (Mt. Collory); mountain mephit (Cruachan Gorge); mountain mephit (Mt. Collory); murrisk (Silvermine Mountains); norse stormur herra (DARKNESS FALLS DUNGEON); pixie imp (Campacorentin Forest); poisonous sylvanshade (Caillte Garran); rage sprite (Cruachan Gorge); rage wolf (Mt. Collory); rapacious shriller (Caillte Garran); river drakeling (Avalon Marsh); river sprite (Avalon Marsh); roane companion (Shannon Estuary); robber (Campacorentin Forest); rock guardian (Mt. Collory); rot (Trollheim); sand ooze (Munin Sound); serpentine shard (Gripklosa Mountains); sett dweller (Breifine); sett youngling (Mt. Collory); siog raider (Cruachan Gorge); skimmer (Domnann); spirit (Avalon Isle); spraggonale (Cruachan Gorge); spraggonale (Mt. Collory); squabbler (Mt. Collory); starving trained guagaran (Avalon City); streaming wisp (Cruachan Gorge); streaming wisp (Mt. Collory); syhr'phint caird (Avalon City); syhr'phint crozier (Avalon City); syhr'phint gaoler (Avalon City); syhr'phint verger (Avalon City); thrawn modig beorn (Caer Sidi); thrawn ogre attacker (Caer Sidi); torcan (Mt. Collory); tree spirit (Vigilant Rock); undead hem'varn (Trollheim); vindictive bocan (Cruachan Gorge); vindictive bocan (Lough Gur); vyr'em bloodman (Avalon City); vyr'em ordinary (Avalon City); vyr'em ostler (Avalon City); vyr'em riftere (Avalon City); walking rock (Mt. Collory); wi'voron alchemist (Avalon City); wi'voron archiller (Avalon City); wi'voron bowyer (Avalon City); wi'voron gynour (Avalon City); wicked sylvanshade (Vale of Balor); wight (Dungeon: Stonehenge Barrows); wild lucradan (Lough Gur); wrath sprite (Cruachan Gorge); young forest runner (Forest Sauvage); zephyr wraith (Mt. Collory)
+  no model: Anne Fhitich (Forest Sauvage); Atax (Emain Macha); Blaieseach (Valley of Bri Leith); Cachia (Connacht); Caelis Manoi (Skona Ravine); Celtic brehon (Cruachan Gorge); Celtic brehon (Mt. Collory); Dissolver (Gwyddneau); Eli Twigg (Pennine Mountains); Evian Fhitich (Forest Sauvage); Fanin (Jamtland Mountains); Fearg (Connacht); Frej (Yggdra Forest); Frykte (Vale of Mularn); Grakin (Iarnvidiur); Gualach (Mt. Collory); Krisen Flek (Gotar); Major Terentius (Vanern Swamp); Maol (Cruachan Gorge); Nik (Myrkwood Forest); Norseman chopper (Cruachan Gorge); Norseman chopper (Mt. Collory); Quinlan (Emain Macha); Ralsen (Myrkwood Forest); Rat Trap (Cruachan Gorge); Ria (Myrkwood Forest); Sir Charles (Yggdra Forest); Smerte (Vale of Mularn); Sunderer (Breifine); Tracker (Valley of Bri Leith); Yip (Myrkwood Forest); carnitaur (Delling Crater); carnitaur (Iarnvidiur); elf-eater (Domnann); enoga (Vale of Mularn); kraken (Gotar); rack of spikes (Tur Suil); spinolich (Delling Crater); spinolich (Iarnvidiur); undead minion (Uppland); wall spike (Tur Suil)
   boss or scripted: Aine (Lough Gur); Arr (Gripklosa Mountains); Bodb (Lough Gur); Earl Gerald (Lough Gur); Emissary of Logi (Delling Crater); Garran Treant Seedling (Cothrom Gorge); Gormror (Munin Sound); Hamorik (Caldey); Spirit of the Forge (Delling Crater); Talvor's Spirit (Munin Sound); Tyian Pieces (Dales of Devwy); Yecats (Skona Ravine); central treant sprout (Domnann); forest grazer calf (Caillte Garran); ixthiar creeper (Vale of Balor); lesser sylvanshade (Caillte Garran); mastered weapon (Delling Crater); obsidian doomward (Delling Crater); panicked syhr'phint (Avalon City); scourgin (Domnann); siabra escort (Lough Gur); thrawn ogre squad-leader (Aldland); treant sprout (Domnann); undead armswoman (Salisbury Plains); undead cleric (Salisbury Plains); undead mercenary (Salisbury Plains); undead mercenary lieutenant (Salisbury Plains); undead paladin (Salisbury Plains); undead paladin lieutenant (Salisbury Plains)
-  other: Ciar the Merrow Maiden (Shannon Estuary); Major Terentius (Raumarik); tomb raider scout (Vanern Swamp); water vapor (Delling Crater)
+  other: Apparition (Dales of Devwy); Arawn Commander (Pennine Mountains); Carnage Ghoul (Gwyddneau); Ciar the Merrow Maiden (Shannon Estuary); Intimidator (Gwyddneau); Major Terentius (Raumarik); Sr'ral's Shadow (Dales of Devwy); Undeath Walking (Gwyddneau); forest grazer calf (Vigilant Rock); robber (Campacorentin Forest); tomb raider scout (Vanern Swamp); tree spirit (Vigilant Rock); water vapor (Delling Crater)
 Equipment with no period stat source (not built, no invented stats): 243
   Acid Etched Gauntlets; Acid Etched Sleeves; Aeiry Belt; Aotrom Pearls; Arrows of Slaying; Arrows of the Fallen; Ashen Axe; Basher's Finger; Basher's Sash; Beater's Bludgeon; Beater's Poked Eye; Bevard's Ghostly Chain; Bilk's Spear; Bloodstone Left Eye; Bloodstone Right Eye; Bog Strider (any piece of armor); Boots of the Lost; Bracer of Restless Souls; Cailiondar Bracer of Piety; Caster's Missing Eye; Celestial Cailiondar Hauberk; Celestial Cailiondar Jerkin; Celestial Pearl Necklace; Ceremonial Dirk; Chain Boots of Disparity; Chain Coif of Disparity; Chain Leggings of Disparity; Chain of Rage; Cliff Dweller Drum; Cliff Dweller Hammer; Cliff Dweller Lute; Cliff Dweller Recurved Bow; Cliff Dweller Skewer; Cliff Dweller Sword; Conquerer's Cloak; Crackling Ebon Gloves; Cronsidhe Biter; Cronsidhe's Red Eye; Crossbow of the Penitent; Crystalized Dwarven Remains; Crystalized Kobold Remains; Cyclop's Pupil; Cyclops Headsman's Axe; Dancing Bones Drum; Dancing Bones Flute; Dancing Bones Lute; Deo Hauberk; Diamond Dusted Robe; Draoi Shield; Draoish Sickle; Dusk Dweller (any piece of armor); Dusty Leggings; Elder Fellwood Staff; Elder Staff of Earthen Fire; Elder Staff of Wintry Winds; Empathetic Jewel; Empyreal Helm; Empyreal Leggings; Empyreal Ranger Gauntlets; Empyreal Sleeves; Enchanter's Fine (armor set pieces); Enslaved Biter's Muzzle Wrap; Enslaved Orm's Collar; Ether Cloak; Ethereal Zephyr Bracelet; Faerie Eye; Fainne Necklace; Fallen Archer's Stiletto; Fanatical Great Sword; Fanged Tooth; Fiery Staff; Filthy Hide Pants; Flame of the Earth Boots; Flame of the Earth Pants; Flattened Eye Shield; Flawed Gem; Fomorian Staff of Light; Fomorian Staff of Mana; Forked Mephit Tail; Frozen Staff; Gem of a Champion; Granite Seer's Gloves of the Spirit; Herb Gatherer's Gloves; High Priest's Gem of Retribution; High Priest's Silken Vestment; High Priest's Velvet Cape; Hunter's Vest; Huntsman's Leather Jerkin; Ilmenite Laced Chain Sleeves; Imbued Shield of Bone; Imperial Golden Hammer; Impish Bracer; Impish Cloak; Impish Frock; Impish Gem; Impish Leather (armor set pieces); Impish Necklace; Impish Ring; Infernal Edge; Intricate Sea Shell Bracelet; Ircon Bound Chain Mittens; Iridescent Sylph Druid Gloves; Iron-Strapped Shield; Jewel of Adroitness; Kedger Flute; Kedger Lute; Kedger Staff of Enchantment; Kedger Staff of Mentalism; Kedger Staff of Void Magic; Keeper's Friend; Keeper's Shade; Kraken's Maw; Large Stone Mace; Large Tomte Axe; Leather Deo Jerkin; Light Coral Crown; Lost Soul's Gauche; Lost Sword of the Eternals; Lost Tooth; Lucky Bootsyn; Lucky Failm; Lucky Perree; Lucky Rhusag; Lucky Striker; Macabre Muire Club; Mace of the Meek; Magmas Imbued Helm; Malefic Shield; Malevolent Shield; Malroch's Tenderizer; Masterful Moonglade Boots; Melodic Moonglade Sleeves; Mephit Eye; Missing Caster's Belt; Missing Caster's Cap; Missing Caster's Gloves; Mithran Crusher; Mithran Slasher; Mora Staff of Runecarving; Mora Staff of Suppression; Morbid Jewel of Skill; Morbid Muire Mace; Nearahd Boots; Nearahd Gloves; Nearahd Hauberk; Nearahd Leggings; Nearahd Sleeves; Night's Fall Halberd; Noble Overlord Pendant; Perfect Gem; Phantom Arrows; Phantom Short Bow; Pitted Fellwood Cudgel; Pitted Firesteel; Pitted Glowing Ng Kit Ire Wood Sapling Staff; Pitted Hard Leather Shield; Pitted Main Gauche; Pitted Rapier; Pitted Shimmering Battle Axe; Pitted Shimmering Great Sword; Pitted Shimmering Sharp Claw; Pitted Staff; Pluc; Porcine Amulet; Pulsing Gem; Rage Sprite Belt; Ranger's Last Flight; Razor Bone Edge; Reinforced Deo Vest; Ring of Alteration; Ring of Elemental Fury; Royal Lupine Gem; Royal Lupine Necklace; Royal Lupine Ring; Runed Bloodbound Cap; Runed Bone Staff; Runed Clay Buckler; Runic Clay War Hammer; Sacrificial Dagger; Sapphire Dusted Robe; Serrated Black Tooth; Shield of Bone; Shield of Spirit Might; Shimmering Am Willow Dirge Flute; Shrug; Sidhe Spine Barbed Spear; Silvered Arrow; Sleeves of the Lost; Small Tusk; Soiagh Blade; Soot Encrusted Cap; Soothsayer's Ring; Soulbinder's Gauntlets; Soulrager's Boots; Soulrager's Helm; Soulrager's Legs; Spectral Arms; Spectral Crusher; Spectral Flight; Spectral Flight Arrows; Spirit Bone Staff; Stonewatch Gauntlets; Stormcaller Woeful Gloves; Sure Shot Crossbow; Sword of Valor; Tattered Cailiocht; Tattered Chain Legs; Tattered Chain Mittens; Tattered Chain Sleeves; Tattered Hard Leather; Tattered Lamellar Arms; Tattered Quilted; Tattered Sapphire Brea Sleeves; Tattered Shimmering Leather; Tattered Shimmering Sapphire Tacuil; Tattered Stone Cailiocht; Tattered Studded Gauntlets; Tattered Woolen Robes; Throwing Knives; Tomte Axe; Twined Sentinel; Twisted Melody Helm; Valorous Hauberk; Valorous Mane; Vaporous Sleeves; Varulv Icy Spear; Vest of Living Flame; Vindicator's Staff of Mentalism; Vindicator's Staff of the Void; War Mattock; Waylayer Short Sword; Wicked Wulf Belt; Wicked Wulf Gem; Windy Crusher; Windy Staff; Wispy Rigid Orm Spine; Woeful Chain Coif; Woeful Melody Gloves; Wormskin Gloves; Wormskin Jerkin; Wormskin Sleeves; Wrathfully Righteous Beads; a Suit of Tattered Shimmering Studded armor
 Drops left out by the 15-level rule (a low-level monster of the same name elsewhere): Pebble -> p165_prima_chunk_of_silver; tree spirit -> p165_prima_glowing_green_seed; tree spirit -> p165_prima_seed_pod
