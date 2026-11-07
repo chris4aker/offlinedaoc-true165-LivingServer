@@ -1,7 +1,11 @@
 class_name SrvCompanionWindow
 extends ClassicWindow
 ## True 1.65 Mode: one hired companion's window, from the server's messages (CompanionNet, plan 17h).
-##   GEAR   its worn items on a paper doll and its bag - 10 slots, no weight limit (op 7; owner 2026-10-30). Drag an item from your backpack onto a slot to put it on
+##   GEAR   its worn items on a paper doll and its bag - 10 slots, no weight limit (op 7; owner 2026-10-30). The doll is
+##          laid out as your own inventory's (owner 2026-11-07): the slots' boxes round the companion's figure
+##          (CompanionDoll - made while the page shows, freed when it doesn't), the weapons under it, the hovered item's
+##          name and condition on the line under the figure; the bag's 10 rows all in view. Drag an item from your
+##          backpack onto a slot (or the figure) to put it on
 ##          (/companionui equip, or swap when the slot is taken), right-click or double-click one to take it back
 ##          (unequip). REPAIR repairs it all at a smith (the server asks the price first).
 ##   TRAIN  its spec lines, points, the next level's cost and what each level gives (op 8 / 9): TRAIN, and RESPEC (free)
@@ -14,7 +18,26 @@ extends ClassicWindow
 ## Nothing here decides: every button is a /companionui command and the server answers with fresh messages.
 
 const SIZE := Vector2(470, 330)
-const DOLL := [[21, 29, 26], [25, 28, 22], [32, 27, 23], [33, 34, 24], [35, 36, -1], [10, 11, 12], [13, -1, -1]]
+const CompanionDoll := preload("res://game/companions/companion_doll.gd")
+# the paper doll (owner 2026-11-07, "player paperdoll for reference"): slot -> [box, caption, where the caption goes] -
+# big boxes (torso, arms, legs, helm, hands, feet, the weapons) with the caption under them, small ones (jewellery,
+# belt, neck, cloak) with it beside, as on your inventory's grey-stone sheet
+const BIG := 30.0
+const SMALL := 16.0
+const DOLL := {
+	25: [Vector2(14, 12), "TORSO", "under"], 28: [Vector2(14, 58), "ARMS", "under"],
+	24: [Vector2(14, 104), "JEWEL", "right"], 35: [Vector2(14, 125), "L RING", "right"],
+	33: [Vector2(14, 146), "L WRIST", "right"], 27: [Vector2(14, 168), "LEGS", "under"],
+	21: [Vector2(270, 12), "HELM", "under"], 22: [Vector2(270, 58), "HANDS", "under"],
+	32: [Vector2(284, 104), "WAIST", "left"], 36: [Vector2(284, 125), "R RING", "left"],
+	34: [Vector2(284, 146), "R WRIST", "left"], 23: [Vector2(270, 168), "FEET", "under"],
+	29: [Vector2(50, 12), "NECK", "right"], 26: [Vector2(248, 12), "CLOAK", "left"],
+	10: [Vector2(66, 218), "R HAND", "under"], 11: [Vector2(116, 218), "L HAND", "under"],
+	12: [Vector2(166, 218), "2 HAND", "under"], 13: [Vector2(216, 218), "RANGED", "under"],
+}
+const SMALL_SLOTS := [24, 35, 33, 32, 36, 34, 29, 26]
+const FIGURE := Rect2(58, 30, 196, 174)             # between the slot columns
+const BAG_ROW := 21.0
 
 var net: CompanionNet
 var row := 0
@@ -25,7 +48,11 @@ var _page := 0
 var _problem: Label
 # gear
 var _doll: Control
-var _bag: VBoxContainer
+var _gear_page: Control
+var _figure_view: Control                    # the 3D figure: only while the GEAR page shows (_sync_figure)
+var _figure_row := -1
+var _info: Label                                   # the hovered item: its name and condition
+var _bag: Control
 var _bag_title: Label
 const BAG_SLOTS := 10
 const BAG_FIRST := 40                               # (the companion's own backpack slots 40 - 49)
@@ -61,6 +88,7 @@ func build() -> void:
 	_layout_tabs()
 	_problem = CompanionUi.text(self, "", Vector2(14, SIZE.y - 18), Vector2(SIZE.x - 28, 12), 8, CompanionUi.RED)
 	net.changed.connect(refresh)
+	visibility_changed.connect(_sync_figure)
 
 
 ## Open this window on a roster row, at a page (0 gear, 1 spec, 2 stats, 3 realm abilities).
@@ -76,6 +104,7 @@ func show_page(i: int) -> void:
 	for k in _pages.size():
 		(_pages[k] as Control).visible = k == i
 	CompanionUi.select_tab(_tabs, i)
+	_sync_figure()
 	match i:
 		0: net.command("gear %d" % row)
 		1: net.command("spec %d" % row)
@@ -121,6 +150,7 @@ func refresh() -> void:
 	_title.text = ("%s - LEVEL %d" % [nm, int(st.level)] if not st.is_empty() else nm).to_upper() if nm != "" else "COMPANION"
 	_problem.text = String(net.texts.get(8, ""))
 	_layout_tabs()
+	_sync_figure()
 	match _page:
 		0: _refresh_gear()
 		1: _refresh_spec()
@@ -152,49 +182,126 @@ static func _clear(c: Control) -> void:
 # --- gear -----------------------------------------------------------------------------------------------------
 
 func _build_gear(page: Control) -> void:
-	CompanionUi.text(page, "WORN - DRAG FROM YOUR BACKPACK TO EQUIP, RIGHT-CLICK TO TAKE BACK", Vector2(14, 0),
-			Vector2(300, 12), 7, CompanionUi.DIM)
+	_gear_page = page
+	CompanionUi.text(page, "DRAG FROM YOUR BACKPACK TO EQUIP, RIGHT-CLICK TO TAKE BACK", Vector2(14, 0),
+			Vector2(300, 10), 7, CompanionUi.DIM)
+	# the captions, as the grey-stone sheet paints them: under a big box, beside a small one
+	for s in DOLL:
+		var d: Array = DOLL[s]
+		var at: Vector2 = d[0]
+		var box := SMALL if int(s) in SMALL_SLOTS else BIG
+		var cap: Label
+		match String(d[2]):
+			"under":
+				cap = CompanionUi.text(page, String(d[1]), Vector2(at.x - 10, at.y + box + 1), Vector2(box + 20, 9), 6,
+						CompanionUi.DIM)
+				cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			"right":
+				cap = CompanionUi.text(page, String(d[1]), Vector2(at.x + box + 3, at.y + 4), Vector2(44, 9), 6,
+						CompanionUi.DIM)
+			_:
+				cap = CompanionUi.text(page, String(d[1]), Vector2(at.x - 47, at.y + 4), Vector2(44, 9), 6,
+						CompanionUi.DIM)
+				cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_info = CompanionUi.text(page, "", Vector2(FIGURE.position.x - 8, FIGURE.end.y + 1), Vector2(FIGURE.size.x + 16, 10),
+			7, UiArt.CREAM)
+	_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_info.clip_text = true
 	_doll = Control.new()
-	_doll.position = Vector2(12, 14)
-	_doll.size = Vector2(300, 230)
-	_doll.mouse_filter = Control.MOUSE_FILTER_PASS
+	_doll.position = Vector2.ZERO
+	_doll.size = Vector2(312, 262)
+	_doll.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	page.add_child(_doll)
-	# its bag: 10 slots, no weight limit (owner 2026-10-30, as the server built it) - drag an item onto the list to put it
-	# in, right-click one to take it back
+	# its bag: 10 slots, no weight limit (owner 2026-10-30, as the server built it) - all 10 rows in view (owner
+	# 2026-11-07: "shrink their inventory so all 10 slots showed up without a scrollbar"); drag an item onto it to put
+	# it in, right-click one to take it back
 	_bag_title = CompanionUi.text(page, "ITS BAG", Vector2(318, 0), Vector2(140, 12), 8, UiArt.GOLD)
-	var drop := BagDrop.new()                         # (the list's parent: a drop anywhere on it lands here)
+	var drop := BagDrop.new()                         # (the rows' parent: a drop anywhere on it lands here)
 	drop.window = self
 	drop.position = Vector2(318, 14)
-	drop.size = Vector2(140, 206)
+	drop.size = Vector2(140, BAG_SLOTS * BAG_ROW)
 	page.add_child(drop)
-	_bag = _scroll_list(drop, Vector2.ZERO, Vector2(140, 206))
-	CompanionUi.button(page, "Repair", Vector2(318, 226), Vector2(140, 16), func(): net.command("repair %d" % row), 9)
+	_bag = drop
+	CompanionUi.button(page, "Repair", Vector2(318, 18 + BAG_SLOTS * BAG_ROW), Vector2(140, 16),
+			func(): net.command("repair %d" % row), 9)
+
+
+## The 3D figure only while you can see the GEAR page: made when it shows (or the window opens on it, or for another
+## companion), dressed again when its gear changes, freed - viewport, figure, gear - when the page or window closes.
+func _sync_figure() -> void:
+	var want := is_visible_in_tree() and _page == 0 and net != null and net.roster.has(row)
+	if not want or _figure_row != row:
+		if _figure_view and is_instance_valid(_figure_view):
+			_figure_view.queue_free()
+		_figure_view = null
+		_figure_row = -1
+	if not want:
+		return
+	if _figure_view == null:
+		_figure_view = CompanionDoll.new()
+		_figure_view.net = net
+		_figure_view.window = self
+		_figure_view.row = row
+		_figure_view.position = FIGURE.position
+		_figure_view.size = FIGURE.size
+		_gear_page.add_child(_figure_view)
+		_gear_page.move_child(_figure_view, 0)          # under the slots and their captions
+		_figure_view.build()
+		_figure_row = row
+	else:
+		_figure_view.dress()
+
+
+## The hovered slot's item on the line under the figure (null: cleared).
+func show_info(cell: GearSlot) -> void:
+	if _info == null:
+		return
+	if cell == null or cell.item.is_empty():
+		_info.text = "" if cell == null else "%s - EMPTY" % String(CompanionNet.SLOT_NAMES.get(cell.slot,
+				"BAG %d" % (cell.slot - BAG_FIRST + 1)))
+		_info.add_theme_color_override("font_color", CompanionUi.DIM)
+		return
+	var it := cell.item
+	var count := int(it.get("count", 0))
+	var stack := int(it.object_type) in GearSlot.STACKABLE or count > 1
+	_info.text = ("%s  x%d" % [String(it.name), count] if stack and count > 0
+			else "%s  %d%%" % [String(it.name), int(it.condition)]).to_upper()
+	_info.add_theme_color_override("font_color", CompanionUi.RED if not stack and int(it.condition) < 70 else UiArt.CREAM)
+
+
+var _gear_drawn := ""                              # what the GEAR page shows (row + its gear list): rebuilt only on a change
 
 
 func _refresh_gear() -> void:
-	_clear(_doll)
 	var items: Dictionary = net.gear.get(row, {})
-	for y in DOLL.size():
-		for x in 3:
-			var s := int(DOLL[y][x])
-			if s < 0:
-				continue
-			var cell := GearSlot.new()
-			cell.window = self
-			cell.slot = s
-			cell.item = items.get(s, {})
-			cell.position = Vector2(x * 100.0, y * 32.0)
-			cell.size = Vector2(96, 30)
-			_doll.add_child(cell)
+	# the page asks for the gear every GEAR_POLL_S and the server answers with the whole list: the same list draws nothing
+	# again (owner 2026-11-07: a hitch every few seconds with the GEAR page open)
+	var drawn := "%d|%s" % [row, var_to_str(items)]
+	if drawn == _gear_drawn and _doll.get_child_count() > 0:
+		return
+	_gear_drawn = drawn
+	_clear(_doll)
+	for s in DOLL:
+		var box := SMALL if int(s) in SMALL_SLOTS else BIG
+		var cell := GearSlot.new()
+		cell.window = self
+		cell.slot = int(s)
+		cell.item = items.get(int(s), {})
+		cell.compact = true
+		cell.position = (DOLL[s] as Array)[0]
+		cell.size = Vector2(box, box)
+		_doll.add_child(cell)
 	# the bag: its 10 slots (the companion's backpack 40 - 49, server protocol, 2026-10-30), each a drop target
 	_clear(_bag)
 	var used := 0
-	for s in range(BAG_FIRST, BAG_FIRST + BAG_SLOTS):
+	for i in BAG_SLOTS:
+		var s := BAG_FIRST + i
 		var cell := GearSlot.new()
 		cell.window = self
 		cell.slot = s
 		cell.item = items.get(s, {})
-		cell.custom_minimum_size = Vector2(124, 30)
+		cell.position = Vector2(0, i * BAG_ROW)
+		cell.size = Vector2(140, BAG_ROW - 1)
 		_bag.add_child(cell)
 		if items.has(s):
 			used += 1
@@ -237,6 +344,7 @@ class GearSlot extends Control:
 	var window: SrvCompanionWindow
 	var slot := 0
 	var item := {}
+	var compact := false                               # a paper doll box: the icon alone (its caption is the page's)
 	var _hi := false
 
 	func _ready() -> void:
@@ -244,36 +352,51 @@ class GearSlot extends Control:
 		if size.x <= 0.0:
 			size = custom_minimum_size
 		var name_text := String(CompanionNet.SLOT_NAMES.get(slot, "BAG %d" % (slot - SrvCompanionWindow.BAG_FIRST + 1)))
+		var count := int(item.get("count", 0))
+		var stack := not item.is_empty() and (int(item.object_type) in STACKABLE or count > 1)
+		var cond := int(item.get("condition", 100))
 		if not item.is_empty():
 			var icon := TextureRect.new()
 			# its icon by its model (objects.csv: Server.item_icon) - op 7's [14..15] is the item's extension, not an icon
 			var ic := Server.item_icon(int(item.model))
 			icon.texture = ItemDb.icon(ic if ic > 0 else int(item.icon))
 			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			icon.position = Vector2(2, 2)
-			icon.size = Vector2(26, 26)
+			var side := size.y - 2.0
+			icon.position = Vector2(1, 1)
+			icon.size = Vector2(side, side)
 			icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			add_child(icon)
-			var cond := int(item.condition)
-			var nm := CompanionUi.text(self, String(item.name), Vector2(30, 2), Vector2(size.x - 32, 12), 7,
-					CompanionUi.RED if cond < 70 else UiArt.CREAM)
-			nm.clip_text = true
-			# how many are left of a stack - arrows, bolts, thrown weapons, poisons (owner 2026-10-30: "how am i suppose to see
-			# how much ammo/poison/throwing weapons that my companion bots have left"); else the condition
-			var count := int(item.get("count", 0))
-			var stack := int(item.object_type) in STACKABLE or count > 1
-			var second := ("%s  x%d" % [name_text, count]) if stack and count > 0 else "%s  %d%%" % [name_text, cond]
-			CompanionUi.text(self, second, Vector2(30, 15), Vector2(size.x - 32, 12), 7,
-					CompanionUi.RED if stack and count > 0 and count <= 5 else CompanionUi.DIM)
 			tooltip_text = "%s\nLEVEL %d  QUALITY %d%%  CONDITION %d%%" % [String(item.name).to_upper(), int(item.level),
 					int(item.quality), cond] + (("\n%d LEFT" % count) if stack and count > 0 else "")
 			_summary = tooltip_text
-		else:
-			CompanionUi.text(self, name_text, Vector2(4, 9), Vector2(size.x - 6, 12), 7, CompanionUi.DIM)
+		if compact:
+			# how many are left of a stack - arrows, bolts, thrown weapons, poisons (owner 2026-10-30: "how am i suppose
+			# to see how much ammo/poison/throwing weapons that my companion bots have left"), in the box's corner
+			if stack and count > 0 and size.x >= SrvCompanionWindow.BIG:
+				var c := CompanionUi.text(self, "%d" % count, Vector2(1, size.y - 10), Vector2(size.x - 2, 9), 6,
+						CompanionUi.RED if count <= 5 else UiArt.CREAM)
+				c.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+			return
+		# a bag row: icon, name, and on the right the stack's count or a worn item's condition
+		if item.is_empty():
+			CompanionUi.text(self, name_text, Vector2(4, 4), Vector2(size.x - 6, 12), 7, CompanionUi.DIM)
+			return
+		var right := ("x%d" % count) if stack and count > 0 else ("%d%%" % cond if cond < 100 else "")
+		var rw := 30.0 if right != "" else 0.0
+		var nm := CompanionUi.text(self, String(item.name), Vector2(size.y + 2, 4), Vector2(size.x - size.y - 4 - rw, 12), 7,
+				CompanionUi.RED if not stack and cond < 70 else UiArt.CREAM)
+		nm.clip_text = true
+		if right != "":
+			var r := CompanionUi.text(self, right, Vector2(size.x - rw - 2, 4), Vector2(rw, 12), 7,
+					CompanionUi.RED if (stack and count <= 5) or (not stack and cond < 70) else CompanionUi.DIM)
+			r.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 	func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.05, 0.045, 0.04, 0.9))
-		draw_rect(Rect2(Vector2.ZERO, size), UiArt.GOLD if _hi else UiArt.GOLD.darkened(0.55), false, 1.0)
+		var worn_out := not item.is_empty() and not (int(item.object_type) in STACKABLE) \
+				and int(item.get("condition", 100)) < 70
+		var edge := UiArt.GOLD if _hi else (CompanionUi.RED if worn_out else UiArt.GOLD.darkened(0.55))
+		draw_rect(Rect2(Vector2.ZERO, size), edge, false, 1.0)
 
 	func _can_drop_data(_p: Vector2, data: Variant) -> bool:
 		var ok := InventorySheet.is_item(data) and int(data.slot) >= 40 and int(data.slot) <= 79
@@ -288,6 +411,10 @@ class GearSlot extends Control:
 		window.equip_from(int(data.slot), slot, not item.is_empty())
 
 	func _notification(what: int) -> void:
+		if what == NOTIFICATION_MOUSE_ENTER:
+			window.show_info(self)
+		elif what == NOTIFICATION_MOUSE_EXIT:
+			window.show_info(null)
 		if what == NOTIFICATION_MOUSE_ENTER and not item.is_empty():
 			Server.prefetch_command(_key(), "/companionui delve %d item %d" % [window.row, slot])
 		if (what == NOTIFICATION_MOUSE_EXIT or what == NOTIFICATION_DRAG_END) and _hi:
