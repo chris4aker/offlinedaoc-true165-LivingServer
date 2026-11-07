@@ -441,9 +441,20 @@ namespace DOL.GS
 			else
 			{
 				styles = SkillBase.GetStyleList(KeyName, classid);
-				
+
 				if (styles.Count == 0)
 					styles = SkillBase.GetStyleList(KeyName, 0);
+
+				// A starter class (Viking, Fighter, Guardian, ...) has no styles of its own. In the period a starter class could
+				// train its weapon lines from level 1 (Prima Revised 2002) and got that line's styles, the ones its advanced
+				// classes share (Sword 2 Whirling Blade). Those classes are its subclasses; the first one with this line's styles.
+				if (styles.Count == 0)
+					foreach (int advanced in AdvancedClassIds(classid))
+					{
+						styles = SkillBase.GetStyleList(KeyName, advanced);
+						if (styles.Count > 0)
+							break;
+					}
 			}
 			
 			// Select only enabled Styles and Order them
@@ -451,6 +462,33 @@ namespace DOL.GS
 				.OrderBy(item => item.SpecLevelRequirement)
 				.ThenBy(item => item.ID).ToList();
 			
+		}
+
+		private static Dictionary<int, int[]> _advancedClassIds;
+
+		/// <summary>
+		/// The advanced classes of a starter class (the classes whose script class derives from its own), lowest id first;
+		/// empty for an advanced class. Read once from the class scripts' [CharacterClass] attributes.
+		/// </summary>
+		public static int[] AdvancedClassIds(int classId)
+		{
+			Dictionary<int, int[]> map = _advancedClassIds;
+			if (map == null)
+			{
+				var types = new Dictionary<int, Type>();
+				foreach (System.Reflection.Assembly asm in ScriptMgr.GameServerScripts)
+					foreach (Type type in asm.GetTypes())
+					{
+						if (!type.IsClass || type.IsAbstract || type.GetInterface("DOL.GS.ICharacterClass") == null)
+							continue;
+						foreach (CharacterClassAttribute attrib in type.GetCustomAttributes(typeof(CharacterClassAttribute), false))
+							types.TryAdd(attrib.ID, type);
+					}
+				map = types.ToDictionary(kv => kv.Key, kv => types.Where(o => o.Value != kv.Value && o.Value.IsSubclassOf(kv.Value))
+					.Select(o => o.Key).OrderBy(id => id).ToArray());
+				_advancedClassIds = map;
+			}
+			return map.TryGetValue(classId, out int[] ids) ? ids : [];
 		}
 
 		/// <summary>
