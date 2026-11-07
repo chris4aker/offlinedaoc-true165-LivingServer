@@ -1,0 +1,40 @@
+{
+ "rules": [
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5550 WHERE lower(Id_nb) = 'black_orm_gland' AND Price <> 5550",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Black Orm Gland - estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36) (sells for 2775 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 800 WHERE lower(Id_nb) = 'morvalt_obsidian_sword' AND Price <> 800",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Morvalt Obsidian Sword - estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17) (sells for 400 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5174 WHERE lower(Id_nb) = 'mud_crab_claw' AND Price <> 5174",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Mud Crab Claw - estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35) (sells for 2587 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2074 WHERE lower(Id_nb) = 'mud_frog_tongue' AND Price <> 2074",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Mud Frog Tongue - estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30) (sells for 1037 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1446 WHERE lower(Id_nb) = 'polished_piece_of_obsidian' AND Price <> 1446",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Polished Piece of Obsidian - estimated: median Uthgard sell of 10 period gems dropped by level 21-25 monsters (droppers: level 23-23) (sells for 723 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 8900 WHERE lower(Id_nb) = 'runemaster_sealed_pages' AND Price <> 8900",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Runemaster Sealed Pages - estimated: median Uthgard sell of 39 period trash items dropped by level 40-44 monsters (droppers: level 42-42) (sells for 4450 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1200 WHERE lower(Id_nb) = 'scroll_of_eternal_sorrow' AND Price <> 1200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Scroll of Eternal Sorrow - estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23) (sells for 600 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1000 WHERE lower(Id_nb) = 'warm_fire_ant_larva' AND Price <> 1000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Warm Fire Ant Larva - estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21) (sells for 500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'windchaser_naiheras_remains' AND Price <> 25000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Windchaser Naihera's Remains - estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
+  }
+ ]
+}

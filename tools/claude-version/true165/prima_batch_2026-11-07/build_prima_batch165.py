@@ -629,6 +629,9 @@ fix += ENC['rules']
 GEN = os.path.join(HERE, 'encounters165_generated.json')
 if os.path.exists(GEN):
     fix += json.load(open(GEN, encoding='utf-8'))['rules']
+GEN_PRICES = os.path.join(HERE, 'lootprices165_generated.json')   # ../build_lootprices165.py: loot prices
+if os.path.exists(GEN_PRICES):
+    fix += json.load(open(GEN_PRICES, encoding='utf-8'))['rules']
 GEN_TRASH = os.path.join(HERE, 'trashlevel165_generated.json')   # ../build_trashlevel165.py: vendor trash level 0
 if os.path.exists(GEN_TRASH):
     fix += json.load(open(GEN_TRASH, encoding='utf-8'))['rules']
@@ -644,6 +647,12 @@ def addfile(name, table, key, reason, rows):
               open(os.path.join(OUT, name), 'w', encoding='utf-8', newline='\n'), indent=1, ensure_ascii=False)
 
 
+# loot priced at the placeholder 50c: period value or a drop-level estimate (../build_lootprices165.py, owner 2026-11-07)
+LOOT_PRICES = os.path.join(T165, 'loot_prices165.json')
+if os.path.exists(LOOT_PRICES):
+    for k, v in json.load(open(LOOT_PRICES, encoding='utf-8')).items():
+        if k in {i.lower() for i in built}:
+            built[next(i for i in built if i.lower() == k)]['Price'] = v['price']
 addfile('add-primaitems165.json', 'ItemTemplate', 'Id_nb',
         'True 1.65 Prima batch items (2026-11-07): Atlas drop items our world lacked, from period Allakhazam item pages '
         '(Wayback <= 2003-11) or Uthgard item pages (stats as the page gives them; look from the closest existing item); '

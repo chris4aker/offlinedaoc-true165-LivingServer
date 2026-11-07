@@ -417,6 +417,14 @@ def main():
     rows = [b['row'] for k, b in sorted(built.items())]
     used = {a[0].lower() for v in out.values() for a in v['items']}
     rows = [T.apply_display_level(r) for r in rows if r['Id_nb'].lower() in used]   # vendor trash level 0
+    # loot priced at the placeholder 50c: period value or a drop-level estimate (build_lootprices165.py, owner 2026-11-07)
+    _prices = os.path.join(os.path.dirname(os.path.abspath(T.__file__)), 'loot_prices165.json')
+    if os.path.exists(_prices):
+        import json as _json
+        _p = _json.load(open(_prices, encoding='utf-8'))
+        for r in rows:
+            if r['Id_nb'].lower() in _p:
+                r['Price'] = _p[r['Id_nb'].lower()]['price']
     T.save_originals()
     if rows:
         jdump({'table': 'ItemTemplate', 'key': 'Id_nb',

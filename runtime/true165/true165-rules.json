@@ -49322,6 +49322,42 @@
    "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
   },
   {
+   "sql": "UPDATE ItemTemplate SET Price = 5550 WHERE lower(Id_nb) = 'black_orm_gland' AND Price <> 5550",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Black Orm Gland - estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36) (sells for 2775 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 800 WHERE lower(Id_nb) = 'morvalt_obsidian_sword' AND Price <> 800",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Morvalt Obsidian Sword - estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17) (sells for 400 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5174 WHERE lower(Id_nb) = 'mud_crab_claw' AND Price <> 5174",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Mud Crab Claw - estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35) (sells for 2587 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2074 WHERE lower(Id_nb) = 'mud_frog_tongue' AND Price <> 2074",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Mud Frog Tongue - estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30) (sells for 1037 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1446 WHERE lower(Id_nb) = 'polished_piece_of_obsidian' AND Price <> 1446",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Polished Piece of Obsidian - estimated: median Uthgard sell of 10 period gems dropped by level 21-25 monsters (droppers: level 23-23) (sells for 723 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 8900 WHERE lower(Id_nb) = 'runemaster_sealed_pages' AND Price <> 8900",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Runemaster Sealed Pages - estimated: median Uthgard sell of 39 period trash items dropped by level 40-44 monsters (droppers: level 42-42) (sells for 4450 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1200 WHERE lower(Id_nb) = 'scroll_of_eternal_sorrow' AND Price <> 1200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Scroll of Eternal Sorrow - estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23) (sells for 600 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1000 WHERE lower(Id_nb) = 'warm_fire_ant_larva' AND Price <> 1000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Warm Fire Ant Larva - estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21) (sells for 500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'windchaser_naiheras_remains' AND Price <> 25000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Windchaser Naihera's Remains - estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
+  },
+  {
    "sql": "UPDATE ItemTemplate SET Level = 0 WHERE lower(Id_nb) IN ('adder_fang', 'albino_grugners_remains', 'alexandrite', 'alp_luachra_eye', 'alp_luachra_hand', 'apple_fly_wings', 'aughisky_mane', 'aventurine_gem', 'badger_cub_claw', 'badger_cub_fur', 'balor''s_remains', 'bertha''s_remains', 'black_rocks', 'black_sapphire', 'bog_mud', 'broken_fragment_of_wood_and_arcanium', 'cadwallen''s_sacrificial_dagger', 'chrome_diopside', 'chrysoberyl', 'chunk_of_wolf_meat', 'cleddyf''s_head', 'coirmirceoirs_remains', 'complete_worry_wort_skin', 'copper_amethyst_bracelet', 'cronker''s_remains', 'cythraul_essence', 'dangerous_tooth', 'dead_swamp_goo', 'ebon_skeleton_tibia', 'evern''s_remains', 'fire_ant_frendrat''s_remains', 'flat_chert', 'flint', 'footman_cloak', 'frog_legs', 'ghostly_banshee_hair', 'gloves_of_the_bladehand', 'golden_orb', 'golestandt''s_remains', 'grass_ring', 'green_knight''s_remains', 'grunge''s_remains', 'high_priestess_ywera''s_remains', 'horn_of_drinking', 'hrrgyfs_remains', 'ibicuss_remains', 'imbued_sleeves', 'jade', 'jari''s_remains', 'kalnraw''s_remains', 'king_smugluk''s_head', 'kornerupine', 'lasholds_remains', 'mootang''s_head', 'morty''s_remains', 'nosdodens_remains', 'oldest''s_remains', 'onyx_gem', 'opaque_glass_disc', 'patch_of_aughisky_hide', 'peridot', 'precious_heliodor', 'pristine_aughisky_hide', 'pristine_boars_hide', 'prugor''s_remains', 'queen_majors_remains', 'rhodolite', 'round_chert', 'runed_hollow_clay_boots', 'runed_hollow_clay_gloves', 'runed_hollow_clay_helm', 'runed_hollow_clay_jerkin', 'runed_hollow_clay_leggings', 'runed_hollow_clay_sleeves', 'sentry_incin''s_remains', 'seolc cap of the void', 'sergeant_cosworth''s_remains', 'shard_of_sequence', 'sir_gerenth''s_remains', 'sladug''s_remains', 'slimy_swamp_goo_skin', 'small_copper_ring', 'small_mirror', 'small_silver_laden_box', 'snarls''_remains', 'spats_remains', 'spotted_larva', 'staff_of_enlightenment', 'stolen_bear_tooth', 'stripes_remains', 'thin_chert', 'throatripper''s_remains', 'thulin''s_remains', 'tomte_studded_helm', 'torn_wolf_pelt', 'vagdush''s_seer_amulet', 'veviel''s_remains', 'vial_of_shimmering_essence', 'water_opal', 'water_orb', 'well_crafted_lantern', 'windchaser_naiheras_remains', 'wizard_locked_box', 'wolf_fang', 'worm_rot', 'worn_carnelian_studded_belt', 'xcrzrks_remains', 'yellow_tourmaline', 'zrit-zrit''s_remains') AND Level <> 0",
    "reason": "True 1.65 vendor trash is level 0 (owner 2026-11-07): 109 vendor-trash items that monsters drop show level 0 (cons grey), as on the period pages; drops unchanged"
   }
