@@ -43,12 +43,13 @@ static func make(it: Dictionary) -> Control:
 
 
 ## An item's name in a list (backpack, vault, merchant): always in its con colour to you (reset day C4, 2026-11-05:
-## "all names white" - the Nov 2 version coloured it only while the row was highlighted); an item without a level (0)
-## keeps the plain text colour. (`highlighted` is no longer used.)
+## "all names white" - the Nov 2 version coloured it only while the row was highlighted). A level 0 item too: grey, as
+## its hover box shows it (owner 2026-11-07 via the server chat: vendor trash is level 0 like on the period pages, and a
+## level 0 circlet read white in the bag but grey on hover). (`highlighted` is no longer used.)
 static func name_color(it: Dictionary, _highlighted: bool) -> Color:
-	if it.is_empty() or int(it.get("level", 0)) <= 0:
+	if it.is_empty():
 		return UiArt.CREAM
-	return con_color(int(it.get("level", 0)), PlayerData.level)
+	return con_color(maxi(int(it.get("level", 0)), 0), PlayerData.level)
 
 
 ## The con step (-3 grey .. 3 purple) of an item / creature level against the player's.
