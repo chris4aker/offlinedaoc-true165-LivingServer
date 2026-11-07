@@ -5,15 +5,21 @@ The newest version is first.
 Offline DAoC True 1.65 grew out of [Offline DAoC](https://github.com/shadowofze/OfflineDAoC) (0.3 to 0.37c, now on
 hold). Its changelog has the history of everything this version inherits.
 
-## Coming in 0.4
+## Coming in 0.5
 
-- Guild emblems: a guild cloak shows its emblem as one emblem on the upper back again (the shield already did) - it was stretched over the whole cloak, a skull's eyes two black blots down the back.
+Nothing yet.
+
+## 0.4 (2026-11-07)
+
+An update to v0.1, v0.2 and v0.3: the downloader updates an installed v0.1, v0.2 or v0.3 game in place (about 2.8 GB
+instead of the full 36 GB), and keeps your account, characters, companions, bots and settings. The first START
+SERVER after the update brings your world up to date. New players get the complete game, as before.
+
+### Gamebots and companions
+
 - Companions: no more freeze when you train a companion, equip it or move items in and out of its bag (and no small hitch every few seconds with its GEAR page open) - its window was redrawn once for every one of the server's 30-90 update messages instead of once.
 - Companions: the GEAR page is a paper doll like your own inventory - the companion's figure in its gear (drag to turn it, drop an item on it to equip), the slots round it, the hovered item's name and condition under the figure, worn-out gear edged in red - and its bag shows all 10 slots without a scroll bar.
 - Companions: item names in a companion's bag, under its paper doll and in the hover box of what it wears show their con colour to you, as in your own backpack (the hover box was always yellow); a long name in its bag ends in "..." inside its row instead of running out of the box.
-- World: water no longer shows darker blocky squares where two pools or rivers meet - Lyonesse, Isle of Glass, Carlingford and Meath now, as Avalon Marsh in 0.3 (and the last squares left there).
-- Item names in the backpack, vault and merchant lists show level 0 items (vendor trash) in their con colour - grey - like their hover box, instead of white.
-- Spells: fire hits (the wizard and cabalist fire bolts and Fire Storm, and the fire explosions) no longer leave a long line of flames on the ground beside the target - leftover template flames in the effect files were being drawn.
 - Companions and gamebots carry their spare weapons like your own character: a two-hander they are not using on the back, a spare one-hander on the hip (an unused dual-wield pair one on each hip), the shield put away while the two-hander is out.
 - Companions: hovering a realm ability in a companion's REALM ABILITIES page shows what it does.
 - Companions: /pull works in /defensive mode - the puller (/pull alone: your tank; /pull <companion name>: that companion) goes past the 350-unit range to tag the monster and comes back to you, and the rest of the group fights once the monster is within 350 units. A plain /pull is the tank again (it had started picking casters and archers over the tank). Make a button for a named puller with /macro pull /pull Isolde.
@@ -27,13 +33,26 @@ hold). Its changelog has the history of everything this version inherits.
 - Charming: /charm and a companion's pre-fight charm no longer fizzle without a word when the cast ends (the monster you had selected counted as the group already fighting it). When a charm you asked for fails or is resisted, the companion's player is told why.
 - Charming: a companion that lets its pet go for a new one (/charm) no longer keeps both - the old pet was never freed and followed along as a second pet.
 - Charming never empties a monster camp: a charmed monster is a copy, and its camp spawns a fresh one on its normal respawn time. The charmed one never respawns - not where it died or was let go. A freed pet still turns on its charmer; if it lives through that fight it leaves once it has been out of combat for 10 seconds. The same for players, gamebots and companions.
+
+### Combat, monsters and classes
+
 - Cornwall: the monsters the Prima Atlas lists there are back - the moor boogeys (Boogey Fort stood empty), Cornish giants and cliff spiderlings, and the empty camps of giant rooters, moor wolves, forest cats, muryans, bears, death stalkers and cliff spiders (168 in all), at the Atlas levels. Cliff spiderlings still drop nothing: their Atlas items are not in the game yet.
 - Monsters the Prima guides list that the world was missing are back: 978 spawns of 363 monsters across 68 zones and dungeons (most in Hibernia's old frontier - Mount Collory, Cruachan Gorge, Breifine - and the Shrouded Isles), at the guides' levels, aggression and speed, placed where period players saw them, on ground the gamebots can reach (the Shrouded Isles ones checked on the real navmesh too) and never an aggressive one close to a town. Monsters no period source describes borrow a look from the real 1.64 client models. The full list is in tools/claude-version/true165/prima_batch_2026-11-07.
-- 1,523 Atlas drop items that were not in the game: gear with its period stats (never made up; 243 pieces with no period stat source were left out), and plain loot - pelts, gems, trinkets, food - at its period value (an estimated value only for vendor trash with no recorded price), each with an icon and tooltip, and at level 0 like period vendor trash (it cons gray). Monsters drop their Atlas loot: 3,369 drop rows on 1,179 monsters, never from a monster 15 or more levels below the item. Cliff spiderlings drop their Atlas items now.
-- Vendor trash is level 0 everywhere, as on the period pages: older loot that still had a level now matches (a legionarius's Sphene was level 42 and conned purple to a level 22). Quest items and Darkness Falls seals keep their levels; prices and drops are unchanged.
 - Prima encounters, scripted as the period guides and players describe them: Cuinn calls the town and treant seedlings at 10% health; Talvor's spirit rises to avenge him; the Emmisary of Logi hurls fireballs and calls obsidian doomwards; Forgemaster Brungar's Spirit of the Forge; Weaponmaster Zargin's students and mastered weapons; a panicked syhr'phint flees to wake Sys'sro; the ixthiar creeper seeds the Vale of Balor; Celain Eirich returns at nine in the morning and raises the dead; lures that hide a greater anglator or a scourgin; the Star Lake procession; the Unseelie Envoy's convoy into Lough Gur and back; Arr carries its prey to its nest; Thergus the Inspirer's speech sends the ogre squads against the orc coast camp; Gormror's morvalt raid Dyrfjell and fill it with disease; and Hamorik's light show at the broken tower in Caldey, at night (he can drop the Dread Flail). Their period drops are in (rates are a choice where the period gives none).
 - Wolf drops (wolf fang, torn wolf pelt, chunk of wolf meat) come one at a time instead of as one heavy "(20)" or "(100)" item; the ones already in bags become one each.
 - Starter classes (Viking, Fighter, Guardian and the others) get their weapon lines' styles before level 5, as in the period: a Viking with Sword 2 has Whirling Blade, Sword 4 adds Frost Cut. Points spent before level 5 stay when you take your advanced class; a line your advanced class doesn't have gives its points back.
+
+### World, items and crafting
+
+- World: water no longer shows darker blocky squares where two pools or rivers meet - Lyonesse, Isle of Glass, Carlingford and Meath now, as Avalon Marsh in 0.3 (and the last squares left there).
+- 1,523 Atlas drop items that were not in the game: gear with its period stats (never made up; 243 pieces with no period stat source were left out), and plain loot - pelts, gems, trinkets, food - at its period value (an estimated value only for vendor trash with no recorded price), each with an icon and tooltip, and at level 0 like period vendor trash (it cons gray). Monsters drop their Atlas loot: 3,369 drop rows on 1,179 monsters, never from a monster 15 or more levels below the item. Cliff spiderlings drop their Atlas items now.
+- Vendor trash is level 0 everywhere, as on the period pages: older loot that still had a level now matches (a legionarius's Sphene was level 42 and conned purple to a level 22). Quest items and Darkness Falls seals keep their levels; prices and drops are unchanged.
+
+### The new client
+
+- Guild emblems: a guild cloak shows its emblem as one emblem on the upper back again (the shield already did) - it was stretched over the whole cloak, a skull's eyes two black blots down the back.
+- Item names in the backpack, vault and merchant lists show level 0 items (vendor trash) in their con colour - grey - like their hover box, instead of white.
+- Spells: fire hits (the wizard and cabalist fire bolts and Fire Storm, and the fire explosions) no longer leave a long line of flames on the ground beside the target - leftover template flames in the effect files were being drawn.
 
 ## 0.3 (2026-11-06)
 

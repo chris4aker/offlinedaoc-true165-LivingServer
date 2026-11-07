@@ -220,6 +220,51 @@ def main():
         assert "updated to" in out, f"{g.name}: {out[-800:]}"
         check_is_v03(g, save)
     print("6 ok: v0.1 and v0.2 both update to exactly v0.3 with one patch (files added in 0.2 and removed in 0.3 go)")
+
+    # ---- 7. v0.4: one cumulative patch for v0.1, v0.2 and v0.3, whichever way a game got to its version
+    shutil.copytree(w / "game3", w / "game4")
+    shutil.copytree(w / "client3", w / "client4")
+    (w / "game4/runtime/true165/v03.json").write_text("changed in 0.4", encoding="utf-8")         # added in 0.3, changed
+    (w / "game4/runtime/true165/drops165.json").unlink()                                          # in every version, removed
+    (w / "game4/runtime/true165/v04.json").write_text("added in 0.4", encoding="utf-8")            # added
+    (w / "game4/VERSION.txt").write_text("Offline DAoC True 1.65 v0.4\r\n", encoding="utf-8")
+    (w / "client4/new-client/VERSION.txt").write_text("Offline DAoC True 1.65 v0.4 new client\r\n", encoding="utf-8")
+    run(py + [str(HERE / "make_release_true165.py"), "--game", w / "game4", "--client", w / "client4",
+              "--repo", args.repo, "--out", w / "assets", "--version", "0.4", "--part-budget", "4000000"])
+    run(py + [str(HERE / "make_patch_true165.py"), "--base", f"0.1={w / 'assets/baseline-0.1.sha256'}",
+              "--base", f"0.2={w / 'assets/baseline-0.2.sha256'}", "--base", f"0.3={w / 'assets/baseline-0.3.sha256'}",
+              "--game", w / "game4", "--client", w / "client4", "--repo", args.repo, "--out", w / "assets",
+              "--version", "0.4", "--part-budget", "4000000"])
+    patch = json.loads((w / "assets/v0.4/download-manifest.json").read_text(encoding="utf-8"))["Patch"]
+    assert patch["From"] == ["0.1", "0.2", "0.3"], patch["From"]
+    v04 = dict(reversed(line.split("  ", 1)) for line in
+               (w / "assets/baseline-0.4.sha256").read_text(encoding="utf-8").splitlines() if line.strip())
+
+    def check_is_v04(game: Path, save: dict):
+        have = tree(game)
+        for rel, h in v04.items():
+            if rel in SAVE_FILES or rel.startswith("runtime/data/"):
+                continue
+            assert have.get(rel) == h, f"{game.name}: {rel} is not the v0.4 file"
+        for gone in ("runtime/true165/old165.json", "runtime/true165/new165.json", "runtime/true165/drops165.json"):
+            assert gone not in have, f"{game.name}: the removed file {gone} is still there"
+        for rel in SAVE_FILES:
+            assert have.get(rel) == save[rel], f"{game.name}: the save file {rel} was changed"
+
+    games = {"v0.1": install("g7-v01"), "v0.2": install("g7-v02"), "v0.3 (0.1>0.2>0.3)": install("g7-v03-chain"),
+             "v0.3 (0.1>0.3)": install("g7-v03-skip")}
+    for g, steps in ((games["v0.2"], ["0.2"]), (games["v0.3 (0.1>0.2>0.3)"], ["0.2", "0.3"]), (games["v0.3 (0.1>0.3)"], ["0.3"])):
+        for v in steps:
+            out = downloader(v, w / "assets", "-Mode", "update", "-Update", g)
+            assert "updated to" in out, f"{g.name} to {v}: {out[-800:]}"
+    for name, g in games.items():
+        save = {rel: sha(g / rel) for rel in SAVE_FILES}
+        out = downloader("0.4", w / "assets", "-Mode", "update", "-Update", g)
+        assert "updated to" in out, f"{name}: {out[-800:]}"
+        check_is_v04(g, save)
+        out = downloader("0.4", w / "assets", "-Mode", "update", "-Update", g)
+        assert "already up to date" in out, f"{name}: {out[-800:]}"
+    print("7 ok: v0.1, v0.2 and v0.3 (reached step by step or skipping 0.2) all update to exactly v0.4 with one patch")
     print("ALL PATCH TESTS PASSED")
 
 

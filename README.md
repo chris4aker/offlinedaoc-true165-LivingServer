@@ -17,7 +17,7 @@
 > **This is an AI-made project.** All of its code was written by AI tools (Codex, then Claude). The project owner
 > has no game development or coding experience: they directed the work and play-tested it. Expect bugs.
 >
-> **v0.3 is out**, with an in-place update for v0.1 and v0.2 players. Large parts of the game haven't been played through by a person.
+> **v0.4 is out**, with an in-place update for v0.1, v0.2 and v0.3 players. Large parts of the game haven't been played through by a person.
 > Expect bugs, and keep a backup of your save. Bug reports are welcome in [Issues](https://github.com/shadowofze/OfflineDAoC-True165/issues).
 
 # Offline DAoC True 1.65: single-player Dark Age of Camelot as of patch 1.65
@@ -32,11 +32,11 @@ project owner, who has no game development or coding experience, directed and pl
 
 ## Download and play
 
-**[Download v0.3](https://github.com/shadowofze/OfflineDAoC-True165/releases/latest)**, no Git or AI tools needed.
-**Already playing v0.1 or v0.2?** The same downloader updates your game in place with a much smaller download (about
-2.8 GB). Your account, characters, companions and bots stay as they are.
+**[Download v0.4](https://github.com/shadowofze/OfflineDAoC-True165/releases/latest)**, no Git or AI tools needed.
+**Already playing v0.1, v0.2 or v0.3?** The same downloader updates your game in place with a much smaller download
+(about 2.8 GB). Your account, characters, companions and bots stay as they are.
 
-1. On the release page, under **Assets**, download **`Download-OfflineDAoC-True165-v0.3.zip`** (just the
+1. On the release page, under **Assets**, download **`Download-OfflineDAoC-True165-v0.4.zip`** (just the
    downloader, a few KB).
 2. Put it in a folder with a short path, such as `C:\Games\OfflineDAoC`. Right-click it, choose **Extract All…**,
    and open the extracted folder.
@@ -186,6 +186,8 @@ is the result: the world database and the content files built from it.
 ## Known issues
 
 - Horse routes: crossing Prydwen Bridge, the horse can dip into the deck now and then.
+- Horse rides can stop or slide sideways for a moment after the server stalls.
+- Town doors (Ludlow's, for example) can be attacked by players and gamebots.
 - Housing is new in v0.2: it is checked offline but not yet played through on a live server.
 - Low-level gamebots (levels 6-9) die a lot: they start with no armour and have to buy it.
 - Gear wears at the player rate, so bots rarely need repairs early on. This is expected.
@@ -202,5 +204,5 @@ code it is based on. Other parts keep their own licenses; see [THIRD_PARTY.md](T
 
 ## Changes
 
-See the [changelog](CHANGELOG.md), including what's coming in 0.4.
+See the [changelog](CHANGELOG.md), including what's coming in 0.5.
 
