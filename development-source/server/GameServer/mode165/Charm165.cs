@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
@@ -166,6 +167,89 @@ namespace DOL.GS
             else
                 activity = $"Charming {mob.Name}";
             return started;
+        }
+
+        // ---- a charmed world monster is a copy (owner 2026-11-06): its camp keeps spawning on its normal timer, and the
+        // charmed one never respawns - not at its camp (that would double it) and not where it died or was let go. Every
+        // charmer alike: players, gamebots and companions. Generated gamebot pets are not world spawns and are left alone.
+
+        private const string CopyProperty = "Charm165.CharmedCopy";
+        private const string WildWatchProperty = "Charm165.WildWatch";
+
+        /// <summary>A freed copy that lives through its fight leaves the world once it has been out of combat this long.</summary>
+        public const int FreedCopyIdleMilliseconds = 10_000;
+        private const int WildCheckMilliseconds = 5_000;
+
+        /// <summary>Whether this monster is a charmed copy (its camp has, or will get, a fresh one).</summary>
+        public static bool IsCharmedCopy(GameNPC mob) => mob?.TempProperties.GetProperty<bool>(CopyProperty) == true;
+
+        /// <summary>
+        /// A world monster has just been charmed: it becomes a copy that never respawns, and its camp gets a fresh monster
+        /// from the same spawn row after the normal respawn time. A copy charmed again (a charm song's recapture, another
+        /// charmer) changes nothing.
+        /// </summary>
+        public static void OnCharmed(GameNPC mob)
+        {
+            if (mob == null || IsCharmedCopy(mob) || mob is GameSummonedPet or GameBot)
+                return;
+            int respawn = mob.RespawnInterval;
+            mob.TempProperties.SetProperty(CopyProperty, true);
+            mob.RespawnInterval = -1;
+            // a monster that never respawned (quest, event, scripted spawn) gets no fresh one either
+            if (respawn <= 0 || string.IsNullOrEmpty(mob.InternalID))
+                return;
+            DbMob row = GameServer.Database.FindObjectByKey<DbMob>(mob.InternalID);
+            if (row == null)
+                return;
+            GameNPC fresh;
+            try
+            {
+                fresh = (GameNPC)System.Activator.CreateInstance(mob.GetType());
+                fresh.LoadFromDatabase(row);
+            }
+            catch (System.Exception)
+            {
+                return;     // a class that can't be built from its row: the camp fills again at the next server start
+            }
+            new ECSGameTimer(fresh, _ =>
+            {
+                if (fresh.ObjectState != GameObject.eObjectState.Active)
+                    fresh.AddToWorld();
+                return 0;
+            }).Start(respawn);
+        }
+
+        /// <summary>
+        /// A charm on a copy has ended. A dead copy is simply gone. A living one fights its charmer (True 1.65), and once it
+        /// has been out of combat for a while with nobody charming it again it leaves the world: it never settles where it
+        /// was let go.
+        /// </summary>
+        public static void OnFreed(GameNPC mob)
+        {
+            if (!IsCharmedCopy(mob) || mob.TempProperties.GetProperty<bool>(WildWatchProperty))
+                return;
+            mob.TempProperties.SetProperty(WildWatchProperty, true);
+            long idleSince = 0;
+            new ECSGameTimer(mob, _ =>
+            {
+                if (!mob.IsAlive || mob.ObjectState != GameObject.eObjectState.Active)
+                {
+                    mob.TempProperties.RemoveProperty(WildWatchProperty);
+                    return 0;
+                }
+                long now = GameLoop.GameLoopTime;
+                if (mob.Brain is IControlledBrain || mob.InCombat || mob.IsAttacking)
+                    idleSince = 0;
+                else if (idleSince == 0)
+                    idleSince = now;
+                else if (now - idleSince >= FreedCopyIdleMilliseconds)
+                {
+                    mob.TempProperties.RemoveProperty(WildWatchProperty);
+                    mob.Delete();
+                    return 0;
+                }
+                return WildCheckMilliseconds;
+            }).Start(WildCheckMilliseconds);
         }
 
         // ---- hired companions only (owner 2026-11-06): the pre-fight charm, /charm, and the charm that fits a monster

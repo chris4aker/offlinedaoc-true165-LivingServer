@@ -24,6 +24,10 @@ namespace DOL.GS
                 ExpireTick = long.MaxValue;
             }
 
+            // a world monster's camp keeps spawning while it is charmed; the charmed one is a copy that never respawns
+            if (!charmNpc.TempProperties.GetProperty<bool>(AutonomousPetSupport.SyntheticCharmPetProperty))
+                Charm165.OnCharmed(charmNpc);
+
             CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
             ControlledMobBrain newBrain = new(SpellHandler.Caster);
             charmNpc.AddBrain(newBrain);
@@ -159,6 +163,10 @@ namespace DOL.GS
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(SpellHandler.Caster, SpellHandler.Spell);
                 song?.End();
             }
+
+            // a freed copy never settles where it was let go: after its fight it leaves the world (owner 2026-11-06)
+            if (!syntheticAutonomousPet)
+                Charm165.OnFreed(charmNpc);
         }
     }
 }
