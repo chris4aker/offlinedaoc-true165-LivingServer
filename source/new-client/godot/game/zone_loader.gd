@@ -312,11 +312,13 @@ func set_detail_strength(v: float) -> void:
 
 # ---------------------------------------------------------------- water
 
-## Zones whose water bodies lie side by side: there a body's shore border stays off the other bodies' water (reset
-## day C10, 2026-11-05: Avalon Marsh - four marsh bodies at 40.5 m beside four lake bodies at 39.6 m; each body's
-## one-cell border spread over its neighbours, two see-through sheets stacking into dark squares, a marsh sheet 0.9 m
-## over the lake making steps).
-const WATER_SEPARATE_ZONES := [9]
+## Water bodies side by side: a body's shore border stays off the other bodies' water (reset day C10, 2026-11-05:
+## Avalon Marsh - four marsh bodies at 40.5 m beside four lake bodies at 39.6 m; each body's one-cell border spread
+## over its neighbours, two see-through sheets stacking into dark squares, a marsh sheet 0.9 m over the lake making
+## steps). First Avalon Marsh alone (owner: one zone, to see it hold); every zone since 2026-11-07 (owner: "its also in
+## lyonesse not sure how widespread it is") - a scan of all 113 zones found touching bodies only in Avalon Marsh,
+## Lyonesse (three bodies at 67.5 m), Isle of Glass (its oceans; ponds beside them up to 4 m higher), Carlingford and
+## Meath (a river beside a lake, 1.3 / 1.7 m apart); every other zone draws exactly as before.
 
 
 func _build_water() -> void:
@@ -329,10 +331,28 @@ func _build_water() -> void:
 	for z in n:
 		for x in n:
 			ids[z * n + x] = roundi(water_mask.get_pixel(x, z).r * 255.0)
-	var body_ids := {}
+	var levels := {}                                          # body id -> its water level
 	for body in info.water:
-		body_ids[int(body.id)] = true
-	var separate := int(info.get("id", -1)) in WATER_SEPARATE_ZONES
+		levels[int(body.id)] = float(body.height)
+	# the one-cell shore border round each body, so its surface meets the shore under the terrain - each shore cell drawn
+	# by ONE body (owner 2026-11-07, Lyonesse's darker squares): a cell beside two bodies (the land between Lyonesse's
+	# rivers, Avalon Marsh's marsh and lake) was drawn by both, two see-through sheets stacked. It goes to the body with
+	# the higher water (the same level: the lower id); another body's own water is never a border.
+	var shore := PackedInt32Array()
+	shore.resize(n * n)
+	shore.fill(-1)
+	for z in n:
+		for x in n:
+			if levels.has(int(ids[z * n + x])):
+				continue
+			var best := -1
+			for dz in range(-1, 2):
+				for dx in range(-1, 2):
+					var o := int(ids[clampi(z + dz, 0, n - 1) * n + clampi(x + dx, 0, n - 1)])
+					if levels.has(o) and (best < 0 or float(levels[o]) > float(levels[best])
+							or (float(levels[o]) == float(levels[best]) and o < best)):
+						best = o
+			shore[z * n + x] = best
 	for body in info.water:
 		var id := int(body.id)
 		var level := float(body.height)
@@ -346,18 +366,7 @@ func _build_water() -> void:
 				if ids[z * n + x] == id:
 					_water_quad(st, x * step, z * step, step, level)
 					quads += 1
-					continue
-				if separate and body_ids.has(int(ids[z * n + x])):
-					continue                                     # (another body's water: its own surface is there)
-				# a one-cell border round the body's cells, so the surface meets the shore under the terrain
-				var near := false
-				for dz in range(-1, 2):
-					for dx in range(-1, 2):
-						var xx := clampi(x + dx, 0, n - 1)
-						var zz := clampi(z + dz, 0, n - 1)
-						if ids[zz * n + xx] == id:
-							near = true
-				if near:
+				elif shore[z * n + x] == id:
 					border.append(Vector2i(x, z))
 		quads += _water_border(st, border, ids, id, n, step, level)
 		if quads == 0:
