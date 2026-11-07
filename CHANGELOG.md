@@ -9,6 +9,16 @@ hold). Its changelog has the history of everything this version inherits.
 
 Nothing yet.
 
+## 0.4.1
+
+A fix for v0.4, applied in place like the other updates (from v0.1, v0.2, v0.3 or v0.4).
+
+- Monsters added from the Prima guides in 0.4 show their own names, levels and looks. Many borrowed another monster's
+  template, which overwrote them: Pog Mapog appeared as a second "Mapog" at level 62, siog raiders as siabra seekers,
+  mantid warlocks as mantid protectors, and about 290 spawns in all; their loot followed the wrong name too.
+- Thergus the Inspirer and the ogre squad leader show their own names; the Unseelie Envoy and his stallions, Celain
+  Eirich and Weaponmaster Zargin keep the level, look and faction their encounters give them.
+
 ## 0.4 (2026-11-07)
 
 An update to v0.1, v0.2 and v0.3: the downloader updates an installed v0.1, v0.2 or v0.3 game in place (about 2.8 GB
