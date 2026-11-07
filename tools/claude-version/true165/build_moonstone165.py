@@ -15,6 +15,10 @@ build_drops165.py and build_prima165.py carry the same alias, so a rebuild keeps
 """
 import json, os, sqlite3
 
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import trashlevel165 as T   # vendor trash level 0 (owner 2026-11-07)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 CV = os.path.normpath(os.path.join(HERE, '..', '..', '..'))
 RUNTIME = os.path.join(CV, 'runtime', 'true165')
@@ -30,11 +34,13 @@ def main():
     row.update(Id_nb=GEM, Name='moonstone', Model=115, PackageID='True165_gem',
                Description='Loot gem (period Prima Atlas 2002); value as onyx')
     row.pop('ItemTemplate_ID', None)
+    T.apply_display_level(row)        # vendor trash shows level 0 (owner 2026-11-07)
     for k in ('LastTimeRowUpdated',):
         row[k] = '2026-11-03 04:00:00'
     doc = {'table': 'ItemTemplate', 'key': 'Id_nb',
            'reason': 'True 1.65 loot gem: moonstone (the period gem; the drops had used the epic quest item of the same name)',
            'rows': [row]}
+    T.save_originals()
     changed = 0
     for folder in (HERE, RUNTIME):
         with open(os.path.join(folder, 'add-gems165.json'), 'w', encoding='utf-8') as f:

@@ -24,6 +24,10 @@ Run it again after build_drops165.py.
 """
 import collections, gzip, json, os, re, sqlite3, statistics
 
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import trashlevel165 as T   # vendor trash level 0 (owner 2026-11-07)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 CV = os.path.normpath(os.path.join(HERE, '..', '..', '..'))
 RUNTIME = os.path.join(CV, 'runtime', 'true165')
@@ -96,7 +100,7 @@ def main():
     # spider legs 540c, chunk of ghoul flesh 1,400c, fire giant tooth 2,400c): the median price of the trash dropped by
     # monsters of about the same level.
     trash = {key for key, t in templates.items()
-             if (t['Object_Type'] or 0) == 0 and (t['Level'] or 0) == 0 and (t['Price'] or 0) > 0}
+             if (t['Object_Type'] or 0) == 0 and T.research_level(key, t['Level']) == 0 and (t['Price'] or 0) > 0}
     template_items = collections.defaultdict(set)
     for r in q('SELECT TemplateName, ItemTemplateID FROM LootTemplate'):
         if (r[1] or '').lower() in trash:
@@ -128,7 +132,7 @@ def main():
             continue
         for idnb, chance in entry['items']:
             t = templates.get(idnb.lower())
-            if t is not None and (t['Level'] or 0) >= max(levels) + GAP and (mob.lower(), idnb.lower()) not in decided:
+            if t is not None and T.research_level(idnb, t['Level']) >= max(levels) + GAP and (mob.lower(), idnb.lower()) not in decided:
                 todo.append((mob, idnb, chance, t, levels))
 
     if todo:
@@ -141,7 +145,7 @@ def main():
         for mob, idnb, chance, t, levels in todo:
             level = round(sum(levels) / len(levels))
             evidence = (mob, norm(t['Name'])) in found
-            d = {'mob': mob, 'item': idnb, 'item_name': t['Name'], 'item_level': t['Level'], 'item_price': t['Price'],
+            d = {'mob': mob, 'item': idnb, 'item_name': t['Name'], 'item_level': T.research_level(idnb, t['Level']), 'item_price': t['Price'],
                  'mob_levels': [min(levels), max(levels)], 'chance': chance, 'period_page_names_it': evidence}
             # loot junk (a generic item, or a junk loot name whose only template here is a weapon) keeps dropping as a
             # junk item of the monster's level; gear 15+ levels above its monster is no high-likelihood period drop
@@ -171,6 +175,7 @@ def main():
                    Realm=0, PackageID='True165_dropfix', LastTimeRowUpdated='2026-11-05 22:00:00',
                    Description=f"Loot ({d['mob']}, period drop); the only '{d['item_name']}' template was level {d['item_level']}")
         row.pop('ItemTemplate_ID', None)
+        T.apply_display_level(row)        # vendor trash shows level 0; twin_level stays its drop level
         twins[d['twin']] = row
 
     remap = {(d['mob'].lower(), d['item'].lower()): d for d in snap['decisions']}
@@ -217,6 +222,7 @@ def main():
     with open(SNAPSHOT, 'w', encoding='utf-8') as f:
         json.dump(snap, f, ensure_ascii=False, indent=1)
         f.write('\n')
+    T.save_originals()
     acts = collections.Counter(d['action'] for d in snap['decisions'])
     print(f"decisions {len(snap['decisions'])} {dict(acts)}; twins {len(twins)}; drops165 entries changed {changed} (both copies)")
 

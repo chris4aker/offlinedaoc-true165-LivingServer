@@ -21,6 +21,8 @@ Rules:
   junk item of the monster's level and removes such gear.
 """
 import collections, json, math, os, re, sqlite3, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import trashlevel165 as T   # vendor trash level 0: match drops on the pre-zero level (owner 2026-11-07)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
@@ -53,7 +55,7 @@ def main():
     for idnb, nm, lv, realm in q("SELECT Id_nb, Name, Level, Realm FROM ItemTemplate"):
         if idnb.lower().startswith("cq_"):
             continue    # classic quest items drop through their quests, not as loot
-        items[norm(nm)].append((idnb, lv or 0, realm or 0))
+        items[norm(nm)].append((idnb, T.research_level(idnb, lv or 0), realm or 0))
     existing = collections.defaultdict(dict)
     for tn, iid, ch, cnt in q("SELECT TemplateName, ItemTemplateID, Chance, Count FROM LootTemplate"):
         existing[tn.lower()][iid.lower()] = ch

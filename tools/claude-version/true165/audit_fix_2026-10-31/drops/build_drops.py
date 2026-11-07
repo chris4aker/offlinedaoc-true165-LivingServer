@@ -21,6 +21,8 @@ from sources import *
 sys.path.insert(0, VW)
 import pageparse  # noqa: E402
 import build_vendoritems165 as bv  # noqa: E402
+sys.path.insert(0, os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')))
+import trashlevel165 as T  # noqa: E402  vendor trash level 0 (owner 2026-11-07)
 
 MIN_KILLS = 20
 STAMP = '2026-10-31 12:00:00'
@@ -209,7 +211,7 @@ def main():
             ok = st is not None and bv.stats_equal(st, r, bon or [])
             okb = st is not None and bv.stats_equal(st, r, [])
             pkg = (r['PackageID'] or '').lower()
-            return (not ok, not okb, r['Id_nb'].lower() not in used_ids, abs((r['Level'] or 0) - lv),
+            return (not ok, not okb, r['Id_nb'].lower() not in used_ids, abs(T.research_level(r['Id_nb'], r['Level']) - lv),
                     pkg.startswith('atlas') or pkg == 'drmed', (r['Realm'] or 0) != 0, r['Id_nb'])
         best = min(cands, key=score)
         if st is not None and len(cands) > 1:
@@ -414,7 +416,8 @@ def main():
     jdump(report, os.path.join(WORK, 'drops_report.json'))
     rows = [b['row'] for k, b in sorted(built.items())]
     used = {a[0].lower() for v in out.values() for a in v['items']}
-    rows = [r for r in rows if r['Id_nb'].lower() in used]
+    rows = [T.apply_display_level(r) for r in rows if r['Id_nb'].lower() in used]   # vendor trash level 0
+    T.save_originals()
     if rows:
         jdump({'table': 'ItemTemplate', 'key': 'Id_nb',
                'reason': 'True 1.65 period drop items from Allakhazam item pages (Wayback <= 2003-11), stats from the '
