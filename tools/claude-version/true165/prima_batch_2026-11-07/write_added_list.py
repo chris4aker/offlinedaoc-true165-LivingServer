@@ -59,7 +59,7 @@ for z in sorted(byzone):
 w('SCRIPTED PRIMA ENCOUNTERS (server scripts PrimaEncounters165/165b/165c.cs; details in ENCOUNTER SPECS.md)')
 w('-' * 60)
 for line in [
-    'Cuinn (Connla): at 10% health calls the town guards and 6 garran treant seedlings (seeds drop 8% each)',
+    'Cuinn (Cothrom Gorge): at 10% health calls the town guards and 6 garran treant seedlings (seeds drop 8% each)',
     'Talvor (Aegir\'s Landing): his spirit (25) rises where he dies and attacks his killers (staff 20%)',
     'Emmisary of Logi (Caldera): fireballs at range, calls the caldera lords, 3 obsidian doomwards at 75/50/25% (ring 20%)',
     'Forgemaster Brungar: one Spirit of the Forge (70)',
@@ -71,7 +71,7 @@ for line in [
     'Star Lake procession (Domnann): 3 priestesses plant treant sprouts at the lake; botonids sometimes attack',
     'Unseelie Envoy convoy (Lough Gur): the envoy, 2 stallions and 2 siabra escorts walk a route and back',
     'botonid seedlings x13 (Domnann): a scourgin (6-7) jumps out',
-    'Arr (Aldland): flies high, swoops on a player and carries the fight to its nest (Griffon Talon Sword 15%)',
+    'Arr (Gripklosa Mountains): flies high, swoops on a player and carries the fight to its nest (Griffon Talon Sword 15%)',
     'Thergus the Inspirer (Aldland): every few hours a speech, then 4 ogre squads march to the orc coast camp and fight;',
     '  a standby squad (squad leader + 9 threshers) stands on the coast (Squad-leader\'s Shield 20%)',
     'Gormror (Aegir\'s Landing): random raid on Dyrfjell with 4 lieutenants and 30 morvalt; disease clouds in town;',
