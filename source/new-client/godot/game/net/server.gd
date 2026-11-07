@@ -1208,13 +1208,14 @@ var _quiet_delves := 0                   # hover requests whose GM debug line ("
 ## A delve the server answers to a command with an ordinary DetailWindow, kept under `key` for a hover box like an
 ## item's own (reset day C15, 2026-11-05: a companion's gear and styles - "/companionui delve <row> item <slot>" /
 ## "... style <line> <level>", always answered by the server).
-func prefetch_command(key: String, cmd: String) -> void:
+## caption: the answer's caption when known (the window's title - an answer naming a later request skips a silent one)
+func prefetch_command(key: String, cmd: String, caption := "") -> void:
 	if client == null or _item_lines.has(key):
 		return
 	for q in _detail_queue:
 		if q.key != null and typeof(q.key) == TYPE_STRING and q.key == key:
 			return
-	_detail_queue.append({"key": key, "at": Time.get_ticks_msec(), "caption": ""})
+	_detail_queue.append({"key": key, "at": Time.get_ticks_msec(), "caption": caption.to_lower()})
 	command(cmd)
 
 

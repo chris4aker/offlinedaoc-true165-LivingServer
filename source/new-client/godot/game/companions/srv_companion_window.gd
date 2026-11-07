@@ -412,10 +412,11 @@ class SkillTipLabel extends Control:
 	var entry := {}
 	var server_key := ""
 	var server_cmd := ""
+	var server_caption := ""                       # the server's answer's caption when known (its delve window title)
 
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_MOUSE_ENTER and server_key != "":
-			Server.prefetch_command(server_key, server_cmd)
+			Server.prefetch_command(server_key, server_cmd, server_caption)
 
 	func _make_custom_tooltip(_for_text: String) -> Object:
 		if server_key != "":
@@ -425,6 +426,23 @@ class SkillTipLabel extends Control:
 		if str(entry.get("id", "")) == "":
 			return null
 		return ItemTooltip.text_box(String(entry.name), SkillInfo.lines(entry))
+
+
+## A companion's realm ability row: its description on hover (owner 2026-11-06: "hovering over realm abilities
+## inside a companions realm abilities menu still doesnt show tooltip info") - the server's own delve for that
+## companion ("/companionui delve <row> ra <index>": its class's ability, every level) once it answers, else the
+## ability's description from the class data (abilities.json).
+func _ra_tip(l: Label, e: Dictionary) -> void:
+	var box := SkillTipLabel.new()
+	box.entry = {"kind": "ability", "id": ClassDb.find("ability", String(e.name)), "name": String(e.name)}
+	box.server_key = "cra:%d:%d" % [row, int(e.index)]
+	box.server_cmd = "/companionui delve %d ra %d" % [row, int(e.index)]
+	box.server_caption = String(e.name)
+	box.tooltip_text = String(e.name)                      # (any text: Godot asks _make_custom_tooltip only then)
+	box.mouse_filter = Control.MOUSE_FILTER_STOP
+	box.size = l.size
+	box.custom_minimum_size = Vector2(l.size.x, 12)
+	l.add_child(box)
 
 
 # --- stats ----------------------------------------------------------------------------------------------------
@@ -580,13 +598,16 @@ func _refresh_realm() -> void:
 	for e in list:
 		var r := Control.new()
 		r.custom_minimum_size = Vector2(_ra_list.custom_minimum_size.x, 18)
-		CompanionUi.text(r, String(e.name), Vector2(4, 3), Vector2(220, 12), 8, UiArt.CREAM)
+		var nl := CompanionUi.text(r, String(e.name), Vector2(4, 3), Vector2(220, 12), 8, UiArt.CREAM)
+		_ra_tip(nl, e)
 		CompanionUi.text(r, "%d / %d" % [int(e.level), int(e.max)], Vector2(230, 3), Vector2(50, 12), 8)
 		var maxed := int(e.level) >= int(e.max)
 		var can := not maxed and int(e.cost) <= int(e.points)
 		CompanionUi.text(r, "MAX" if maxed else "COST %d" % int(e.cost), Vector2(286, 3), Vector2(60, 12), 7,
 				UiArt.CREAM if can else CompanionUi.DIM)
 		var idx := int(e.index)
-		var b := CompanionUi.button(r, "Buy", Vector2(352, 1), Vector2(44, 15), func(): net.command("buyra %d %d" % [row, idx]), 8)
+		var b := CompanionUi.button(r, "Buy", Vector2(352, 1), Vector2(44, 15), func():
+			Server.forget_details("cra:%d:" % row)                  # (its levels' text asked again)
+			net.command("buyra %d %d" % [row, idx]), 8)
 		b.disabled = not can
 		_ra_list.add_child(r)
