@@ -134,6 +134,16 @@
     ]
    ],
    "note": "Illia/Allakhazam (2003-11 capture): Rulod's Leggings; rate CHOICE"
+  },
+  "hamorik": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Dread_Flail",
+     25
+    ]
+   ],
+   "note": "Allakhazam Hamorik page (2004-07 capture; the 2003 captures list no loot): Dread Flail; added on the owner's call 2026-11-07; rate CHOICE"
   }
  }
 }

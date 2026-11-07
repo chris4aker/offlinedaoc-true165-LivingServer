@@ -76,7 +76,7 @@ for line in [
     '  a standby squad (squad leader + 9 threshers) stands on the coast (Squad-leader\'s Shield 20%)',
     'Gormror (Aegir\'s Landing): random raid on Dyrfjell with 4 lieutenants and 30 morvalt; disease clouds in town;',
     '  they leave when the leaders die or after 25 minutes (Kargil\'s / Rulod\'s Leggings 25%)',
-    'Hamorik (Caldey broken tower): once a night a light show, then Hamorik (61) emerges; leaves at daybreak',
+    'Hamorik (Caldey broken tower): once a night a light show, then Hamorik (61) emerges; leaves at daybreak (Dread Flail 25%, added by the owner: 2004 source)',
 ]:
     w('  ' + line)
 w('Drop rates on these are owner-adjustable choices (no period figure).')
@@ -100,10 +100,12 @@ w('-' * 60)
 sk = [e for e in rep['spawns'] if e['action'].startswith('SKIP')]
 c = collections.Counter(e['action'] for e in sk)
 w('Monsters skipped: ' + ', '.join(f'{k.replace("SKIP_", "").lower().replace("_", " ")} {v}' for k, v in c.most_common()))
-for k in ('SKIP_NO_POSITION', 'SKIP_NO_MODEL', 'SKIP_BOSS_OR_SCRIPTED', 'SKIP_OTHER'):
+for k in ('SKIP_NO_POSITION', 'SKIP_NO_MODEL', 'SKIP_OTHER'):
     names = sorted({(e['final_name'] or e['prima_name']) + ' (' + e['zone'].split(': ', 1)[1] + ')' for e in sk if e['action'] == k})
     if names:
         w(f'  {k.replace("SKIP_", "").lower().replace("_", " ")}: ' + '; '.join(names))
+scr = sorted({(e['final_name'] or e['prima_name']) + ' (' + e['zone'].split(': ', 1)[1] + ')' for e in sk if e['action'] == 'SKIP_BOSS_OR_SCRIPTED'})
+w('  not plain spawns - placed by their encounter rows or spawned by the scripts (SCRIPTED PRIMA ENCOUNTERS above): ' + '; '.join(scr))
 gear = sorted({e.get('item') or e['atlas_name'] for e in rep['items'] if e['verdict'] == 'SKIP_NO_STATS'})
 w(f'Equipment with no period stat source (not built, no invented stats): {len(gear)}')
 w('  ' + '; '.join(gear))

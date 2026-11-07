@@ -77606,6 +77606,15 @@
      25
     ]
    ]
+  },
+  "hamorik": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Dread_Flail",
+     25
+    ]
+   ]
   }
  }
 }
