@@ -19,6 +19,9 @@ hold). Its changelog has the history of everything this version inherits.
 - Charming: a companion that lets its pet go for a new one (/charm) no longer keeps both - the old pet was never freed and followed along as a second pet.
 - Charming never empties a monster camp: a charmed monster is a copy, and its camp spawns a fresh one on its normal respawn time. The charmed one never respawns - not where it died or was let go. A freed pet still turns on its charmer; if it lives through that fight it leaves once it has been out of combat for 10 seconds. The same for players, gamebots and companions.
 - Cornwall: the monsters the Prima Atlas lists there are back - the moor boogeys (Boogey Fort stood empty), Cornish giants and cliff spiderlings, and the empty camps of giant rooters, moor wolves, forest cats, muryans, bears, death stalkers and cliff spiders (168 in all), at the Atlas levels. Cliff spiderlings still drop nothing: their Atlas items are not in the game yet.
+- Monsters the Prima guides list that the world was missing are back: 810 spawns of 281 monsters across 54 zones and dungeons (most in Hibernia's old frontier - Mount Collory, Cruachan Gorge, Breifine - and the Shrouded Isles), at the guides' levels, aggression and speed, placed where period players saw them. The full list is in tools/claude-version/true165/prima_batch_2026-11-07.
+- 1,311 Atlas drop items that were not in the game: gear with its period stats (never made up; 257 pieces with no period stat source were left out), and plain loot - pelts, gems, trinkets, food - at its period value (an estimated value only for vendor trash with no recorded price). Monsters drop their Atlas loot: 3,656 drop rows on 1,187 monsters. Cliff spiderlings drop their Atlas items now.
+- Wolf drops (wolf fang, torn wolf pelt, chunk of wolf meat) come one at a time instead of as one heavy "(20)" or "(100)" item; the ones already in bags become one each.
 
 ## 0.3 (2026-11-06)
 
