@@ -11,7 +11,7 @@ param(
     [string]$Destination = '',
     # Update: the installed game folder ('pick' opens a folder picker). Default: ask.
     [string]$Update = '',
-    [string]$ReleaseVersion = '0.4',
+    [string]$ReleaseVersion = '0.4.1',
     # Testing only: read the release files from <folder>\v<version>\ instead of GitHub.
     [string]$LocalAssets = '',
     # Testing only: answer the questions with yes (and 'install' or 'update' instead of asking which).
@@ -235,7 +235,7 @@ function Get-InstalledVersion([string]$game) {
         $file = Join-Path $game $rel
         if (Test-Path -LiteralPath $file) {
             $text = (Get-Content -LiteralPath $file -TotalCount 1)
-            if ($text -match 'v(\d+\.\d+)') { return $Matches[1] }
+            if ($text -match 'v(\d+(?:\.\d+)+)') { return $Matches[1] }
         }
     }
     return '?'

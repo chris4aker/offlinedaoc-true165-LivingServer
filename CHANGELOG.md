@@ -9,7 +9,7 @@ hold). Its changelog has the history of everything this version inherits.
 
 Nothing yet.
 
-## 0.4.1
+## 0.4.1 (2026-11-07)
 
 A fix for v0.4, applied in place like the other updates (from v0.1, v0.2, v0.3 or v0.4).
 
@@ -22,6 +22,7 @@ A fix for v0.4, applied in place like the other updates (from v0.1, v0.2, v0.3 o
   gems like Black Opal (2g 48s), Blue Spinel and the tourmalines pay properly again, and about 30 other drops are priced
   by the level of the monsters that drop them.
 - Trees in Avalon Marsh, Myrkwood Forest and Shannon Estuary stop you at their trunk again, as everywhere else - you could walk into them and stand inside the willows.
+- The downloader reads a three-part version such as v0.4.1 in full when it updates a game (it showed only "v0.4").
 
 ## 0.4 (2026-11-07)
 
