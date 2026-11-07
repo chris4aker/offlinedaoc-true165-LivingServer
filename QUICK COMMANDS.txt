@@ -25,8 +25,17 @@ A blacksmith repairs the worn gear of the companions with you, free.
   See ALL SERVER COMMANDS.txt for every button word.
 
 /pull
-  Orders your companions and pets to engage your selected enemy. When possible,
-  a tank makes first contact before the rest of the group joins the fight.
+  Your tank pulls your selected enemy and the group follows up once it has the
+  monster. With no tank in the group, everyone engages at once.
+
+/pull <companion name>
+  That companion pulls instead, for example /pull Isolde (the start of a name is
+  enough: /pull iso). Healers (Cleric, Druid, Healer) don't pull.
+  Make it a quickbar button: /macro pull /pull Isolde
+  (then click a quickbar slot to place it).
+  With /defensive on (0.4): the puller may go past the 350-unit range to tag the
+  monster and walks back to you; the rest of the group fights once the monster
+  is within 350 units of you.
 
 /aggressive
   Companions attack what you attack (the default).
