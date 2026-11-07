@@ -134,7 +134,13 @@ namespace DOL.GS
                 IEnumerable<GameNPC> candidates = (combatTarget is GameNPC own ? new[] { own } : [])
                     .Concat(bot.GetNPCsInRadius((ushort)System.Math.Min(charm.Range > 0 ? charm.Range : 1000, 1500))
                         .Where(n => n.InCombat && n.TargetObject is GameLiving t && members.Contains(t)));
-                mob = candidates.FirstOrDefault(m => Fresh(m) && IsValidTarget(bot, charm, m) && !GroupIsOnIt(bot, members, m));
+                // the charm that fits each monster (a Hunter's animal or insect charm - owner 2026-11-06)
+                mob = candidates.FirstOrDefault(m => Fresh(m) && CharmFor(bot, m) != null && !GroupIsOnIt(bot, members, m));
+                if (mob == null)
+                    return false;
+                charm = CharmFor(bot, mob);
+                if (bot.Mana < bot.PowerCost(charm) || bot.GetSkillDisabledDuration(charm) > 0)
+                    return false;
             }
             else
             {
@@ -158,6 +164,128 @@ namespace DOL.GS
             else
                 activity = $"Charming {mob.Name}";
             return started;
+        }
+
+        // ---- hired companions only (owner 2026-11-06): the pre-fight charm, /charm, and the charm that fits a monster
+
+        /// <summary>
+        /// The best charm this bot has learned that can hold this monster under the 1.65 rules (its kind, its level limit,
+        /// at least green to the bot), or null. A Hunter has an animal and an insect charm line; this picks the right one.
+        /// </summary>
+        public static Spell CharmFor(GameBot bot, GameNPC mob) =>
+            bot.Spells?.Where(s => s != null && s.SpellType == eSpellType.Charm && s.Level <= bot.Level && IsValidTarget(bot, s, mob))
+                .OrderByDescending(s => s.Level).FirstOrDefault();
+
+        /// <summary>A hired companion whose charming is on and that knows a charm (the AI Options charm row).</summary>
+        public static bool CompanionCharms(GameBot bot) =>
+            bot != null && HiredCompanions165.IsHired(bot) && CompanionOptions165.CharmAllowed(bot) && LearnedCharm(bot) != null;
+
+        /// <summary>Pure: nobody has started on this monster: full health, not in a fight, nobody hitting it.</summary>
+        public static bool Untouched(int healthPercent, bool inCombat, bool attacked) => healthPercent >= 100 && !inCombat && !attacked;
+
+        /// <summary>
+        /// The pre-fight charm (owner 2026-11-06): a hired companion with charming on and no pet charms the monster its
+        /// player has selected, before anyone starts on it - at least green to the companion, the right kind, within its
+        /// charm's level limit, in range. Tried once a minute per monster, like the in-fight charm.
+        /// </summary>
+        public static bool TryPreFightCharm(GameBot bot)
+        {
+            if (!Classic165Mode.IsOn || !CompanionCharms(bot) || !bot.IsAlive || bot.ControlledBrain != null || bot.InCombat ||
+                bot.IsCasting || bot.castingComponent?.HasPendingSkillRequests == true || HoldsPulsingCharm(bot))
+                return false;
+            GamePlayer leader = bot.PlayerGroupLeader;
+            if (leader?.TargetObject is not GameNPC mob || leader.Group == null || leader.Group != bot.Group || leader.IsAttacking ||
+                !Untouched(mob.HealthPercent, mob.InCombat, mob.attackComponent?.AttackerTracker?.Attackers.Any() == true))
+                return false;
+            if (Tried.TryGetValue(mob, out object last) && GameLoop.GameLoopTime - (long)last < RetryMilliseconds)
+                return false;
+            Spell charm = CharmFor(bot, mob);
+            if (charm == null || !bot.IsWithinRadius(mob, charm.Range > 0 ? charm.Range : 1000))
+                return false;
+            return Start(bot, mob, charm) == null;
+        }
+
+        /// <summary>
+        /// "/charm" or "/charm (companion name)" (owner 2026-11-06): that companion (or the first one with a charm) charms
+        /// the player's target now. A pet it already has is let go first - a summoned pet dismissed, a charmed one released,
+        /// a pulsing charm stopped - then it charms the new one. The target rules still hold (at least green to it, the right
+        /// kind, within its charm's level limit). Returns the reply for the player.
+        /// </summary>
+        public static string Order(GamePlayer player, GameLiving target, string name)
+        {
+            if (target is not GameNPC mob || !mob.IsAlive)
+                return "Select a monster first, then type /charm, or /charm <companion name>.";
+            GameBot[] companions = player.Group?.GetMembersInTheGroup().OfType<GameBot>()
+                .Where(b => HiredCompanions165.IsHired(b) && b.IsAlive && b.PlayerGroupLeader == player).ToArray() ?? [];
+            GameBot bot;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                bot = PlayerLedPullCoordinator.FindNamed(companions, name.Trim());
+                if (bot == null)
+                    return $"No companion named {name.Trim()} is with you.";
+                if (LearnedCharm(bot) == null)
+                    return $"{bot.Name} knows no charm.";
+            }
+            else
+            {
+                bot = companions.FirstOrDefault(b => LearnedCharm(b) != null);
+                if (bot == null)
+                    return "None of your companions knows a charm.";
+            }
+            if (bot.IsCasting)
+                bot.StopCurrentSpellcast();
+            Spell charm = CharmFor(bot, mob);
+            if (charm == null)
+                return $"{bot.Name} can't charm {mob.GetName(0, false)}: {TargetProblem(bot, mob)}.";
+            if (!bot.IsWithinRadius(mob, charm.Range > 0 ? charm.Range : 1000))
+                return $"{mob.GetName(0, true)} is too far away for {bot.Name} to charm.";
+            ReleasePet(bot);
+            string problem = Start(bot, mob, charm);
+            return problem ?? $"{bot.Name} tries to charm {mob.GetName(0, false)}.";
+        }
+
+        /// <summary>Why no learned charm of this bot can hold this monster (the first rule it fails).</summary>
+        private static string TargetProblem(GameBot bot, GameNPC mob)
+        {
+            Spell[] charms = bot.Spells?.Where(s => s != null && s.SpellType == eSpellType.Charm && s.Level <= bot.Level).ToArray() ?? [];
+            if (mob.Realm != eRealm.None || mob.Brain is IControlledBrain || mob is GameSummonedPet or GameEpicBoss or GameEpicNPC or GameBot ||
+                ServerProperties.Properties.SPELL_CHARM_NAMED_CHECK != 0 && !string.IsNullOrEmpty(mob.Name) && char.IsUpper(mob.Name[0]))
+                return "it can't be charmed";
+            if (ConLevels.GetConColor(bot.GetConLevel(mob)) < ConColor.GREEN)
+                return "it is grey to them";
+            if (!charms.Any(s => AutonomousPetSupport.IsCharmBodyTypeAllowed(s, mob.BodyType)))
+                return "their charm can't hold that kind of creature";
+            return "it is too strong for their charm";
+        }
+
+        /// <summary>Lets the bot's current pet go: a pulsing charm stopped, then the pet released (dismissed or freed).</summary>
+        private static void ReleasePet(GameBot bot)
+        {
+            foreach (ECSPulseEffect pulse in bot.effectListComponent?.GetPulseEffects()
+                         .Where(p => !p.IsEnding && !p.IsEnded && p.SpellHandler?.Spell?.SpellType == eSpellType.Charm).ToList() ?? [])
+                pulse.End();
+            if (bot.ControlledBrain != null)
+                bot.CommandNpcRelease();
+        }
+
+        /// <summary>Casts this charm on the monster; null when the cast started, else why not.</summary>
+        private static string Start(GameBot bot, GameNPC mob, Spell charm)
+        {
+            if (bot.Mana < bot.PowerCost(charm))
+                return $"{bot.Name} doesn't have the power to charm.";
+            if (bot.GetSkillDisabledDuration(charm) > 0)
+                return $"{bot.Name}'s charm isn't ready yet.";
+            // the Minstrel's charm is a song: it needs the instrument in hand
+            if (charm.NeedInstrument && !BotBrain.TryEquipRealInstrument(bot, charm.InstrumentRequirement))
+                return $"{bot.Name} has no instrument for that song.";
+            bot.WakeRecoveryRest();
+            Tried.AddOrUpdate(mob, GameLoop.GameLoopTime);
+            GameObject previous = bot.TargetObject;
+            bot.TargetObject = mob;
+            if (bot.CastSpell(charm, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), true))
+                return null;
+            bot.TargetObject = previous;
+            return $"{bot.Name} couldn't start the charm.";
         }
     }
 }

@@ -1460,6 +1460,11 @@ namespace DOL.AI.Brain
                 return;
             }
 
+            // owner 2026-11-06: a hired companion with charming on and no pet charms the monster its player selects, before
+            // anyone starts on it (Charm165; hired companions only, gamebots unchanged)
+            if (Charm165.TryPreFightCharm(BotBody))
+                return;
+
             CompanionPvpEngagement.Observe(BotBody);
             KeepSupportPetFighting();
             // Goal 11: a /raid 40 or /raid 80 on a keep siege works its squad job (rams, engines) on its own.

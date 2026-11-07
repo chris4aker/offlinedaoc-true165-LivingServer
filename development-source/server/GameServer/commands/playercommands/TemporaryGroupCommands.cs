@@ -369,6 +369,19 @@ namespace DOL.GS.Commands
         }
     }
 
+    // owner 2026-11-06: "/charm" or "/charm <companion name>": that companion lets its current pet go and charms your target
+    [CmdAttribute("&charm", ePrivLevel.Player,
+        "Orders a companion that knows a charm to charm your target (its current pet is let go first)",
+        "/charm", "/charm <companion name>")]
+    public sealed class CharmCompanionCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        public void OnCommand(GameClient client, string[] args)
+        {
+            string name = args.Length > 1 ? string.Join(" ", args, 1, args.Length - 1) : null;
+            DisplayMessage(client, Charm165.Order(client.Player, client.Player.TargetObject as GameLiving, name));
+        }
+    }
+
     [CmdAttribute("&pull", ePrivLevel.Player,
         "Orders your companions to pull your target: the tank pulls it and brings it back, or name the puller",
         "/pull", "/pull <companion name>")]

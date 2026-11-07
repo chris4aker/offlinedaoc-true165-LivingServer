@@ -476,8 +476,9 @@ public static class AutonomousPetSupport
 
             (Spell Spell, SpellLine Line) summon = default;
             // a hired Hunter whose player switched its pet off (AI Options) summons none
+            // (and a hired Hunter whose charming is on charms instead of calling its wolf - owner 2026-11-06)
             bool hunterPetOff = owner is GameBot hunter && hunter.CharacterClass?.ID == (int)eCharacterClass.Hunter &&
-                                CompanionOptions165.Choice(hunter, "hunterpet") == 1;
+                                (CompanionOptions165.Choice(hunter, "hunterpet") == 1 || Charm165.CompanionCharms(hunter));
             // A hired Cabalist / Enchanter summons the pet its player chose (CompanionOptions165), else its own choice.
             // (from every rank it learned: its own spell list keeps only the strongest - see LearnedPetSummons)
             if (!hunterPetOff && owner is GameBot chooser && CompanionOptions165.PetLine(chooser) is string chosenLine)

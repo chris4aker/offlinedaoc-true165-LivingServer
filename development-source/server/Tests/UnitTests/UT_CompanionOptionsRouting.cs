@@ -23,6 +23,28 @@ namespace DOL.UnitTests
             Assert.That(CompanionOptions165.Option(CompanionOptions165.KindPositioning + 1), Is.Null);
         }
 
+        // owner 2026-11-06: charming starts off for a hired Hunter only (it keeps its wolf); on for every other charm class
+        [Test]
+        public void CharmDefaultsOffForHuntersOnly() => Assert.Multiple(() =>
+        {
+            Assert.That(CompanionOptions165.CharmAllowed(null, true), Is.False, "a Hunter never set: off (its wolf)");
+            Assert.That(CompanionOptions165.CharmAllowed("1", true), Is.True, "a Hunter switched on");
+            Assert.That(CompanionOptions165.CharmAllowed("0", true), Is.False);
+            Assert.That(CompanionOptions165.CharmAllowed(null, false), Is.True, "a Sorcerer never set: on");
+            Assert.That(CompanionOptions165.CharmAllowed("0", false), Is.False, "switched off");
+            Assert.That(CompanionOptions165.CharmAllowed("1", false), Is.True);
+        });
+
+        // owner 2026-11-06: the pre-fight charm only takes a monster nobody has started on
+        [Test]
+        public void PreFightCharmNeedsAnUntouchedMonster() => Assert.Multiple(() =>
+        {
+            Assert.That(Charm165.Untouched(100, false, false), Is.True);
+            Assert.That(Charm165.Untouched(99, false, false), Is.False, "already hurt");
+            Assert.That(Charm165.Untouched(100, true, false), Is.False, "already fighting");
+            Assert.That(Charm165.Untouched(100, false, true), Is.False, "someone is hitting it");
+        });
+
         // owner 2026-11-06: a companion's realm ability tooltip ends with its own level and the next cost
         [Test]
         public void RealmAbilityDelveStatusLine()

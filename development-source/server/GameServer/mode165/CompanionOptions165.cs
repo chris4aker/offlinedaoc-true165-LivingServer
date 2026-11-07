@@ -145,8 +145,17 @@ namespace DOL.GS
 
         // ---- what the AI reads
 
-        /// <summary>False only when the player switched a hired companion's charming off.</summary>
-        public static bool CharmAllowed(GameBot bot) => Get(bot, "charm") != "0";
+        /// <summary>
+        /// False only when the player switched a hired companion's charming off. A hired Hunter's charming starts OFF (owner
+        /// 2026-11-06: it keeps its wolf unless the player turns charming on); gamebots are unchanged.
+        /// </summary>
+        public static bool CharmAllowed(GameBot bot) => CharmAllowed(Get(bot, "charm"), IsHiredHunter(bot));
+
+        /// <summary>Pure: the stored charm choice ("1" on, "0" off, null never set) for a Hunter or any other class.</summary>
+        public static bool CharmAllowed(string stored, bool hiredHunter) => hiredHunter ? stored == "1" : stored != "0";
+
+        private static bool IsHiredHunter(GameBot bot) =>
+            bot?.CharacterClass?.ID == (int)eCharacterClass.Hunter && HiredCompanions165.IsHired(bot);
 
         /// <summary>The spell line of the pet the player chose (Cabalist, Enchanter), or null for the bot's own choice.</summary>
         public static string PetLine(GameBot bot) => HasPetChoice(bot) ? Get(bot, "pet") : null;
@@ -178,9 +187,10 @@ namespace DOL.GS
 
         private sealed record Row(byte Kind, byte Slot, int Chosen, List<string> Choices, int Used, int Cap);
 
+        // a Hunter too, once it has learned a charm (owner 2026-11-06: charming on = no wolf, off = its wolf)
         private static bool CanCharm(GameBot bot) => bot.CharacterClass != null &&
             ((eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Sorcerer or eCharacterClass.Minstrel ||
-             (eCharacterClass)bot.CharacterClass.ID != eCharacterClass.Hunter && Charm165.LearnedCharm(bot) != null);
+             Charm165.LearnedCharm(bot) != null);
 
         /// <summary>
         /// The pets the player can choose (AI Options pet row; stored as the choice key). Cabalist and Enchanter: every
@@ -331,9 +341,14 @@ namespace DOL.GS
                 {
                     if (!CanCharm(bot)) return $"{bot.Name} does not charm.";
                     bool on = Arg(3).Equals("on", StringComparison.OrdinalIgnoreCase) || Arg(3).Equals("yes", StringComparison.OrdinalIgnoreCase);
-                    Set(hired, "charm", on ? null : "0");
-                    // switched off with a charmed pet: it is let go now
+                    bool hunter = IsHiredHunter(bot);
+                    // a Hunter's default is off, so its "on" is stored; every other class's default is on
+                    Set(hired, "charm", on ? (hunter ? "1" : null) : (hunter ? null : "0"));
+                    // switched off with a charmed pet: it is let go now (a Hunter then calls its wolf again)
                     if (!on && bot.ControlledBrain?.Body is GameNPC charmed && charmed is not GameSummonedPet)
+                        bot.CommandNpcRelease();
+                    // a Hunter switched on: its wolf goes, so it can charm
+                    if (on && hunter && bot.ControlledBrain?.Body is GameSummonedPet)
                         bot.CommandNpcRelease();
                     return null;
                 }
