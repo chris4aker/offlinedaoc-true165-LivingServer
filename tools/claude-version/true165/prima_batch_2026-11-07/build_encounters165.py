@@ -137,6 +137,33 @@ mob_rows.append(mob(cbase, 'Tower Spirit', ClassType='DOL.GS.Scripts.HamorikRitu
                     X=371520, Y=411072, Z=3486, Heading=831, Region=51, **hidden))
 
 
+sys.path.insert(0, HERE)
+import template_split165 as TSPLIT   # noqa: E402
+enc_templates = TSPLIT.split(con, mob_rows, NOW, 'primaenc', 916700000)
+
+# existing rows the encounter rules change (the rules run before the server loads them, then a ReplaceMobValues template
+# put its own values back): the envoy's level and pace, the stallions' look and pace, Celain's and Zargin's factions.
+# Each gets its own template copy with the rule's values; a rules update points the row at it (Celain's row lives in
+# add-restoredspawns165.json, edited below).
+CELAIN, ZARGIN = 'c866c1b9-f221-4a2b-9ace-8de25a36e80e', '0ce52dd6-27c5-49a6-8a56-e5b869fcf60d'
+RULE_VALUES = {ENVOY: {'Level': 55, 'Speed': 180}, STALLIONS[0]: {'Model': 414, 'Level': 48, 'Speed': 180},
+               STALLIONS[1]: {'Model': 414, 'Level': 48, 'Speed': 180}, CELAIN: {'FactionID': 55}, ZARGIN: {'FactionID': 155}}
+rule_rows = []
+for mid, values in RULE_VALUES.items():
+    row = con.execute('select * from Mob where Mob_ID=?', (mid,)).fetchone()
+    assert row is not None, mid
+    r = dict(row)
+    r.update(values)
+    rule_rows.append(r)
+enc_templates += TSPLIT.split(con, rule_rows, NOW, 'primaencrule', 916800000)
+template_of = {r['Mob_ID']: r['NPCTemplateID'] for r in rule_rows}
+for r in rule_rows:
+    if r['Mob_ID'] != CELAIN:
+        rules.append({'sql': f"UPDATE Mob SET NPCTemplateID={r['NPCTemplateID']} WHERE Mob_ID='{r['Mob_ID']}'",
+                      'reason': 'True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no '
+                                'longer puts back the level, look, pace or faction the encounter rules give it'})
+
+
 def addfile(name, table, key, reason, rows):
     json.dump({'table': table, 'key': key, 'reason': reason, 'rows': rows},
               open(os.path.join(OUT, name), 'w', encoding='utf-8', newline='\n'), indent=1, ensure_ascii=False)
@@ -146,6 +173,9 @@ addfile('add-primapaths165.json', 'Path', 'Path_ID', 'True 1.65 Prima encounters
 addfile('add-primapathpoints165.json', 'PathPoints', 'PathPoints_ID',
         'True 1.65 Prima encounters (2026-11-07): the Unseelie Envoy convoy route points (navmesh floor every ~1500 units, never through Innis)',
         pp_rows)
+addfile('add-primaenctemplates165.json', 'NpcTemplate', 'NpcTemplate_ID',
+        "True 1.65 Prima encounters (2026-11-07, fixed for 0.5): own NPC templates for encounter rows on another monster's "
+        'template (Thergus the Inspirer and the squad leader came up as "thrawn ogre guardsman")', enc_templates)
 addfile('add-primaencounters165.json', 'Mob', 'Mob_ID',
         'True 1.65 Prima encounters (2026-11-07): the siabra escorts of the Unseelie Envoy convoy and the Star Lake procession controller',
         mob_rows)
@@ -158,7 +188,8 @@ for folder in (os.path.join(CV, 'runtime', 'true165'), T165):
     raw = open(p, 'rb').read().decode('utf-8')
     d = json.loads(raw)
     row = next(r for r in d['rows'] if r['Mob_ID'] == CELAIN)
-    row.update({'ClassType': 'DOL.GS.Scripts.CelainEirich165', 'Brain': 'DOL.AI.Brain.CelainEirichBrain', 'FactionID': 55})
+    row.update({'ClassType': 'DOL.GS.Scripts.CelainEirich165', 'Brain': 'DOL.AI.Brain.CelainEirichBrain', 'FactionID': 55,
+                'NPCTemplateID': template_of[CELAIN]})
     nl = '\r\n' if '\r\n' in raw else '\n'
     open(p, 'w', encoding='utf-8', newline=nl).write(json.dumps(d, indent=1, ensure_ascii=False) + ('\n' if raw.endswith(('\n',)) else ''))
 print('path points', len(pp_rows), 'dropped (no floor)', dropped, '| home', (hx, hy, hz), '| rows', len(mob_rows), '| rules', len(rules))

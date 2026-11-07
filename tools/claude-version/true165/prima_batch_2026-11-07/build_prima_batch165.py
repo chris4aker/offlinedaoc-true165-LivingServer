@@ -438,6 +438,12 @@ for low, spellings in by_low.items():
 for r in spawn_rows:
     for col, val in ENC['spawn_overrides'].get(r['Name'].lower(), {}).items():
         r[col] = val
+# own NPC templates where a borrowed ReplaceMobValues template would overwrite the row (owner 2026-11-07: "they are both
+# called Mapog" - Pog Mapog on Mapog's template came up as Mapog, level 62; template_split165.py)
+sys.path.insert(0, HERE)
+import template_split165 as TSPLIT   # noqa: E402
+own_templates = TSPLIT.split(con, spawn_rows, NOW, 'prima', 916600000)
+report['counts']['own_templates'] = len(own_templates)
 report['counts']['spawn_actions'] = dict(sc)
 report['counts']['spawn_rows'] = len(spawn_rows)
 
@@ -643,6 +649,11 @@ addfile('add-primaitems165.json', 'ItemTemplate', 'Id_nb',
         '(Wayback <= 2003-11) or Uthgard item pages (stats as the page gives them; look from the closest existing item); '
         'plain loot priced from the period sell value, estimated only where no period price exists (marked in the report)',
         sorted(built.values(), key=lambda r: r['Id_nb']))
+addfile('add-primatemplates165.json', 'NpcTemplate', 'NpcTemplate_ID',
+        'True 1.65 Prima batch (2026-11-07, fixed for 0.5): own NPC templates for the spawns that borrowed another '
+        "monster's template - a copy of the borrowed look (model, gear, spells, styles) with the spawn's own name, level, "
+        'aggression, speed and faction (a shared template overwrote them: Pog Mapog came up as Mapog)',
+        own_templates)
 addfile('add-primaspawns165.json', 'Mob', 'Mob_ID',
         'True 1.65 Prima batch spawns (2026-11-07): monsters the Prima guides list that our world lacked - archived rows '
         'restored (true165-restored) and new spawns at period positions (CapnBry radar camps, Uthgard map dots, Prima / '

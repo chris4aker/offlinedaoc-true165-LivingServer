@@ -63062,6 +63062,26 @@
   {
    "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.BotonidSeedling' WHERE Mob_ID IN ('100027648','100023803','100026139','100027977','100026023','100025572','100027727','100023379','100024847','100025444','100024407','100024326','100026130')",
    "reason": "True 1.65 Prima encounter (owner 2026-11-07): the scourgin hide under these botonid seedlings by the two Prima SCOURGIN labels and jump out (Prima SI 2002 Domnann AI; Allakhazam 2003-01-03)"
+  },
+  {
+   "sql": "UPDATE Mob SET NPCTemplateID=916817589 WHERE Mob_ID='96a684aa-74ce-44d7-9f7c-188451ca22e3'",
+   "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
+  },
+  {
+   "sql": "UPDATE Mob SET NPCTemplateID=916829425 WHERE Mob_ID='d91bd52f-4837-4ae1-b1d4-17ed24eee52a'",
+   "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
+  },
+  {
+   "sql": "UPDATE Mob SET NPCTemplateID=916829425 WHERE Mob_ID='470ade65-3d8c-4266-bd71-07e7d58623d6'",
+   "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
+  },
+  {
+   "sql": "UPDATE Mob SET NPCTemplateID=916866436 WHERE Mob_ID='0ce52dd6-27c5-49a6-8a56-e5b869fcf60d'",
+   "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Level = 0 WHERE lower(Id_nb) IN ('adder_fang', 'albino_grugners_remains', 'alexandrite', 'alp_luachra_eye', 'alp_luachra_hand', 'apple_fly_wings', 'aughisky_mane', 'aventurine_gem', 'badger_cub_claw', 'badger_cub_fur', 'balor''s_remains', 'bertha''s_remains', 'black_rocks', 'black_sapphire', 'bog_mud', 'broken_fragment_of_wood_and_arcanium', 'cadwallen''s_sacrificial_dagger', 'chrome_diopside', 'chrysoberyl', 'chunk_of_wolf_meat', 'cleddyf''s_head', 'coirmirceoirs_remains', 'complete_worry_wort_skin', 'copper_amethyst_bracelet', 'cronker''s_remains', 'cythraul_essence', 'dangerous_tooth', 'dead_swamp_goo', 'ebon_skeleton_tibia', 'evern''s_remains', 'fire_ant_frendrat''s_remains', 'flat_chert', 'flint', 'footman_cloak', 'frog_legs', 'ghostly_banshee_hair', 'gloves_of_the_bladehand', 'golden_orb', 'golestandt''s_remains', 'grass_ring', 'green_knight''s_remains', 'grunge''s_remains', 'high_priestess_ywera''s_remains', 'horn_of_drinking', 'hrrgyfs_remains', 'ibicuss_remains', 'imbued_sleeves', 'jade', 'jari''s_remains', 'kalnraw''s_remains', 'king_smugluk''s_head', 'kornerupine', 'lasholds_remains', 'mootang''s_head', 'morty''s_remains', 'nosdodens_remains', 'oldest''s_remains', 'onyx_gem', 'opaque_glass_disc', 'patch_of_aughisky_hide', 'peridot', 'precious_heliodor', 'pristine_aughisky_hide', 'pristine_boars_hide', 'prugor''s_remains', 'queen_majors_remains', 'rhodolite', 'round_chert', 'runed_hollow_clay_boots', 'runed_hollow_clay_gloves', 'runed_hollow_clay_helm', 'runed_hollow_clay_jerkin', 'runed_hollow_clay_leggings', 'runed_hollow_clay_sleeves', 'sentry_incin''s_remains', 'seolc cap of the void', 'sergeant_cosworth''s_remains', 'shard_of_sequence', 'sir_gerenth''s_remains', 'sladug''s_remains', 'slimy_swamp_goo_skin', 'small_copper_ring', 'small_mirror', 'small_silver_laden_box', 'snarls''_remains', 'spats_remains', 'spotted_larva', 'staff_of_enlightenment', 'stolen_bear_tooth', 'stripes_remains', 'thin_chert', 'throatripper''s_remains', 'thulin''s_remains', 'tomte_studded_helm', 'torn_wolf_pelt', 'vagdush''s_seer_amulet', 'veviel''s_remains', 'vial_of_shimmering_essence', 'water_opal', 'water_orb', 'well_crafted_lantern', 'windchaser_naiheras_remains', 'wizard_locked_box', 'wolf_fang', 'worm_rot', 'worn_carnelian_studded_belt', 'xcrzrks_remains', 'yellow_tourmaline', 'zrit-zrit''s_remains') AND Level <> 0",
+   "reason": "True 1.65 vendor trash is level 0 (owner 2026-11-07): 109 vendor-trash items that monsters drop show level 0 (cons grey), as on the period pages; drops unchanged"
   }
  ],
  "counts": {
@@ -63074,6 +63094,7 @@
    "BUILD_RAW": 271
   },
   "items_built": 1523,
+  "own_templates": 258,
   "spawn_actions": {
    "PLACE": 363,
    "SKIP_NO_POSITION": 344,
