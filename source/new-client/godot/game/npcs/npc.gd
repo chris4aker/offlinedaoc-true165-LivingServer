@@ -334,7 +334,11 @@ func _hang_weapons(drawn: bool) -> void:
 	var skel_root: Node3D = (_weapon_root as Fig3Figure).model if _weapon_root is Fig3Figure else _weapon_root
 	var sk := skel_root.find_children("*", "Skeleton3D", true, false)
 	var can_sheathe := sk.size() > 0 and (sk[0] as Skeleton3D).find_bone("Bip01 R Belt") >= 0
-	_weapon_nodes = Player.dress(skel_root, item_at, active, drawn or not can_sheathe, false)
+	# a figure itself, not its inner model: Player.dress hangs the sets not in use (a two-hander on the back, a spare
+	# one-hander on the hip) only for a figure - companions and gamebots never showed theirs (owner 2026-11-06, via the
+	# server chat: "same as the player's own character"); armour stays off (the figure is dressed elsewhere)
+	_weapon_nodes = Player.dress(_weapon_root if _weapon_root is Fig3Figure else skel_root, item_at, active,
+			drawn or not can_sheathe, false)
 	if int(spawn.get("flags", 0)) & FLAG_GHOST:                # a spirit's weapons are as ghostly as it is
 		for w in _weapon_nodes:
 			if is_instance_valid(w):
