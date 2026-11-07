@@ -15,6 +15,9 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: hired companions follow you over zone borders (Lyonesse to Cornwall and every other border) instead of stopping at the line until they were teleported to you.
 - Companions: hovering a realm ability in a companion's REALM ABILITIES window shows its full description, as the trainer does for your own class, plus the companion's level in it, the next level's cost and its realm ability points.
 - Companions: charming. A companion with charming on and no pet charms the monster you select before anyone starts on it, and /charm or /charm <companion name> charms your target right away (its current pet is let go first). Charms take only monsters at least green to the companion. Hunters can charm too: the charm switch in AI Options is off by default (they keep their wolf); on, they charm animals or insects instead. Macro: /macro charm /charm Isolde.
+- Charming: /charm and a companion's pre-fight charm no longer fizzle without a word when the cast ends (the monster you had selected counted as the group already fighting it). When a charm you asked for fails or is resisted, the companion's player is told why.
+- Charming: a companion that lets its pet go for a new one (/charm) no longer keeps both - the old pet was never freed and followed along as a second pet.
+- Charming never empties a monster camp: a charmed monster is a copy, and its camp spawns a fresh one on its normal respawn time. The charmed one never respawns - not where it died or was let go. A freed pet still turns on its charmer; if it lives through that fight it leaves once it has been out of combat for 10 seconds. The same for players, gamebots and companions.
 
 ## 0.3 (2026-11-06)
 
