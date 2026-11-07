@@ -581,10 +581,10 @@ NORMAL PLAYER COMMANDS
 /pull
   Your tank pulls your target and the group follows up once it has the monster; with
   no tank, everyone engages at once. /pull <companion name> makes that companion the
-  puller (healers don't pull; not working properly until 0.4). Macro: /macro pull /pull
-  Isolde. In /defensive mode (0.4)
-  the puller may go past the 350-unit range for its pull; the others wait until the
-  monster is within 350 units. Solo, it orders your pet to attack.
+  puller (healers don't pull; not working properly until 0.4). Macro: /macro pull
+  /pull Isolde. In /defensive mode (0.4) the puller may go past the 350-unit range for
+  its pull; the others wait until the monster is within 350 units. Solo, it orders
+  your pet to attack.
   /pull
   /pull <companion name>
   Handler: DOL.GS.Commands.PullGroupCommandHandler
