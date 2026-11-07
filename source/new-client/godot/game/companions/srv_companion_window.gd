@@ -207,6 +207,7 @@ func _build_gear(page: Control) -> void:
 			7, UiArt.CREAM)
 	_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_info.clip_text = true
+	_info.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_doll = Control.new()
 	_doll.position = Vector2.ZERO
 	_doll.size = Vector2(312, 262)
@@ -387,7 +388,11 @@ class GearSlot extends Control:
 		# the right, in red
 		var nm := CompanionUi.text(self, String(item.name), Vector2(size.y + 2, 4), Vector2(size.x - size.y - 4 - rw, 12), 7,
 				ItemTooltip.name_color(item, false))
+		# a long name ends in "..." inside its row (owner 2026-11-07: SILVERED LION EMBOSSED GREAVES ran out of the box);
+		# the width set again after: a label grows to its text when the size comes first
 		nm.clip_text = true
+		nm.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		nm.size = Vector2(size.x - size.y - 4 - rw, 12)
 		if right != "":
 			var r := CompanionUi.text(self, right, Vector2(size.x - rw - 2, 4), Vector2(rw, 12), 7,
 					CompanionUi.RED if (stack and count <= 5) or (not stack and cond < 70) else CompanionUi.DIM)
