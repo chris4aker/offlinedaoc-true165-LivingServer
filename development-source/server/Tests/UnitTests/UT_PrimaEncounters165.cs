@@ -82,8 +82,8 @@ namespace DOL.UnitTests
         [Test]
         public void GormrorsDiseaseCloudsAreInsideDyrfjell() => Assert.Multiple(() =>
         {
-            Assert.That(GormrorRaidBrain.CloudSpots, Has.Length.EqualTo(27));
-            Assert.That(GormrorRaidBrain.CloudSpots.Distinct().Count(), Is.EqualTo(27));
+            Assert.That(GormrorRaidBrain.CloudSpots, Has.Length.EqualTo(26));
+            Assert.That(GormrorRaidBrain.CloudSpots.Distinct().Count(), Is.EqualTo(26));
             foreach (var c in GormrorRaidBrain.CloudSpots)
             {
                 Assert.That(c.X, Is.InRange(275000, 279800));

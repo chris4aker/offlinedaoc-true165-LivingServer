@@ -233,7 +233,7 @@ namespace DOL.AI.Brain
     // the town. 1.62 notes: the morvalt no longer linger after their leaders have left or been killed. Freddyshouse 2003:
     // disease clouds in town until the raiders die; about 30 adds; Gormror yells "Gather! Together we are strong! Seperate
     // we are weak! March as one! Fight as one!" and "All races will die". CapnBry: lieutenants Horgal, Oireg, Kargil
-    // (25-26) by him; "Gormror's disease" objects inside Dyrfjell. CHOICE: every 60-180 minutes when a player is near the
+    // (25-26) by him; "Gormror's disease" objects inside Dyrfjell (one spot, 276326,326601, is under a building's floor and is left out). CHOICE: every 60-180 minutes when a player is near the
     // town; 30 morvalt; 8 clouds; 25 minutes before they leave.
     public class GormrorRaidBrain : StandardMobBrain
     {
@@ -250,7 +250,7 @@ namespace DOL.AI.Brain
             (277752, 326940, 5136), (279053, 327447, 5136), (275942, 325068, 5144), (276981, 325722, 5136), (278906, 324293, 5136), (278566, 324496, 5136),
             (279449, 323342, 5143), (278295, 324225, 5136), (279664, 322899, 5095), (277276, 325107, 5136), (276837, 323198, 5148), (275783, 324564, 5144),
             (275512, 325650, 5136), (275036, 326533, 5136), (278249, 325958, 5130), (279177, 325379, 5136), (275647, 327008, 5136), (276609, 326325, 5136),
-            (276937, 324904, 5144), (276326, 326601, 5136), (277073, 322596, 5166),
+            (276937, 324904, 5144), (277073, 322596, 5166),
         ];
         private GameNPC _gormror;
         private readonly List<GameNPC> _leaders = [], _raiders = [], _clouds = [];
