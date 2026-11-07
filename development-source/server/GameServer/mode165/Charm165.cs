@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
+using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
 namespace DOL.GS
@@ -155,6 +156,7 @@ namespace DOL.GS
             // the Minstrel's charm is a song: it needs the instrument in hand (in a fight the bot holds its weapon)
             if (charm.NeedInstrument && !BotBrain.TryEquipRealInstrument(bot, charm.InstrumentRequirement))
                 return false;
+            Sanctioned.Remove(bot);
             Tried.AddOrUpdate(mob, now);
             GameObject previous = bot.TargetObject;
             bot.TargetObject = mob;
@@ -202,7 +204,7 @@ namespace DOL.GS
             Spell charm = CharmFor(bot, mob);
             if (charm == null || !bot.IsWithinRadius(mob, charm.Range > 0 ? charm.Range : 1000))
                 return false;
-            return Start(bot, mob, charm) == null;
+            return Start(bot, mob, charm, false) == null;
         }
 
         /// <summary>
@@ -240,7 +242,7 @@ namespace DOL.GS
             if (!bot.IsWithinRadius(mob, charm.Range > 0 ? charm.Range : 1000))
                 return $"{mob.GetName(0, true)} is too far away for {bot.Name} to charm.";
             ReleasePet(bot);
-            string problem = Start(bot, mob, charm);
+            string problem = Start(bot, mob, charm, true);
             return problem ?? $"{bot.Name} tries to charm {mob.GetName(0, false)}.";
         }
 
@@ -268,8 +270,55 @@ namespace DOL.GS
                 bot.CommandNpcRelease();
         }
 
+        // The charm the player asked for: /charm (ordered) or the pre-fight charm of the monster the player selected.
+        private sealed class Sanction
+        {
+            public GameNPC Mob;
+            public bool Ordered;
+        }
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<GameBot, Sanction> Sanctioned = new();
+
+        /// <summary>
+        /// Whether the group being on this monster stops the charm when the cast ends. The player selecting the monster
+        /// is not the group being on it (2026-11-06: /charm and the pre-fight charm fizzled every time, because the player
+        /// targets that monster). /charm charms it anyway; the pre-fight charm only while nobody has hurt or hit it.
+        /// </summary>
+        public static bool GroupStopsCharm(GameBot charmer, HashSet<GameLiving> members, GameNPC mob)
+        {
+            if (Sanctioned.TryGetValue(charmer, out Sanction s) && s.Mob == mob)
+                return !s.Ordered && !Untouched(mob.HealthPercent, false, mob.attackComponent?.AttackerTracker?.Attackers.Any() == true);
+            return GroupIsOnIt(charmer, members, mob);
+        }
+
+        /// <summary>
+        /// A charm the player asked for failed when its cast ended: the companion tells its player why (before, nothing
+        /// happened at all). Other charms fail quietly, as before. Always false, for the end-of-cast check.
+        /// </summary>
+        public static bool Failed(GameBot bot, GameNPC mob, string why)
+        {
+            if (bot != null && mob != null && Sanctioned.TryGetValue(bot, out Sanction s) && s.Mob == mob)
+            {
+                Sanctioned.Remove(bot);
+                bot.PlayerGroupLeader?.Out.SendMessage($"{bot.Name}'s charm on {mob.GetName(0, false)} failed: {why}.",
+                    eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+            }
+            return false;
+        }
+
+        /// <summary>The message for a charm the player asked for when the monster resists it.</summary>
+        public static void Resisted(GameBot bot, GameNPC mob)
+        {
+            if (bot != null && mob != null && Sanctioned.TryGetValue(bot, out Sanction s) && s.Mob == mob)
+            {
+                Sanctioned.Remove(bot);
+                bot.PlayerGroupLeader?.Out.SendMessage($"{mob.GetName(0, true)} resists {bot.Name}'s charm.",
+                    eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+            }
+        }
+
         /// <summary>Casts this charm on the monster; null when the cast started, else why not.</summary>
-        private static string Start(GameBot bot, GameNPC mob, Spell charm)
+        private static string Start(GameBot bot, GameNPC mob, Spell charm, bool ordered)
         {
             if (bot.Mana < bot.PowerCost(charm))
                 return $"{bot.Name} doesn't have the power to charm.";
@@ -282,8 +331,10 @@ namespace DOL.GS
             Tried.AddOrUpdate(mob, GameLoop.GameLoopTime);
             GameObject previous = bot.TargetObject;
             bot.TargetObject = mob;
+            Sanctioned.AddOrUpdate(bot, new Sanction { Mob = mob, Ordered = ordered });
             if (bot.CastSpell(charm, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), true))
                 return null;
+            Sanctioned.Remove(bot);
             bot.TargetObject = previous;
             return $"{bot.Name} couldn't start the charm.";
         }
