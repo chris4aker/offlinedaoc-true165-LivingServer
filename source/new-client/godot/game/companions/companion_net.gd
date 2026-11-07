@@ -69,6 +69,11 @@ func handle(body: PackedByteArray) -> void:
 	if op == 15:                                         # the Realm Exchange chest page's time left (server S38)
 		Server.listing_times(body)
 		return
+	if op == 12 or op == 13:
+		# the original client's list windows (its trainer / vault lists: the gear, spec and realm ability lists the
+		# server sends after every action) - this client draws those pages from ops 7 / 8 / 11 and never read them; each
+		# one redrew the companion window for nothing (owner 2026-11-07: the game froze on every train, equip, bag move)
+		return
 	match op:
 		1:
 			mode = body[4]
@@ -193,6 +198,26 @@ func handle(body: PackedByteArray) -> void:
 			(ras[row] as Array)[int(body[5])] = {"index": body[5], "level": body[7], "max": body[8],
 					"cost": _u16(body, 9), "points": _u16(body, 11), "icon": _u16(body, 13), "rank": body[15],
 					"sub": body[16], "name": _text(body, 17, 80)}
+	_changed_soon()
+
+
+## One redraw a frame (owner 2026-11-07: "my game freezes every time I train a companion, equip them, add or remove an
+## item from their inventory"): a /companionui answer is 30 - 80 messages (gear, spec lines, stats texts, the roster)
+## and the client reads every waiting message in one frame - each `changed` rebuilt the open companion / hire window
+## (20 - 90 ms), 1 - 7 s frozen (perf_live.log "slow packet companion"). Every message is still stored the moment it
+## comes; the windows redraw once, at the end of that frame, from all of it.
+var _changed_due := false
+
+
+func _changed_soon() -> void:
+	if _changed_due:
+		return
+	_changed_due = true
+	_emit_changed.call_deferred()
+
+
+func _emit_changed() -> void:
+	_changed_due = false
 	changed.emit()
 
 
