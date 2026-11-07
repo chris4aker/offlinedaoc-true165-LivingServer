@@ -18,6 +18,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Charming: /charm and a companion's pre-fight charm no longer fizzle without a word when the cast ends (the monster you had selected counted as the group already fighting it). When a charm you asked for fails or is resisted, the companion's player is told why.
 - Charming: a companion that lets its pet go for a new one (/charm) no longer keeps both - the old pet was never freed and followed along as a second pet.
 - Charming never empties a monster camp: a charmed monster is a copy, and its camp spawns a fresh one on its normal respawn time. The charmed one never respawns - not where it died or was let go. A freed pet still turns on its charmer; if it lives through that fight it leaves once it has been out of combat for 10 seconds. The same for players, gamebots and companions.
+- Cornwall: the monsters the Prima Atlas lists there are back - the moor boogeys (Boogey Fort stood empty), Cornish giants and cliff spiderlings, and the empty camps of giant rooters, moor wolves, forest cats, muryans, bears, death stalkers and cliff spiders (168 in all), at the Atlas levels. Cliff spiderlings still drop nothing: their Atlas items are not in the game yet.
 
 ## 0.3 (2026-11-06)
 
