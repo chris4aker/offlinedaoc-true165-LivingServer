@@ -984,7 +984,7 @@
    "Mob_ID": "a5b3e44e-a322-4ccb-bc1c-aa0fb7b10f9c"
   },
   {
-   "ClassType": "DOL.GS.GameNPC",
+   "ClassType": "DOL.GS.Scripts.CelainEirich165",
    "TranslationId": "",
    "Name": "Celain Eirich",
    "Suffix": "",
@@ -1018,10 +1018,10 @@
    "AggroRange": 0,
    "MeleeDamageType": 1,
    "RespawnInterval": 80,
-   "FactionID": 0,
+   "FactionID": 55,
    "BodyType": 0,
    "HouseNumber": 0,
-   "Brain": "",
+   "Brain": "DOL.AI.Brain.CelainEirichBrain",
    "PathID": "",
    "OwnerID": "",
    "RoamingRange": 200,

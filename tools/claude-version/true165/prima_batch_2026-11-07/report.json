@@ -39962,12 +39962,39 @@
    "rows": 0
   },
   {
+   "zone": "boss: Vale of Balor creeper",
+   "prima_name": "ixthiar creeper",
+   "action": "PLACE",
+   "final_name": "ixthiar creeper",
+   "notes": "PLACE as one scripted spawn at the ixthiar brood. Copy NpcTemplate 60162558 (model 686 Praying Mantis (Red), size 55, Insect, faction 87 Ixthiar Swarm, speed 191, aggro 200/range 500 like every live ixthiar row). Level 45 is fixed: Prima SI table and the Allakhazam 2003-09-19 capture both give 45-45, and the template's 45;49 is not period. The spreading/seeding behaviour needs new code (IxthiarCreeper + IxthiarCreeperBrain); no existing class implements it. Timers, add type and cap are labelled CHOICE in the script because period sources give none. Until the script exists, a plain row would just stand at the nest. If the owner wants it live before the code, use RoamingRange ~1500 as a stop-gap and note it is not the period behaviour. Live family base for stats/brain if needed: ixthiar decimater Mob_ID 0411d4f8-b60... / ixthiar reaper rows at the nest. Navmesh ground for zone 183 is unavailable in groundz165, so Z comes from neighbouring live rows.",
+   "position_source": "Landmark only. No CapnBry radar sightings, no Uthgard dots and no Prima/Atlas map label (I checked the Vale of Balor map page layout, SI Prima p.205). Prima SI p.211 says the creeper 'immediately leaves its brood the moment it spawns'. In our world the brood is the ixthiar nest: Ixthiar Broodmother at local (22268,18223), plus the dense nest of 12 faction-87 ixthiar decimaters at local X 17-21k, Y 17.5-22k, ringed by reapers and doomcallers. That matches the Warcry Fylara's Armor spoiler, whose nest is 'across the wooden bridge and to the northwest' on the road SW from Aalid Feie; Fylara is at local (48258,21954). Home spawn is on the east side of that nest, between the decimaters and the Broodmother: local (21000,19000) = world (283144,346680). Z: K.ground/groundz165 gives no floor anywhere in zone 183 (it even fails at existing mob spots), so Z 3725 is the mean of the 4 nearest live rows (3710, 3712, 3727, 3760; all within 64). A post-period Allakhazam comment (2007-03-02) puts a creeper at loc 23639,11908, about 7k north of the brood inside the reaper/doomcaller field. That backs up 'wanders out into the vale' but was not used as the spawn point.",
+   "rows": 1
+  },
+  {
    "zone": "boss: Skona Yecats",
    "prima_name": "Yecats",
    "action": "PLACE",
    "final_name": "Yecats",
    "notes": "Better position evidence than the first pass found: an Allakhazam zone comment dated Jan 25 2002 (before the cutoff), in archive\\allakhazam-live\\zone.jsonl.gz, url /db/search.html?cmzone=33. It places Yecats at the western end of Skona's deep wolverine ravine, says it looks like a wyvern, and puts it at about L50. The earlier note said the only sighting was the 2004 freddyshouse post; that was wrong. The 2004 thread links daocweave.com/daoc/midgard/creatures/y/yecats.htm, but the Wayback availability API has no capture of that page, and web.archive.org could not be fetched from here to check further. 'yecats' appears in no other archive: capnbry, uthgard, wayback-allakhazam, warcry (only an unrelated 2004 user named 'yecats131'), bestiary, or period_item_pages. Prima gives no aggro, speed or size, so those come from the live savage wyvern family row (speed 180) and the period reports (aggressive). The respawn time is a suggestion, not period data. Scratch work is in C:\\Users\\thedo\\AppData\\Local\\Temp\\claude\\ba7757758c08ada0\\fa736472-70a7-4d43-a75a-e79a3dd4a852\\scratchpad\\agent_scratch\\yecats\\, including skona.png (the Kirstena 2002 map).",
    "position_source": "No radar or Uthgard data: CapnBry radar_any('yecats') = {} and Uthgard = []. The position comes from three sources. (1) Allakhazam Skona Ravine zone page (cmzone=33), comment dated Jan 25 2002, which is before the cutoff: a party of level 36s was hunting 'in the deep ravine, were Wolverines are found ... right near the western end' when 'a Yecats came up and dropped us all'. Our navmesh shows a deep ravine floor at Z about 1450-2500, compared with about 5000 on the plateau. It runs from zone-local (14000,18000) through (22000,13500) to (30000,9400). The L39-40 'wolverine' rows (DB 13632,18023 / 14594,18062 / 25855,11862 / 30000,9400) and the radar wolverine clusters sit on that floor, so the western end is about x 14000-16000, y 14000-18000. (2) Prima Atlas Skona map label '^ECATS' (Atlas txt L29960; layout.txt line 10025, cols ~60-105). It is overprinted with ARACHITE PRIEST / ODIN'S SERVANT / YVER / YVER, just under GUNNOLFR and next to TIU EVIL / WEREWOLF CHAMPION. A least-squares fit of 19 named-mob labels against their DB positions (residual about 3-6k) puts it at about (20000-31000, 13000-18000) zone-local. That is the western/middle part of the same ravine, and the paired WEREWOLF CHAMPION label matches the DB champion at (22500,17163). (3) Kirstena 2002 map: no label for it. Chosen spawn: zone-local (18000,15500) = world (706128,916620), on the ravine floor between the Allakhazam 'western end' and the Prima label. Z = K.ground 1890, exact navmesh floor. RoamingRange 4000 covers both, and fits 'came up'. For reference only, not used: gorff's 2004 freddyshouse sighting is after the cutoff and on the plateau 'between the rope bridge ... and the guard tower', around Kirstena bridge (35-36k, 29-32k) and werewolf towers (39-42k, 26-31k).",
+   "rows": 1
+  },
+  {
+   "zone": "boss: Caillte Garran",
+   "prima_name": "forest grazer calf",
+   "action": "PLACE",
+   "final_name": "forest grazer calf",
+   "notes": "Period sources show this L0 'forest grazer calf' in Caillte Garran is the anglators' bait, not a wild monster. The wild calves (L0-2) live only in Domnann. Placed as the lure of one greater anglator at the only period position for anglators in this zone, the Prima map callout '3 GREAT ANGLER'. Only add this row together with the greater anglator and the lure code in 'script'. Without them it is a stray grey calf.\n\nStats and look copy live row 100023590 / NpcTemplate 60161028: model 939, body 1 Animal, Crush, speed 191. Level 0 comes from the Prima CG table and ZAM 'Level 0 in ... Caillte'. Aggro 0, no drops: ZAM lists no loot for the L0 copies, and the lure dies without giving credit. The respawn of 80 matches the neighbouring trampler and abductor rows, but in practice the lure respawns with its anglator.\n\nThe lesser anglator (19-22) also uses lures (Warcry 1.62a) but has no period position, so its lures wait for that. Other CG lures in the same pool, handled elsewhere: nosy cniogcrag 0, sporite 0.",
+   "position_source": "No radar, Uthgard or archived data exists for SI zone 182. The position comes from the Prima SI Caillte Garran map (printed p.200, PDF p.201): callout '3 GREAT ANGLER' sits at page coordinates (262.9, 373.6) in the map's content stream (obj 927). Its text is 'Fishing with the Greater Angler'. I calibrated the map with a linear fit on the Fomor Entrance ZonePoint 170 (world 351771,362348), Droighaid town and the river gobbler/trampler/botonid tuber labels. Result: zone-local about (29.5k-33k, 18.7k), world (357.2k-360.7k, 379.1k), accurate to about ±4k. The spot is next to the map's TRAMPLER and RAPACIOUS SHRILLER labels. Z is navmesh zone182.nav floor 2231; live tramplers nearby sit at Z 2147-2299.",
+   "rows": 1
+  },
+  {
+   "zone": "boss: Caillte Garran",
+   "prima_name": "lesser sylvanshade",
+   "action": "PLACE",
+   "final_name": "lesser sylvanshade",
+   "notes": "This L0 'lesser sylvanshade' in Caillte Garran is anglator bait. The real sylvanshades (L0-1, cloth drops, quest 'Shade of a Grove' and Miari's Seed) live in Domnann and already exist there (21 rows). Placed as the lure of a second greater anglator ambush point, at the Prima map callout '3 GREAT ANGLER'. Only add it together with that anglator and the lure code.\n\nLook and stats copy live row 100023710 / template 60163235: model 890 or 889, body 6 Humanoid, speed 191. Level 0 comes from Prima CG l.28767 and ZAM 'Level 0 in ... Caillte'. Aggro 0. No drops: the Tacuil Vest on ZAM belongs to the Domnann copies, and the lure dies without giving credit. The lure respawns with its anglator; the 80 s row value only matches the neighbouring rows.",
+   "position_source": "Same source as the forest grazer calf: Prima SI Caillte Garran map (PDF p.201), callout '3 GREAT ANGLER' at page (262.9, 373.6). Calibrated on Fomor Entrance ZonePoint 170, Droighaid and the river gobbler/trampler/tuber labels, accurate to about ±4k. Placed about 1,260 units east of the calf's spot so the two lures belong to two separate anglator ambush points inside the callout area. Z is navmesh zone182.nav floor 2474; nearby live rows sit at Z 2413-2864.",
    "rows": 1
   },
   {
@@ -39995,6 +40022,33 @@
    "final_name": "Bodb",
    "notes": "Named level 63 (Atlas 'Bodb [63]', txt lines 19022-19023; map label line 18533). FAMILY base: Iago 1df0861b, the named Lough Gur humanoid (body 6, faction 0, speed 200). Loot (Atlas): 1.5% one of Wraith Necklace / Mist Necklace / Etheric Bludgeoner (all exist: Wraith_Necklace, Mist_Necklace, Etheric_Bludgeoner), 80% Chrysoberyl (exists), 30% Precious Jasper (p165_drop_7008; the OCR split it as 'Precious / JasperBran the Giant'). The Revised instrument table also lists 'Bodb's Wailing Drum / Flute / Lute' (level 36, Revised txt lines 88697/88788/88888), but no source ties them to Bodb's drops and none is in the DB. Do not add them to his loot without a source. (Badb's Wailing Lute is the Bog of Cullen banshee Badb's drop, a different monster.)",
    "position_source": "Prima Atlas Lough Gur label stack (Atlas p.94, PDF p.96). BODB is the label between EARL GERALD and LITTLE UNICORN, on the lake island (method in the Earl Gerald entry). Placed on the island's high point at local (36900,34500), between Earl Gerald (1.2k north) and the little unicorns (about 1.3k south-west). Navmesh floor 4428, the island summit. Heading 0 faces the island centre.",
+   "rows": 1
+  },
+  {
+   "zone": "boss: Gripklosa Arr",
+   "prima_name": "Arr",
+   "action": "PLACE",
+   "final_name": "Arr",
+   "notes": "Prima SI table l.16209: Arr 55. Illia period page (captured 2003-09-14, page dated 2003-06-30): Animal, Slash, level 55-55, loot Griffon Talon Sword; live page adds Aggro Chance High. Base for stats/faction: griffon glider Mob_ID 100019231 (faction 181 Vind Ryttaren, NpcTemplate 60161663, Flags 32 FLYING). Keep FLYING (32). Respawn: no period figure. The 0 here means 'not set by me', not 0 seconds. Use the SI-epic server property (ServerProperties SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL, as Hurika does) or an owner-chosen value; the batch default of 80 s is wrong for a raid boss. LOOT (no chances in any source): (1) Griffon Talon Sword: ItemTemplate Griffon_Talon_Sword exists. The period page (submitted by Zergem WeaponX, updated 2003-07-03) shows delay 4.10 and a 95 spirit Direct Damage ability; the DB row has SPD_ABS 43 and SpellID 0, so it differs. (2) Arr's Remains, the trophy part. Comments 2003-07-01 and 07-03 call it 'the trophy part' and say an LM Alchemist finishes the trophy. Two templates exist: 'Arr`s Remains' (model 540) and 'Arrs_Remain' (model 488). The DB has no Arr wall trophy and no CraftedXItem recipe for it. (3) A Midgard bow: the 1.65c test notes (2003-08-28, posted on Freddyshouse 2003-08-29) say 'Arr will now drop bows of the correct realm'. Allakhazam lists 'Shadowwalker Composite Bow (u)', a random unique-object name, and there is no fixed template. An existing MobXLootTemplate row arr->arr (DropCount 2) points to an empty LootTemplate 'arr'; fill it, or rename it to match the spawn's Name. Coin: no period figure. The post-ToA 'Gives Master Level Exp' line is out of period; ignore it.",
+   "position_source": "The Prima SI Gripklosa map (book p.119) marks encounter '1' ('Arr You Ready?', p.121) at layout.txt line 5474, column 24. I fitted columns/rows against known positions: the map's '4' marker lands on the live Old Matriarch (52149,6501) within 600 units, '3' lands on the redcap skulker cave, and BJARKAN/VAETILD match the live NPCs. That puts marker 1 at about zone-local (19100,42000) = world (297628,287760). Z 4281 is the navmesh ground (the heightmap gives 4400). Two period sightings agree on the y-line: Allakhazam comment 2003-07-25 'stomped on my Warrior around 10K, 40K', and the later Illia description loc 52.4, 40.8 (added after 2003; the 2003-06-30 capture lacks it). Comment 2003-07-03: met heading east from Bjarken past the morvalt valley, near the NW corner of Delling Crater. He is a single roaming flyer, so one spawn plus the patrol path in the script. No CapnBry, Uthgard or same-name rows.",
+   "rows": 1
+  },
+  {
+   "zone": "boss: Avalon City syhr'phint",
+   "prima_name": "panicked syhr'phint",
+   "action": "PLACE",
+   "final_name": "panicked syhr'phint",
+   "notes": "Changed nothing (read-only). The first pass skipped this monster for having no position and being scripted. Its position now comes from the period landmark matched to our world geometry: the navmesh plus live Sys'sro/SyssroBaf rows show exactly one corridor that leads into the lair from the zone-entrance side. Stats copy family row 20291 (syhr'phint squatter, level 50, body 6, aggro 200/500, speed 180, faction 11; Prima level 50). It is a one-off alarm runner tied to the Sys'sro encounter, so one spawn and no roaming. Coin: level-50 Humanoid family rule. WebFetch could not reach the Wayback captures of cmob 5650 (20030731) and cmob 5671 (20030512/20031106), so any extra comments on those snapshots are unread; the live pages hold one pre-cutoff comment each, quoted above. Scratch maps: C:\\Users\\thedo\\AppData\\Local\\Temp\\claude\\ba7757758c08ada0\\fa736472-70a7-4d43-a75a-e79a3dd4a852\\scratchpad\\agent_scratch\\sewer.png and C:\\Users\\thedo\\AppData\\Local\\Temp\\claude\\ba7757758c08ada0\\fa736472-70a7-4d43-a75a-e79a3dd4a852\\scratchpad\\agent_scratch\\sw_tunnel.png",
+   "position_source": "Landmark only. Allakhazam cmob 5650 comment (Jun 02 2003) puts it in the tunnel leading into the main part of the AC sewers (Sys'sro's lair). There is no CapnBry radar for zone 50, no Uthgard dot, and no Prima/Kirstena label (the SI Prima Avalon City map p.93 marks only 'A' and Xanxicar). I found the lair and its tunnels in our world from the navmesh and the live rows: Sys'sro 20563 at 41505,39496,8040; 6 SyssroBaf alblasters and 2 dragoons around the guagaran pit (pit floor about Z 7700); lair floor Z 8024-8064. The SW tunnel is the shortest way in from the zone entrance (31159,47380, the bot nav entry for Sys'sro). It runs: ramp down at 37500,42900 (veteran/alblaster camp, Z 8250 to 8170), then a corridor, then a small room at 39000,43250 (veteran 20493, alblaster 20494), then alblaster 20495 at 40050,43149. From there a straight corridor runs north (x 39950-40100, floor 8027) into the lair's SW corner, where dragoons 20497/20499/20555 stand at y 42300. The spawn is the middle of that last corridor. Z checked with K.ground = 8027, an exact navmesh floor. There is also a north approach (round room with veterans at 41239,36752, then the east loop to the lair's SE side). If the owner prefers that tunnel, the other choice is its corridor near 43200,38250, but nothing in the period sources favours it.",
+   "rows": 1
+  },
+  {
+   "zone": "boss: Delling Crater forge",
+   "prima_name": "Emissary of Logi",
+   "action": "PLACE",
+   "final_name": "Emmisary of Logi",
+   "notes": "Scripted boss of Prima encounter 4. Name: Prima's table and Warcry say 'Emissary of Logi', and Prima's tip text has the typo 'Lodi'. Zam, the in-game item 'Emmisary's Ring' and the existing MobXLootTemplate use 'Emmisary of Logi', which I recommend as the in-game spelling. Prima level 65 is confirmed by the aligned layout table (prima-tools/out/work SI .layout.txt) and si_tables.json. The radar saw no sighting, and there are no Uthgard dots. The CapnBry radar has one level-0 'inside the crater' NPC at local (21288,46502); I found nothing tying it to this encounter. The family base row 100020065 has odd Z 3699; use it only for stats, brain and faction.",
+   "position_source": "Prima SI 2002 p.136 'Great Balls of Fire': 'Down in the center of Delling Crater among the lords of the Calderas'. The Delling Crater map (p.133) puts encounter marker 4 at the CALDERA LORD label, zone-local ~(17.0k,48.4k). The CapnBry caldera lord radar centroid is local (17103,48476), world (361167,310620). The 4 live caldera lords ring a centre at (361550,310598). The spot is between those two centres. Region 151 has no navmesh (K.ground returns None), so Z 3905 is the mean of the live lords (3896/3903/3916) and the radar Zs (3891-3951). The radar never saw the Emissary itself.",
    "rows": 1
   }
  ],
@@ -62850,6 +62904,105 @@
      60
     ]
    ]
+  },
+  {
+   "monster": "garran treant seedling",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Petrified_Treant_Seed",
+     8
+    ],
+    [
+     "Crystalized_Treant_Seed",
+     8
+    ],
+    [
+     "Frozen_Treant_Seed",
+     8
+    ]
+   ],
+   "note": "the seeds the seedlings drop (Allakhazam items 8782-8784, 2003); rate CHOICE: no period figure after the patch 1.61 fix"
+  },
+  {
+   "monster": "talvor's spirit",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Talvors_Staff_of_Bonedancing",
+     20
+    ]
+   ],
+   "note": "Allakhazam item 6300 (2003): dropped off Talvor's Spirit; rate CHOICE"
+  },
+  {
+   "monster": "emmisary of logi",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Emmisarys_Ring",
+     20
+    ]
+   ],
+   "note": "Allakhazam item 8535 / Warcry 2003-04-27 hand-made loot; the other two pieces have no item yet; rate CHOICE"
+  },
+  {
+   "monster": "arr",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Griffon_Talon_Sword",
+     15
+    ]
+   ],
+   "note": "Allakhazam (page 2003-06-30): Griffon Talon Sword dropped by Arr; rate CHOICE"
+  },
+  {
+   "monster": "thrawn ogre squad leader",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Squad-leader's_Shield",
+     20
+    ]
+   ],
+   "note": "Allakhazam cmob=5606 (Wayback 2003-10-11): Squad-leader's Shield; rate CHOICE (mestoph 2003-06-08 calls the battle a mini-event with high unique rates, anecdotal)"
+  },
+  {
+   "monster": "kargil",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Kargils_Leggings",
+     25
+    ]
+   ],
+   "note": "Illia/Allakhazam (2003-11 capture): Kargil's Leggings; rate CHOICE"
+  },
+  {
+   "monster": "rulod",
+   "created": true,
+   "old_drop_count": null,
+   "drop_count": 1,
+   "added": [
+    [
+     "Rulods_Leggings",
+     25
+    ]
+   ],
+   "note": "Illia/Allakhazam (2003-11 capture): Rulod's Leggings; rate CHOICE"
   }
  ],
  "wolf_fix": [
@@ -62864,6 +63017,38 @@
   {
    "sql": "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
    "reason": "True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are 39-43) is a data error"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.CuinnBrain', FactionID=98 WHERE Mob_ID='100027804'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Cuinn calls the town and 6 garran treant seedlings at 10% health (Freddyshouse 2003-03-13/17; patch 1.61); faction Outland Residents like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.Talvor165' WHERE Mob_ID='100019786'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Talvor's Spirit rises where Talvor dies and seeks revenge on his killers (Prima SI 2002; Allakhazam 2003)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.ForgemasterBrungarBrain', FactionID=155 WHERE Mob_ID='3a6661b5-5306-4fb5-91f4-d6178e75e72f'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Brungar calls the Spirit of the Forge when attacked (Prima SI 2002 p.137; Allakhazam 2003); faction People of Dellingstad like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.WeaponmasterZarginBrain', FactionID=155 WHERE Mob_ID='0ce52dd6-27c5-49a6-8a56-e5b869fcf60d'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Zargin summons mastered weapons and brings his students (Prima SI 2002 p.136; Allakhazam 2003); faction People of Dellingstad"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieEnvoyBrain', PathID='true165_unseelie_envoy_convoy', PackageID='UnseelieEnvoyConvoy', Level=55, RoamingRange=0, Speed=180, X=388637, Y=752506, Z=5040 WHERE Mob_ID='96a684aa-74ce-44d7-9f7c-188451ca22e3'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the Unseelie Envoy walks his convoy route from the Siabra city into Lough Gur and back (Freddyshouse 2002-05-05; patch 1.42); Prima level 55"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388817, Y=752506, Z=5024 WHERE Mob_ID='d91bd52f-4837-4ae1-b1d4-17ed24eee52a'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388692, Y=752677, Z=5026 WHERE Mob_ID='470ade65-3d8c-4266-bd71-07e7d58623d6'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.BotonidSeedling' WHERE Mob_ID IN ('100027648','100023803','100026139','100027977','100026023','100025572','100027727','100023379','100024847','100025444','100024407','100024326','100026130')",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the scourgin hide under these botonid seedlings by the two Prima SCOURGIN labels and jump out (Prima SI 2002 Domnann AI; Allakhazam 2003-01-03)"
   }
  ],
  "counts": {
@@ -62877,7 +63062,7 @@
   },
   "items_built": 1523,
   "spawn_actions": {
-   "PLACE": 357,
+   "PLACE": 363,
    "SKIP_NO_POSITION": 344,
    "RESTORE": 20,
    "SKIP_NO_MODEL": 51,
@@ -62885,10 +63070,10 @@
    "SKIP_OTHER": 15,
    "SKIP_BOSS_OR_SCRIPTED": 29
   },
-  "spawn_rows": 972,
+  "spawn_rows": 978,
   "drop_rows_added": 3369,
   "level_gap_skipped": 3,
-  "monsters_with_new_drops": 1172
+  "monsters_with_new_drops": 1179
  },
  "ground": {
   "snapped": [
@@ -63004,6 +63189,13 @@
     "x": 256460,
     "y": 350196,
     "z": 3020
+   },
+   {
+    "name": "Arr",
+    "region": 151,
+    "x": 297628,
+    "y": 287760,
+    "z": 4281
    }
   ]
  },

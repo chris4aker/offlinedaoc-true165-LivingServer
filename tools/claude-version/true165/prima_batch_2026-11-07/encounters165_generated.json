@@ -1,0 +1,20 @@
+{
+ "rules": [
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieEnvoyBrain', PathID='true165_unseelie_envoy_convoy', PackageID='UnseelieEnvoyConvoy', Level=55, RoamingRange=0, Speed=180, X=388637, Y=752506, Z=5040 WHERE Mob_ID='96a684aa-74ce-44d7-9f7c-188451ca22e3'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the Unseelie Envoy walks his convoy route from the Siabra city into Lough Gur and back (Freddyshouse 2002-05-05; patch 1.42); Prima level 55"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388817, Y=752506, Z=5024 WHERE Mob_ID='d91bd52f-4837-4ae1-b1d4-17ed24eee52a'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388692, Y=752677, Z=5026 WHERE Mob_ID='470ade65-3d8c-4266-bd71-07e7d58623d6'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.BotonidSeedling' WHERE Mob_ID IN ('100027648','100023803','100026139','100027977','100026023','100025572','100027727','100023379','100024847','100025444','100024407','100024326','100026130')",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the scourgin hide under these botonid seedlings by the two Prima SCOURGIN labels and jump out (Prima SI 2002 Domnann AI; Allakhazam 2003-01-03)"
+  }
+ ]
+}

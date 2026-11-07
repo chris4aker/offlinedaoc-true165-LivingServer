@@ -1,6 +1,139 @@
 {
  "_about": "The Prima encounters whose scripts exist (development-source/server/GameServer/scripts/true165/PrimaEncounters165.cs). Evidence: ENCOUNTER SPECS.md. Drop chances marked CHOICE have no period rate.",
- "spawn_overrides": {},
- "rules": [],
- "drops": {}
+ "spawn_overrides": {
+  "ixthiar creeper": {
+   "Brain": "DOL.AI.Brain.IxthiarCreeperBrain",
+   "RoamingRange": 0,
+   "RespawnInterval": 900
+  },
+  "panicked syhr'phint": {
+   "Brain": "DOL.AI.Brain.PanickedSyhrphintBrain",
+   "RoamingRange": 0,
+   "RespawnInterval": 180
+  },
+  "emmisary of logi": {
+   "Brain": "DOL.AI.Brain.EmmisaryOfLogiBrain",
+   "RoamingRange": 0,
+   "RespawnInterval": 1800
+  },
+  "arr": {
+   "Brain": "DOL.AI.Brain.ArrBrain",
+   "Flags": 44,
+   "RoamingRange": 0,
+   "RespawnInterval": 1800,
+   "Z": 10200
+  },
+  "forest grazer calf": {
+   "ClassType": "DOL.GS.Scripts.AnglatorLure165",
+   "AggroLevel": 0,
+   "AggroRange": 0,
+   "RespawnInterval": 120,
+   "Level": 0
+  },
+  "lesser sylvanshade": {
+   "ClassType": "DOL.GS.Scripts.AnglatorLure165",
+   "AggroLevel": 0,
+   "AggroRange": 0,
+   "RespawnInterval": 120,
+   "Level": 0
+  }
+ },
+ "rules": [
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.CuinnBrain', FactionID=98 WHERE Mob_ID='100027804'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Cuinn calls the town and 6 garran treant seedlings at 10% health (Freddyshouse 2003-03-13/17; patch 1.61); faction Outland Residents like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.Talvor165' WHERE Mob_ID='100019786'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Talvor's Spirit rises where Talvor dies and seeks revenge on his killers (Prima SI 2002; Allakhazam 2003)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.ForgemasterBrungarBrain', FactionID=155 WHERE Mob_ID='3a6661b5-5306-4fb5-91f4-d6178e75e72f'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Brungar calls the Spirit of the Forge when attacked (Prima SI 2002 p.137; Allakhazam 2003); faction People of Dellingstad like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.WeaponmasterZarginBrain', FactionID=155 WHERE Mob_ID='0ce52dd6-27c5-49a6-8a56-e5b869fcf60d'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Zargin summons mastered weapons and brings his students (Prima SI 2002 p.136; Allakhazam 2003); faction People of Dellingstad"
+  }
+ ],
+ "drops": {
+  "garran treant seedling": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Petrified_Treant_Seed",
+     8
+    ],
+    [
+     "Crystalized_Treant_Seed",
+     8
+    ],
+    [
+     "Frozen_Treant_Seed",
+     8
+    ]
+   ],
+   "note": "the seeds the seedlings drop (Allakhazam items 8782-8784, 2003); rate CHOICE: no period figure after the patch 1.61 fix"
+  },
+  "talvor's spirit": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Talvors_Staff_of_Bonedancing",
+     20
+    ]
+   ],
+   "note": "Allakhazam item 6300 (2003): dropped off Talvor's Spirit; rate CHOICE"
+  },
+  "emmisary of logi": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Emmisarys_Ring",
+     20
+    ]
+   ],
+   "note": "Allakhazam item 8535 / Warcry 2003-04-27 hand-made loot; the other two pieces have no item yet; rate CHOICE"
+  },
+  "arr": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Griffon_Talon_Sword",
+     15
+    ]
+   ],
+   "note": "Allakhazam (page 2003-06-30): Griffon Talon Sword dropped by Arr; rate CHOICE"
+  },
+  "thrawn ogre squad leader": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Squad-leader's_Shield",
+     20
+    ]
+   ],
+   "note": "Allakhazam cmob=5606 (Wayback 2003-10-11): Squad-leader's Shield; rate CHOICE (mestoph 2003-06-08 calls the battle a mini-event with high unique rates, anecdotal)"
+  },
+  "kargil": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Kargils_Leggings",
+     25
+    ]
+   ],
+   "note": "Illia/Allakhazam (2003-11 capture): Kargil's Leggings; rate CHOICE"
+  },
+  "rulod": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Rulods_Leggings",
+     25
+    ]
+   ],
+   "note": "Illia/Allakhazam (2003-11 capture): Rulod's Leggings; rate CHOICE"
+  }
+ }
 }

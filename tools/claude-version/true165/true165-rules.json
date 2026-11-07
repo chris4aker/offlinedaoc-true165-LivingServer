@@ -49272,6 +49272,38 @@
   {
    "sql": "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
    "reason": "True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are 39-43) is a data error"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.CuinnBrain', FactionID=98 WHERE Mob_ID='100027804'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Cuinn calls the town and 6 garran treant seedlings at 10% health (Freddyshouse 2003-03-13/17; patch 1.61); faction Outland Residents like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.Talvor165' WHERE Mob_ID='100019786'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Talvor's Spirit rises where Talvor dies and seeks revenge on his killers (Prima SI 2002; Allakhazam 2003)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.ForgemasterBrungarBrain', FactionID=155 WHERE Mob_ID='3a6661b5-5306-4fb5-91f4-d6178e75e72f'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Brungar calls the Spirit of the Forge when attacked (Prima SI 2002 p.137; Allakhazam 2003); faction People of Dellingstad like his template"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.WeaponmasterZarginBrain', FactionID=155 WHERE Mob_ID='0ce52dd6-27c5-49a6-8a56-e5b869fcf60d'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): Zargin summons mastered weapons and brings his students (Prima SI 2002 p.136; Allakhazam 2003); faction People of Dellingstad"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieEnvoyBrain', PathID='true165_unseelie_envoy_convoy', PackageID='UnseelieEnvoyConvoy', Level=55, RoamingRange=0, Speed=180, X=388637, Y=752506, Z=5040 WHERE Mob_ID='96a684aa-74ce-44d7-9f7c-188451ca22e3'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the Unseelie Envoy walks his convoy route from the Siabra city into Lough Gur and back (Freddyshouse 2002-05-05; patch 1.42); Prima level 55"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388817, Y=752506, Z=5024 WHERE Mob_ID='d91bd52f-4837-4ae1-b1d4-17ed24eee52a'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET Brain='DOL.AI.Brain.UnseelieConvoyFollowerBrain', PackageID='UnseelieEnvoyConvoy', Level=48, Model=414, RoamingRange=0, Speed=180, X=388692, Y=752677, Z=5026 WHERE Mob_ID='470ade65-3d8c-4266-bd71-07e7d58623d6'",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the supernatural stallions follow the envoy and fight with him; Prima level 48; model 414 (the 1.64 client has no 2132; Allakhazam: looks like a pookha)"
+  },
+  {
+   "sql": "UPDATE Mob SET ClassType='DOL.GS.Scripts.BotonidSeedling' WHERE Mob_ID IN ('100027648','100023803','100026139','100027977','100026023','100025572','100027727','100023379','100024847','100025444','100024407','100024326','100026130')",
+   "reason": "True 1.65 Prima encounter (owner 2026-11-07): the scourgin hide under these botonid seedlings by the two Prima SCOURGIN labels and jump out (Prima SI 2002 Domnann AI; Allakhazam 2003-01-03)"
   }
  ]
 }

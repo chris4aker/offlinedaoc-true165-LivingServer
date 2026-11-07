@@ -1,0 +1,14 @@
+{
+ "table": "Path",
+ "key": "Path_ID",
+ "reason": "True 1.65 Prima encounters (2026-11-07): the Unseelie Envoy convoy route",
+ "rows": [
+  {
+   "PathID": "true165_unseelie_envoy_convoy",
+   "PathType": 2,
+   "RegionID": 200,
+   "LastTimeRowUpdated": "2026-11-07 12:00:00",
+   "Path_ID": "c63f9336-9513-5dbe-8f26-06add5ea163a"
+  }
+ ]
+}

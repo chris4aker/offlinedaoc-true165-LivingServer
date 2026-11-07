@@ -56,6 +56,31 @@ for z in sorted(byzone):
         ps = (e.get('position_source') or '').split(';')[0][:70]
         w(f'  {name:34} lvl {lvs:7} x{e["rows"]:<3} {how:8} {ps}')
     w('')
+w('SCRIPTED PRIMA ENCOUNTERS (server scripts PrimaEncounters165/165b/165c.cs; details in ENCOUNTER SPECS.md)')
+w('-' * 60)
+for line in [
+    'Cuinn (Connla): at 10% health calls the town guards and 6 garran treant seedlings (seeds drop 8% each)',
+    'Talvor (Aegir\'s Landing): his spirit (25) rises where he dies and attacks his killers (staff 20%)',
+    'Emmisary of Logi (Caldera): fireballs at range, calls the caldera lords, 3 obsidian doomwards at 75/50/25% (ring 20%)',
+    'Forgemaster Brungar: one Spirit of the Forge (70)',
+    'Weaponmaster Zargin: calls his students, up to 3 mastered weapons (48)',
+    'panicked syhr\'phint: flees into Sys\'sro\'s lair and wakes him',
+    'ixthiar creeper (Vale of Balor): wanders the vale seeding ixthiar decimaters (up to 24)',
+    'Celain Eirich: back at 09:00 game time; a lieutenant and up to 5 raised undead',
+    'forest grazer calf / lesser sylvanshade: lures; a greater anglator (33-34) jumps out',
+    'Star Lake procession (Domnann): 3 priestesses plant treant sprouts at the lake; botonids sometimes attack',
+    'Unseelie Envoy convoy (Lough Gur): the envoy, 2 stallions and 2 siabra escorts walk a route and back',
+    'botonid seedlings x13 (Domnann): a scourgin (6-7) jumps out',
+    'Arr (Aldland): flies high, swoops on a player and carries the fight to its nest (Griffon Talon Sword 15%)',
+    'Thergus the Inspirer (Aldland): every few hours a speech, then 4 ogre squads march to the orc coast camp and fight;',
+    '  a standby squad (squad leader + 9 threshers) stands on the coast (Squad-leader\'s Shield 20%)',
+    'Gormror (Aegir\'s Landing): random raid on Dyrfjell with 4 lieutenants and 30 morvalt; disease clouds in town;',
+    '  they leave when the leaders die or after 25 minutes (Kargil\'s / Rulod\'s Leggings 25%)',
+    'Hamorik (Caldey broken tower): once a night a light show, then Hamorik (61) emerges; leaves at daybreak',
+]:
+    w('  ' + line)
+w('Drop rates on these are owner-adjustable choices (no period figure).')
+w('')
 w('ITEMS ADDED')
 w('-' * 60)
 w(f'  {"item":40} {"kind":16} {"lvl":>3}  {"realm":8} {"value":>9}  price from')

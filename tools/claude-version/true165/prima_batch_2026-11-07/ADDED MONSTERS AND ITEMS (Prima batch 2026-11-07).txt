@@ -3,9 +3,9 @@ TRUE 1.65 PRIMA BATCH (2026-11-07) - EVERYTHING ADDED
 Monsters the Prima guides list that the world lacked, the Atlas drop items it lacked, their Atlas drop tables,
 and the wolf drop stack fix. Applied by the launcher at the next START SERVER (True 1.65 content files).
 
-Monsters added: 357 kinds, 972 spawns (753 new at period positions, 219 restored archived rows)
+Monsters added: 363 kinds, 978 spawns (759 new at period positions, 219 restored archived rows)
 Items added: 1523 (1200 plain loot, 323 equipment)
-Drop tables: 3369 Atlas drop rows added on 1172 monsters
+Drop tables: 3369 Atlas drop rows added on 1179 monsters
 Drops never come from a monster 15+ levels below the item (owner rule; exceptions: Darkness Falls seals, and the two
 very rare Atlas drops Spirit Crafted Shield 0.1% / Ether Ring 0.02% the owner kept).
 Wolf fix: wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time; the "(20)/(100)" ones in bags become 1.
@@ -502,6 +502,19 @@ Vale of Balor  (Shrouded Isles)
 Vigilant Rock  (Shrouded Isles)
   cniogcrag annoyance                lvl 25-26   x6   new      Prima Shrouded Isles VR zone map, printed page 211 (PDF page 212). I p
 
+Avalon City syhr'phint
+  panicked syhr'phint                lvl 50      x1   new      Landmark only. Allakhazam cmob 5650 comment (Jun 02 2003) puts it in t
+
+Caillte Garran
+  forest grazer calf                 lvl 0       x1   new      No radar, Uthgard or archived data exists for SI zone 182. The positio
+  lesser sylvanshade                 lvl 0       x1   new      Same source as the forest grazer calf: Prima SI Caillte Garran map (PD
+
+Delling Crater forge
+  Emmisary of Logi                   lvl 65      x1   new      Prima SI 2002 p.136 'Great Balls of Fire': 'Down in the center of Dell
+
+Gripklosa Arr
+  Arr                                lvl 55      x1   new      The Prima SI Gripklosa map (book p.119) marks encounter '1' ('Arr You 
+
 Lough Gur lake legends
   Aine                               lvl 61      x1   new      Same Prima Atlas Lough Gur label stack (Atlas p.94, PDF p.96) as Earl 
   Bodb                               lvl 63      x1   new      Prima Atlas Lough Gur label stack (Atlas p.94, PDF p.96). BODB is the 
@@ -509,6 +522,31 @@ Lough Gur lake legends
 
 Skona Yecats
   Yecats                             lvl 50      x1   new      No radar or Uthgard data: CapnBry radar_any('yecats') = {} and Uthgard
+
+Vale of Balor creeper
+  ixthiar creeper                    lvl 45      x1   new      Landmark only. No CapnBry radar sightings, no Uthgard dots and no Prim
+
+SCRIPTED PRIMA ENCOUNTERS (server scripts PrimaEncounters165/165b/165c.cs; details in ENCOUNTER SPECS.md)
+------------------------------------------------------------
+  Cuinn (Connla): at 10% health calls the town guards and 6 garran treant seedlings (seeds drop 8% each)
+  Talvor (Aegir's Landing): his spirit (25) rises where he dies and attacks his killers (staff 20%)
+  Emmisary of Logi (Caldera): fireballs at range, calls the caldera lords, 3 obsidian doomwards at 75/50/25% (ring 20%)
+  Forgemaster Brungar: one Spirit of the Forge (70)
+  Weaponmaster Zargin: calls his students, up to 3 mastered weapons (48)
+  panicked syhr'phint: flees into Sys'sro's lair and wakes him
+  ixthiar creeper (Vale of Balor): wanders the vale seeding ixthiar decimaters (up to 24)
+  Celain Eirich: back at 09:00 game time; a lieutenant and up to 5 raised undead
+  forest grazer calf / lesser sylvanshade: lures; a greater anglator (33-34) jumps out
+  Star Lake procession (Domnann): 3 priestesses plant treant sprouts at the lake; botonids sometimes attack
+  Unseelie Envoy convoy (Lough Gur): the envoy, 2 stallions and 2 siabra escorts walk a route and back
+  botonid seedlings x13 (Domnann): a scourgin (6-7) jumps out
+  Arr (Aldland): flies high, swoops on a player and carries the fight to its nest (Griffon Talon Sword 15%)
+  Thergus the Inspirer (Aldland): every few hours a speech, then 4 ogre squads march to the orc coast camp and fight;
+    a standby squad (squad leader + 9 threshers) stands on the coast (Squad-leader's Shield 20%)
+  Gormror (Aegir's Landing): random raid on Dyrfjell with 4 lieutenants and 30 morvalt; disease clouds in town;
+    they leave when the leaders die or after 25 minutes (Kargil's / Rulod's Leggings 25%)
+  Hamorik (Caldey broken tower): once a night a light show, then Hamorik (61) emerges; leaves at daybreak
+Drop rates on these are owner-adjustable choices (no period figure).
 
 ITEMS ADDED
 ------------------------------------------------------------

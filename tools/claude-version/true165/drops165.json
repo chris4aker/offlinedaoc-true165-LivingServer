@@ -77535,6 +77535,77 @@
      18
     ]
    ]
+  },
+  "garran treant seedling": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Petrified_Treant_Seed",
+     8
+    ],
+    [
+     "Crystalized_Treant_Seed",
+     8
+    ],
+    [
+     "Frozen_Treant_Seed",
+     8
+    ]
+   ]
+  },
+  "talvor's spirit": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Talvors_Staff_of_Bonedancing",
+     20
+    ]
+   ]
+  },
+  "emmisary of logi": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Emmisarys_Ring",
+     20
+    ]
+   ]
+  },
+  "arr": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Griffon_Talon_Sword",
+     15
+    ]
+   ]
+  },
+  "thrawn ogre squad leader": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Squad-leader's_Shield",
+     20
+    ]
+   ]
+  },
+  "kargil": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Kargils_Leggings",
+     25
+    ]
+   ]
+  },
+  "rulod": {
+   "drop_count": 1,
+   "items": [
+    [
+     "Rulods_Leggings",
+     25
+    ]
+   ]
   }
  }
 }
