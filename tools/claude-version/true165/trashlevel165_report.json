@@ -1,0 +1,666 @@
+{
+ "add_files": {},
+ "rules": [
+  [
+   "Adder_Fang",
+   "Adder Fang",
+   19,
+   0
+  ],
+  [
+   "Albino_Grugners_Remains",
+   "Albino Grugner's Remains",
+   1,
+   0
+  ],
+  [
+   "Alexandrite",
+   "Alexandrite",
+   1,
+   0
+  ],
+  [
+   "Alp_Luachra_Eye",
+   "Alp Luachra Eye",
+   1,
+   0
+  ],
+  [
+   "Alp_Luachra_Hand",
+   "Alp Luachra Hand",
+   1,
+   0
+  ],
+  [
+   "Apple_Fly_Wings",
+   "Apple Fly Wings",
+   28,
+   0
+  ],
+  [
+   "Aughisky_Mane",
+   "Aughisky Mane",
+   1,
+   0
+  ],
+  [
+   "aventurine_gem",
+   "aventurine",
+   1,
+   0
+  ],
+  [
+   "badger_cub_claw",
+   "badger cub claw",
+   1,
+   0
+  ],
+  [
+   "badger_cub_fur",
+   "badger cub fur",
+   1,
+   0
+  ],
+  [
+   "Balor's_Remains",
+   "Balor's Remains",
+   1,
+   0
+  ],
+  [
+   "Bertha's_Remains",
+   "Bertha's Remains",
+   1,
+   0
+  ],
+  [
+   "Black_Rocks",
+   "Black Rocks",
+   1,
+   0
+  ],
+  [
+   "Black_Sapphire",
+   "Black Sapphire",
+   1,
+   0
+  ],
+  [
+   "Bog_Mud",
+   "Bog Mud",
+   1,
+   0
+  ],
+  [
+   "Broken_Fragment_of_Wood_and_Arcanium",
+   "Broken Fragment of Wood and Arcanium",
+   49,
+   0
+  ],
+  [
+   "Cadwallen's_Sacrificial_Dagger",
+   "Cadwallen's Sacrificial Dagger",
+   1,
+   0
+  ],
+  [
+   "Chrome_Diopside",
+   "Chrome Diopside",
+   1,
+   0
+  ],
+  [
+   "Chrysoberyl",
+   "Chrysoberyl",
+   1,
+   0
+  ],
+  [
+   "chunk_of_wolf_meat",
+   "chunk of wolf meat",
+   1,
+   0
+  ],
+  [
+   "Cleddyf's_Head",
+   "Cleddyf's Head",
+   1,
+   0
+  ],
+  [
+   "Coirmirceoirs_Remains",
+   "Coirmirceoir's Remains",
+   1,
+   0
+  ],
+  [
+   "Complete_Worry_Wort_Skin",
+   "Complete Worry Wort Skin",
+   32,
+   0
+  ],
+  [
+   "Copper_Amethyst_Bracelet",
+   "Copper Amethyst Bracelet",
+   1,
+   0
+  ],
+  [
+   "Cronker's_Remains",
+   "Cronker's Remains",
+   1,
+   0
+  ],
+  [
+   "Cythraul_Essence",
+   "Cythraul Essence",
+   21,
+   0
+  ],
+  [
+   "Dangerous_Tooth",
+   "Dangerous Tooth",
+   36,
+   0
+  ],
+  [
+   "Dead_Swamp_Goo",
+   "Dead Swamp Goo",
+   1,
+   0
+  ],
+  [
+   "Ebon_Skeleton_Tibia",
+   "Ebon Skeleton Tibia",
+   1,
+   0
+  ],
+  [
+   "Evern's_Remains",
+   "Evern's Remains",
+   1,
+   0
+  ],
+  [
+   "Fire_Ant_Frendrat's_Remains",
+   "Fire Ant Frendrat's Remains",
+   1,
+   0
+  ],
+  [
+   "Flat_Chert",
+   "Flat Chert",
+   1,
+   0
+  ],
+  [
+   "Flint",
+   "Flint",
+   1,
+   0
+  ],
+  [
+   "Footman_Cloak",
+   "Footman Cloak",
+   1,
+   0
+  ],
+  [
+   "frog_legs",
+   "frog legs",
+   1,
+   0
+  ],
+  [
+   "Ghostly_Banshee_Hair",
+   "Ghostly Banshee Hair",
+   1,
+   0
+  ],
+  [
+   "Gloves_of_the_Bladehand",
+   "Gloves of the Bladehand",
+   51,
+   0
+  ],
+  [
+   "Golden_Orb",
+   "Golden Orb",
+   28,
+   0
+  ],
+  [
+   "Golestandt's_Remains",
+   "Golestandt's Remains",
+   50,
+   0
+  ],
+  [
+   "grass_ring",
+   "grass ring",
+   1,
+   0
+  ],
+  [
+   "Green_Knight's_Remains",
+   "Green Knight's Remains",
+   1,
+   0
+  ],
+  [
+   "Grunge's_Remains",
+   "Grunge's Remains",
+   1,
+   0
+  ],
+  [
+   "High_Priestess_Ywera's_Remains",
+   "High Priestess Ywera's Remains",
+   1,
+   0
+  ],
+  [
+   "Horn_of_Drinking",
+   "Horn of Drinking",
+   1,
+   0
+  ],
+  [
+   "Hrrgyfs_Remains",
+   "Hrrgyf's Remains",
+   1,
+   0
+  ],
+  [
+   "Ibicuss_Remains",
+   "Ibicus's Remains",
+   1,
+   0
+  ],
+  [
+   "Imbued_Sleeves",
+   "Imbued Sleeves",
+   6,
+   0
+  ],
+  [
+   "Jade",
+   "Jade",
+   1,
+   0
+  ],
+  [
+   "Jari's_Remains",
+   "Jari's Remains",
+   1,
+   0
+  ],
+  [
+   "Kalnraw's_Remains",
+   "Kalnraw's Remains",
+   1,
+   0
+  ],
+  [
+   "King_Smugluk's_Head",
+   "King Smugluk's Head",
+   1,
+   0
+  ],
+  [
+   "Kornerupine",
+   "Kornerupine",
+   1,
+   0
+  ],
+  [
+   "Lasholds_Remains",
+   "Lashold's Remains",
+   1,
+   0
+  ],
+  [
+   "Mootang's_Head",
+   "Mootang's Head",
+   1,
+   0
+  ],
+  [
+   "Morty's_Remains",
+   "Morty's Remains",
+   1,
+   0
+  ],
+  [
+   "Nosdodens_Remains",
+   "Nosdoden's Remains",
+   1,
+   0
+  ],
+  [
+   "Oldest's_Remains",
+   "Oldest's Remains",
+   1,
+   0
+  ],
+  [
+   "onyx_gem",
+   "onyx",
+   1,
+   0
+  ],
+  [
+   "Opaque_Glass_Disc",
+   "Opaque Glass Disc",
+   1,
+   0
+  ],
+  [
+   "Patch_of_Aughisky_Hide",
+   "Patch of Aughisky Hide",
+   1,
+   0
+  ],
+  [
+   "Peridot",
+   "Peridot",
+   1,
+   0
+  ],
+  [
+   "Precious_Heliodor",
+   "Precious Heliodor",
+   1,
+   0
+  ],
+  [
+   "Pristine_Aughisky_Hide",
+   "Pristine Aughisky Hide",
+   1,
+   0
+  ],
+  [
+   "Pristine_Boars_Hide",
+   "Pristine Boars Hide",
+   1,
+   0
+  ],
+  [
+   "Prugor's_Remains",
+   "Prugor's Remains",
+   1,
+   0
+  ],
+  [
+   "Queen_Majors_Remains",
+   "Queen Major's Remains",
+   1,
+   0
+  ],
+  [
+   "Rhodolite",
+   "Rhodolite",
+   1,
+   0
+  ],
+  [
+   "Round_Chert",
+   "Round Chert",
+   1,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Boots",
+   "Runed Hollow Clay Boots",
+   45,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Gloves",
+   "Runed Hollow Clay Gloves",
+   45,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Helm",
+   "Runed Hollow Clay Helm",
+   45,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Jerkin",
+   "Runed Hollow Clay Jerkin",
+   45,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Leggings",
+   "Runed Hollow Clay Leggings",
+   45,
+   0
+  ],
+  [
+   "Runed_Hollow_Clay_Sleeves",
+   "Runed Hollow Clay Sleeves",
+   45,
+   0
+  ],
+  [
+   "Sentry_Incin's_Remains",
+   "Sentry Incin's Remains",
+   1,
+   0
+  ],
+  [
+   "Seolc Cap of the Void",
+   "Seolc Cap of the Void",
+   50,
+   0
+  ],
+  [
+   "Sergeant_Cosworth's_Remains",
+   "Sergeant Cosworth's Remains",
+   1,
+   0
+  ],
+  [
+   "Shard_of_Sequence",
+   "Shard of Sequence",
+   1,
+   0
+  ],
+  [
+   "Sir_Gerenth's_Remains",
+   "Sir Gerenth's Remains",
+   1,
+   0
+  ],
+  [
+   "Sladug's_Remains",
+   "Sladug's Remains",
+   1,
+   0
+  ],
+  [
+   "Slimy_Swamp_Goo_Skin",
+   "Slimy Swamp Goo Skin",
+   1,
+   0
+  ],
+  [
+   "small_copper_ring",
+   "small copper ring",
+   1,
+   0
+  ],
+  [
+   "small_mirror",
+   "small mirror",
+   1,
+   0
+  ],
+  [
+   "Small_Silver_Laden_Box",
+   "Small Silver Laden Box",
+   1,
+   0
+  ],
+  [
+   "Snarls'_Remains",
+   "Snarls' Remains",
+   1,
+   0
+  ],
+  [
+   "Spats_Remains",
+   "Spat's Remains",
+   1,
+   0
+  ],
+  [
+   "Spotted_Larva",
+   "Spotted Larva",
+   1,
+   0
+  ],
+  [
+   "Staff_of_Enlightenment",
+   "Staff of Enlightenment",
+   1,
+   0
+  ],
+  [
+   "Stolen_Bear_Tooth",
+   "Stolen Bear Tooth",
+   1,
+   0
+  ],
+  [
+   "Stripes_Remains",
+   "Stripe's Remains",
+   1,
+   0
+  ],
+  [
+   "Thin_Chert",
+   "Thin Chert",
+   1,
+   0
+  ],
+  [
+   "Throatripper's_Remains",
+   "Throatripper's Remains",
+   1,
+   0
+  ],
+  [
+   "Thulin's_Remains",
+   "Thulin's Remains",
+   28,
+   0
+  ],
+  [
+   "Tomte_Studded_Helm",
+   "Tomte Studded Helm",
+   8,
+   0
+  ],
+  [
+   "torn_wolf_pelt",
+   "torn wolf pelt",
+   1,
+   0
+  ],
+  [
+   "Vagdush's_Seer_Amulet",
+   "Vagdush's Seer Amulet",
+   1,
+   0
+  ],
+  [
+   "Veviel's_Remains",
+   "Veviel's Remains",
+   1,
+   0
+  ],
+  [
+   "Vial_of_Shimmering_Essence",
+   "Vial of Shimmering Essence",
+   41,
+   0
+  ],
+  [
+   "Water_Opal",
+   "Water Opal",
+   1,
+   0
+  ],
+  [
+   "Water_Orb",
+   "Water Orb",
+   35,
+   0
+  ],
+  [
+   "Well_Crafted_Lantern",
+   "Well Crafted Lantern",
+   1,
+   0
+  ],
+  [
+   "Windchaser_Naiheras_Remains",
+   "Windchaser Naihera's Remains",
+   1,
+   0
+  ],
+  [
+   "Wizard_Locked_Box",
+   "Wizard Locked Box",
+   15,
+   0
+  ],
+  [
+   "wolf_fang",
+   "wolf fang",
+   1,
+   0
+  ],
+  [
+   "Worm_Rot",
+   "Worm Rot",
+   1,
+   0
+  ],
+  [
+   "Worn_Carnelian_Studded_Belt",
+   "Worn Carnelian Studded Belt",
+   1,
+   0
+  ],
+  [
+   "Xcrzrks_Remains",
+   "Xcrzrk's Remains",
+   1,
+   0
+  ],
+  [
+   "Yellow_Tourmaline",
+   "Yellow Tourmaline",
+   1,
+   0
+  ],
+  [
+   "Zrit-Zrit's_Remains",
+   "Zrit-Zrit's Remains",
+   1,
+   0
+  ]
+ ],
+ "kept_uthgard_level": [
+  [
+   "p165_prima_bone_flute",
+   "Bone Flute",
+   18
+  ]
+ ]
+}

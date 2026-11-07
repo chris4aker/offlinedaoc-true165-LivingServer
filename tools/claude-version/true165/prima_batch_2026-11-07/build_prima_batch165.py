@@ -623,6 +623,9 @@ fix += ENC['rules']
 GEN = os.path.join(HERE, 'encounters165_generated.json')
 if os.path.exists(GEN):
     fix += json.load(open(GEN, encoding='utf-8'))['rules']
+GEN_TRASH = os.path.join(HERE, 'trashlevel165_generated.json')   # ../build_trashlevel165.py: vendor trash level 0
+if os.path.exists(GEN_TRASH):
+    fix += json.load(open(GEN_TRASH, encoding='utf-8'))['rules']
 have_sql = {u.get('sql') for u in rules['updates']}
 for f in fix:
     if f['sql'] not in have_sql:
