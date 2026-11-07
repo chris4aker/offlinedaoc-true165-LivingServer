@@ -1,0 +1,1736 @@
+TRUE 1.65 PRIMA BATCH (2026-11-07) - EVERYTHING ADDED
+============================================================
+Monsters the Prima guides list that the world lacked, the Atlas drop items it lacked, their Atlas drop tables,
+and the wolf drop stack fix. Applied by the launcher at the next START SERVER (True 1.65 content files).
+
+Monsters added: 281 kinds, 810 spawns (591 new at period positions, 219 restored archived rows)
+Items added: 1311 (1193 plain loot, 118 equipment)
+Drop tables: 3656 Atlas drop rows added on 1187 monsters
+Wolf fix: wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time; the "(20)/(100)" ones in bags become 1.
+
+MONSTERS ADDED (by zone)
+------------------------------------------------------------
+Avalon Marsh
+  rotting skeleton                   lvl 1       x2   new      map label estimate: Kirstena 2002 AvM 'Undead' label at zone-local ~42
+
+Black Mountains South
+  boulder imp                        lvl 7       x2   new      map label estimate: Prima Atlas BMS map (layout.txt line 1241-1242, co
+  Dwarf Raider Leader                lvl 8       x1   new      map label estimate: Prima Atlas BMS map (layout.txt line 1273-1275, co
+
+Bog of Cullen
+  fishing bear                       lvl 18-21   x2   new      map label estimate: Kirstena 2002 Bog of Cullen map (hib_cullen.gif) l
+  Master Amiate                      lvl 66      x1   new      map label estimate: Prima Atlas Bog of Cullen map (book p.75) label 'M
+
+Breifine
+  Balorson                           lvl 52      x1   new      CapnBry radar mob 3461, zone 212 local (40207,23027) z3889 lv52
+  cruiach demon                      lvl 57      x10  restored archived rows (offline_classic165_removed_mobs, stored under the missp
+  Delil                              lvl 48      x1   new      map label estimate: Prima Atlas Breifine map label DELIL (PDF p.217 te
+  Denma                              lvl 55      x1   new      map label estimate: Prima Atlas map label DENMA in the central Fomoria
+  Elatha                             lvl 53      x1   new      map label estimate: Prima Atlas map label ELATHA (east, next to MORVEN
+  fear dearc                         lvl 46-47   x2   new      map label estimate: the Prima Atlas Breifine map label group 'FUATH / 
+  field lich                         lvl 58      x1   new      map label estimate: the Prima Atlas Breifine map label group 'FIELD LI
+  Fomorian annag                     lvl 55-56   x2   new      CapnBry radar mob 3298: 3 sightings, local (60670,25996),(59833,25707)
+  Fomorian goblern                   lvl 49-50   x2   new      Spawn 1: CapnBry radar mob 3299, local (63635,35209) z7120 lv50. Spawn
+  Fomorian grabeye                   lvl 53-54   x2   new      map label estimate: the two Prima Atlas labels FOMORIAN GRABEYE, centr
+  Fomorian grencher                  lvl 50-51   x2   new      Spawn 1: CapnBry radar mob 3301, local (56627,39339) z4512 lv52. Spawn
+  Fomorian Guard                     lvl 40      x1   new      CapnBry radar mob 3300, zone 212 local (63599,35212) z7097 lv40
+  Furor                              lvl 48      x1   new      map label estimate: Prima Atlas label FUROR placed over the CORYBANTIC
+  Morc                               lvl 46      x1   new      map label estimate: Prima Atlas spot 2 'Formorian Camp, Location 4, 56
+  Octriallach                        lvl 50      x1   new      map label estimate: Prima Atlas label OCTRIALLACH (east, beside TETHRA
+  Rarn Pubble                        lvl 65      x1   new      map label estimate: Prima Atlas label RARN PUBBLE (the 'FIELD RARN / L
+  Ruadan                             lvl 56      x1   new      map label estimate: Prima Atlas label RUADAN (east, below FOMORIAN ANN
+  spectral Briton invader            lvl 43-44   x5   new      CapnBry radar zone 212: local (41870,57257) lv44, (40486,58517) lv46, 
+  Tethra                             lvl 62      x1   new      map label estimate: Prima Atlas label TETHRA directly beside CONANN an
+  Trembler                           lvl 50      x1   new      map label estimate: Prima Atlas Breifine map key h 'Earthshaker Quarry
+  wanshee                            lvl 61-62   x2   new      map label estimate: the Prima Atlas Breifine map label group 'GRAND PO
+
+Camelot Hills
+  Borwyr the Cursed                  lvl 13      x1   new      CapnBry radar: 1 sighting in zone 0 (Camelot Hills) at local 50495,528
+
+Campacorentin Forest
+  moldy skeleton                     lvl 2       x3   new      map label estimate: Kirstena 2002 Campacorentin 'Undead' label at loca
+  tree snake                         lvl 1       x2   new      map label estimate: Kirstena 2002 Campacorentin 'Snakes' label at loca
+
+Cliffs of Moher
+  Myntaugh                           lvl 19      x1   new      map label estimate: Kirstena 2002 Cliffs of Moher map labels 'Myntaugh
+  Scaird                             lvl 39      x1   new      Period quest walkthrough (walkthroughs.jsonl id 565, 'Search For The M
+
+Connacht
+  enchanted wind ghoul               lvl 7       x1   new      CapnBry radar sightings_index 2448, zone 207: (31938,33487,5688) and (
+  great scourge                      lvl 30      x1   new      map label estimate: Prima Atlas Connacht map (PDF page 83). The vector
+  Little Wind                        lvl 8       x1   new      CapnBry radar sightings_index 2453, zone 207: (32457,31327,5688) lv8 a
+  Red                                lvl 15      x1   new      map label estimate: Prima Atlas Connacht map (PDF page 83). The vector
+
+Cornwall
+  Arisus princeps                    lvl 24      x1   new      map label estimate: Prima Atlas Cornwall map label 'ARISUS LEGIONNAIRE
+  Hastur                             lvl 60      x1   new      map label estimate: Freddyshouse post 1287057 (2002-07) 'near the boge
+
+Cruachan Gorge
+  bean sidhe                         lvl 39-40   x2   new      map label estimate: Prima Atlas map labels BEAN SIDHE at local ~39.4k,
+  Briton woodcutter                  lvl 37      x10  restored archived rows (zone 211 local 41.6-43.6k, 49.7-52.1k)
+  corpan side                        lvl 39      x2   new      map label estimate: Prima Atlas map labels CORPAN SIDE at local ~36.0k
+  corybantic skeleton                lvl 46      x27  restored archived rows zone 211 (local 37.8-39.8k, 19.9-21.2k)
+  Cruachan warrior                   lvl 46-47   x2   new      map label estimate: Prima Atlas Cruachan map label CRUACHAN WARRIOR at
+  dullahan                           lvl 48-49   x2   new      map label estimate: Prima Atlas Cruachan Gorge map label DULLAHAN (PDF
+  earthshaker                        lvl 47      x2   new      map label estimate: Prima Atlas CG map label EARTHSHAKER (~43.6k,50.9k
+  empyrean elder                     lvl 41-44   x11  restored archived rows zone 211 (local 61.4-62.6k, 7.8-10.2k)
+  fallen Hibernian defender          lvl 45      x16  restored archived rows zone 211 named 'hibernia fallen defender' (local 54.2-56
+  fuath                              lvl 46      x30  restored archived rows zone 211 (local 4.8-6.9k, 28.0-30.7k)
+  ghastly Midgard invader            lvl 44      x21  restored archived rows zone 211 named 'ghastly hibernia invader' (local 42.6-45
+  ghostly Midgard invader            lvl 43      x4   new      map label estimate: 4 Prima Atlas CG map labels GHOSTLY MIDGARD INVADE
+  Grumpy                             lvl 52      x1   new      map label estimate: Prima Atlas map label GRUMPY at local ~60.3k,55.3k
+  juvenile megafelid                 lvl 35-38   x3   new      map label estimate: 3 Prima Atlas CG map labels JUVENILE MEGAFELID (lo
+  leprechaun                         lvl 50      x2   new      map label estimate: Prima Atlas CG map label LEPRECHAUN (local ~33.8k,
+  mad changeling                     lvl 26-27   x2   new      map label estimate: Kirstena 2002 CG map label 'Mad Changeling' in the
+  Mald the Hermite                   lvl 41      x1   new      map label estimate: Prima Atlas map label MALD THE HERMITE at local ~4
+  mangled troll invader              lvl 45      x6   restored archived rows zone 211 (local 58.1-59.3k, 13.2-15.1k)
+  megafelid                          lvl 39-42   x5   new      map label estimate: 5 Prima Atlas CG map labels MEGAFELID (local ~15.2
+  morass leech                       lvl 42      x2   new      map label estimate: Prima Atlas CG map label MORASS LEECH (local ~48.3
+  Naermaggin                         lvl 40      x1   new      map label estimate: Prima Atlas map label NAERMAGGIN at local ~14.9k,1
+  sett dweller                       lvl 30-31   x4   new      map label estimate: Kirstena 2002 Cruachan Gorge map, two 'Sett Dwelle
+  Shaemis                            lvl 43      x1   new      map label estimate: Prima Atlas map label SHAEMIS (with SHARPTOOTHED b
+  siabra anchorite                   lvl 41      x3   new      map label estimate: Kirstena 2002 map 'Siabra Anchorite' label at ~loc
+  skeletal dwarf invader             lvl 43      x14  restored archived rows in zone 211 (9 at local 46.3-48.0k,52.6-53.9k
+  speghoul                           lvl 40      x9   restored archived rows in zone 211 at local 18.0-21.0k,11.9-14.3k (Prima map 'P
+  Thistle                            lvl 32      x1   new      map label estimate: Prima Atlas map label THISTLE at local ~5.7k,24.1k
+  Torc Forbartach                    lvl 47      x1   new      map label estimate: Prima Atlas map label TORC FORBARTACH at local ~30
+  Torc Triath                        lvl 53      x1   new      map label estimate: Prima Atlas map label TORC TRIATH at local ~31.3k,
+  Urf                                lvl 40      x1   new      map label estimate: Prima Atlas map label URF at local ~32.2k,54.3k (u
+  Wenna                              lvl 50      x1   new      map label estimate: Prima Atlas map label WENNA at local ~58.9k,21.3k,
+
+Cursed Forest
+  fomorian annag                     lvl 55-56   x3   new      map label estimate: Kirstena 2002 Cursed Forest map 'Formorian Annag' 
+  fomorian grencher                  lvl 50-51   x1   new      map label estimate: Kirstena 2002 Cursed Forest map 'Formorian Grenche
+  Goborchen Vindicator               lvl 60      x1   new      map label estimate: Prima Atlas CF map label GOBORCHEN VINDICATOR next
+
+DARKNESS FALLS DUNGEON
+  Commander Abgar                    lvl 61      x1   new      map label estimate: Prima Atlas DF map spot 18 'Commander Abgar, Lieut
+  Mutilator Axalnam                  lvl 68      x1   new      CapnBry radar (DF capture stored as radar zone 0
+
+Dartmoor
+  draconic ancilla                   lvl 50      x1   new      map label estimate: Kirstena 2002 Dartmoor map 'Draconic Ancilla' labe
+  greenhorn poacher                  lvl 25-27   x3   new      map label estimate: Kirstena 2002 Dartmoor map 'Greenhorn Poachers' at
+  Nodin                              lvl 49      x1   new      map label estimate: Kirstena 2002 Dartmoor map bold 'Nodin' at zone-lo
+
+Dungeon: Catacombs of Cardova
+  centurio princeps praetorii        lvl 32      x18  restored archived rows (offline_classic165_removed_mobs, region 23)
+
+Dungeon: Tomb of Mithra
+  rotting tombraider                 lvl 9       x2   new      CapnBry radar zone 21: 2 sightings (local 22016,23808 lvl 9 and 21122,
+
+Dungeon: Varulvhamn
+  Grimnought Ejnar                   lvl 45      x1   new      CapnBry radar id 3466, zone 127: local (18675,16771,13707) L45 and (19
+
+Emain Macha
+  Norseman chopper                   lvl 37      x2   new      CapnBry radar zone 214: 2 sightings, level 37, at local (54934,26081) 
+
+Forest Sauvage
+  Broecia                            lvl 16      x1   new      CapnBry radar zone 11 local (49448,20571,2835) L16, navmesh floor 2839
+  Hibernian waylayer                 lvl 35      x7   new      CapnBry radar zone 15 (128 sightings). Most of them carry the radar's 
+  Legionnaire Commander              lvl 42      x1   new      CapnBry radar zone 15 local (27489,53940,4200) L42 (floor 4202). This 
+  Midgard waylayer                   lvl 35      x8   new      CapnBry radar zone 15 (79 sightings), with the same -16384 X shift cor
+  Miles Heberman                     lvl 50      x1   new      CapnBry radar zone 15: 4 L50 sightings at local 39-40k / 47.9-49.8k. T
+
+Gotar
+  Dotta                              lvl 5       x1   new      CapnBry radar id 968, 1 sighting in zone 103 at local (8210,12996) Z 4
+  drifting spirit                    lvl 13      x2   new      map label estimate: Prima Atlas Gotar map, 'DRIFTING SPIRIT' label jus
+  Ick                                lvl 8       x1   new      CapnBry radar id 962: 22 sightings, all in zone 103, lvl 8-9, spread o
+  Witch                              lvl 22      x1   new      map label estimate: Prima Atlas Gotar map, 'WITCH' label 2 lines below
+  wolfhound                          lvl 6       x2   new      map label estimate: Prima Atlas Gotar map, 'WOLFHOUND' label in north-
+
+Jamtland Mountains
+  fenrir prime                       lvl 49      x1   new      map label estimate: Prima Atlas Jamtland spot 4 'Fenrir Hide Out' (Loc
+  Great Fylgja                       lvl 53      x1   new      CapnBry radar id 705 (3 sightings, all L53, zone 113): local (39989,34
+  Strykr                             lvl 52      x1   new      CapnBry radar id 703, zone 113 local (31696,27082,z4312) L52
+
+Llyn Barfog
+  Basher                             lvl 42      x1   new      map label estimate: Prima Atlas p36 Llyn Barfog map, vector label 'BAS
+  Beater                             lvl 42      x1   new      map label estimate: Prima Atlas p36 map, vector label 'BEATER' at zone
+  bwgan horde leader                 lvl 24      x1   new      map label estimate: Prima Atlas p36 vector label 'BWGAN HORDE LEADER' 
+  Islwyn                             lvl 29      x1   new      map label estimate: Prima Atlas p36 vector label 'ISLWYN' at zone-loca
+  Rhyfelwr                           lvl 15      x1   new      map label estimate: Prima Atlas p36 label 'RHYFELWR' at zone-local abo
+
+Lough Derg
+  Driss                              lvl 21      x1   restored archived row (381161,537242,Z 4762
+  wiggle worm                        lvl 1       x8   new      CapnBry radar zone 200: 18 lvl-0 sightings at world X 350091-353761, Y
+
+Lough Gur
+  Aodhan                             lvl 40      x1   new      map label estimate: Prima Atlas LG map label 'AODHAN/IAGO' at the guri
+  curmudgeon fighter                 lvl 16-18   x5   new      map label estimate: Kirstena 2002 'Curmudgeon' labels at local 59.7k,2
+  dew sheerie                        lvl 16-18   x8   new      map label estimate: Kirstena 2002 'Dew Sheerie' labels at local 47.0k,
+  druid                              lvl 22      x3   new      map label estimate: Kirstena 2002 'Druid' label at local 7.8k,30.5k (w
+  faerie beetle                      lvl 17      x8   new      map label estimate: Kirstena 2002 'Faerie Beetle' labels at local 45.2
+  fishing bear                       lvl 18-21   x3   new      map label estimate: Kirstena 2002 'Fishing Bear' label at local 41.5k,
+  ghoulie                            lvl 20-22   x6   new      map label estimate: Kirstena 2002 'Ghoulie' labels at local 9.7k,12.4k
+  gray spectre                       lvl 23-24   x2   new      map label estimate: Kirstena 2002 'Gray Spectre' label at local 15.3k,
+  gurite piller                      lvl 19-21   x4   new      map label estimate: Kirstena 2002 'Gurite Pillar' labels at local 44.9
+  hill hound                         lvl 18-20   x4   new      map label estimate: Kirstena 2002 'Hill Hound' labels at local 59.7k,3
+  ire wolf                           lvl 25-27   x6   new      map label estimate: Kirstena 2002 'Irewolf' labels at local 18.5k,26.2
+  large eirebug                      lvl 10      x3   new      map label estimate: Kirstena 2002 'Large Eirebug' label at local 49.4k
+  large red wolfhound                lvl 17-18   x2   new      map label estimate: Kirstena 2002 'Large Red Wolfhound' label at local
+  lugradan                           lvl 27-30   x2   new      map label estimate: Kirstena 2002 Lough Gur map 'Lugradan' label at lo
+  phantom wickerman                  lvl 28      x2   new      map label estimate: Kirstena 2002 'Phantom Wickerman' label at local ~
+  rage wolf                          lvl 31-32   x4   new      map label estimate: two Kirstena 2002 'Rage Wolf' labels at local ~14.
+  red wolfhound                      lvl 13      x2   new      map label estimate: Kirstena 2002 'Red Wolfhound' label at local ~56.3
+  stone sheerie                      lvl 22      x4   new      map label estimate: Kirstena 2002 'Stone Sheerie' labels (with camp do
+  Suarachan                          lvl 42      x1   new      map label estimate: Prima Atlas LG map label SUARACHAN beside CORPAN S
+
+Lyonesse
+  Breadlebane                        lvl 45      x1   new      map label estimate: Prima Atlas Lyonesse map p.41 'BREADLEBANE' label 
+  clergyman                          lvl 36      x1   new      map label estimate: Prima Atlas map p.41 'CLERGYMAN' label (beside SHE
+  Danaoin priest                     lvl 42-43   x2   new      map label estimate: Prima Atlas map p.41 'DAN. PRIEST' label (the swee
+  guardsman                          lvl 45      x4   new      map label estimate: the four 'GUARDSMAN' labels on the Prima Atlas Lyo
+  Pog Mapog                          lvl 52      x1   new      map label estimate: Prima Atlas map p.41 'POG MAPOG' label (east Lyone
+  pogson                             lvl 42      x1   new      map label estimate: Prima Atlas map p.41 'POGSON' label next to MAPOG,
+  Yadnik                             lvl 44      x1   new      map label estimate: Prima Atlas map p.41 'YADNIK' label in the eastern
+
+Malmohus
+  drakulv klok                       lvl 65      x3   new      map label estimate: Prima Atlas Malmohus map has three 'DRAKULV KLOK' 
+  drakulv prast                      lvl 65      x3   new      map label estimate: Prima Atlas Malmohus map has three 'DRAKULV PRAST'
+  Gunnolfr                           lvl 48      x1   new      map label estimate: Prima Atlas Malmohus map vector label 'GUNNOLFR' (
+  Leidolf                            lvl 53      x1   new      map label estimate: Prima Atlas Malmohus map label 'LEIDOLF' next to '
+  scaled retriever                   lvl 50      x1   new      map label estimate: Prima Atlas Malmohus map label 'SCALED RETRIEVER' 
+  spawn of Gjalpinulva               lvl 37      x1   new      map label estimate: Prima Atlas Malmohus map label 'SPAWN OF GJALPINUL
+
+Mt. Collory
+  Anord                              lvl 31      x1   new      map label estimate: Prima Atlas p.227 map label ANORD (label text posi
+  boogie man                         lvl 34      x2   new      map label estimate: Prima Atlas p.227 label BOOGIE MAN (SE, next to FA
+  Briton woodcutter                  lvl 37      x2   new      map label estimate: two Prima Atlas p.227 labels BRITON WOODCUTTER (ea
+  Carafathach                        lvl 35      x1   new      map label estimate: Prima Atlas p.227 label CARAFATHACH (west), from t
+  cliff hanger                       lvl 39      x4   new      map label estimate: two Prima p.227 labels CLIFF HANGER on the east si
+  Cubby                              lvl 24      x1   new      map label estimate: Prima Atlas p.227 label CUBBY (south-centre), from
+  Dodger                             lvl 33      x1   new      map label estimate: Prima Atlas p.227 label DODGER (far west edge, sou
+  empyrean elder                     lvl 41-44   x6   new      Prima Atlas hunting spot #5 'Empyrean Elders' Location 43,30, Quantity
+  empyrean overseer                  lvl 37-39   x4   new      map label estimate: two Prima p.227 labels EMPYREAN OVERSEER - one dir
+  evanescer                          lvl 33-35   x6   new      map label estimate: three Prima p.227 labels EVANESCER in the south-ea
+  far darrig                         lvl 46-48   x4   new      map label estimate: two Prima p.227 labels FAR DARRIG (with DULLAHAN) 
+  far dorocha                        lvl 53-56   x4   new      map label estimate: two Prima p.227 labels FAR DOROCHA (north-centre u
+  fee lion                           lvl 25-26   x2   new      CapnBry radar zone 210: (31115,16873) L27 and (32195,17311) L25
+  greater luch                       lvl 25      x1   new      CapnBry radar zone 210: (29901,16168) L25
+  Hatred                             lvl 50      x1   new      map label estimate: Prima Atlas p.227 label HATRED, directly under the
+  Irusan                             lvl 49      x1   new      map label estimate: Prima Atlas p.227 label IRUSAN (far NE, beside COR
+  juvenile megafelid                 lvl 35-38   x5   new      map label estimate: five Prima p.227 labels JUVENILE MEGAFELID (west e
+  lugradan                           lvl 27-30   x4   new      CapnBry radar zone 210: (32947,2426) L29, (29074,6578) L27, (31516,107
+  megafelid                          lvl 39-42   x5   new      map label estimate: five Prima p.227 labels MEGAFELID (NE, north-centr
+  oak man                            lvl 43      x3   new      map label estimate: three Prima Atlas p.227 labels OAK MAN, each paire
+  One                                lvl 39      x1   new      map label estimate: Prima Atlas p.227 label ONE (west, by TWO and THRE
+  pookha                             lvl 33      x4   new      map label estimate: two Prima Atlas p.227 POOKHA labels (layout-text e
+  sett matriarch                     lvl 41      x1   new      map label estimate: Prima Atlas p.227 SETT MATRIARCH label, north-west
+  siog raider                        lvl 37      x13  restored archived OpenDAoC rows (offline_classic165_removed_mobs, 'Post-legacy 
+  siog seeker                        lvl 30-31   x3   restored archived rows (3) + CapnBry radar zone 210 sighting (local 31133,11005
+  siog waylayer                      lvl 26      x1   new      CapnBry radar zone 210 sighting (local 27953,6137, z 2205, L26)
+  Three                              lvl 42      x1   new      map label estimate: Prima Atlas p.227 label THREE (west, next to ONE/T
+  torc                               lvl 34      x4   new      map label estimate: two Prima Atlas p.227 TORC labels (layout estimate
+  Two                                lvl 41      x1   new      map label estimate: Prima Atlas p.227 label TWO (west), from the PDF t
+  wrath sprite                       lvl 28      x1   new      CapnBry radar zone 210 sighting (local 31290,2884, z 1688, L28)
+
+Muspelheim
+  acrid ghoul                        lvl 29      x4   new      CapnBry radar zone 104: (50885,9421,Z5003), (27288,36828,Z5106), (2887
+  Ember                              lvl 30      x1   new      Prima Atlas Muspelheim map label 'EMBER' at local (36402,15577), from 
+  Santh                              lvl 45      x1   new      Prima Atlas Muspelheim map label 'SANTH' at local (54195,16689), from 
+
+Myrkwood Forest
+  Black Rixtas                       lvl 16      x1   new      CapnBry radar id 976 (1 sighting, zone 105, L16)
+  childer arachite                   lvl 14      x2   new      map label estimate: Prima Atlas map label CHILDER ARACHITE between the
+  Dolph Domr                         lvl 13      x1   new      CapnBry radar id 3331 (1 sighting, zone 105, L13)
+  Dreadkane Dwarfeater               lvl 21      x1   new      CapnBry radar id 975: 10 sightings L21-22 (756470-758685, 889719-89209
+  Dysdera Dwarfeater                 lvl 21      x1   new      CapnBry radar id 977 (1 sighting, zone 105, L22)
+  Haglion                            lvl 18      x1   new      CapnBry radar id 958: 2 sightings L18 (787208,920794 and 785084,921078
+  Howl                               lvl 20      x1   restored archived row (offline_classic165_removed_mobs) in zone 105
+  Lone Weeping Willow                lvl 10      x1   new      CapnBry radar id 960: 9 sightings L10 (794811-796759, 915111-916817) =
+  Red Dagger                         lvl 14-16   x3   new      CapnBry radar id 929: 3 sightings in zone 105 (L15, L14, L19), 3 separ
+  Salix                              lvl 14      x1   new      map label estimate: Prima Atlas Myrkwood map label SALIX (PDF text pos
+  shadow                             lvl 10-11   x4   new      map label estimate: the two Prima Atlas map labels SHADOW (west one by
+  sharpfang worg                     lvl 12-14   x3   new      map label estimate: Prima Atlas map label SHARPFANG WORG (centre on th
+  Su'Valkur                          lvl 18      x1   new      map label estimate: Prima Atlas map label SU'VALKUR in the SE svartalf
+  Ta'Thaliur                         lvl 17      x1   new      map label estimate: Prima Atlas map label TA'THALIUR in the SE svartal
+  Tikixis                            lvl 6       x1   new      map label estimate: Prima Atlas map label TIKIXIS (NE corner) and Kirs
+  undead armswoman                   lvl 13      x2   new      map label estimate: Prima Atlas Myrkwood map (atlas pdftotext -layout)
+  Ykxat                              lvl 17      x1   new      map label estimate: Prima Atlas map label YKXAT (OCR 'ARACHITE PRIEST 
+  young envy drake                   lvl 20-22   x4   new      map label estimate: Kirstena 2002 Myrkwood map has two 'Young Envy Dra
+
+Pennine Mountains
+  Blue Man                           lvl 53      x1   new      map label estimate: Kirstena 2002 Pennine map 'Blue Man' dot at about 
+  Corryn                             lvl 46      x1   new      CapnBry radar zone 14 (local 40582,64912, Z 5908, lvl 46), floor 5939 
+  Gristle                            lvl 61      x1   new      CapnBry radar zone 14 (local 28511,4008, Z 7206, lvl 63), floor 7212 (
+
+Raumarik
+  Red Dagger lookout                 lvl 41      x2   new      map label estimate: Prima Atlas Raumarik map p.161 label 'RED DAGGER L
+
+Salisbury Plains
+  skeletal centurion                 lvl 21      x2   new      map label estimate: Kirstena 2002 Salisbury map 'Legionnaire Centurion
+  tomb raider commander              lvl 18-19   x2   new      map label estimate: Kirstena 2002 tent camp (tent markers at loc ~43.5
+
+Shannon Estuary
+  Aod                                lvl 16      x1   new      map label estimate: Prima Atlas Shannon map puts AOD beside the ERIU F
+  Caora                              lvl 10      x1   new      map label estimate: Connla's Well pond (Kirstena 2002 map label, a rin
+  Caoranach                          lvl 7-9     x3   new      map label estimate: Connla's Well pond (Kirstena 2002 map), the EC are
+
+Sheeroe Hills
+  glimmer avenger                    lvl 65      x3   new      map label estimate: Prima Atlas Sheeroe map (PDF p.104, obj 605). Ther
+  glimmer jinn                       lvl 65      x3   new      map label estimate: Prima Atlas Sheeroe map (PDF p.104, obj 605). 'GLI
+  Glimmer Orin                       lvl 61      x1   new      map label estimate: Prima Atlas Sheeroe map (PDF p.104, content obj 60
+  glimmer prophet                    lvl 65      x3   new      map label estimate: Prima Atlas Sheeroe map (PDF p.104, obj 605). 'GLI
+
+Silvermine Mountains
+  enchanted spraggonoll              lvl 7       x1   new      CapnBry radar id 2480: 1 sighting zone 201 local 48843,53601 Z5313 L8 
+  fishing bear cub                   lvl 11-12   x2   new      map label estimate: Kirstena 2002 Silvermine map label 'Fishing Bear C
+  wiggle worm                        lvl 1       x9   new      CapnBry radar id 2283: 20 sightings in zone 201 (local X 15532-19969, 
+
+Skona Ravine
+  Ash Tree                           lvl 33      x1   new      CapnBry radar 'Ash Tree' zone 106 local (4533,60815,z1720) L33
+  Avund                              lvl 22      x1   new      map label estimate: Prima Atlas map p.163, AVUND label directly under 
+  envy drakeling                     lvl 9       x14  restored archived rows
+  gray worg                          lvl 10      x4   new      map label estimate: Kirstena 2002 Skona map 'Gray Wargs' labels at abo
+  Headsman Yantu                     lvl 37      x1   new      map label estimate: Prima Atlas map p.163 'HEADSMAN YANTU' between WER
+  Listening Tree                     lvl 34      x1   new      map label estimate: Prima Atlas map p.163 'LISTENING TREE' below WOLFA
+  minor werewolf noble               lvl 19-20   x2   new      map label estimate: Kirstena 2002 'Werewolf Noble' (Illia 19-21) label
+  perfidious pook                    lvl 10      x2   new      map label estimate: Kirstena 2002 'Pooks' label at about (61k,19k) und
+  Pfapfnur                           lvl 22      x1   new      map label estimate: Prima Atlas map p.163 'PFAPFNUR' just S of PELLINI
+  stordo werewolf                    lvl 13      x2   new      map label estimate: Prima Atlas map p.163 'STORDO WEREWOLF' at the far
+  Tradman                            lvl 22      x1   restored archived row (Prima map label TRADMAN next to TRADALVA, SE)
+  werewolf gladiator                 lvl 36      x2   new      map label estimate: Prima Atlas map p.163 'WEREWOLF GLADIATOR' just W 
+  werewolf runner                    lvl 21      x2   new      Allakhazam (Wayback 2003-09-09 copy
+  wolfaur shaman                     lvl 36      x2   new      map label estimate: Prima Atlas map p.163 'WOLFAUR SHAMAN' beside HEAD
+  young envy drake                   lvl 20-22   x2   new      map label estimate: Kirstena 2002 'Young Envy Drake' label in the SE a
+
+Snowdonia
+  arawnite warrior                   lvl 34-35   x11  new      Spawns 1-3: CapnBry radar zone 12 (3 sightings, lv34/35/35), corrected
+  Caradawc                           lvl 54      x1   new      Prima Atlas map label 'CARADAWC' at local (58.3k, 37.5k)
+  Cath Paluc                         lvl 49      x1   new      Prima Atlas map label 'CATH PALUC' at local (11.2k, 37.9k)
+  Cheshire                           lvl 24      x1   new      Prima Atlas map label 'CHESHIRE' at local (30.3k, 40.7k)
+  corpse-eating sow                  lvl 36      x1   new      Prima Atlas map label 'CORPSE-EATING SOW' at local (33.0k, 30.8k)
+  ellyll sage                        lvl 53      x14  restored archived rows (offline_classic165_removed_mobs) in zone 12
+  Gwyllgi                            lvl 36      x1   new      Prima Atlas map label 'GWYLLGI' at local (41.8k, 22.4k)
+  howling maiden                     lvl 24-25   x2   new      Prima Atlas Snowdonia map label 'HOWLING MAIDEN' at local about (14.9k
+  Moontipper                         lvl 46      x1   new      Prima Atlas map label 'MOONTIPPER' at local (52.4k, 28.6k), beside the
+  scorned bwca                       lvl 32-34   x9   new      Prima Atlas Snowdonia map labels 'SCORNED BWCA' (9 labels
+  shadowhunter                       lvl 39-41   x4   new      Prima Atlas Snowdonia map labels 'SHADOWHUNTER' (4 labels, each beside
+  small rock bounder                 lvl 22-23   x4   new      CapnBry radar zone 12 (19 sightings), corrected by +16384 X (see the A
+  Tobias Warcry                      lvl 41      x1   new      Prima Atlas map label 'TOBIAS WARCRY' at local (19.9k, 43.9k)
+  Twidgo                             lvl 35      x1   new      Prima Atlas map label 'TWIDGO' at local (32.5k, 24.1k)
+
+Svealand East
+  Klippa                             lvl 8       x1   new      CapnBry radar zone 101: 2 sightings clustered at local (16491,47827,z4
+
+Svealand West
+  sveawolf cub                       lvl 1       x2   new      CapnBry radar id 401, zone 102: 4 sightings (level 0) in 2 clusters, l
+  young sveawolf                     lvl 1       x2   new      map label estimate: Prima Atlas Svealand West map labels 'SVEAWOLF MOT
+
+Uppland
+  Baugi                              lvl 34      x1   new      map label estimate: Kirstena 2002 Uppland map label BAUGI at local (18
+  bone-eater clanmother              lvl 42      x2   new      map label estimate: Prima Atlas + Kirstena 'Bone-Eater Eviscerater, Or
+  isalf scryer                       lvl 33      x1   new      CapnBry radar zone 111 (9060,37149,Z5728,lvl35), sightings_index id 72
+  Shyf                               lvl 46      x1   new      map label estimate: Kirstena 2002 label SHYF at local (23.1k,5.6k) jus
+  Sigum                              lvl 32      x1   new      map label estimate: Prima Atlas camp 'Location 33,11' (snowshoe bandit
+
+Vale of Mularn
+  Red-eye                            lvl 13      x1   new      map label estimate (Prima Atlas Mularn map p.175 'RED-EYE' label
+
+Valley of Bri Leith
+  Midar                              lvl 61      x1   new      map label estimate: Prima Atlas VBL map label MIDAR directly under PHR
+  Natyl                              lvl 17      x1   new      map label estimate: Prima Atlas VBL map label NATYL just above SLOITHI
+  Phra the Elder                     lvl 47      x1   new      map label estimate: Prima Atlas VBL map top-right row 'GUARDIAN HRU / 
+
+Vanern Swamp
+  shadowy werewolf                   lvl 40      x2   new      map label estimate (Prima Atlas Vanern map, label SHADOWY WEREWOLF, la
+  werewolf brute                     lvl 45      x2   new      map label estimate (Prima Atlas Vanern map, label WEREWOLF BRUTE besid
+
+Yggdra Forest
+  Baugi                              lvl 34      x1   new      map label estimate: Kirstena 2002 Yggdra map 'Baugi' label at local ~5
+  ice creature                       lvl 39      x6   new      CapnBry radar id 721, 21 zone-112 sightings (lv39-43). Grouped (~2.6k)
+  Kodi                               lvl 51      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Kodi' label at loca
+  Norna                              lvl 34      x1   new      CapnBry radar id 731, zone 112 local 58640,43382 Z9756 lv34 (navmesh f
+  Sjor                               lvl 46      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Sjor' label at loca
+  Ulfgar                             lvl 44      x1   new      map label estimate: Kirstena 2002 Yggdra map bold 'Ulfgar' label at lo
+
+Iarnvidiur  (Shrouded Isles)
+  Urkart                             lvl 55      x1   new      CapnBry radar mob 3371 (Urkart L55): zone 156 Iarnwood, local 59007,96
+
+Trollheim  (Shrouded Isles)
+  animate bage                       lvl 50      x2   new      CapnBry radar id 2803, region 150: local (30894,38189,15605) lv54 and 
+
+Aldland  (Shrouded Isles)
+  thrawn ogre ambusher               lvl 36-37   x3   new      map label estimate: Prima SI Aldland map callout marker 6 'Ogre the Hi
+  thrawn ogre rough                  lvl 33-34   x2   new      map label estimate: Prima SI Avalon Zone Maps, Aldland page (PDF p.54)
+
+Avalon Isle  (Shrouded Isles)
+  Advisor Belias                     lvl 50      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30 / book p.2
+  Smithy Olivan                      lvl 55      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30) label 'SM
+  Yorvan                             lvl 34      x1   new      map label estimate: Prima SI Avalon Isle zone map (PDF p.30) encounter
+
+Dales of Devwy  (Shrouded Isles)
+  Alwin Lindon                       lvl 53      x1   new      Prima SI map p.35 label 'LINDON FAMILY' plus tip 'Families That Slay T
+  anvil smith                        lvl 37-38   x2   new      Prima SI Dales map p.35 has 2 labels: 'ANVIL SMITH / FIGHTING DUMMY' (
+  corroded irons                     lvl 29-31   x3   new      Prima SI Dales map p.35 has 3 'CORRODED IRONS' labels: block with SHRE
+  crafted dwarf                      lvl 38-40   x3   new      Prima SI Dales map p.35: the block 'CRAFTED DWARF / CRAFTED DWARF / TW
+  crafted elf                        lvl 44-45   x2   new      Prima SI Dales map p.35 labels: 'CRAFTED ELF / FRAZZLED ASSEMBLY' near
+  Crafted Giant Dwarf                lvl 61      x1   new      Prima SI Dales map p.35 label 'CRAFTED GIANT DWARF' plus the encounter
+  crafted giant elf                  lvl 55      x1   new      Prima SI Dales map p.35 block 'CRAFTED GIANT ELF / RAGGED CONSTRUCT / 
+  crudely crafted elf                lvl 49      x1   new      Prima SI Dales map p.35 block 'HEAVY METAL MARK TWO / ONE-WHEELED SENT
+  drakoran raider                    lvl 39      x1   new      Prima SI Dales map p.35 block 'DRAKORAN RAIDER / DRAKORAN MYSTIC / DRA
+  forged monster                     lvl 25-26   x2   new      Prima SI Dales map p.35 labels: block 'CRAFTED GIANT ELF / RAGGED CONS
+  frayed animation                   lvl 37-38   x2   new      Prima SI Dales map p.35 labels: 'FRAYED ANIMATION' (single label W of 
+  one-wheeled sentry                 lvl 40-42   x3   new      Prima SI Dales map p.35 has 3 'ONE-WHEELED SENTRY' labels: single labe
+  ragged construct                   lvl 25-26   x2   new      Prima SI Dales map p.35 labels: block 'CRAFTED GIANT ELF / RAGGED CONS
+  Refuse                             lvl 36      x1   new      map label estimate: Prima SI Dales of Devwy map (PDF p.36) label 'CONT
+  Shredded Fabrication               lvl 29-31   x3   new      map label estimate: Prima SI Dales map (PDF p.36) labels SHREDDED FABR
+  Tempered Fetters                   lvl 36-37   x2   new      map label estimate: Prima SI Dales map (PDF p.36) labels TEMPERED FETT
+  Weathered Rope                     lvl 25-26   x2   new      map label estimate: Prima SI Dales map (PDF p.36) labels WEATHERED ROP
+
+Delling Crater  (Shrouded Isles)
+  Grakin                             lvl 48      x1   new      CapnBry radar mob 3506, zone 156 (Iarnwood) local (35278,7689,7030), l
+  griffon formation carrier          lvl 41      x1   new      formation sibling: placed between the live griffon sweep leader (10002
+  Mayor Berald                       lvl 52      x1   new      map label estimate: the Prima SI Delling map (PDF p.134) has the label
+  Urkart                             lvl 55      x1   new      CapnBry radar mob 3371, zone 156 (Iarnwood) local (59007,9661,7098), l
+
+Domnann  (Shrouded Isles)
+  young botonid rencanraider         lvl 38-40   x5   new      map label estimate: 5 YOUNG BOTONID RENCANRAIDER labels on the Prima S
+
+Gripklosa Mountains  (Shrouded Isles)
+  very chilly skelett                lvl 28      x1   new      CapnBry radar zone 152 sighting id 3285 (local 9196,46970 Z5216, radar
+
+Gwyddneau  (Shrouded Isles)
+  blood lich                         lvl 56-57   x8   new      map label estimate: Prima SI Gwyddneau map (layout text p.42), BLOOD L
+  cliff serpent                      lvl 48-49   x2   new      map label estimate: Prima SI Gwyddneau map CLIFF SERPENT label col 96/
+  lammia bowmaiden                   lvl 48-51   x4   new      map label estimate: CLIFFTON label on the Prima SI Gwyddneau map + Pri
+  lammia swordswoman                 lvl 48-51   x4   new      map label estimate: CLIFFTON label on the Prima SI map + Prima faction
+  marooned viking                    lvl 48-50   x4   new      map label estimate: Prima SI Gwyddneau map MAROONED VIKING labels at c
+  marooned viking commander          lvl 61      x3   new      map label estimate: Prima SI map label 'MAROONED VIKING COMMANDER' at 
+  sea wolf                           lvl 45-46   x2   new      map label estimate: Prima SI map 'URCHIN PILFERER SEA WOLF URCHIN PILF
+  undeath binder                     lvl 57      x2   new      map label estimate: Prima SI map UNDEATH BINDER at col 57/line 1961, s
+  western guagaran breeder           lvl 65      x1   new      map label estimate: Prima SI map WESTERN GUAGARAN BREEDER (col 39/line
+  western guagaran juvenile          lvl 49      x3   new      map label estimate: Prima SI map WESTERN GUAGARAN JUVENILE (col 41/lin
+  white light                        lvl 50-51   x13  new      map label estimate: Prima SI Gwyddneau map WHITE LIGHT labels at col/l
+
+Isle of Glass  (Shrouded Isles)
+  sea cur                            lvl 6-8     x4   new      map label estimate: SI Prima Isle of Glass map (vector page, obj 75 of
+
+Munin Sound  (Shrouded Isles)
+  granulator                         lvl 12-14   x9   new      CapnBry radar id 3084: 89 sightings in zone 151 (Aegir's Landing, regi
+
+ITEMS ADDED
+------------------------------------------------------------
+  item                                     kind             lvl  realm        value  price from
+  50 Feet of Rope                          loot              10  any            24c  Uthgard
+  50ft of Kelp Rope                        loot              20  any         4s 56c  Uthgard
+  a Hook Shaped Earring                    loot               2  any            40c  estimated
+  a Little Hobgoblin Finger                loot               4  any            44c  Uthgard
+  Abysmal Scraps                           loot              50  any         1g 20s  estimated
+  Acrid Ghoul Ear                          loot              29  any            14s  estimated
+  Adder Poison Sac                         loot               7  any            10s  estimated
+  Affixed Geas Stone                       loot              36  any             1g  estimated
+  Agate Studded Waterskin                  loot              20  any         8s 66c  Uthgard
+  Alchemy Mixing Bowl                      loot              19  any            10s  estimated
+  Alfanc Eye                               loot              25  any            11s  Uthgard
+  Alfanc Fang                              loot              25  any            35s  Uthgard
+  Alfanc Hide                              loot              41  any            60s  estimated
+  Amber Beaded Necklace                    loot              10  any             6s  Uthgard
+  Amber Nugget                             loot               6  any            72c  Uthgard
+  Ancient Beaded Bag                       loot              42  any         2g 20s  Uthgard
+  Ancient Burial Wrap                      loot              50  any             2g  Uthgard
+  Ancient Golden Baldric                   loot              47  any             2g  Uthgard
+  Ancient Molded Stone                     loot              48  any             4g  Uthgard
+  Ancient Runic Scroll                     loot              46  any         1g 20s  Uthgard
+  Anger Sprite Wing                        loot              11  any             2s  Uthgard
+  Angler Leg Tip                           loot              28  any            40s  estimated
+  Angler Poison Sac                        loot              28  any            60s  estimated
+  Animal Pelt                              loot              32  any            36s  estimated
+  Aqueous Slug Carapace                    loot              23  any            24s  estimated
+  Arachite Carapace                        loot              37  any         1g 50s  Uthgard
+  Arachite Egg Sac                         loot               5  any         1s 80c  Uthgard
+  Arachite Silk Cloak                      loot              14  any         9s 80c  Uthgard
+  Arachite Silk Gland                      loot               1  any            54c  Uthgard
+  Arachnid Leg                             loot              34  any            40s  Uthgard
+  Arachnid Leg Tip                         loot              28  any            30s  estimated
+  Arachnid Silk                            loot              28  any            30s  estimated
+  Ash and Gold Dust Mix                    loot              50  any      6g 45s 38c  Uthgard
+  Ash Talisman                             loot               4  any            64c  Uthgard
+  Ashen Fellwood Branch                    loot              16  any         4s 10c  Uthgard
+  Auburn Mane                              loot              10  any             3s  estimated
+  August Levian-Al Pelt                    loot              50  any             5g  estimated
+  Badger Cub Tooth                         loot               1  any            30c  Uthgard
+  Bag of Blue Dust                         loot               9  any             2s  estimated
+  Bag of Blue Dyes                         loot              26  any            25s  estimated
+  Bag of Dark Powder                       loot              14  any             5s  Uthgard
+  Bag of Foul-Smelling Herbs               loot               5  any            50c  estimated
+  Bag of Fruit                             loot               5  any             1s  Uthgard
+  Bag of Glowing Seeds                     loot              50  any      18g 25s 60c  Uthgard
+  Bag of Herbs                             loot              10  any         7s 50c  Uthgard
+  Bag of Ilmenite Powder                   loot              45  any             3g  estimated
+  Bag of Quartz Powder                     loot              45  any         4g 50s  estimated
+  Ball of Clay                             loot               2  any            26c  Uthgard
+  Ball of Fire                             loot              21  any            12s  estimated
+  Bandit Mask                              loot              18  any             6s  Uthgard
+  Bandit Sash                              loot              18  any             4s  Uthgard
+  Bandit's Small Chest                     loot              39  any             1g  estimated
+  Banisher's Signet Ring                   loot              48  any             4g  estimated
+  Banshee Essence                          loot              46  any             1g  Uthgard
+  Bayer Fang                               loot              13  any             2s  estimated
+  Beach Rat Fur                            loot               1  any            40c  estimated
+  Beaded Hobgoblin Belt                    loot               3  any             1s  Uthgard
+  Bear Skin                                loot               2  any         1s 80c  Uthgard
+  Bear Tongue                              loot               3  any            44c  Uthgard
+  Bent Lockpick                            loot               1  any            30c  Uthgard
+  Bent Silver Spoon                        loot              27  any            10s  estimated
+  Berserker's Jeweled Insignia             loot              50  any             2g  estimated
+  Bitten Truesilver Stone                  loot              37  any            50s  estimated
+  Black Badger Claw                        loot              36  any            40s  Uthgard
+  Black Badger Meat                        loot              36  any            11s  Uthgard
+  Black Badger Tooth                       loot              36  any            21s  Uthgard
+  Black Bear Claw                          loot              20  any         8s 96c  Uthgard
+  Black Bear Paw                           loot              20  any         7s 22c  Uthgard
+  Black Bear Pelt                          loot              16  any            25s  Uthgard
+  Black Bear Tongue                        loot              16  any         8s 42c  Uthgard
+  Black Clawed Hand                        loot              17  any             5s  Uthgard
+  Black Dog Paw                            loot               9  any             2s  Uthgard
+  Black Duegar Satchel                     loot              37  any            60s  Uthgard
+  Black Glass Earring                      loot              10  any             2s  estimated
+  Black Glowing Crystal                    loot              10  any             2s  Uthgard
+  Black Lion Skin                          loot              30  any             2g  estimated
+  Black Metal Choker                       loot              14  any             5s  Uthgard
+  Black Orm Claw                           loot              48  any             3g  estimated
+  Black Orm Hide                           loot              35  any             2g  Uthgard
+  Black Orm Tooth                          loot              35  any         1g 30s  Uthgard
+  Black Soul Stone                         loot              16  any             8s  Uthgard
+  Blackened Silver Locket                  loot               8  any         1s 50c  Uthgard
+  Bleached Leg Bone                        loot              26  any            18s  Uthgard
+  Bleeder Broodmother Egg                  loot              11  any             4s  estimated
+  Bleeder Hatchling Tail                   loot               9  any         1s 60c  estimated
+  Bleeder Tail                             loot              10  any             2s  estimated
+  Blindsnake Fang                          loot              37  any            90s  Uthgard
+  Blindsnake Skin                          loot              37  any         1g 50s  Uthgard
+  Block of Clay                            loot               2  any            40c  Uthgard
+  Blood Red Ruby                           loot              21  any        12s 50c  Uthgard
+  Blood Rune Krigare Carapace              loot              40  any             2g  Uthgard
+  Blood Rune Paint                         loot              47  any             4g  Uthgard
+  Blood Stained Bag                        loot              48  any         1g 20s  Uthgard
+  Blood Stained Carapace                   loot              42  any         2g 20s  Uthgard
+  Blood-Filled Crystal                     loot              48  any         2g 60s  estimated
+  Bloodied Bone                            loot              23  any            10s  estimated
+  Bloodied Rat Fur                         loot              22  any             3s  estimated
+  Bloodstained Golden Splinter             loot              58  any             6g  estimated
+  Bloodstone Ring                          loot              32  any        38s 50c  Uthgard
+  Bloody Arm Bone                          loot               7  any         1s 30c  estimated
+  Bloody Bwgwl Finger                      loot              28  any        19s 34c  Uthgard
+  Bloody Canine Fang                       loot               9  any         4s 50c  Uthgard
+  Bloody Gwr-Drwgiaid Finger               loot              15  any            10s  estimated
+  Bloody Hobgoblin Eyeball                 loot              20  any         9s 12c  Uthgard
+  Bloody Root                              loot              43  any             2g  Uthgard
+  Bloody Scepter                           loot              16  any             6s  estimated
+  Bloody Skull                             loot               1  any            30c  Uthgard
+  Bloody Thigh Bone                        loot               7  any         1s 30c  estimated
+  Bloody Warg Fang                         loot               9  any         1s 74c  Uthgard
+  Bloody Warshade Axe                      loot              54  any             2g  estimated
+  Blue Goblet                              loot              26  any            20s  estimated
+  Blue Mushroom                            loot              13  any         2s 94c  Uthgard
+  Blunted Femur                            loot              23  any            10s  estimated
+  Bog Crawler Chitin Shell                 loot              46  any             1g  estimated
+  Bone Bayer Skull                         loot              13  any             2s  estimated
+  Bone Flute                               loot              18  any        19s 50c  Uthgard
+  Bottle of Blessed Oils                   loot              10  any             4s  estimated
+  Bottle of Dirty Water                    loot              10  any             1s  estimated
+  Bottle of Elderberry Wine                loot               5  any             2s  Uthgard
+  Bottle of Grog                           loot              21  any             6s  Uthgard
+  Bottle of Poteen Wine                    loot               6  any             1s  estimated
+  Bottle of Wine                           loot              34  any            20s  estimated
+  Bottled Stench of Death                  loot              57  any             2g  estimated
+  Box of Childrens Toys                    loot              58  any             6g  estimated
+  Bracelet of Black Mist                   loot              10  any             2s  estimated
+  Bracelet of Flames                       loot              29  any            22s  estimated
+  Bracelet of Hot Vapor                    loot              30  any            22s  estimated
+  Bracelet of Twisted Silver               loot              23  any            20s  Uthgard
+  Brain                                    loot              10  any             1s  estimated
+  Branch of Mistletoe                      loot              18  any             6s  estimated
+  Brass Earring                            loot               4  any            60c  estimated
+  Brass Insignia Ring                      loot              10  any             2s  estimated
+  Briar Horror Mask                        loot              46  any            60s  estimated
+  Bright Stone Willow Dirge Flute          loot              12  any            24s  estimated
+  Broken Carved Music Box                  loot              61  any             6g  estimated
+  Broken Flint                             loot              36  any             1s  estimated
+  Broken Iron Shackle                      loot               3  any            66c  Uthgard
+  Broken Iron Shackles                     loot              18  any         2s 50c  Uthgard
+  Bronze Buckled Roman Belt                loot              11  any             4s  estimated
+  Bronze Medal                             loot              17  any         7s 50c  Uthgard
+  Bronze Rose Pin                          loot               3  any            90c  estimated
+  Bronze Shackle                           loot              33  any            41s  Uthgard
+  Brown Adder Stone                        loot               5  any            56c  Uthgard
+  Brown Bear Pelt                          loot              13  any         7s 50c  Uthgard
+  Bundle of Coded Letters                  loot              21  any            14s  estimated
+  Bundle of Greenbark Branches             loot              40  any            60s  estimated
+  Burial Wrap                              loot              41  any         1g 50s  Uthgard
+  Burned Out Globe                         loot               9  any             1s  estimated
+  Burned Skull                             loot              21  any             9s  Uthgard
+  Can of Bait                              loot               9  any         1s 70c  Uthgard
+  Canteen of Water                         loot               5  any             1s  Uthgard
+  Caoranach Hide                           loot               6  any         3s 60c  Uthgard
+  Caoranach Toothed Jaw                    loot               6  any         1s 80c  Uthgard
+  Captain's Spyglass                       loot               7  any             3s  estimated
+  Carrion Drake Hide                       loot              12  any             3s  estimated
+  Carrion Drake Tongue                     loot               8  any            80c  Uthgard
+  Carrion Drake Tooth                      loot               8  any            80c  estimated
+  Carved Bone Key                          loot              34  any            12s  Uthgard
+  Carved Elemental Idol                    loot              40  any             2g  Uthgard
+  Carved Fishbone Necklace                 loot               7  any             2s  estimated
+  Carved Granite Bracer                    loot              36  any            40s  Uthgard
+  Carved Ice Totem                         loot              51  any             2g  estimated
+  Carved Whalebone                         loot               4  any             1s  estimated
+  Carved Wood Dwarf                        loot               1  any            30c  Uthgard
+  Carved Wood Kobold                       loot               1  any            30c  estimated
+  Carved Wood Norseman                     loot               1  any            30c  Uthgard
+  Carved Wood Troll                        loot               1  any            80c  Uthgard
+  Cask of Fomorian Swill                   loot              48  any             2g  estimated
+  Caustic Venom Gland                      loot              18  any         8s 50c  Uthgard
+  Cave Bear Cub Pelt                       loot              16  any            20s  estimated
+  Cave Fisher Leg Tip                      loot              22  any            21s  Uthgard
+  Cave Fisher Poison Sac                   loot              22  any            24s  estimated
+  Cave Hound Claw                          loot              38  any            90s  Uthgard
+  Cave Hound Skin                          loot              38  any             1g  Uthgard
+  Cave Hound Tooth                         loot              38  any            75s  Uthgard
+  Cave Lion Pelt                           loot              24  any            40s  estimated
+  Cave Spider Carapace                     loot              13  any             9s  Uthgard
+  Cave Spider Leg                          loot              13  any             2s  Uthgard
+  Cave Spider Leg Tip                      loot              13  any             5s  Uthgard
+  Cave Spider Silk                         loot              13  any             6s  Uthgard
+  Cave Toad Skin                           loot              22  any            20s  estimated
+  Cave Viper Meat                          loot              25  any             8s  estimated
+  Cave Viper Skin                          loot              25  any            40s  estimated
+  Cave Viper Tooth                         loot              25  any            12s  estimated
+  Celtic Bracelet                          loot              20  any             5s  Uthgard
+  Champion Royal Guardian Chevron          loot              53  any            60s  estimated
+  Changeling Blood                         loot              39  any            20s  estimated
+  Changeling Ear                           loot              26  any            12s  Uthgard
+  Changeling Hair                          loot              39  any            12s  estimated
+  Changeling Tongue                        loot              26  any            15s  Uthgard
+  Charred Bronze Medal                     loot              25  any        14s 50c  Uthgard
+  Charred Grumoz Hoof                      loot              10  any         3s 50c  Uthgard
+  Charred Hoof                             loot               6  any            70c  Uthgard
+  Charred Leg Bone                         loot              21  any             8s  estimated
+  Chevron of the Royal Lord                loot              59  any            60s  estimated
+  Chewed Asterium Metal                    loot              63  any         1g 60s  estimated
+  Chewed Bone                              loot               1  any            24c  Uthgard
+  Chicken                                  loot               3  any            68c  Uthgard
+  Chiller Head                             loot              43  any             4g  estimated
+  Chipped Mirror                           loot               3  any            80c  Uthgard
+  Chisled Stone Statue                     loot              39  any            50s  estimated
+  Chitin Carapace                          loot              37  any         1s 34c  Uthgard
+  Chitin Claw                              loot              37  any            80s  Uthgard
+  Chitin Leg                               loot              37  any            40s  Uthgard
+  Chitin Leg Tip Necklace                  loot              30  any            40s  estimated
+  Chitin Poison                            loot              37  any            40s  estimated
+  Chitin Tail                              loot              37  any            50s  Uthgard
+  Chitin-Tipped Arrows                     loot              19  any            10s  estimated
+  Chunk of Clay                            loot              42  any            45s  Uthgard
+  Chunk of Copper                          loot              13  any         2s 50c  Uthgard
+  Chunk of Meat                            loot               1  any            30c  Uthgard
+  Chunk of Rotting Flesh                   loot              11  any             3s  Uthgard
+  Chunk of Silver                          loot              21  any            40s  Uthgard
+  Chunk of Soot                            loot              20  any             7s  Uthgard
+  Chunk of Sulfur                          loot               6  any         1s 10c  estimated
+  Clan Crest                               loot               6  any             3s  Uthgard
+  Clear Blue Orb                           loot               9  any             2s  Uthgard
+  Clear Oval Stone                         loot              35  any            53s  Uthgard
+  Cliff Spiderling Claw                    loot              14  any             6s  estimated
+  Cliff Spiderling Legs                    loot              14  any         3s 50c  estimated
+  Clouded Beryl                            loot              10  any             2s  Uthgard
+  Cloudy White Gem                         loot              35  any            51s  Uthgard
+  Cloven Hoof                              loot              10  any         1s 22c  Uthgard
+  Clump of Moss                            loot               9  any             2s  Uthgard
+  Collar of Dark Mist                      loot              17  any             7s  estimated
+  Collar of Red Carnelians                 loot              24  any            16s  Uthgard
+  Copper Charm                             loot               2  any             1s  estimated
+  Copper Chryoprase Earring                loot              21  any             6s  estimated
+  Copper Spinel Bracelet                   loot              25  any         7s 24c  Uthgard
+  Cornish Hen Feathers                     loot              24  any            12s  estimated
+  Cornwall Drake Claw                      loot              44  any         1g 50s  estimated
+  Cornwall Drake Meat                      loot              40  any            50s  estimated
+  Cornwall Drake Tooth                     loot              40  any            50s  estimated
+  Corpse Devourer Carapace                 loot              16  any            20s  Uthgard
+  Corpse Devourer Maw                      loot              16  any            42s  Uthgard
+  Corpse Devourer Silk                     loot              16  any         6s 50c  Uthgard
+  Corpse Eater Leg                         loot              11  any             2s  estimated
+  Courier Pouch                            loot              26  any            20s  estimated
+  Crab Shell                               loot               1  any            60c  estimated
+  Cracked Crab Carapace                    loot              19  any            12s  estimated
+  Cracked Granite Horseshoe                loot              39  any            60s  estimated
+  Cracked Horn                             loot              10  any             1s  estimated
+  Cracked Ireon Ring                       loot              48  any             3g  estimated
+  Creeper Clawed Hand                      loot               9  any         2s 80c  Uthgard
+  Creeper Skin                             loot               9  any             6s  Uthgard
+  Crooked Wand                             loot              22  any            10s  estimated
+  Crude Barbed Shackle                     loot              42  any         1g 20s  Uthgard
+  Crude Stone Idol                         loot               5  any            78c  Uthgard
+  Crushed Leaf                             loot              10  any         1s 88c  Uthgard
+  Crushed Mistletoe                        loot              10  any         2s 94c  Uthgard
+  Crypt Spider Carapace                    loot              10  any            10s  Uthgard
+  Crypt Spider Leg                         loot              10  any             2s  Uthgard
+  Crypt Spider Leg Tip                     loot              10  any             5s  Uthgard
+  Crypt Spider Silk                        loot              10  any         3s 50c  Uthgard
+  Crystal Teardrop Pendant                 loot              21  any            14s  Uthgard
+  Crystalized Amber                        loot              15  any         7s 60c  estimated
+  Crystalized Ball of Flame                loot              26  any            19s  estimated
+  Crystalized Crab Chitin Shell            loot              35  any             2g  estimated
+  Crystalized Dwarven Remains              loot              34  any             1g  estimated
+  Crystalized Eye                          loot              30  any            20s  estimated
+  Crystalized Jotun Hand                   loot              35  any             1g  Uthgard
+  Crystalized Kobold Remains               loot              30  any             1g  estimated
+  Crystalized Pine Sap                     loot               6  any            80c  estimated
+  Crystalized Sand                         loot              16  any             7s  Uthgard
+  Crystalized Troll Remains                loot              53  any             1g  estimated
+  Crystalized Viper Skin                   loot              40  any         3g 50s  estimated
+  Curled Leaf                              loot              13  any         3s 40c  Uthgard
+  Cursed Ekyps Control Orb                 loot              42  any         1g 75s  Uthgard
+  Cursed Golden Statue                     loot              36  any         2g 50s  Uthgard
+  Cyclops Ear                              loot              42  any            30s  estimated
+  Cyclops Toes                             loot              42  any             1g  estimated
+  Cyhraeth Hair                            loot              50  any             1g  Uthgard
+  Cyhraeth Medallion                       loot              50  any             2g  Uthgard
+  Dark Skull                               loot              17  any            10s  estimated
+  Dartmoor Pony Hide                       loot              34  any             1g  Uthgard
+  Dazzling Jeweled Carapace                loot              36  any             2g  estimated
+  Dead Bird                                loot               1  any            24c  Uthgard
+  Dead Master's Jeweled Bracer             loot               7  any             2s  estimated
+  Dead Mouse                               loot               5  any            48c  Uthgard
+  Dead Rabbit                              loot               6  any            86c  Uthgard
+  Deamhan Claw                             loot              34  any        15s 20c  Uthgard
+  Deamhan Hound Claw                       loot              40  any            50s  Uthgard
+  Deamhan Hound Pelt                       loot              40  any         1g 20s  Uthgard
+  Deamhan Hound Tooth                      loot              40  any            40s  Uthgard
+  Deamhan Wing                             loot              34  any        12s 60c  Uthgard
+  Death Mask                               loot              11  any             4s  estimated
+  Death Spider Head                        loot              18  any            15s  Uthgard
+  Death Ward Token                         loot              42  any         1g 40s  estimated
+  Death Worm Carapace                      loot              14  any             8s  Uthgard
+  Death Worm Maw                           loot              14  any             4s  Uthgard
+  Deathly Reanimated Bones                 loot              37  any             2g  Uthgard
+  Decayed Pig Hoof                         loot               4  any            34c  Uthgard
+  Decaying Fishing Net                     loot               4  any             1s  estimated
+  Decaying Troll Paw                       loot              10  any             4s  Uthgard
+  Dented Defenders Helm                    loot              39  any             1g  estimated
+  Dented Pewter Chalice                    loot              10  any             7s  estimated
+  Dented Pewter Urn                        loot              40  any             1g  estimated
+  Derg's Toothed Jaw                       loot               5  any             1s  estimated
+  Detailed Carved Bone Brooch              loot              13  any             6s  estimated
+  Detrital Crab Claw                       loot              42  any            70s  Uthgard
+  Diamond Dust                             loot              49  any             2g  Uthgard
+  Digestive Sac                            loot               3  any             2s  estimated
+  Digging Stick                            loot               8  any         1s 40c  Uthgard
+  Dirge Scraps                             loot               6  any             3s  Uthgard
+  Diseased Rat Skin                        loot              38  any         1g 10s  Uthgard
+  Diseased Tail                            loot              30  any            20s  estimated
+  Drakescale Venom                         loot              34  any         1g 60s  Uthgard
+  Drakulv Nightwalker's Cloak              loot              45  any         1g 20s  estimated
+  Drakulv Patrol Insignia                  loot              39  any             2g  estimated
+  Draugr Hound Pelt                        loot              23  any            10s  estimated
+  Dream Stone                              loot              14  any             8s  Uthgard
+  Dried Bear Meat                          loot              41  any            20s  Uthgard
+  Dried Venison                            loot              41  any            30s  Uthgard
+  Driftwood Totem                          loot               6  any            74c  Uthgard
+  Dryad Hide Belt                          loot               9  any             2s  estimated
+  Dullahan's Blackened Heart               loot              48  any            98s  Uthgard
+  Dullahan's Skin                          loot              48  any            66s  Uthgard
+  Dusty Golden Idol                        loot              10  any             8s  estimated
+  Dwarf Skullcap                           loot               3  any            30c  Uthgard
+  Dwarven Remains                          loot              34  any             2g  estimated
+  Eagle Head Brooch                        loot              37  any         3s 80c  Uthgard
+  Ectoplasmic Goo                          loot              41  any         1g 40s  Uthgard
+  Eel Meat                                 loot              10  any            60c  estimated
+  Eel Poison Gland                         loot              10  any         1s 20c  estimated
+  Eirebug Carapace                         loot               4  any         1s 20c  estimated
+  Eirebug Mandible                         loot               4  any            90c  estimated
+  Elder Fellwood Branch                    loot              21  any             8s  estimated
+  Elder Head                               loot              24  any            24s  estimated
+  Ellyll Silken Hair                       loot              45  any            68s  Uthgard
+  Elm Fishing Pole                         loot               9  any             2s  Uthgard
+  Elm Talisman                             loot               1  any            24c  Uthgard
+  Ember of Darkfire                        loot              42  any         1g 60s  Uthgard
+  Emerald Dust                             loot              37  any             1g  Uthgard
+  Emerald Snake Fang                       loot               5  any            60c  Uthgard
+  Empty Crystal Vial                       loot              17  any             6s  Uthgard
+  Empyreal Mist Orb                        loot              41  any            50s  estimated
+  Empyrean Silk                            loot              23  any            12s  estimated
+  Enhorning Hide                           loot              49  any             2g  estimated
+  Enriched Black Orm Hide                  loot              40  any             3g  estimated
+  Enriched Orm Scales                      loot              45  any         1g 80s  estimated
+  Envy Drakeling Hide                      loot               9  any         2s 80c  estimated
+  Envy Drakeling Tail                      loot               9  any             2s  estimated
+  Envy Stone                               loot              20  any        22s 24c  Uthgard
+  Essence of the Anguished Soul            loot               8  any         1s 50c  Uthgard
+  Essence of the Fervent Defender          loot              48  any         2g 50s  Uthgard
+  Essence of the Haunted                   loot              41  any         1g 40s  Uthgard
+  Essence of the Vengeful Spirit           loot              14  any         5s 20c  Uthgard
+  Etched Golden Bracer                     loot              48  any         2g 40s  estimated
+  Etched Silver Orb                        loot              45  any         1g 40s  estimated
+  Etched Silvery Bracer                    loot              48  any         1g 50s  estimated
+  Etheric Sash of Honor                    loot              12  any         3s 20c  Uthgard
+  Etheric Spirit Shackles                  loot              52  any             1g  estimated
+  Executioner's Tooth Necklace             loot              57  any             2g  estimated
+  Exotic Herbs                             loot              30  any             4g  estimated
+  Expended Commanding Stone                loot              31  any            40s  estimated
+  Expended Thin Copper Wand                loot              11  any             2s  Uthgard
+  Faded Green Slime                        loot               7  any            54c  Uthgard
+  Faerie Anger Dust                        loot              11  any             6s  Uthgard
+  Faerie Beetle Carapace                   loot              17  any            24s  estimated
+  Faerie Beetle Leg                        loot              17  any             5s  estimated
+  Faerie Beetle Mandible                   loot              17  any            12s  estimated
+  Faerie Drakes Rainbow Scale              loot              20  any             9s  estimated
+  Faerie Drakes Scaled Hide                loot              20  any            30s  estimated
+  Faerie Drakes Tail                       loot              20  any             9s  estimated
+  Faerie Dust                              loot              17  any            10s  estimated
+  Faerie Frog Legs                         loot              28  any            22s  Uthgard
+  Faerie Frog Skin                         loot              28  any            50s  Uthgard
+  Faerie Gem                               loot              22  any            17s  Uthgard
+  Faerie Horse Mane                        loot              18  any            13s  Uthgard
+  Faerie Horse Pelt                        loot              18  any            18s  Uthgard
+  Faerie Horse Tail                        loot              18  any            10s  Uthgard
+  Faerie Steed Mane                        loot              19  any            16s  Uthgard
+  Faerie Steed Pelt                        loot              19  any            21s  Uthgard
+  Faerie Steed Tail                        loot              19  any            13s  Uthgard
+  Far Liath Essense                        loot              31  any            30s  Uthgard
+  Featureless Kunzite Statuette            loot              57  any             2g  estimated
+  Feccan Skin                              loot               1  any            66c  Uthgard
+  Fee Lion Claw                            loot              25  any            21s  estimated
+  Fee Lion Meat                            loot              25  any         8s 50c  estimated
+  Fee Lion Pelt                            loot              25  any            80s  Uthgard
+  Fee Lion Tooth                           loot              25  any            18s  estimated
+  Fell Cat's Tooth                         loot              45  any         1g 50s  Uthgard
+  Fetch's Magical Skin                     loot              15  any             6s  estimated
+  Fiery Diamond Orb                        loot              49  any         4g 50s  Uthgard
+  Fiery Hound Skin                         loot              40  any         1g 20s  estimated
+  Fiery Red Stone                          loot              15  any             5s  Uthgard
+  Fiery Stem                               loot              20  any         8s 24c  Uthgard
+  Fine Unworked Stone                      loot              18  any            30s  Uthgard
+  Fire Ant Larva                           loot              21  any            10s  Uthgard
+  Fire Ant Leg                             loot              20  any             9s  Uthgard
+  Fire Ant Mandible                        loot              20  any             8s  Uthgard
+  Fire Giant Finger                        loot              27  any            18s  Uthgard
+  Fire Giant Toes                          loot              30  any            23s  period page
+  Fire Opal Shell Belt Buckle              loot              35  any            80s  estimated
+  Fire Petal                               loot              20  any         8s 50c  Uthgard
+  Fire Seeds                               loot              20  any             9s  Uthgard
+  Firecat Claw                             loot              24  any            15s  Uthgard
+  Firecat Fang                             loot              24  any            14s  Uthgard
+  Firecat Pelt                             loot              24  any            13s  Uthgard
+  Fish Catchers Net                        loot              13  any            10s  estimated
+  Flaming Root                             loot              20  any         9s 50c  Uthgard
+  Flask of Elven Spirits                   loot              12  any             8s  Uthgard
+  Flask of Fire Wine                       loot              24  any        12s 60c  Uthgard
+  Flask of Potency                         loot              20  any             6s  estimated
+  Flask of Whiskey                         loot               1  any            44c  Uthgard
+  Flat Flint Chert                         loot               2  any            40c  Uthgard
+  Flat Round Rock                          loot               2  any            20c  Uthgard
+  Flayed Rat Tail                          loot              22  any             5s  estimated
+  Flower of Flame                          loot              23  any            10s  estimated
+  Flower Shaped Pin                        loot              20  any            12s  estimated
+  Folded Leaf                              loot              15  any         4s 58c  Uthgard
+  Footman's Pack                           loot              17  any         7s 30c  Uthgard
+  Footman's Ration                         loot              17  any             7s  Uthgard
+  Foreman's Plans                          loot              39  any            90s  estimated
+  Forest Spider Carapace                   loot              50  any         7g 50s  Uthgard
+  Forest Viper Eye                         loot              42  any             2g  Uthgard
+  Forest Viper Skin                        loot              40  any         3g 50s  Uthgard
+  Forest Viper Spine                       loot              44  any             2g  Uthgard
+  Forgetful Dust                           loot              22  any            10s  Uthgard
+  Forgotten Clan Necklace                  loot              51  any         2g 40s  estimated
+  Forgotten Silk Coth                      loot              20  any            20s  estimated
+  Forgotten Silver Key                     loot               8  any            80c  Uthgard
+  Forked Snake Tongue                      loot              12  any         1s 50c  estimated
+  Fossilized Sand                          loot              16  any             6s  Uthgard
+  Frogrider Cavalry Chevron                loot              51  any            68s  estimated
+  Frost-Rimmed Silver Cup                  loot              55  any             2g  Uthgard
+  Frostweaver Web                          loot              44  any             4g  Uthgard
+  Frosty Leg                               loot              43  any             2g  Uthgard
+  Fulgent Dusklight Gem                    loot              50  any             3g  estimated
+  Fuliginous Mane Hairs                    loot              61  any             4g  estimated
+  Furious Warshade Gem                     loot              54  any             2g  estimated
+  Fused Quartz Stone                       loot              62  any         1g 50s  estimated
+  Fylgja Pelt                              loot              50  any             2g  estimated
+  Gale's Essence                           loot              16  any            10s  estimated
+  Garnet Chip                              loot               4  any            40c  Uthgard
+  Gathering Bag                            loot               8  any             1s  Uthgard
+  Gehk Hoof                                loot              48  any            80s  estimated
+  Gem Clicker Carapace                     loot              37  any            90s  estimated
+  Gem Clicker Claw                         loot              37  any            80s  estimated
+  Gem Dust Powder                          loot              36  any            80s  estimated
+  Gem Dusted Bone                          loot              37  any            40s  estimated
+  Gem Dusted Pristine Rat Pelt             loot              36  any         1g 20s  estimated
+  Gem Dusted Rat Pelt                      loot              36  any            40s  estimated
+  Gem Dusted Skull                         loot              37  any            50s  estimated
+  Gem Imbedded Rat Fang                    loot              36  any            40s  estimated
+  Gem of Animation                         loot              47  any             2g  estimated
+  Gem of Swirling Wind                     loot               7  any             5s  Uthgard
+  Gem Studded Stein                        loot              45  any        75s 24c  Uthgard
+  Ghost Wolf Hide                          loot              32  any            50s  estimated
+  Ghost Wolf Teeth                         loot              32  any            36s  Uthgard
+  Ghostly Roman Lantern                    loot              11  any         2s 24c  Uthgard
+  Ghoul Skin                               loot              20  any             7s  Uthgard
+  Ghoulic Viper Skin                       loot              42  any         1g 90s  Uthgard
+  Ghoulish Spirit Necklace                 loot              39  any         1g 40s  estimated
+  Giant Ant Carapace                       loot              21  any            30s  estimated
+  Giant Ant Legs                           loot              21  any            11s  Uthgard
+  Giant Boar Hide                          loot              34  any            70s  Uthgard
+  Giant Boar Tusk                          loot              34  any            50s  Uthgard
+  Giant Frog Skin                          loot              13  any         1s 80c  estimated
+  Giant Hide Loin Cloth                    loot              41  any            40s  estimated
+  Giant Leaper Leg                         loot              15  any         4s 70c  Uthgard
+  Giant Lemer Head                         loot              22  any             6s  estimated
+  Giant Lemer Paw                          loot              22  any            10s  estimated
+  Giant Lizard Hide                        loot              36  any         1g 20s  Uthgard
+  Giant Spotted Mushroom                   loot              12  any         3s 40c  Uthgard
+  Giant Water Skin                         loot              41  any            40s  estimated
+  Gilded Ornamental Bracer                 loot              40  any             2g  Uthgard
+  Glimmer Knight's Service Scroll          loot              60  any            10g  estimated
+  Glimmer Spirit Essence                   loot              60  any             6g  estimated
+  Glimmer Spirit Pennant                   loot              60  any             6g  estimated
+  Glimmer Spirit Shackle                   loot              36  any             2g  estimated
+  Glimmer Spirit Wand                      loot              60  any            10g  estimated
+  Glimmer Striker Belt                     loot              51  any             4g  estimated
+  Glimmering Spirit Orb                    loot              45  any         2g 40s  estimated
+  Glistening Mud Frog Skin                 loot              30  any         5g 20s  estimated
+  Glittering Dust                          loot              53  any        45s 60c  Uthgard
+  Glob of Mud                              loot              42  any            45s  Uthgard
+  Globe of Swirling Mist                   loot              16  any         6s 40c  Uthgard
+  Glow Worm Carapace                       loot              36  any             1g  estimated
+  Glowing Blue Slime                       loot               9  any            80c  Uthgard
+  Glowing Chainless Shackle                loot              36  any            82s  Uthgard
+  Glowing Ember                            loot              21  any            11s  Uthgard
+  Glowing Globe of Blue Mist               loot               9  any            20s  estimated
+  Glowing Gold Key                         loot              37  any          1g 4s  Uthgard
+  Glowing Green Seed                       loot              26  any            21s  Uthgard
+  Glowing Green Slime                      loot              12  any         1s 44c  Uthgard
+  Glowing Irewood Greenbark Sap            loot              40  any            34s  Uthgard
+  Glowing Orange Globe                     loot               9  any             1s  estimated
+  Glowing Rat Claw                         loot              38  any             1g  Uthgard
+  Glowing Red Orb                          loot              30  any            25s  Uthgard
+  Glowing Ultramarine Stone                loot              49  any      14g 86s 82c  Uthgard
+  Gnarled Fellwood Dust                    loot              53  any        26s 80c  Uthgard
+  Gnawed Femur                             loot               9  any             4s  estimated
+  Goborchend Hoof                          loot              50  any             2g  estimated
+  Gold Embossed Parchment                  loot              50  any      11g 57s 86c  Uthgard
+  Gold Hoop Earring                        loot               7  any             1s  estimated
+  Gold Plated Gaming Dice                  loot              34  any            45s  Uthgard
+  Gold Threaded Sash                       loot              47  any            60s  Uthgard
+  Golden Bear-Blood Basin                  loot              31  any            28s  Uthgard
+  Golden Belt Buckle                       loot              34  any            60s  Uthgard
+  Golden Brooch                            loot              10  any         2s 50c  Uthgard
+  Golden Clover Brooch                     loot              27  any            60s  Uthgard
+  Golden Crescent Necklace                 loot              42  any             2g  estimated
+  Golden Crown                             loot              51  any             4g  estimated
+  Golden Drinking Horn                     loot              50  any         3g 90s  Uthgard
+  Golden Ornamental Armguard               loot              54  any             5g  estimated
+  Golden Ornamental Neckguard              loot              54  any            10g  estimated
+  Golden Prayer Beads                      loot              10  any             4s  estimated
+  Golden Seal of Rome                      loot              35  any             2g  estimated
+  Golden Statuette                         loot              53  any            14g  estimated
+  Golden Sunstone Necklace                 loot              36  any      1g 13s 54c  Uthgard
+  Grand Pooka Hoof                         loot              61  any            10g  estimated
+  Granite Chisel                           loot              47  any         1g 60s  estimated
+  Granite Finger                           loot              36  any             1g  estimated
+  Granite Horseshoe                        loot              39  any            40s  estimated
+  Granite Shard                            loot              48  any             5g  estimated
+  Grass Cat Fang                           loot              11  any             2s  estimated
+  Grass Cat Skin                           loot              11  any             2s  estimated
+  Grass Stained Stone                      loot              42  any             2g  estimated
+  Grass Viper Skin                         loot              12  any             3s  estimated
+  Green Decaying Finger                    loot              20  any             6s  estimated
+  Green Jasper                             loot              32  any            36s  Uthgard
+  Green Mushroom                           loot              10  any         1s 38c  Uthgard
+  Green Sapphire                           loot              34  any      1g 83s 60c  Uthgard
+  Grey Warg Skin                           loot               9  any         2s 78c  Uthgard
+  Griever's Notched Stick                  loot              48  any             2g  estimated
+  Grim Scraps                              loot              20  any            20s  estimated
+  Grim Shreds                              loot              20  any            14s  Uthgard
+  Ground Bone and Onyx Dust                loot              14  any         5s 60c  Uthgard
+  Ground Bone Chips                        loot              23  any            12s  estimated
+  Guard's Gold Nose Ring                   loot              26  any        12g 12s  Uthgard
+  Guard's Medal                            loot              31  any            39s  Uthgard
+  Guard's Ration                           loot              31  any            37s  Uthgard
+  Guard's Wristband                        loot              31  any            35s  Uthgard
+  Guardian Veil Ring                       loot              37  any             1g  estimated
+  Hag's Green Hair                         loot              11  any         3s 60c  Uthgard
+  Half-Eaten Fish                          loot               3  any            40c  Uthgard
+  Hallaratta Pelt                          loot              36  any         1g 40s  Uthgard
+  Hand-Tooled Belt                         loot               3  any            60c  estimated
+  Hardened Clay Heart                      loot              40  any             4g  estimated
+  Harness                                  loot              28  any            38s  Uthgard
+  Harvested Spider Eggs                    loot              30  any            18s  estimated
+  Harvester Carapace                       loot              20  any             9s  Uthgard
+  Heartwood Amulet                         loot               4  any            80c  Uthgard
+  Heavy Silver Chain                       loot              18  any             9s  Uthgard
+  Heliodor                                 loot              47  any      2g 18s 58c  Uthgard
+  Herald's Beaded Insignia                 loot              38  any             2g  Uthgard
+  High Priest's Bracer of Defense          loot              10  any             3s  estimated
+  High Priest's Gem of Rejuvenation        loot              10  any             4s  estimated
+  High Priest's Golden Prayer Chain        loot              10  any             6s  estimated
+  Hill Cat Claw                            loot              10  any         2s 64c  Uthgard
+  Hill Cat Skin                            loot              10  any        14s 30c  Uthgard
+  Hill Toad Skin                           loot               5  any         1s 80c  Uthgard
+  Hollow Bone Totem                        loot              39  any            56s  Uthgard
+  Hooked Orm Claw                          loot              48  any             2g  estimated
+  Horned Toad Skin                         loot              23  any            12s  estimated
+  Horrific Petrified Branch                loot              43  any         1g 80s  Uthgard
+  Howling Stone of the Banshee             loot              56  any             2g  estimated
+  Huge Silken Cocoon                       loot              53  any         7g 50s  estimated
+  Human Bone Necklace                      loot              16  any            10s  Uthgard
+  Human Head                               loot              33  any            43s  Uthgard
+  Human-Hide Belt                          loot              18  any            11s  Uthgard
+  Hunk of Warg Meat                        loot               9  any            88c  Uthgard
+  Husk Carapace                            loot              10  any         2s 80c  estimated
+  Husker's Silksteel Cutters               loot              38  any      1g 12s 50c  Uthgard
+  Icy Winter Wolf Pelt                     loot              46  any             8g  estimated
+  Illegible Map                            loot              19  any            19s  Uthgard
+  Ilmenite Shard                           loot              57  any         1g 50s  estimated
+  Imp's Small Jeweled Crown                loot              38  any             1g  estimated
+  Impaler's Barbed Leg                     loot              37  any             1g  Uthgard
+  Impling Claw                             loot               1  any            14c  Uthgard
+  Impling Eye                              loot               1  any            12c  estimated
+  Impling Wing                             loot               1  any            10c  Uthgard
+  Ircon Stone                              loot              52  any         1g 20s  estimated
+  Ire Wolf Pelt                            loot              25  any            70s  Uthgard
+  Ire Wolf Tooth                           loot              25  any             9s  Uthgard
+  Irewood Greenbark Branch                 loot              40  any            30s  Uthgard
+  Ivory Handled Skinning Knife             loot              10  any         3s 50c  Uthgard
+  Ivory Warg Tooth                         loot              37  any         1g 20s  estimated
+  Jasper Beetle Chitin Necklace            loot              39  any            60s  estimated
+  Jewel Studded Circlet                    loot              29  any            50s  estimated
+  Jewel-Encrusted Eye                      loot              61  any             6g  estimated
+  Jeweled Coffer                           loot              60  any             2g  estimated
+  Jeweled Eye                              loot              32  any            16s  estimated
+  Jeweled Merman Skull                     loot              34  any            60s  estimated
+  Jeweled Redbone Skull                    loot              37  any         1g 20s  estimated
+  Jeweled Roane Choker                     loot              46  any            50s  estimated
+  Jeweled Scabard                          loot              37  any             4s  estimated
+  Jeweled Skull Totem                      loot              40  any         1g 50s  estimated
+  Jeweled Wolf's Head Necklace             loot              22  any            13s  estimated
+  Jotun Jeweled Chest                      loot              56  any             4g  estimated
+  Keltoi Crafted Belt                      loot              20  any             7s  Uthgard
+  Knight's Ration                          loot              18  any             8s  Uthgard
+  Kobold Skull Cup                         loot              16  any         6s 80c  Uthgard
+  Laering Necklace                         loot              22  any            14s  estimated
+  Lake Serpent Fang                        loot              10  any         1s 60c  estimated
+  Lake Serpent Skin                        loot              10  any         2s 40c  estimated
+  Large Alfanc Fang                        loot              41  any             1g  estimated
+  Large Annag Head                         loot              55  any            80s  estimated
+  Large Bleached Bone                      loot              27  any            19s  Uthgard
+  Large Bounder Pelt                       loot              45  any         1g 60s  Uthgard
+  Large Carrion Drake Scale                loot              12  any         1s 60c  estimated
+  Large Cave Mauler Skin                   loot              25  any            40s  estimated
+  Large Fish                               loot              13  any             4s  estimated
+  Large Fishing Net                        loot              16  any            15s  Uthgard
+  Large Garnet                             loot              23  any         14s 4c  Uthgard
+  Large Gold Tooth                         loot              12  any             4s  estimated
+  Large Rock Bounder Tooth                 loot              45  any            70s  Uthgard
+  Large Rock Crystal                       loot               2  any            60c  estimated
+  Large Spiked Collar                      loot               6  any         1s 80c  estimated
+  Large Spotted Mushroom                   loot               7  any         1s 88c  Uthgard
+  Large Topaz Ring                         loot              23  any            14s  Uthgard
+  Large Venomous Spider Gland              loot              38  any         1g 20s  estimated
+  Large Warg Paw                           loot               9  any            94c  Uthgard
+  Large Warhound Paw                       loot              19  any             3s  estimated
+  Large Winter Wolf Pelt                   loot              44  any         7g 85s  Uthgard
+  Large Wolfhound Fang                     loot               7  any         1s 80c  estimated
+  Large Wolfhound Pelt                     loot              19  any            10s  estimated
+  Large Wolfspider Leg                     loot              38  any            40s  estimated
+  Large Worm Carapace                      loot              22  any             2s  Uthgard
+  Large Worm Jaw                           loot              22  any        14s 30c  Uthgard
+  Leafy Silver Stemmed Vine                loot              30  any      8g 45s 62c  Uthgard
+  Leaper Eye                               loot              10  any         1s 60c  estimated
+  Leaper Eye Earrings                      loot              15  any             6s  Uthgard
+  Leaper Tongue Belt                       loot              15  any         5s 50c  Uthgard
+  Leathery Skin                            loot               3  any            50c  Uthgard
+  Lemer Tail                               loot              22  any             8s  estimated
+  Lesser Banshee Essence                   loot              36  any            80s  estimated
+  Lieutenant's Pin                         loot              33  any            47s  Uthgard
+  Lieutenant's Pouch                       loot              33  any            49s  Uthgard
+  Lieutenant's Ration                      loot              33  any        76s 50c  Uthgard
+  Light Carbide Shackles                   loot              33  any            54s  estimated
+  Lion Skin                                loot               6  any            60c  Uthgard
+  Little Hobgoblin Toe                     loot               2  any            14c  Uthgard
+  Lizard's Head                            loot               1  any            30c  Uthgard
+  Lizard-Foot Amulet                       loot               2  any            64c  Uthgard
+  Lock of Silver Hair                      loot              50  any             1g  estimated
+  Locked Spell Book                        loot              22  any            12s  estimated
+  Lone Wolf Fang                           loot              20  any             8s  estimated
+  Lone Wolf Pelt                           loot              20  any            20s  estimated
+  Lookout's Spyglass                       loot              27  any            20s  Uthgard
+  Loot Bag                                 loot              13  any             4s  estimated
+  Luminescent Liquid                       loot              17  any             7s  Uthgard
+  Luminescent Orb                          loot              28  any            13s  Uthgard
+  Luminous Golden Flower                   loot              30  any      4g 48s 70c  Uthgard
+  Lump of Carrion                          loot               6  any            72c  Uthgard
+  Lump of Rotting Meat                     loot               8  any         1s 24c  Uthgard
+  Luna Dust                                loot               8  any             2s  Uthgard
+  Lynx Skin                                loot              15  any             3s  estimated
+  Magic Enriched Clay                      loot              40  any         1g 50s  estimated
+  Magic Saturated Clay                     loot              40  any         1g 50s  estimated
+  Magical Soul Anchor                      loot              43  any             2g  Uthgard
+  Malefic Spirit Orb                       loot              41  any             2g  Uthgard
+  Malicious Black Heart                    loot              17  any         7s 50c  Uthgard
+  Mangled Rat's Paw                        loot              22  any             8s  estimated
+  Mangled Toe                              loot              23  any             8s  estimated
+  Manifested Phantom Terror Claw           loot              28  any            35s  Uthgard
+  Manifested Terror Cloth                  loot              56  any             1g  estimated
+  Mantle of Bear-Like Visage               loot              22  any            12s  Uthgard
+  Marrow Leech Carapace                    loot              38  any         1g 75s  Uthgard
+  Mauler Claw                              loot               5  any         2s 48c  Uthgard
+  Mauler Skin                              loot              12  any            12s  Uthgard
+  Medium Carrion Drake Scale               loot               8  any         1s 60c  estimated
+  Medium Werewolf Pelt                     loot              27  any            24s  Uthgard
+  Mephit Skull                             loot              14  any         2s 42c  Uthgard
+  Mephit Wing                              loot              20  any        90s 84c  Uthgard
+  Merman Scales                            loot              36  any            24s  Uthgard
+  Milky Membrane                           loot              30  any            20s  estimated
+  Mindworm Poison Gland                    loot              57  any             4g  estimated
+  Mining Pick                              loot              13  any            10s  estimated
+  Mist Wraith Essence                      loot              27  any            30s  Uthgard
+  Mistletoe Leaf                           loot              13  any         4s 58c  Uthgard
+  Misty Gray Stone                         loot               6  any             6s  Uthgard
+  Moonshone Bracelet                       loot              42  any         2g 40s  estimated
+  Moor Wolf Skin                           loot              14  any            30s  Uthgard
+  Moss-Covered Wand                        loot              24  any            17s  Uthgard
+  Mud Crab Chitin Shell                    loot              35  any             2g  Uthgard
+  Mud Frog Skin                            loot              30  any         2g 60s  Uthgard
+  Mud-Man Totem                            loot               5  any             1s  estimated
+  Muffin                                   loot               5  any             1s  Uthgard
+  Multifaceted Eye                         loot              16  any            20s  Uthgard
+  Mutilated Hobgoblin Hand                 loot              17  any          9s 4c  Uthgard
+  Mysterious Glimmering Vial               loot              39  any         1g 60s  estimated
+  Mystic Dragon Idol                       loot              36  any         1g 50s  estimated
+  Mystical Medallion                       loot               9  any             2s  Uthgard
+  Mystical Welkin Orb                      loot              48  any             3g  estimated
+  Necklace of Flames                       loot              25  any            14s  Uthgard
+  Necklace of Leaves                       loot               6  any             2s  estimated
+  Necklace of Servitude                    loot              51  any             3g  estimated
+  Necklace of Shiny Brown Rocks            loot               8  any             2s  estimated
+  Necklace of Swirling Mist                loot              16  any             8s  estimated
+  Oak Branch                               loot               7  any         2s 80c  Uthgard
+  Oaken Medallion                          loot               7  any         1s 20c  Uthgard
+  Obsidian                                 loot               3  any         1s 34c  Uthgard
+  Obsidian Bracelet                        loot              21  any            14s  estimated
+  Obsidian Spear Tip                       loot              14  any            15s  Uthgard
+  Ogre's Food Catcher                      loot              29  any            20s  estimated
+  Old Carving Tool                         loot               1  any         1s 20c  Uthgard
+  Old Mildewed Diary                       loot              10  any             3s  estimated
+  Old Scaled Baldric                       loot              36  any            80s  Uthgard
+  Old Silver Lined Map Case                loot               8  any         2s 40c  Uthgard
+  Onyx and Ruby Ring                       loot              27  any        17s 50c  Uthgard
+  Onyx Figurine                            loot               8  any             3s  Uthgard
+  Onyx Ring                                loot              16  any         8s 50c  Uthgard
+  Opal Mosaic Armband                      loot              36  any            40s  estimated
+  Orb of Animation                         loot              35  any            30s  estimated
+  Orb of Swirling Sea Water                loot              36  any            68s  Uthgard
+  Orb of the Restless Eye                  loot              29  any            60s  estimated
+  Orb of the Sea                           loot              49  any            10g  estimated
+  Orb of Wind                              loot              50  any             2g  estimated
+  Ornamental Necklace                      loot              20  any             6s  estimated
+  Otherworldly Wine                        loot              41  any            40s  estimated
+  Overlord's Orders                        loot              23  any            10s  Uthgard
+  Painted Elven Skull                      loot              46  any             3g  estimated
+  Pale Bumpy Roots                         loot               8  any         1s 50c  Uthgard
+  Parthanan Head                           loot              17  any            10s  Uthgard
+  Patch of Decayed Hair                    loot               4  any         1s 18c  Uthgard
+  Patched Old Sack                         loot               1  any            60c  Uthgard
+  Pearl                                    loot              15  any        21s 48c  Uthgard
+  Pearl Earring                            loot               9  any             3s  estimated
+  Pendant of Calling                       loot              58  any            60s  estimated
+  Pendrake Claw                            loot              48  any         1g 50s  Uthgard
+  Pendrake Fang                            loot              48  any             2g  Uthgard
+  Pendrake Skin                            loot              48  any             2g  Uthgard
+  Perfect Leaf                             loot              18  any             6s  estimated
+  Perfect White Wolf Pelt                  loot              42  any            14g  estimated
+  Phantom Miner Essence                    loot              47  any             1g  estimated
+  Phosphorescent Carapace                  loot              36  any             1g  Uthgard
+  Phosphorescent Claw                      loot               3  any            66c  Uthgard
+  Phosphorescent Fungus                    loot              42  any         1g 50s  Uthgard
+  Phosphorescent Pelt                      loot               3  any         1s 20c  estimated
+  Phosphorescent Tooth                     loot              36  any         1g 20s  Uthgard
+  Piece of Amber                           loot               6  any             1s  estimated
+  Piece of Burnt Skin                      loot              21  any             8s  estimated
+  Piece of Obsidian                        loot              21  any            10s  Uthgard
+  Pig Tail                                 loot              10  any             1s  estimated
+  Pile of Amber Dust                       loot              10  any         2s 52c  Uthgard
+  Pile of Glittery Dust                    loot              13  any         3s 94c  Uthgard
+  Pile of Golden Dust                      loot              18  any             7s  estimated
+  Pile of Orange Dust                      loot               9  any             2s  estimated
+  Pile of Sand                             loot              16  any             6s  Uthgard
+  Pile of Silvery Dust                     loot              15  any         5s 32c  Uthgard
+  Pilfered Draconic Scale                  loot              39  any             2g  estimated
+  Pine Branch                              loot               3  any            34c  Uthgard
+  Pine Needle Crown                        loot               7  any            80c  estimated
+  Pine Seedling                            loot               3  any            24c  Uthgard
+  Pine Tree Amulet                         loot              29  any            32s  estimated
+  Pint of Grog                             loot               3  any             1s  Uthgard
+  Pixie Dust                               loot              12  any             5s  Uthgard
+  Plans For the Mines                      loot              40  any             1g  estimated
+  Pointed Fang                             loot              30  any            20s  estimated
+  Poison Sac                               loot              15  any            12s  Uthgard
+  Poisonous Cave Toad Skin                 loot              22  any            20s  estimated
+  Poisonous Fungus                         loot              42  any         1g 25s  Uthgard
+  Poisonous Mephit Fang                    loot              20  any             6s  Uthgard
+  Polished and Painted Seashell            loot              49  any             4g  estimated
+  Polished Blood Runed Tablets             loot              39  any         1g 20s  Uthgard
+  Polished Bones                           loot              23  any            20s  estimated
+  Polished Eldspar Stone                   loot              62  any             2g  estimated
+  Polished Granite Stone                   loot              51  any             1g  estimated
+  Polished River Rock                      loot               6  any            44c  Uthgard
+  Polished Wooden Bowl                     loot               2  any            40c  Uthgard
+  Pony Hoof                                loot               4  any         1s 20c  estimated
+  Pooka Hair                               loot              33  any            40s  Uthgard
+  Pooka Skin                               loot              33  any            80s  Uthgard
+  Pooka's Luminous Horseshoe               loot              61  any             4g  estimated
+  Poteen Wine Flask                        loot               1  any            60c  Uthgard
+  Pouch of Fettered Screams                loot              58  any            10g  estimated
+  Pouch of Food                            loot              13  any         6s 50c  Uthgard
+  Pouch of Hobgoblin Eyes                  loot               9  any             2s  estimated
+  Pouch of Ill Gotten Gain                 loot              22  any            18s  Uthgard
+  Pouch of Magic Dust                      loot              14  any             7s  Uthgard
+  Powdered Granite                         loot              36  any            80s  estimated
+  Powdered Ilmenite                        loot              45  any         1g 20s  estimated
+  Powdered Ireon                           loot              42  any             1g  estimated
+  Powdered Quartz                          loot              48  any         1g 30s  estimated
+  Precious Jasper Necklace                 loot              58  any             4g  estimated
+  Prelate's Polished Carapace              loot              39  any             2g  Uthgard
+  Prepared Ebony Metal Rod                 loot              62  any         2g 80s  estimated
+  Preserved Human Heart                    loot              50  any             2g  estimated
+  Priestly Pin of Servitude                loot              10  any             4s  estimated
+  Primitive Fire Opal Eyed Totem           loot              36  any            55s  Uthgard
+  Pristine Alfanc Hide                     loot              25  any         1g 20s  Uthgard
+  Pristine Badger Pelt                     loot              22  any            50s  Uthgard
+  Pristine Bear Skin                       loot              52  any             3g  estimated
+  Pristine Black Badger Pelt               loot              36  any         1g 20s  Uthgard
+  Pristine Black Bear Pelt                 loot              16  any            75s  estimated
+  Pristine Black Lion Skin                 loot              30  any             3g  estimated
+  Pristine Bleeder Skin                    loot              10  any            16s  estimated
+  Pristine Blindsnake Skin                 loot              37  any             3g  estimated
+  Pristine Brown Bear Pelt                 loot              13  any            20s  estimated
+  Pristine Cave Bear Pelt                  loot              24  any            80s  estimated
+  Pristine Cave Hound Skin                 loot              38  any             2g  Uthgard
+  Pristine Cave Lion Pelt                  loot              24  any            80s  estimated
+  Pristine Cave Toad Skin                  loot              22  any            80s  estimated
+  Pristine Cave Viper Skin                 loot              25  any            80s  estimated
+  Pristine Chitin Carapace                 loot              37  any             2g  Uthgard
+  Pristine Cornwall Drake Skin             loot              40  any             2g  estimated
+  Pristine Crab Carapace                   loot              19  any            12s  estimated
+  Pristine Dark Hound Pelt                 loot              20  any            15s  estimated
+  Pristine Dartmoor Pony Hide              loot              34  any             2g  Uthgard
+  Pristine Diseased Rat Skin               loot              38  any             2g  Uthgard
+  Pristine Eel Skin                        loot              10  any            12s  estimated
+  Pristine Enhorning Hide                  loot              49  any            16g  estimated
+  Pristine Fiery Hound Skin                loot              40  any             2g  estimated
+  Pristine Forest Cat Skin                 loot              16  any            30s  estimated
+  Pristine Frosty Hide                     loot              54  any            20g  estimated
+  Pristine Fylgja Pelt                     loot              50  any             7g  estimated
+  Pristine Gem Clicker Carapace            loot              37  any             6g  estimated
+  Pristine Ghoulic Viper Skin              loot              42  any             3g  estimated
+  Pristine Hallaratta Pelt                 loot              36  any         2g 80s  estimated
+  Pristine Hatchling Skin                  loot               9  any            10s  estimated
+  Pristine Horned Toad Skin                loot              23  any            80s  estimated
+  Pristine Icy Wolf Pelt                   loot              46  any            16g  estimated
+  Pristine Leech Carapace                  loot              38  any             2g  Uthgard
+  Pristine Leech Skin                      loot              41  any            60s  estimated
+  Pristine Lone Wolf Pelt                  loot              20  any            40s  estimated
+  Pristine Luch Hide                       loot              24  any            80s  Uthgard
+  Pristine Mara Pelt                       loot              50  any             4g  estimated
+  Pristine Mature Wyvern Hide              loot              54  any            10g  estimated
+  Pristine Mauler Skin                     loot              12  any            30s  estimated
+  Pristine Moor Wolf Skin                  loot              14  any            60s  estimated
+  Pristine Pale Horse Pelt                 loot              50  any             4g  estimated
+  Pristine Pendrake Skin                   loot              48  any             4g  Uthgard
+  Pristine Poisonous Toad Skin             loot              22  any            80s  estimated
+  Pristine Scaled Fiend Skin               loot              42  any             3g  Uthgard
+  Pristine Scaled Snarler Pelt             loot              34  any             2g  estimated
+  Pristine Scaled Varg Pelt                loot              25  any            80s  estimated
+  Pristine Sheer Black Pelt                loot              45  any             4g  Uthgard
+  Pristine Shock Slug Carapace             loot              24  any            80s  estimated
+  Pristine Sinach Hide                     loot              49  any             4g  estimated
+  Pristine Slug Carapace                   loot              23  any            80s  estimated
+  Pristine Snowy Wolverine Pelt            loot              58  any            20g  estimated
+  Pristine Spider Carapace                 loot              25  any            80s  estimated
+  Pristine Tunneler Skin                   loot              37  any         2g 60s  estimated
+  Pristine Warg Pelt                       loot              37  any         1g 20s  estimated
+  Pristine Wee Were Pelt                   loot              48  any             4g  estimated
+  Pristine Winter Wolf Pelt                loot              44  any            16g  Uthgard
+  Pristine Wolf Pelt                       loot               3  any         1s 96c  Uthgard
+  Pulsing Orb of Wind                      loot              50  any            16g  estimated
+  Pulsing Rotwood Heart                    loot              12  any            24s  Uthgard
+  Punctured Cyclen Eye                     loot              46  any             1g  estimated
+  Pungent Ruddy Spirits                    loot              50  any         1g 20s  estimated
+  Pygmy Sized Ruby Idol                    loot              43  any        94s 64c  Uthgard
+  Rage Wolf Fang                           loot              31  any            20s  estimated
+  Rat Fur                                  loot               4  any         1s 18c  Uthgard
+  Rat Whiskers                             loot              24  any            20s  estimated
+  Razor Sharp Claw                         loot              23  any            15s  Uthgard
+  Reavers Bear Claw Bracer                 loot              24  any            12s  estimated
+  Red Apples                               loot               5  any            74c  Uthgard
+  Red Crystal Flagon                       loot              34  any            30s  Uthgard
+  Red Diamond                              loot              25  any         1g 70s  Uthgard
+  Red Diamond Necklace                     loot              29  any            26s  Uthgard
+  Red Mushroom                             loot              15  any         3s 94c  Uthgard
+  Reflective Stone                         loot              45  any      1g 37s 66c  estimated
+  Renitent Mindworm Skin                   loot              57  any            20g  estimated
+  Residue of the Cremated                  loot              38  any         1g 80s  Uthgard
+  Restless Ethereal Eye                    loot              50  any             3g  estimated
+  Ring of Compliance                       loot              33  any            50s  estimated
+  Ring of Friendly Gestures                loot              36  any            30s  estimated
+  Ripped Piece of Silk                     loot              10  any             2s  Uthgard
+  Rock Imp Hand                            loot               7  any             2s  estimated
+  Rock Imp Head                            loot               3  any             3s  estimated
+  Roman Commanders Seal                    loot              18  any            10s  estimated
+  Rotten Fanged Tooth                      loot              41  any            40s  estimated
+  Rotten Tooth                             loot              32  any            40s  estimated
+  Rotting Carapace                         loot               8  any             2s  estimated
+  Rotting Finger                           loot               1  any            10c  estimated
+  Rotting Oar                              loot               4  any            40c  estimated
+  Rotting Pig Skin                         loot               4  any            40c  Uthgard
+  Rotting Ship's Log                       loot               7  any         1s 60c  estimated
+  Rotting Troll Hide                       loot              10  any         2s 50c  Uthgard
+  Rovers Pack                              loot              41  any            45s  Uthgard
+  Royal Guard's Beaded Insignia            loot              40  any             2g  Uthgard
+  Ruby Dust                                loot              49  any         1g 50s  Uthgard
+  Rune Etched Seashell                     loot              49  any            60s  estimated
+  Runed Pitcher of Ashes                   loot              50  any      8g 45s 68c  Uthgard
+  Runner's Pouch                           loot              21  any            10s  Uthgard
+  Rusty Iron Ring                          loot               5  any            46c  Uthgard
+  Rusty Slave's Collar                     loot               6  any            90c  Uthgard
+  Sand Lizard Leg                          loot              11  any             2s  estimated
+  Sand Lizard Tail                         loot              11  any         2s 40c  estimated
+  Sapphire Dust                            loot              37  any            75s  Uthgard
+  Sapphire Necklace                        loot               8  any             2s  estimated
+  Saturated Black Orm Hide                 loot              48  any             6g  estimated
+  Saturated Orm Scales                     loot              45  any         1g 40s  estimated
+  Savage Arachite Claw                     loot              47  any         2g 50s  Uthgard
+  Savage Fishing Bear Meat                 loot              52  any            50s  Uthgard
+  Savage Fishing Bear Skin                 loot              52  any         1g 50s  Uthgard
+  Savage Fishing Bear Tooth                loot              52  any             1g  Uthgard
+  Savager's Ivory Drinking Horn            loot              32  any            26s  Uthgard
+  Scaled Fiend Skin                        loot              42  any         1g 50s  Uthgard
+  Scaled Fiend Tail                        loot              42  any            90s  Uthgard
+  Scaled Fiend Tooth                       loot              42  any         1g 20s  Uthgard
+  Scaled Snarler Pelt                      loot              34  any            60s  estimated
+  Scaled Sword Baldric                     loot              39  any            90s  estimated
+  Scaled Varg Pelt                         loot              25  any            30s  estimated
+  Scorpion Carapace                        loot              15  any            10s  Uthgard
+  Scorpion Claw                            loot              15  any             6s  Uthgard
+  Scorpion Tail                            loot              15  any             8s  Uthgard
+  Scragger's Pouch                         loot              30  any            20s  estimated
+  Scrap of Ghoul Flesh                     loot              39  any            80s  estimated
+  Scroll of Worshipping Rites              loot              51  any            10g  estimated
+  Scrying Mirror                           loot              13  any             4s  Uthgard
+  Sea Serpent Totem                        loot              40  any             2g  Uthgard
+  Seal Skin Bag                            loot              20  any             6s  Uthgard
+  Seared Bone Nosering                     loot              27  any            20s  Uthgard
+  Seared Skull                             loot              27  any        19s 50c  Uthgard
+  Seed Pod                                 loot              26  any            20s  Uthgard
+  Serrated Alfanc Tooth                    loot              25  any             1g  Uthgard
+  Severed Bwgan Hand                       loot              22  any        20s 44c  Uthgard
+  Severed Bwgan Leg                        loot              22  any        24s 34c  Uthgard
+  Severed Bwgwl Hand                       loot              28  any         26s 2c  Uthgard
+  Severed Bwgwl Leg                        loot              28  any        20s 10c  Uthgard
+  Severed Gwr-Drwgiaid Hand                loot              15  any         6s 26c  Uthgard
+  Severed Gwr-Drwgiaid Leg                 loot              15  any         6s 92c  Uthgard
+  Severed Hobgoblin Toe                    loot              17  any         8s 90c  Uthgard
+  Shadow Crystal                           loot              45  any         1g 50s  estimated
+  Shadowhunter Pelt                        loot              39  any         1g 60s  Uthgard
+  Shadowhunter Teeth                       loot              39  any            65s  Uthgard
+  Shaman's Totem                           loot              10  any             6s  estimated
+  Shamanic Death Beads                     loot              38  any         1g 20s  Uthgard
+  Shambler Branch                          loot              12  any         6s 50c  Uthgard
+  Shape Changer's Hide                     loot              52  any         1g 60s  estimated
+  Shape Changer's Skull                    loot              52  any         1g 20s  estimated
+  Shape Changer's Tooth                    loot              52  any         1g 20s  estimated
+  Sharkskin Bag                            loot              34  any            10s  Uthgard
+  Sharktooth Necklace                      loot              34  any            20s  Uthgard
+  Sharp Tooth                              loot              23  any            10s  Uthgard
+  Sharp Tusk                               loot               1  any            50c  estimated
+  Sharp Wolf Claw                          loot               7  any         3s 54c  Uthgard
+  Sheer Black Pelt                         loot              45  any             2g  Uthgard
+  Sheeroe Ardent Earring                   loot              45  any             2g  estimated
+  Sheet of Shimmering Bark                 loot              30  any             8g  Uthgard
+  Shiftless Soul Anchor                    loot              58  any             4g  Uthgard
+  Shimmering Painted Skull                 loot              14  any             5s  estimated
+  Shimmering Rose Petal                    loot              10  any             4s  Uthgard
+  Shimmering Willow Dirge Flute            loot              18  any             7s  estimated
+  Shiny Metal Pin                          loot               2  any            24c  Uthgard
+  Shiny Trinket                            loot               6  any         1s 20c  estimated
+  Shock Slug Carapace                      loot              24  any            14s  estimated
+  Shredded Bleeder Skin                    loot              10  any             3s  estimated
+  Shredded Hatchling Skin                  loot               9  any             2s  estimated
+  Shreds of Dingy Cloth                    loot              34  any            10s  estimated
+  Shrunken Elven Head                      loot              46  any             4g  estimated
+  Siabra Skirmisher's Head                 loot              13  any             4s  estimated
+  Siabrian Ambusher's Head                 loot              19  any             8s  estimated
+  Siabrian Chieftain's Head                loot              15  any             6s  estimated
+  Siabrian Footpad's Head                  loot              15  any            20s  estimated
+  Siabrian Fury's Head                     loot              13  any            20s  Uthgard
+  Siabrian Piller's Head                   loot              18  any            20s  Uthgard
+  Siabrian Raider's Head                   loot              37  any            20s  estimated
+  Siabrian Waylayer's Head                 loot              26  any            20s  estimated
+  Sickly Pulsing Orb                       loot              57  any             4g  estimated
+  Silken Prayer Cloth                      loot              10  any             3s  estimated
+  Silken Sash                              loot              41  any             2g  Uthgard
+  Silken Shroud                            loot              21  any            12s  Uthgard
+  Silken Veil                              loot              14  any             3s  Uthgard
+  Silver Agate Chalice                     loot              18  any         7s 74c  Uthgard
+  Silver Amethyst Ring                     loot              14  any         8s 90c  Uthgard
+  Silver Coin                              loot               4  any             2s  Uthgard
+  Silver Drakeling Hide                    loot               9  any         2s 80c  Uthgard
+  Silver Drakeling Tail                    loot               9  any         3s 50c  Uthgard
+  Silver Fish Hook                         loot               9  any      1g 81s 80c  Uthgard
+  Silver Full Moon Pin                     loot              13  any             8s  Uthgard
+  Silver Gaming Dice                       loot              19  any            12s  Uthgard
+  Silver Gilded Fishing Pole               loot              13  any             8s  Uthgard
+  Silver Goblet                            loot              22  any            20s  Uthgard
+  Silver Lined Pack                        loot              47  any        36s 80c  Uthgard
+  Silver Medal                             loot              18  any         8s 50c  Uthgard
+  Silver Nugget                            loot              13  any             4s  Uthgard
+  Silver Pearl Necklace                    loot              20  any        38s 50c  Uthgard
+  Silver Pearl Ring                        loot              20  any        22s 50c  Uthgard
+  Silver Pine Cone Earring                 loot              29  any            30s  estimated
+  Silver Topaz Fishing Hook                loot              16  any        18s 80c  Uthgard
+  Silver Topaz Ring                        loot              18  any            20s  Uthgard
+  Silvered Bracer                          loot              20  any            20s  estimated
+  Silverhand Rank Insignia                 loot              50  any             2g  estimated
+  Silvermine Rank Insignia                 loot              45  any             2g  estimated
+  Silvermine Sentry Insignia               loot              39  any         1g 20s  estimated
+  Silvery Petal                            loot              20  any            11s  Uthgard
+  Singed Wristband                         loot              21  any         9s 50c  Uthgard
+  Siog Brandy                              loot              30  any            17s  Uthgard
+  Skeletal Paw                             loot              13  any             2s  estimated
+  Skeleton Skull                           loot              27  any            36s  Uthgard
+  Sky Worshipper Totem                     loot              45  any         1g 50s  estimated
+  Sleek Black Pelt                         loot              23  any            25s  Uthgard
+  Sleek Black Skin                         loot               9  any            10s  estimated
+  Sling Stones                             loot               2  any            40c  estimated
+  Small Amount of Clay                     loot               2  any             1s  Uthgard
+  Small Animal Trap                        loot              10  any         2s 40c  Uthgard
+  Small Annag Head                         loot              55  any             4g  estimated
+  Small Arachite Chitin Plates             loot              37  any            65s  Uthgard
+  Small Bounder Pelt                       loot              22  any        36s 80c  Uthgard
+  Small Burned Satchel                     loot              21  any            10s  Uthgard
+  Small Carrion Drake Scale                loot               8  any            80c  Uthgard
+  Small Chisled Statue                     loot              39  any            60s  estimated
+  Small Copper Bracelet                    loot               5  any            60c  estimated
+  Small Engraved Scale                     loot              36  any            80s  estimated
+  Small Fish                               loot              13  any             2s  Uthgard
+  Small Gold-Stitched Pouch                loot              29  any            40s  estimated
+  Small Hill Cat Claw                      loot               7  any         1s 20c  estimated
+  Small Hill Cat Skin                      loot               7  any             2s  estimated
+  Small Rock Bounder Tooth                 loot              22  any            18s  Uthgard
+  Small Shadow Crystal                     loot              38  any            60s  estimated
+  Small Shell                              loot               3  any            20c  estimated
+  Small Silver Nugget                      loot               6  any         1s 90c  Uthgard
+  Small Skeletal Head                      loot              23  any             8s  estimated
+  Small Studded Golden Chest               loot              35  any            80s  estimated
+  Small Werewolf Pelt                      loot              23  any      2g 59s 88c  Uthgard
+  Small Woodeater Leg                      loot               3  any            80c  Uthgard
+  Smoking Pumice                           loot              10  any         1s 10c  Uthgard
+  Smooth Blue Stone                        loot              10  any         1s 50c  Uthgard
+  Smooth Bone Necklace                     loot               9  any         3s 50c  Uthgard
+  Smooth Bone Totem                        loot               9  any             5s  Uthgard
+  Smooth Golem Stone                       loot              44  any             1g  estimated
+  Smooth Sling Stones                      loot              18  any            16s  Uthgard
+  Snakeskin                                loot               1  any            46c  Uthgard
+  Snowy Wolverine Pelt                     loot              58  any         1g 20s  estimated
+  Soft Padded Backpack                     loot              23  any             8s  Uthgard
+  Soft Snakeskin                           loot               5  any            90c  Uthgard
+  Softly Glowing Orb                       loot              10  any             4s  Uthgard
+  Sooty Eye                                loot              22  any            10s  Uthgard
+  Soul Anchor Lock                         loot              49  any             2g  estimated
+  Souless Gem Dust                         loot              48  any         1g 60s  estimated
+  Sparkling Gem Studded Carapace           loot              36  any            90s  estimated
+  Speckled Mushroom                        loot              18  any             8s  estimated
+  Spider Catcher                           loot              30  any            40s  estimated
+  Spider Poison Gland                      loot              22  any            40s  estimated
+  Spider-Carved Jade                       loot              14  any         7s 60c  Uthgard
+  Spiderling Carapace                      loot              14  any         7s 50c  estimated
+  Spiderling Silk                          loot              14  any         4s 80c  estimated
+  Spindel Silk                             loot              37  any             1g  Uthgard
+  Spindly Rock Crab Leg                    loot               9  any         1s 60c  Uthgard
+  Spined Carapace                          loot              47  any         3g 50s  Uthgard
+  Spined Chitin Plates                     loot              47  any             2g  Uthgard
+  Spined Death Claw Bracelet               loot              37  any         1g 20s  Uthgard
+  Spiney Drakeling Tail                    loot               5  any            70c  estimated
+  Spirit Fang                              loot               1  any            30c  Uthgard
+  Spirit Orb of the Forlorn                loot              12  any         4s 40c  Uthgard
+  Spirit Orb of the Wretched               loot               8  any         2s 50c  Uthgard
+  Spirit Shackles                          loot              22  any            10s  Uthgard
+  Splintered Mephit Femur                  loot              20  any            90s  estimated
+  Spotted Mushroom                         loot               1  any            40c  Uthgard
+  Sprawling Arachnid Carapace              loot              34  any            90s  Uthgard
+  Sprig of Mistletoe                       loot              15  any         6s 16c  Uthgard
+  Square-Cut Sapphire                      loot              27  any        24s 50c  Uthgard
+  Squire's Beaded Insignia                 loot              39  any             2g  Uthgard
+  Statue of Thor                           loot              53  any             3g  estimated
+  Sticky Arachite Silk                     loot               5  any            90c  Uthgard
+  Stolen Book of Blood Magic               loot              37  any             2g  Uthgard
+  Stolen Rations                           loot              15  any             4s  estimated
+  Stolen Supplies                          loot              15  any            10s  estimated
+  Stone Wolfbeast Figurine                 loot              48  any      1g 37s 66c  estimated
+  Stonefinger Necklace                     loot              51  any             4g  estimated
+  Stonefoot Press                          loot              48  any      1g 37s 66c  estimated
+  Stonehand Shovel                         loot              51  any      1g 37s 66c  estimated
+  Strong Arachite Silk                     loot              13  any         5s 70c  Uthgard
+  Sulfur                                   loot              12  any             4s  estimated
+  Sun Pendant                              loot              36  any            55s  Uthgard
+  Sunstone Bearclaw Necklace               loot              50  any             4g  Uthgard
+  Supple Willow Branch                     loot              12  any         9s 80c  Uthgard
+  Svartalf Asterite Ring                   loot              48  any      1g 37s 66c  estimated
+  Sveawolf Fang                            loot              11  any             3s  estimated
+  Sveawolf Skin                            loot               3  any            60c  estimated
+  Swirling Crystal                         loot              23  any            50s  Uthgard
+  Tanned Animal Skin                       loot              11  any             3s  estimated
+  Tanned Bear Hide                         loot              10  any         5s 50c  Uthgard
+  Tarnished Glimmer Spirit Ring            loot              51  any      1g 37s 66c  estimated
+  Tarnished Ornate Bracer                  loot              35  any        37s 50c  estimated
+  Tarnished Ornate Goblet                  loot              29  any        37s 50c  estimated
+  Tarnished Silver Earring                 loot               6  any            68c  Uthgard
+  Tarnished Spurs                          loot               8  any             1s  estimated
+  Tarnished Truesilver Collar              loot              36  any            80s  estimated
+  Tarnished Truesilver Shackle             loot              36  any            60s  estimated
+  Tattered Gold-Stitched Standard          loot              35  any        37s 50c  estimated
+  Tattered Rope Belt                       loot              10  any             3s  estimated
+  Tattered Scroll                          loot              28  any            13s  estimated
+  Tattered Warg Pelt                       loot              37  any            60s  estimated
+  Thane's Jeweled Insignia                 loot              53  any      1g 37s 66c  estimated
+  Thick Rope                               loot              20  any             9s  Uthgard
+  Thin Flint Chert                         loot               7  any            40c  Uthgard
+  Thorny Green Sapphire Bracelet           loot              46  any            60s  estimated
+  Threaded Silver Net                      loot              46  any            60s  estimated
+  Tingler Chitin                           loot              16  any             8s  Uthgard
+  Toad Slime                               loot               1  any            50c  estimated
+  Toadstool Stalk                          loot               3  any            46c  Uthgard
+  Tomb Crab Leg                            loot              19  any             3s  estimated
+  Tomb Spider Leg                          loot              22  any             4s  estimated
+  Torch                                    loot              15  any             1s  estimated
+  Torn Leather Sack                        loot              18  any             5s  Uthgard
+  Torn Luminescent Skin                    loot              36  any             1g  Uthgard
+  Torn Silk Mummy Wrap                     loot              11  any         7s 80c  Uthgard
+  Tough Hide                               loot              30  any        12s 50c  estimated
+  Translucent Finliath Tooth               loot              58  any             4g  estimated
+  Translucent Mindworm Fang                loot              57  any             4g  estimated
+  Trap Bait                                loot              10  any         2s 20c  Uthgard
+  Traveling Backpack                       loot              20  any             8s  Uthgard
+  Troglodyte Eye                           loot              45  any             1g  estimated
+  Troll Hide Bracelet                      loot              17  any             7s  estimated
+  Troll Skull                              loot              10  any             3s  Uthgard
+  Troll Tooth Earring                      loot              15  any         8s 50c  Uthgard
+  Truesilver Covered Skull                 loot              47  any         1g 20s  estimated
+  Truesilver Drinking Horn                 loot              48  any             2g  estimated
+  Truesilver Lined Stone                   loot              49  any         1g 20s  estimated
+  Truesilver Nugget                        loot              38  any            26s  estimated
+  Tunneler Fang                            loot              37  any            85s  Uthgard
+  Tunneler Skin                            loot              37  any         1g 30s  Uthgard
+  Twisted Mithril Nose Ring                loot              29  any            20s  Uthgard
+  Twisting Vine                            loot               5  any            70c  Uthgard
+  Unclouded Jewel Broach                   loot              45  any         1g 20s  estimated
+  Undamaged Cyclen Eye                     loot              46  any      1g 46s 32c  estimated
+  Underviewers Rank Insignia               loot              40  any             2g  estimated
+  Unfinished Carving                       loot               4  any            80c  estimated
+  Unprepared Ebony Metal Rod               loot              62  any         1g 40s  estimated
+  Unseelie Jeweled Baldric                 loot              45  any         1g 50s  estimated
+  Unseelie Signet Ring                     loot              50  any             2g  estimated
+  Unworked Stone                           loot              18  any            10s  Uthgard
+  Ursine Head                              loot              36  any             1g  estimated
+  Ursine War Paint                         loot              36  any            40s  estimated
+  Valkyrie Figurine                        loot              10  any         3s 24c  Uthgard
+  Venomous Spider Gland                    loot              25  any            30s  estimated
+  Venomspitter Skin                        loot              11  any             3s  Uthgard
+  Venomspitter Tail                        loot              11  any         2s 90c  Uthgard
+  Venomspitter's Head                      loot              11  any         6s 50c  Uthgard
+  Vial of Elven Essence                    loot              37  any            50s  Uthgard
+  Vial of Elvish Essence                   loot              49  any             1g  Uthgard
+  Vial of Embalming Fluid                  loot              13  any         4s 80c  Uthgard
+  Vial of Green Tree Blood                 loot              30  any             4g  Uthgard
+  Vial of Silver Poisoned Blood            loot              47  any         1g 50s  estimated
+  Vial of Silvery Blood                    loot              45  any         1g 40s  estimated
+  Vial of Spittle                          loot              18  any            16s  estimated
+  Vine-Carved Totem                        loot               4  any             1s  estimated
+  Virulent Green Eye                       loot              20  any            18s  Uthgard
+  Viscous Fragrant Fluid                   loot              50  any             2g  estimated
+  Wailing Essence Gem                      loot              36  any             1g  Uthgard
+  Wand of Pestilence                       loot               8  any         1s 50c  Uthgard
+  Wand of Pine                             loot              29  any            30s  estimated
+  Wand of Yarrow                           loot              36  any            54s  Uthgard
+  War Torn Baldric                         loot              33  any            40s  estimated
+  Warder's Pack                            loot              27  any            24s  estimated
+  Warhound Tail                            loot              10  any             2s  estimated
+  Warm Patched Hide Blanket                loot              24  any         9s 60c  Uthgard
+  Wart-Covered Toad Skin                   loot               1  any            20c  estimated
+  Water Opal Circlet                       loot              59  any         1g 60s  Uthgard
+  Water Opal Shell Bracelet                loot              46  any         1g 60s  estimated
+  Water Seers Stone                        loot              30  any            50s  estimated
+  Water Snakeskin                          loot               1  any            20c  estimated
+  Waterproof Satchel                       loot              16  any            12s  Uthgard
+  Wayward Traveler Pouch                   loot              42  any            80s  estimated
+  Web Proof Mixture                        loot              30  any            40s  estimated
+  Wee Were Pelt                            loot              48  any             2g  estimated
+  Werewolf Ear                             loot              23  any            20s  estimated
+  Werewolf Fang                            loot              27  any            23s  Uthgard
+  Werewolf Hide                            loot              13  any             7s  Uthgard
+  Werewolf Meat                            loot              27  any            32s  Uthgard
+  Werewolf Paw                             loot              13  any         6s 50c  Uthgard
+  Werewolf Tail                            loot              27  any            29s  Uthgard
+  Werewolf Tongue                          loot              23  any            20s  estimated
+  Western Basilisk Skin                    loot              49  any         2g 20s  Uthgard
+  White Wolf Pelt                          loot              27  any             2g  estimated
+  Willow Wand                              loot               6  any         1s 20c  estimated
+  Wind Ghoul Essence                       loot               7  any             4s  Uthgard
+  Wind Mephit Essence                      loot              14  any         6s 42c  Uthgard
+  Windblown Crystal                        loot               6  any             2s  estimated
+  Winter Wolf Pelt                         loot              42  any         7g 50s  Uthgard
+  Wolf Canine                              loot               1  any            50c  estimated
+  Wolf Skin                                loot               1  any            34c  Uthgard
+  Wolf Tail                                loot               3  any            50c  estimated
+  Wolf's Ear                               loot               3  any            48c  Uthgard
+  Wolfhound Hide                           loot              11  any        10s 42c  Uthgard
+  Wolfhound Pelt                           loot               6  any         1s 50c  estimated
+  Wolfhound's Ear                          loot              11  any         4s 30c  Uthgard
+  Wolfspider Leg                           loot              25  any             6s  estimated
+  Woodeater Leg                            loot               6  any         1s 20c  Uthgard
+  Wooden Shambler Heart                    loot              12  any            12s  Uthgard
+  Worg-Hide Pouch                          loot              16  any         6s 50c  Uthgard
+  Worked Crab Chitin                       loot              50  any             2g  estimated
+  Worked Frog Skin                         loot              50  any             2g  estimated
+  Worked Viper Skin                        loot              54  any         2g 40s  estimated
+  Worm Skin                                loot               5  any            80c  estimated
+  Worn Leech Skin                          loot              41  any             1g  estimated
+  Worn Pale Horse Pelt                     loot              50  any             1g  estimated
+  Worn Runed Stone                         loot              48  any             1g  estimated
+  Wound Fine Silver Thread                 loot              50  any             2g  estimated
+  Woven Silk Collar                        loot              13  any         3s 50c  Uthgard
+  Wraith Essence                           loot              52  any            40s  estimated
+  Writ of Station                          loot              13  any             8s  Uthgard
+  Writhing Roots                           loot               7  any             4s  estimated
+  Yell Hound Skin                          loot              15  any            10s  estimated
+  Yellowed Bone Nosering                   loot               5  any            52c  Uthgard
+  Yowler's Blood Runed Bear-Skin           loot              29  any            21s  Uthgard
+  Zephyr Wraith Essence                    loot              29  any            12s  Uthgard
+  Acid Etched Leggings                     studded armor     23  Midgard         0c  period page / sibling
+  Aged Mithrian Cloth Vest                 cloth armor       13  Albion          0c  period page / sibling
+  Ancient Bloodbound Gloves                cloth armor       49  Midgard        18c  period page / sibling
+  Belt of the Dread Glow                   jewelry           31  Midgard         0c  period page / sibling
+  Bone Shard Boots                         studded armor     22  Midgard         0c  period page / sibling
+  Bone Shard Gloves                        studded armor     22  Midgard         0c  period page / sibling
+  Bone Shard Helm                          studded armor     22  Midgard         0c  period page / sibling
+  Bone Shard Jerkin                        studded armor     22  Midgard         0c  period page / sibling
+  Bone Shard Sleeves                       studded armor     22  Midgard         0c  period page / sibling
+  Boots of the Blackheart                  studded armor     37  Albion          0c  period page / sibling
+  Braided Kelp Belt                        jewelry           36  Hibernia        0c  period page / sibling
+  Brilliant Oro's Stiletto of Night        weapon            50  Hibernia        0c  period page / sibling
+  Bwcan Beads                              jewelry           35  Albion          0c  period page / sibling
+  Coral Crown                              leather armor     50  Midgard         0c  period page / sibling
+  Crown of the Darkheart                   studded armor     49  Midgard         0c  period page / sibling
+  Cursed Lute                              instrument        30  Hibernia       21c  period page / sibling
+  Dark Bone Staff                          weapon            36  Midgard        28c  period page / sibling
+  Deathly Lochaber Axe                     weapon            39  Albion         30c  period page / sibling
+  Diabolical Eldritch Boots                cloth armor       49  Hibernia        0c  period page / sibling
+  Diabolical Fomorian Robe                 cloth armor       49  Hibernia        0c  period page / sibling
+  Diabolical Fomorian Vest                 cloth armor       49  Hibernia       22c  period page / sibling
+  Diabolical Formorian Gloves              cloth armor       49  Hibernia       18c  period page / sibling
+  Diabolical Formorian Pants               cloth armor       49  Hibernia       22c  period page / sibling
+  Diabolical Formorian Sleeves             cloth armor       49  Hibernia       20c  period page / sibling
+  Diabolical Mentalist Boots               cloth armor       49  Hibernia        0c  period page / sibling
+  Dommel's Fiery Gauntlets                 chain armor       49  Albion         18c  period page / sibling
+  Dommel's Fiery Gauntlets                 reinforced armor  49  Hibernia        0c  period page / sibling
+  Drakulv Militia Axe                      weapon            50  Midgard         0c  period page / sibling
+  Drakulv Militia Spear                    weapon            45  Midgard         0c  period page / sibling
+  Drakulv Militia Sword                    weapon            50  Midgard        16c  period page / sibling
+  Earth Crafted Molded Leggings            leather armor     24  Hibernia        0c  period page / sibling
+  Earth Crafted Root Leggings              reinforced armor  24  Hibernia        0c  period page / sibling
+  Earth Crafted Root Vest                  reinforced armor  24  Hibernia        0c  period page / sibling
+  Earth Crafted Scale Gloves               scale armor       24  Hibernia        0c  period page / sibling
+  Earth Crafted Scale Leggings             scale armor       24  Hibernia        0c  period page / sibling
+  Emerald Moonshone Boots                  leather armor     44  Midgard        28c  period page / sibling
+  Empyreal Vest                            reinforced armor  37  Hibernia       26c  period page / sibling
+  Ether Ring                               jewelry           51  Hibernia        0c  period page / sibling
+  Eucail Eye                               jewelry           30  Hibernia        0c  period page / sibling
+  Faded Chain Silksteel Gloves             chain armor       36  Midgard         0c  period page / sibling
+  Faded Chain Silksteel Leggings           chain armor       36  Midgard         0c  period page / sibling
+  Faded Silksteel Bound Boots              leather armor     36  Midgard  1g 72s 56c  source sell value x 2
+  Faded Silksteel Bound Gloves             leather armor     36  Midgard  1g 72s 56c  source sell value x 2
+  Feral Fiery Axe                          weapon            35  Midgard        34c  period page / sibling
+  Furlined Cloak                           jewelry           15  Albion          0c  period page / sibling
+  Giant Ring of Tenacity                   jewelry           40  Albion          0c  period page / sibling
+  Gloves of Living Flame                   cloth armor       29  Midgard         0c  period page / sibling
+  Glowing Guile Boots                      leather armor     36  Hibernia        0c  period page / sibling
+  Gnarled Staff                            weapon            12  Albion          0c  period page / sibling
+  Gossamer Seolc Pants                     cloth armor       49  Hibernia       22c  period page / sibling
+  Granite Drum                             instrument        37  Albion         32c  period page / sibling
+  Granite Seer's Sleeves of Matter         cloth armor       50  Albion          0c  period page / sibling
+  Heart Piercer                            weapon            15  Albion          0c  period page / sibling
+  Helm of Future Visions                   leather armor     13  Midgard         0c  period page / sibling
+  Hound Tooth                              weapon            20  Albion          0c  period page / sibling
+  Infernal Cloak                           jewelry           41  Hibernia       20c  period page / sibling
+  Iridescent Sylph Coif                    scale armor       49  Hibernia       20c  period page / sibling
+  Iridescent Sylph Hauberk                 scale armor       51  Hibernia        0c  period page / sibling
+  Kobil's Fiery Gauntlets                  scale armor       49  Hibernia        0c  period page / sibling
+  Kobil's Fiery Gauntlets                  plate armor       49  Albion          0c  period page / sibling
+  Lava Etched Sleeves                      chain armor       24  Midgard         0c  period page / sibling
+  Lava Forged Boots                        chain armor       26  Midgard         0c  period page / sibling
+  Leggings of Mortification                plate armor       37  Albion          0c  period page / sibling
+  Mind Staff                               weapon            35  Albion         34c  period page / sibling
+  Miscreant's Boots                        chain armor       13  Midgard         0c  period page / sibling
+  Musty Leather Helm                       leather armor     13  Albion   1g 34s 40c  period page / sibling
+  Nearahd Coif                             scale armor       27  Hibernia        0c  period page / sibling
+  Ominous Moonstruck Hammer                weapon            39  Midgard        32c  period page / sibling
+  Pants of the Malignant                   cloth armor       13  Midgard         0c  period page / sibling
+  Parthanon Fist                           weapon            26  Hibernia        0c  period page / sibling
+  Pitted Dirk                              weapon             2  Hibernia        8c  source sell value x 2
+  Pitted Elm Ashen Fellwood Staff          weapon             6  Albion          0c  period page / sibling
+  Pitted Stiletto                          weapon             3  Hibernia        8c  source sell value x 2
+  Ring of the Stonewatch                   jewelry           50  Albion      1s 50c  period page / sibling
+  Ringed Darksteel Gloves                  chain armor       41  Midgard         0c  period page / sibling
+  Roman Gladius                            weapon            13  Albion          0c  period page / sibling
+  Runed Bloodhound Cap                     cloth armor       49  Midgard        20c  period page / sibling
+  Runed Bone Staff                         weapon            39  Midgard        28c  period page / sibling
+  Runic Clay Axe                           weapon            42  Midgard        21c  period page / sibling
+  Runic Rigid Orm Spine                    weapon            50  Midgard         0c  period page / sibling
+  Sentinel's Ring                          jewelry           37  Hibernia        0c  period page / sibling
+  Sheet of Aged Beech Bark                 shield            43  Albion          0c  period page / sibling
+  Shimmering Iridescent Sylph Druid Gloves scale armor       50  Hibernia        0c  period page / sibling
+  Shimmering Sturdy Crushed Breastplate    plate armor       50  Albion          0c  period page / sibling
+  Shimmering Sword of Soulshade            weapon            50  Midgard         0c  period page / sibling
+  Shining Earth Crafted Scale Coif         scale armor       24  Hibernia        0c  period page / sibling
+  Shining Sheeroe Coif                     scale armor       47  Hibernia        0c  period page / sibling
+  Shining Sheeroe Gloves                   scale armor       47  Hibernia        0c  period page / sibling
+  Silvered Eye                             jewelry           51  Hibernia        0c  period page / sibling
+  Slaver Axe                               weapon            15  Albion          0c  period page / sibling
+  Smoldering Ebon Shield                   shield            51  Midgard         0c  period page / sibling
+  Spirit Crafted Shield                    shield            51  Albion     29s 76c  source sell value x 2
+  Stick-figure Totem                       jewelry           19  Albion          0c  period page / sibling
+  Stonewatch Leggings                      plate armor       40  Albion          0c  period page / sibling
+  Tattered Cured Leather Hood              leather armor     10  Albion         48s  period page / sibling
+  Tattered Silk Boned Arms                 studded armor      8  Albion          0c  period page / sibling
+  Tomb Priestess Bracelet                  jewelry           24  Midgard         0c  period page / sibling
+  Topaz Studded Shell Flute                instrument        30  Hibernia       20c  period page / sibling
+  Troika's Cursed Axe                      weapon            24  Midgard         0c  period page / sibling
+  Troll Hide Sleeves                       leather armor     12  Albion          0c  period page / sibling
+  Twisted Forestdweller Boots              reinforced armor  49  Hibernia        0c  period page / sibling
+  Twisted Lusus Boots                      reinforced armor  49  Hibernia        0c  period page / sibling
+  Vest of the Vile Dominion                studded armor     51  Albion          0c  period page / sibling
+  Vest of the Vile Dominion                reinforced armor  49  Hibernia        0c  period page / sibling
+  Warden's Sword                           weapon            19  Albion     57s 80c  source sell value x 2
+  Wind Swept Staff                         weapon            29  Midgard         0c  period page / sibling
+  Woeful Chain Gloves                      chain armor       20  Midgard         0c  period page / sibling
+  Wormskin Boots                           leather armor     14  Albion          0c  period page / sibling
+  Wormskin Leggings                        leather armor     12  Albion     25s 92c  source sell value x 2
+  Worn Boots of Dissolution                chain armor       36  Albion          0c  period page / sibling
+  Worn Sleeves of Dissolution              chain armor       36  Albion          0c  period page / sibling
+  Woven Elemental Boots                    cloth armor       41  Albion          0c  period page / sibling
+  Woven Elemental Cap                      cloth armor       41  Albion   7g 54s 38c  source sell value x 2
+  Woven Elemental Gloves                   cloth armor       41  Albion          0c  period page / sibling
+  Woven Elemental Pants                    cloth armor       41  Albion   7g 54s 38c  source sell value x 2
+  Woven Elemental Sleeves                  cloth armor       41  Albion   7g 54s 38c  source sell value x 2
+  Woven Elemental Vest                     cloth armor       41  Albion         26c  period page / sibling
+  Woven Silksteel Cap                      cloth armor       41  Midgard  3g 66s 48c  source sell value x 2
+
+Price note: "value" is the item price; merchants pay half. "estimated" = vendor trash with no period price (owner
+allowed); equipment stats are only from period pages (Allakhazam <= 2003-11 or Uthgard), never invented.
+
+NOT ADDED (for reference)
+------------------------------------------------------------
+Monsters skipped: no position 202, no model 40, boss or scripted 29, other 4, duplicate 2
+  no position: Adimedus (Trollheim); Agorn (Emain Macha); Apparition (Dales of Devwy); Apple Wood Spirit (Caldey); Apple Wood Spirit (Dales of Devwy); Apple Wood Spirit (Gwyddneau); Arawn Commander (Pennine Mountains); Arawnite Assassin (Snowdonia); Archived Souls (DARKNESS FALLS DUNGEON); Breeze (Svealand East); Briton woodcutter (Breifine); Caoranach (Lough Derg); Carnage Ghoul (Gwyddneau); Celtic brehon (Breifine); Ceriallen (Forest Sauvage); Cichol Grichnos (Vale of Balor); Cornwall Leader (Cornwall); Crudely Crafted Dwarf (Dales of Devwy); Darlin the Ablastere (Delling Crater); Destrier Ceingalad (Pennine Mountains); Drakoran Thaumaturge (Dales of Devwy); Eildon (Pennine Mountains); Eli Twigg (Pennine Mountains); Fallen (Llyn Barfog); Famuel, Kireasil, Yonzael (DARKNESS FALLS DUNGEON); First Run Assembly (Dales of Devwy); Fomorian underling (Breifine); Forsaken (Llyn Barfog); Glimmer Spass (Sheeroe Hills); Glipin (Pennine Mountains); Gwalchmai (Pennine Mountains); Hawthorn (Pennine Mountains); Heap (Dales of Devwy); Hwch Ddu Gota (Pennine Mountains); Ice Sculptor (Gripklosa Mountains); Intimidator (Gwyddneau); LULId Ulylll Lunger (Dales of Devwy); Lich Lord (Caldey); Mathair (Mt. Collory); Norseman chopper (Breifine); Old Scrap Pile (Dales of Devwy); Orin Coldtoes (Gripklosa Mountains); Parg the Hunter (Gripklosa Mountains); Peralt Griffon-slayer (Delling Crater); Remadun den Laerd (Trollheim); Rognar (Delling Crater); Rognar (Iarnvidiur); Scuab (Mt. Collory); Shade of Adimedus (Trollheim); Spindle (Dales of Devwy); Sr'ral's Shadow (Dales of Devwy); Swiftfoot (Lough Derg); Taman (Emain Macha); Undeath Walking (Gwyddneau); Urpont (Cothrom Gorge); Yrial (Emain Macha); alp luachra (Cruachan Gorge); amadan touched (Mt. Collory); ancient shale golem (Munin Sound); balorian ansgar (Tur Suil); balorian batair (Tur Suil); balorian conlaoch (Tur Suil); balorian diolmhain (Tur Suil); balorian ewyn (Tur Suil); balorian ferdiad (Tur Suil); balorian liosliath (Tur Suil); balorian owin (Tur Suil); bird-eating frog (Mt. Collory); bocaidhe (Mt. Collory); bodach (Cruachan Gorge); bodach (Mt. Collory); botonid displacer (Domnann); carnitaur (Faraheim); celt spirit (Sheeroe Hills); cluricaun (Cruachan Gorge); cluricaun (Mt. Collory); cniogcrag annoyance (Vigilant Rock); cronsidhe (Cliffs of Moher); domnann angler (Domnann); drau'gyn advowee / drau'gyn armourer (Avalon City); drau'gyn calciner (Avalon City); drau'gyn courier (Avalon City); drau'gyn domesman (Avalon City); drau'gyn herbalist (Avalon City); drau'gyn jongleur (Avalon City); drau'gyn scribe (Avalon City); dry'ak accompant (Avalon City); dry'ak artificer (Avalon City); dry'ak scrivener (Avalon City); dry'ak zouave (Avalon City); dryad (Avalon Marsh); elf spirit (Sheeroe Hills); empyrean sentinel (Cruachan Gorge); etvarg packleader (Delling Crater); etvarg packleader (Iarnvidiur); fading spirit (Avalon Marsh); faerie badger (Cruachan Gorge); far liath (Mt. Collory); firbolg spirit (Sheeroe Hills); fire giant spirit (Muspelheim); fishing bear forager (Lough Gur); fomorian carnivian (Fomor); fomorian chapestian (Fomor); fomorian cruerrior (Fomor); fomorian depressoer (Fomor); fomorian dibreer (Fomor); fomorian ferad (Fomor); fomorian hiccor (Fomor); fomorian insipistruct (Vale of Balor); fomorian marhoder (Fomor); fomorian nelmar (Fomor); fomorian pecitor / fomorian pelistruct (Fomor); fomorian radden (Caillte Garran); fomorian radiac (Caillte Garran); fomorian saveast (Fomor); fomorian zasser (Fomor); forest grazer calf (Vigilant Rock); frosty colt (Uppland); frosty colt (Yggdra Forest); fungal shredder (Faraheim); ghoulie (Cruachan Gorge); ghoulie (Mt. Collory); giant ant (Mt. Collory); giant beetle (Lough Gur); giant beetle (Mt. Collory); glimmer spirit (Sheeroe Hills); goblin imperator (Dungeon: Stonehenge Barrows); graugach (Mt. Collory); greater angler (Caillte Garran); greater zephyr (Mt. Collory); grimwood keeper (Pennine Mountains); gungledar (Trollheim); hibernian tiarna (DARKNESS FALLS DUNGEON); hill hound (Cruachan Gorge); hrimthursa trophy-hunter (Delling Crater); juvenile megafelid (Breifine); lesser angler (Caillte Garran); lough wolf (Lough Gur); luch catcher (Mt. Collory); lunger (Bog of Cullen); lurikeen spirit (Sheeroe Hills); mantid dissembler (Caillte Garran); mantid exterminator (Caillte Garran); mantid priest (Caillte Garran); mantid warlock (Caillte Garran); master hunter (Forest Sauvage); mist wraith (Lough Gur); morghoul (Mt. Collory); mountain mephit (Cruachan Gorge); mountain mephit (Mt. Collory); murrisk (Silvermine Mountains); norse stormur herra (DARKNESS FALLS DUNGEON); pixie imp (Campacorentin Forest); poisonous sylvanshade (Caillte Garran); rage sprite (Cruachan Gorge); rage wolf (Mt. Collory); rapacious shriller (Caillte Garran); river drakeling (Avalon Marsh); river sprite (Avalon Marsh); roane companion (Shannon Estuary); robber (Campacorentin Forest); rock guardian (Mt. Collory); rot (Trollheim); sand ooze (Munin Sound); serpentine shard (Gripklosa Mountains); sett dweller (Breifine); sett youngling (Mt. Collory); siog raider (Cruachan Gorge); skimmer (Domnann); spirit (Avalon Isle); spraggonale (Cruachan Gorge); spraggonale (Mt. Collory); squabbler (Mt. Collory); starving trained guagaran (Avalon City); streaming wisp (Cruachan Gorge); streaming wisp (Mt. Collory); syhr'phint caird (Avalon City); syhr'phint crozier (Avalon City); syhr'phint gaoler (Avalon City); syhr'phint verger (Avalon City); thrawn modig beorn (Caer Sidi); thrawn ogre attacker (Caer Sidi); torcan (Mt. Collory); tree spirit (Vigilant Rock); undead hem'varn (Trollheim); vindictive bocan (Cruachan Gorge); vindictive bocan (Lough Gur); vyr'em bloodman (Avalon City); vyr'em ordinary (Avalon City); vyr'em ostler (Avalon City); vyr'em riftere (Avalon City); walking rock (Mt. Collory); wi'voron alchemist (Avalon City); wi'voron archiller (Avalon City); wi'voron bowyer (Avalon City); wi'voron gynour (Avalon City); wicked sylvanshade (Vale of Balor); wight (Dungeon: Stonehenge Barrows); wild lucradan (Lough Gur); wrath sprite (Cruachan Gorge); young forest runner (Forest Sauvage); zephyr wraith (Mt. Collory)
+  no model: Anne Fhitich (Forest Sauvage); Atax (Emain Macha); Blaieseach (Valley of Bri Leith); Cachia (Connacht); Caelis Manoi (Skona Ravine); Celtic brehon (Cruachan Gorge); Celtic brehon (Mt. Collory); Dissolver (Gwyddneau); Evian Fhitich (Forest Sauvage); Fanin (Jamtland Mountains); Fearg (Connacht); Frej (Yggdra Forest); Frykte (Vale of Mularn); Grakin (Iarnvidiur); Gualach (Mt. Collory); Krisen Flek (Gotar); Major Terentius (Vanern Swamp); Maol (Cruachan Gorge); Nik (Myrkwood Forest); Norseman chopper (Cruachan Gorge); Norseman chopper (Mt. Collory); Quinlan (Emain Macha); Ralsen (Myrkwood Forest); Rat Trap (Cruachan Gorge); Ria (Myrkwood Forest); Sir Charles (Yggdra Forest); Smerte (Vale of Mularn); Sunderer (Breifine); Tracker (Valley of Bri Leith); Yip (Myrkwood Forest); carnitaur (Delling Crater); carnitaur (Iarnvidiur); elf-eater (Domnann); enoga (Vale of Mularn); kraken (Gotar); rack of spikes (Tur Suil); spinolich (Delling Crater); spinolich (Iarnvidiur); undead minion (Uppland); wall spike (Tur Suil)
+Equipment with no period stat source (not built, no invented stats): 243
+  Acid Etched Gauntlets; Acid Etched Sleeves; Aeiry Belt; Aotrom Pearls; Arrows of Slaying; Arrows of the Fallen; Ashen Axe; Basher's Finger; Basher's Sash; Beater's Bludgeon; Beater's Poked Eye; Bevard's Ghostly Chain; Bilk's Spear; Bloodstone Left Eye; Bloodstone Right Eye; Bog Strider (any piece of armor); Boots of the Lost; Bracer of Restless Souls; Cailiondar Bracer of Piety; Caster's Missing Eye; Celestial Cailiondar Hauberk; Celestial Cailiondar Jerkin; Celestial Pearl Necklace; Ceremonial Dirk; Chain Boots of Disparity; Chain Coif of Disparity; Chain Leggings of Disparity; Chain of Rage; Cliff Dweller Drum; Cliff Dweller Hammer; Cliff Dweller Lute; Cliff Dweller Recurved Bow; Cliff Dweller Skewer; Cliff Dweller Sword; Conquerer's Cloak; Crackling Ebon Gloves; Cronsidhe Biter; Cronsidhe's Red Eye; Crossbow of the Penitent; Crystalized Dwarven Remains; Crystalized Kobold Remains; Cyclop's Pupil; Cyclops Headsman's Axe; Dancing Bones Drum; Dancing Bones Flute; Dancing Bones Lute; Deo Hauberk; Diamond Dusted Robe; Draoi Shield; Draoish Sickle; Dusk Dweller (any piece of armor); Dusty Leggings; Elder Fellwood Staff; Elder Staff of Earthen Fire; Elder Staff of Wintry Winds; Empathetic Jewel; Empyreal Helm; Empyreal Leggings; Empyreal Ranger Gauntlets; Empyreal Sleeves; Enchanter's Fine (armor set pieces); Enslaved Biter's Muzzle Wrap; Enslaved Orm's Collar; Ether Cloak; Ethereal Zephyr Bracelet; Faerie Eye; Fainne Necklace; Fallen Archer's Stiletto; Fanatical Great Sword; Fanged Tooth; Fiery Staff; Filthy Hide Pants; Flame of the Earth Boots; Flame of the Earth Pants; Flattened Eye Shield; Flawed Gem; Fomorian Staff of Light; Fomorian Staff of Mana; Forked Mephit Tail; Frozen Staff; Gem of a Champion; Granite Seer's Gloves of the Spirit; Herb Gatherer's Gloves; High Priest's Gem of Retribution; High Priest's Silken Vestment; High Priest's Velvet Cape; Hunter's Vest; Huntsman's Leather Jerkin; Ilmenite Laced Chain Sleeves; Imbued Shield of Bone; Imperial Golden Hammer; Impish Bracer; Impish Cloak; Impish Frock; Impish Gem; Impish Leather (armor set pieces); Impish Necklace; Impish Ring; Infernal Edge; Intricate Sea Shell Bracelet; Ircon Bound Chain Mittens; Iridescent Sylph Druid Gloves; Iron-Strapped Shield; Jewel of Adroitness; Kedger Flute; Kedger Lute; Kedger Staff of Enchantment; Kedger Staff of Mentalism; Kedger Staff of Void Magic; Keeper's Friend; Keeper's Shade; Kraken's Maw; Large Stone Mace; Large Tomte Axe; Leather Deo Jerkin; Light Coral Crown; Lost Soul's Gauche; Lost Sword of the Eternals; Lost Tooth; Lucky Bootsyn; Lucky Failm; Lucky Perree; Lucky Rhusag; Lucky Striker; Macabre Muire Club; Mace of the Meek; Magmas Imbued Helm; Malefic Shield; Malevolent Shield; Malroch's Tenderizer; Masterful Moonglade Boots; Melodic Moonglade Sleeves; Mephit Eye; Missing Caster's Belt; Missing Caster's Cap; Missing Caster's Gloves; Mithran Crusher; Mithran Slasher; Mora Staff of Runecarving; Mora Staff of Suppression; Morbid Jewel of Skill; Morbid Muire Mace; Nearahd Boots; Nearahd Gloves; Nearahd Hauberk; Nearahd Leggings; Nearahd Sleeves; Night's Fall Halberd; Noble Overlord Pendant; Perfect Gem; Phantom Arrows; Phantom Short Bow; Pitted Fellwood Cudgel; Pitted Firesteel; Pitted Glowing Ng Kit Ire Wood Sapling Staff; Pitted Hard Leather Shield; Pitted Main Gauche; Pitted Rapier; Pitted Shimmering Battle Axe; Pitted Shimmering Great Sword; Pitted Shimmering Sharp Claw; Pitted Staff; Pluc; Porcine Amulet; Pulsing Gem; Rage Sprite Belt; Ranger's Last Flight; Razor Bone Edge; Reinforced Deo Vest; Ring of Alteration; Ring of Elemental Fury; Royal Lupine Gem; Royal Lupine Necklace; Royal Lupine Ring; Runed Bloodbound Cap; Runed Bone Staff; Runed Clay Buckler; Runic Clay War Hammer; Sacrificial Dagger; Sapphire Dusted Robe; Serrated Black Tooth; Shield of Bone; Shield of Spirit Might; Shimmering Am Willow Dirge Flute; Shrug; Sidhe Spine Barbed Spear; Silvered Arrow; Sleeves of the Lost; Small Tusk; Soiagh Blade; Soot Encrusted Cap; Soothsayer's Ring; Soulbinder's Gauntlets; Soulrager's Boots; Soulrager's Helm; Soulrager's Legs; Spectral Arms; Spectral Crusher; Spectral Flight; Spectral Flight Arrows; Spirit Bone Staff; Stonewatch Gauntlets; Stormcaller Woeful Gloves; Sure Shot Crossbow; Sword of Valor; Tattered Cailiocht; Tattered Chain Legs; Tattered Chain Mittens; Tattered Chain Sleeves; Tattered Hard Leather; Tattered Lamellar Arms; Tattered Quilted; Tattered Sapphire Brea Sleeves; Tattered Shimmering Leather; Tattered Shimmering Sapphire Tacuil; Tattered Stone Cailiocht; Tattered Studded Gauntlets; Tattered Woolen Robes; Throwing Knives; Tomte Axe; Twined Sentinel; Twisted Melody Helm; Valorous Hauberk; Valorous Mane; Vaporous Sleeves; Varulv Icy Spear; Vest of Living Flame; Vindicator's Staff of Mentalism; Vindicator's Staff of the Void; War Mattock; Waylayer Short Sword; Wicked Wulf Belt; Wicked Wulf Gem; Windy Crusher; Windy Staff; Wispy Rigid Orm Spine; Woeful Chain Coif; Woeful Melody Gloves; Wormskin Gloves; Wormskin Jerkin; Wormskin Sleeves; Wrathfully Righteous Beads; a Suit of Tattered Shimmering Studded armor
