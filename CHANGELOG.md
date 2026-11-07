@@ -9,6 +9,8 @@ hold). Its changelog has the history of everything this version inherits.
 
 - Guild emblems: a guild cloak shows its emblem as one emblem on the upper back again (the shield already did) - it was stretched over the whole cloak, a skull's eyes two black blots down the back.
 - Companions: /pull works in /defensive mode - the puller (/pull alone: your tank; /pull <companion name>: that companion) goes past the 350-unit range to tag the monster and comes back to you, and the rest of the group fights once the monster is within 350 units. A plain /pull is the tank again (it had started picking casters and archers over the tank). Make a button for a named puller with /macro pull /pull Isolde.
+- Companions: in /defensive mode a /pull ends only when the monster is within 350 units of you - a puller that tags from range and runs back waits by you until then, and your own pet no longer runs out to a monster that is still far away.
+- Companions: hired companions follow you over zone borders (Lyonesse to Cornwall and every other border) instead of stopping at the line until they were teleported to you.
 
 ## 0.3 (2026-11-06)
 
