@@ -1314,16 +1314,20 @@ namespace DOL.GS
                     _deathRecoveryTimer = null;
                 return hiredNext;
             }
-            // True 1.65 Mode: a gamebot its player invited waits for a raise as a hired companion does (owner
-            // 2026-11-03), five minutes, in the player's group, even through a wipe (the player may release and come
-            // back to raise it). Then it leaves the group and releases as an ordinary gamebot, back to its own routes.
+            // True 1.65 Mode: a gamebot its player invited waits for a raise only while someone alive in the group can
+            // raise it, up to five minutes (owner 2026-11-03). With nobody to raise it, it releases after the usual short
+            // wait (owner 2026-11-07, player report: "if no healer with rez to release"). Either way it then leaves the
+            // group and releases as an ordinary gamebot, back to its own routes.
             if (IsInvitedGamebot165)
             {
-                if (deadFor < HiredCompanions165.BodyFadeMilliseconds)
+                bool raiser = HasViableResurrector();
+                if (InvitedGamebotKeepsWaiting165(raiser, deadFor))
                     return 3000;
                 GamePlayer formerLeader = PlayerGroupLeader;
                 Group?.RemoveMember(this);
-                formerLeader?.Out.SendMessage($"{Name} waited too long for a raise and has left your group.",
+                formerLeader?.Out.SendMessage(raiser
+                        ? $"{Name} waited too long for a raise and has left your group."
+                        : $"{Name} could not be raised and has left your group.",
                     eChatType.CT_Group, eChatLoc.CL_SystemWindow);
             }
             AutonomousBotGroupCoordinator.PveCorpseDisposition groupDisposition =
@@ -1374,6 +1378,14 @@ namespace DOL.GS
         }
 
         public const long SiegeCorpseWaitMilliseconds = 240_000;
+
+        /// <summary>The short wait before a dead bot with nobody to raise it releases.</summary>
+        public const long NoRaiserReleaseMilliseconds = 20_000;
+
+        /// <summary>True 1.65 Mode: an invited gamebot's body waits while a raiser is in the group (up to the five
+        /// minutes a hired companion's body stays), else only the short release wait.</summary>
+        public static bool InvitedGamebotKeepsWaiting165(bool raiserInGroup, long deadForMilliseconds) =>
+            deadForMilliseconds < (raiserInGroup ? HiredCompanions165.BodyFadeMilliseconds : NoRaiserReleaseMilliseconds);
 
         private bool HasViableResurrector()
         {
