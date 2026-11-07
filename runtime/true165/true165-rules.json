@@ -49268,6 +49268,10 @@
   {
    "sql": "UPDATE ItemTemplate SET PackSize=1 WHERE lower(Id_nb) IN ('wolf_fang','torn_wolf_pelt','chunk_of_wolf_meat') AND PackSize<>1",
    "reason": "wolf drop stack fix (owner 2026-11-07): wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time"
+  },
+  {
+   "sql": "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
+   "reason": "True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are 39-43) is a data error"
   }
  ]
 }

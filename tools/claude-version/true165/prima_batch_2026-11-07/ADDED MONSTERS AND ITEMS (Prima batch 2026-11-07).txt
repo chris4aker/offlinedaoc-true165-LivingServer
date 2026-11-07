@@ -5,7 +5,9 @@ and the wolf drop stack fix. Applied by the launcher at the next START SERVER (T
 
 Monsters added: 281 kinds, 810 spawns (591 new at period positions, 219 restored archived rows)
 Items added: 1311 (1193 plain loot, 118 equipment)
-Drop tables: 3656 Atlas drop rows added on 1187 monsters
+Drop tables: 3146 Atlas drop rows added on 1141 monsters
+Drops never come from a monster 15+ levels below the item (owner rule; exceptions: Darkness Falls seals, and the two
+very rare Atlas drops Spirit Crafted Shield 0.1% / Ether Ring 0.02% the owner kept).
 Wolf fix: wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time; the "(20)/(100)" ones in bags become 1.
 
 MONSTERS ADDED (by zone)
@@ -1605,120 +1607,120 @@ ITEMS ADDED
   Yellowed Bone Nosering                   loot               5  any            52c  Uthgard
   Yowler's Blood Runed Bear-Skin           loot              29  any            21s  Uthgard
   Zephyr Wraith Essence                    loot              29  any            12s  Uthgard
-  Acid Etched Leggings                     studded armor     23  Midgard         0c  period page / sibling
-  Aged Mithrian Cloth Vest                 cloth armor       13  Albion          0c  period page / sibling
+  Acid Etched Leggings                     studded armor     23  Midgard     6g 12s  derived (same type/slot/level)
+  Aged Mithrian Cloth Vest                 cloth armor       13  Albion      2g 40s  derived (same type/slot/level)
   Ancient Bloodbound Gloves                cloth armor       49  Midgard        18c  period page / sibling
-  Belt of the Dread Glow                   jewelry           31  Midgard         0c  period page / sibling
-  Bone Shard Boots                         studded armor     22  Midgard         0c  period page / sibling
-  Bone Shard Gloves                        studded armor     22  Midgard         0c  period page / sibling
-  Bone Shard Helm                          studded armor     22  Midgard         0c  period page / sibling
-  Bone Shard Jerkin                        studded armor     22  Midgard         0c  period page / sibling
-  Bone Shard Sleeves                       studded armor     22  Midgard         0c  period page / sibling
-  Boots of the Blackheart                  studded armor     37  Albion          0c  period page / sibling
-  Braided Kelp Belt                        jewelry           36  Hibernia        0c  period page / sibling
-  Brilliant Oro's Stiletto of Night        weapon            50  Hibernia        0c  period page / sibling
-  Bwcan Beads                              jewelry           35  Albion          0c  period page / sibling
-  Coral Crown                              leather armor     50  Midgard         0c  period page / sibling
-  Crown of the Darkheart                   studded armor     49  Midgard         0c  period page / sibling
+  Belt of the Dread Glow                   jewelry           31  Midgard  2g 25s 86c  derived (same type/slot/level)
+  Bone Shard Boots                         studded armor     22  Midgard     2g 88s  derived (same type/slot/level)
+  Bone Shard Gloves                        studded armor     22  Midgard  2g 12s 40c  derived (same type/slot/level)
+  Bone Shard Helm                          studded armor     22  Midgard  4g 39s 20c  derived (same type/slot/level)
+  Bone Shard Jerkin                        studded armor     22  Midgard     8g 64s  derived (same type/slot/level)
+  Bone Shard Sleeves                       studded armor     22  Midgard  4g 3s 20c  derived (same type/slot/level)
+  Boots of the Blackheart                  studded armor     37  Albion   6g 80s 40c  derived (same type/slot/level)
+  Braided Kelp Belt                        jewelry           36  Hibernia     3g 6s  derived (same type/slot/level)
+  Brilliant Oro's Stiletto of Night        weapon            50  Hibernia 11g 14s 28c  derived (same type/slot/level)
+  Bwcan Beads                              jewelry           35  Albion   3g 45s 12c  derived (same type/slot/level)
+  Coral Crown                              leather armor     50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Crown of the Darkheart                   studded armor     49  Midgard        10g  derived (same type/slot/level)
   Cursed Lute                              instrument        30  Hibernia       21c  period page / sibling
   Dark Bone Staff                          weapon            36  Midgard        28c  period page / sibling
   Deathly Lochaber Axe                     weapon            39  Albion         30c  period page / sibling
-  Diabolical Eldritch Boots                cloth armor       49  Hibernia        0c  period page / sibling
-  Diabolical Fomorian Robe                 cloth armor       49  Hibernia        0c  period page / sibling
+  Diabolical Eldritch Boots                cloth armor       49  Hibernia 8g 1s 12c  derived (same type/slot/level)
+  Diabolical Fomorian Robe                 cloth armor       49  Hibernia 7g 54s 38c  derived (same type/slot/level)
   Diabolical Fomorian Vest                 cloth armor       49  Hibernia       22c  period page / sibling
   Diabolical Formorian Gloves              cloth armor       49  Hibernia       18c  period page / sibling
   Diabolical Formorian Pants               cloth armor       49  Hibernia       22c  period page / sibling
   Diabolical Formorian Sleeves             cloth armor       49  Hibernia       20c  period page / sibling
-  Diabolical Mentalist Boots               cloth armor       49  Hibernia        0c  period page / sibling
+  Diabolical Mentalist Boots               cloth armor       49  Hibernia 8g 1s 12c  derived (same type/slot/level)
   Dommel's Fiery Gauntlets                 chain armor       49  Albion         18c  period page / sibling
-  Dommel's Fiery Gauntlets                 reinforced armor  49  Hibernia        0c  period page / sibling
-  Drakulv Militia Axe                      weapon            50  Midgard         0c  period page / sibling
-  Drakulv Militia Spear                    weapon            45  Midgard         0c  period page / sibling
+  Dommel's Fiery Gauntlets                 reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Drakulv Militia Axe                      weapon            50  Midgard  11g 49s 36c  derived (same type/slot/level)
+  Drakulv Militia Spear                    weapon            45  Midgard  76g 30s 20c  derived (same type/slot/level)
   Drakulv Militia Sword                    weapon            50  Midgard        16c  period page / sibling
-  Earth Crafted Molded Leggings            leather armor     24  Hibernia        0c  period page / sibling
-  Earth Crafted Root Leggings              reinforced armor  24  Hibernia        0c  period page / sibling
-  Earth Crafted Root Vest                  reinforced armor  24  Hibernia        0c  period page / sibling
-  Earth Crafted Scale Gloves               scale armor       24  Hibernia        0c  period page / sibling
-  Earth Crafted Scale Leggings             scale armor       24  Hibernia        0c  period page / sibling
+  Earth Crafted Molded Leggings            leather armor     24  Hibernia    7g 92s  derived (same type/slot/level)
+  Earth Crafted Root Leggings              reinforced armor  24  Hibernia   12g 96s  derived (same type/slot/level)
+  Earth Crafted Root Vest                  reinforced armor  24  Hibernia   21g 60s  derived (same type/slot/level)
+  Earth Crafted Scale Gloves               scale armor       24  Hibernia 7g 41s 60c  derived (same type/slot/level)
+  Earth Crafted Scale Leggings             scale armor       24  Hibernia   24g 30s  derived (same type/slot/level)
   Emerald Moonshone Boots                  leather armor     44  Midgard        28c  period page / sibling
   Empyreal Vest                            reinforced armor  37  Hibernia       26c  period page / sibling
-  Ether Ring                               jewelry           51  Hibernia        0c  period page / sibling
-  Eucail Eye                               jewelry           30  Hibernia        0c  period page / sibling
-  Faded Chain Silksteel Gloves             chain armor       36  Midgard         0c  period page / sibling
-  Faded Chain Silksteel Leggings           chain armor       36  Midgard         0c  period page / sibling
+  Ether Ring                               jewelry           51  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Eucail Eye                               jewelry           30  Hibernia 2g 4s 12c  derived (same type/slot/level)
+  Faded Chain Silksteel Gloves             chain armor       36  Midgard  3g 66s 50c  derived (same type/slot/level)
+  Faded Chain Silksteel Leggings           chain armor       36  Midgard  3g 45s 12c  derived (same type/slot/level)
   Faded Silksteel Bound Boots              leather armor     36  Midgard  1g 72s 56c  source sell value x 2
   Faded Silksteel Bound Gloves             leather armor     36  Midgard  1g 72s 56c  source sell value x 2
   Feral Fiery Axe                          weapon            35  Midgard        34c  period page / sibling
-  Furlined Cloak                           jewelry           15  Albion          0c  period page / sibling
-  Giant Ring of Tenacity                   jewelry           40  Albion          0c  period page / sibling
-  Gloves of Living Flame                   cloth armor       29  Midgard         0c  period page / sibling
-  Glowing Guile Boots                      leather armor     36  Hibernia        0c  period page / sibling
-  Gnarled Staff                            weapon            12  Albion          0c  period page / sibling
+  Furlined Cloak                           jewelry           15  Albion     59s 75c  derived (same type/slot/level)
+  Giant Ring of Tenacity                   jewelry           40  Albion   3g 89s 24c  derived (same type/slot/level)
+  Gloves of Living Flame                   cloth armor       29  Midgard  3g 24s 96c  derived (same type/slot/level)
+  Glowing Guile Boots                      leather armor     36  Hibernia 4g 21s 20c  derived (same type/slot/level)
+  Gnarled Staff                            weapon            12  Albion      1g 60s  derived (same type/slot/level)
   Gossamer Seolc Pants                     cloth armor       49  Hibernia       22c  period page / sibling
   Granite Drum                             instrument        37  Albion         32c  period page / sibling
-  Granite Seer's Sleeves of Matter         cloth armor       50  Albion          0c  period page / sibling
-  Heart Piercer                            weapon            15  Albion          0c  period page / sibling
-  Helm of Future Visions                   leather armor     13  Midgard         0c  period page / sibling
-  Hound Tooth                              weapon            20  Albion          0c  period page / sibling
+  Granite Seer's Sleeves of Matter         cloth armor       50  Albion   8g 1s 12c  derived (same type/slot/level)
+  Heart Piercer                            weapon            15  Albion   1g 41s 60c  derived (same type/slot/level)
+  Helm of Future Visions                   leather armor     13  Midgard        96s  derived (same type/slot/level)
+  Hound Tooth                              weapon            20  Albion     74s 22c  derived (same type/slot/level)
   Infernal Cloak                           jewelry           41  Hibernia       20c  period page / sibling
   Iridescent Sylph Coif                    scale armor       49  Hibernia       20c  period page / sibling
-  Iridescent Sylph Hauberk                 scale armor       51  Hibernia        0c  period page / sibling
-  Kobil's Fiery Gauntlets                  scale armor       49  Hibernia        0c  period page / sibling
-  Kobil's Fiery Gauntlets                  plate armor       49  Albion          0c  period page / sibling
-  Lava Etched Sleeves                      chain armor       24  Midgard         0c  period page / sibling
-  Lava Forged Boots                        chain armor       26  Midgard         0c  period page / sibling
-  Leggings of Mortification                plate armor       37  Albion          0c  period page / sibling
+  Iridescent Sylph Hauberk                 scale armor       51  Hibernia       10g  derived (same type/slot/level)
+  Kobil's Fiery Gauntlets                  scale armor       49  Hibernia       10g  derived (same type/slot/level)
+  Kobil's Fiery Gauntlets                  plate armor       49  Albion   7g 54s 38c  derived (same type/slot/level)
+  Lava Etched Sleeves                      chain armor       24  Midgard  9g 79s 20c  derived (same type/slot/level)
+  Lava Forged Boots                        chain armor       26  Midgard  6g 22s 80c  derived (same type/slot/level)
+  Leggings of Mortification                plate armor       37  Albion   56g 5s 20c  derived (same type/slot/level)
   Mind Staff                               weapon            35  Albion         34c  period page / sibling
-  Miscreant's Boots                        chain armor       13  Midgard         0c  period page / sibling
+  Miscreant's Boots                        chain armor       13  Midgard    81s 20c  derived (same type/slot/level)
   Musty Leather Helm                       leather armor     13  Albion   1g 34s 40c  period page / sibling
-  Nearahd Coif                             scale armor       27  Hibernia        0c  period page / sibling
+  Nearahd Coif                             scale armor       27  Hibernia   30g 60s  derived (same type/slot/level)
   Ominous Moonstruck Hammer                weapon            39  Midgard        32c  period page / sibling
-  Pants of the Malignant                   cloth armor       13  Midgard         0c  period page / sibling
-  Parthanon Fist                           weapon            26  Hibernia        0c  period page / sibling
+  Pants of the Malignant                   cloth armor       13  Midgard     1g 44s  derived (same type/slot/level)
+  Parthanon Fist                           weapon            26  Hibernia 19g 4s 40c  derived (same type/slot/level)
   Pitted Dirk                              weapon             2  Hibernia        8c  source sell value x 2
-  Pitted Elm Ashen Fellwood Staff          weapon             6  Albion          0c  period page / sibling
+  Pitted Elm Ashen Fellwood Staff          weapon             6  Albion         40s  derived (same type/slot/level)
   Pitted Stiletto                          weapon             3  Hibernia        8c  source sell value x 2
   Ring of the Stonewatch                   jewelry           50  Albion      1s 50c  period page / sibling
-  Ringed Darksteel Gloves                  chain armor       41  Midgard         0c  period page / sibling
-  Roman Gladius                            weapon            13  Albion          0c  period page / sibling
+  Ringed Darksteel Gloves                  chain armor       41  Midgard  5g 45s 37c  derived (same type/slot/level)
+  Roman Gladius                            weapon            13  Albion   1g 41s 60c  derived (same type/slot/level)
   Runed Bloodhound Cap                     cloth armor       49  Midgard        20c  period page / sibling
   Runed Bone Staff                         weapon            39  Midgard        28c  period page / sibling
   Runic Clay Axe                           weapon            42  Midgard        21c  period page / sibling
-  Runic Rigid Orm Spine                    weapon            50  Midgard         0c  period page / sibling
-  Sentinel's Ring                          jewelry           37  Hibernia        0c  period page / sibling
-  Sheet of Aged Beech Bark                 shield            43  Albion          0c  period page / sibling
-  Shimmering Iridescent Sylph Druid Gloves scale armor       50  Hibernia        0c  period page / sibling
-  Shimmering Sturdy Crushed Breastplate    plate armor       50  Albion          0c  period page / sibling
-  Shimmering Sword of Soulshade            weapon            50  Midgard         0c  period page / sibling
-  Shining Earth Crafted Scale Coif         scale armor       24  Hibernia        0c  period page / sibling
-  Shining Sheeroe Coif                     scale armor       47  Hibernia        0c  period page / sibling
-  Shining Sheeroe Gloves                   scale armor       47  Hibernia        0c  period page / sibling
-  Silvered Eye                             jewelry           51  Hibernia        0c  period page / sibling
-  Slaver Axe                               weapon            15  Albion          0c  period page / sibling
-  Smoldering Ebon Shield                   shield            51  Midgard         0c  period page / sibling
+  Runic Rigid Orm Spine                    weapon            50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Sentinel's Ring                          jewelry           37  Hibernia 3g 45s 12c  derived (same type/slot/level)
+  Sheet of Aged Beech Bark                 shield            43  Albion   7g 54s 36c  derived (same type/slot/level)
+  Shimmering Iridescent Sylph Druid Gloves scale armor       50  Hibernia       10g  derived (same type/slot/level)
+  Shimmering Sturdy Crushed Breastplate    plate armor       50  Albion   8g 1s 12c  derived (same type/slot/level)
+  Shimmering Sword of Soulshade            weapon            50  Midgard  7g 54s 38c  derived (same type/slot/level)
+  Shining Earth Crafted Scale Coif         scale armor       24  Hibernia 22g 10s 40c  derived (same type/slot/level)
+  Shining Sheeroe Coif                     scale armor       47  Hibernia 6g 29s 80c  derived (same type/slot/level)
+  Shining Sheeroe Gloves                   scale armor       47  Hibernia 5g 93s 4c  derived (same type/slot/level)
+  Silvered Eye                             jewelry           51  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Slaver Axe                               weapon            15  Albion      1g 48s  derived (same type/slot/level)
+  Smoldering Ebon Shield                   shield            51  Midgard        10g  derived (same type/slot/level)
   Spirit Crafted Shield                    shield            51  Albion     29s 76c  source sell value x 2
-  Stick-figure Totem                       jewelry           19  Albion          0c  period page / sibling
-  Stonewatch Leggings                      plate armor       40  Albion          0c  period page / sibling
+  Stick-figure Totem                       jewelry           19  Albion     93s 33c  derived (same type/slot/level)
+  Stonewatch Leggings                      plate armor       40  Albion   31g 99s 63c  derived (same type/slot/level)
   Tattered Cured Leather Hood              leather armor     10  Albion         48s  period page / sibling
-  Tattered Silk Boned Arms                 studded armor      8  Albion          0c  period page / sibling
-  Tomb Priestess Bracelet                  jewelry           24  Midgard         0c  period page / sibling
+  Tattered Silk Boned Arms                 studded armor      8  Albion     22s 40c  derived (same type/slot/level)
+  Tomb Priestess Bracelet                  jewelry           24  Midgard  2g 5s 10c  derived (same type/slot/level)
   Topaz Studded Shell Flute                instrument        30  Hibernia       20c  period page / sibling
-  Troika's Cursed Axe                      weapon            24  Midgard         0c  period page / sibling
-  Troll Hide Sleeves                       leather armor     12  Albion          0c  period page / sibling
-  Twisted Forestdweller Boots              reinforced armor  49  Hibernia        0c  period page / sibling
-  Twisted Lusus Boots                      reinforced armor  49  Hibernia        0c  period page / sibling
-  Vest of the Vile Dominion                studded armor     51  Albion          0c  period page / sibling
-  Vest of the Vile Dominion                reinforced armor  49  Hibernia        0c  period page / sibling
+  Troika's Cursed Axe                      weapon            24  Midgard  17g 56s 80c  derived (same type/slot/level)
+  Troll Hide Sleeves                       leather armor     12  Albion     44s 80c  derived (same type/slot/level)
+  Twisted Forestdweller Boots              reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Twisted Lusus Boots                      reinforced armor  49  Hibernia 7g 54s 38c  derived (same type/slot/level)
+  Vest of the Vile Dominion                studded armor     51  Albion         10g  derived (same type/slot/level)
+  Vest of the Vile Dominion                reinforced armor  49  Hibernia 6g 29s 80c  derived (same type/slot/level)
   Warden's Sword                           weapon            19  Albion     57s 80c  source sell value x 2
-  Wind Swept Staff                         weapon            29  Midgard         0c  period page / sibling
-  Woeful Chain Gloves                      chain armor       20  Midgard         0c  period page / sibling
-  Wormskin Boots                           leather armor     14  Albion          0c  period page / sibling
+  Wind Swept Staff                         weapon            29  Midgard  4g 32s 54c  derived (same type/slot/level)
+  Woeful Chain Gloves                      chain armor       20  Midgard  4g 10s 40c  derived (same type/slot/level)
+  Wormskin Boots                           leather armor     14  Albion     45s 60c  derived (same type/slot/level)
   Wormskin Leggings                        leather armor     12  Albion     25s 92c  source sell value x 2
-  Worn Boots of Dissolution                chain armor       36  Albion          0c  period page / sibling
-  Worn Sleeves of Dissolution              chain armor       36  Albion          0c  period page / sibling
-  Woven Elemental Boots                    cloth armor       41  Albion          0c  period page / sibling
+  Worn Boots of Dissolution                chain armor       36  Albion   3g 55s 80c  derived (same type/slot/level)
+  Worn Sleeves of Dissolution              chain armor       36  Albion   3g 45s 12c  derived (same type/slot/level)
+  Woven Elemental Boots                    cloth armor       41  Albion   5g 45s 99c  derived (same type/slot/level)
   Woven Elemental Cap                      cloth armor       41  Albion   7g 54s 38c  source sell value x 2
-  Woven Elemental Gloves                   cloth armor       41  Albion          0c  period page / sibling
+  Woven Elemental Gloves                   cloth armor       41  Albion   4g 95s 12c  derived (same type/slot/level)
   Woven Elemental Pants                    cloth armor       41  Albion   7g 54s 38c  source sell value x 2
   Woven Elemental Sleeves                  cloth armor       41  Albion   7g 54s 38c  source sell value x 2
   Woven Elemental Vest                     cloth armor       41  Albion         26c  period page / sibling
@@ -1732,5 +1734,8 @@ NOT ADDED (for reference)
 Monsters skipped: no position 202, no model 40, boss or scripted 29, other 4, duplicate 2
   no position: Adimedus (Trollheim); Agorn (Emain Macha); Apparition (Dales of Devwy); Apple Wood Spirit (Caldey); Apple Wood Spirit (Dales of Devwy); Apple Wood Spirit (Gwyddneau); Arawn Commander (Pennine Mountains); Arawnite Assassin (Snowdonia); Archived Souls (DARKNESS FALLS DUNGEON); Breeze (Svealand East); Briton woodcutter (Breifine); Caoranach (Lough Derg); Carnage Ghoul (Gwyddneau); Celtic brehon (Breifine); Ceriallen (Forest Sauvage); Cichol Grichnos (Vale of Balor); Cornwall Leader (Cornwall); Crudely Crafted Dwarf (Dales of Devwy); Darlin the Ablastere (Delling Crater); Destrier Ceingalad (Pennine Mountains); Drakoran Thaumaturge (Dales of Devwy); Eildon (Pennine Mountains); Eli Twigg (Pennine Mountains); Fallen (Llyn Barfog); Famuel, Kireasil, Yonzael (DARKNESS FALLS DUNGEON); First Run Assembly (Dales of Devwy); Fomorian underling (Breifine); Forsaken (Llyn Barfog); Glimmer Spass (Sheeroe Hills); Glipin (Pennine Mountains); Gwalchmai (Pennine Mountains); Hawthorn (Pennine Mountains); Heap (Dales of Devwy); Hwch Ddu Gota (Pennine Mountains); Ice Sculptor (Gripklosa Mountains); Intimidator (Gwyddneau); LULId Ulylll Lunger (Dales of Devwy); Lich Lord (Caldey); Mathair (Mt. Collory); Norseman chopper (Breifine); Old Scrap Pile (Dales of Devwy); Orin Coldtoes (Gripklosa Mountains); Parg the Hunter (Gripklosa Mountains); Peralt Griffon-slayer (Delling Crater); Remadun den Laerd (Trollheim); Rognar (Delling Crater); Rognar (Iarnvidiur); Scuab (Mt. Collory); Shade of Adimedus (Trollheim); Spindle (Dales of Devwy); Sr'ral's Shadow (Dales of Devwy); Swiftfoot (Lough Derg); Taman (Emain Macha); Undeath Walking (Gwyddneau); Urpont (Cothrom Gorge); Yrial (Emain Macha); alp luachra (Cruachan Gorge); amadan touched (Mt. Collory); ancient shale golem (Munin Sound); balorian ansgar (Tur Suil); balorian batair (Tur Suil); balorian conlaoch (Tur Suil); balorian diolmhain (Tur Suil); balorian ewyn (Tur Suil); balorian ferdiad (Tur Suil); balorian liosliath (Tur Suil); balorian owin (Tur Suil); bird-eating frog (Mt. Collory); bocaidhe (Mt. Collory); bodach (Cruachan Gorge); bodach (Mt. Collory); botonid displacer (Domnann); carnitaur (Faraheim); celt spirit (Sheeroe Hills); cluricaun (Cruachan Gorge); cluricaun (Mt. Collory); cniogcrag annoyance (Vigilant Rock); cronsidhe (Cliffs of Moher); domnann angler (Domnann); drau'gyn advowee / drau'gyn armourer (Avalon City); drau'gyn calciner (Avalon City); drau'gyn courier (Avalon City); drau'gyn domesman (Avalon City); drau'gyn herbalist (Avalon City); drau'gyn jongleur (Avalon City); drau'gyn scribe (Avalon City); dry'ak accompant (Avalon City); dry'ak artificer (Avalon City); dry'ak scrivener (Avalon City); dry'ak zouave (Avalon City); dryad (Avalon Marsh); elf spirit (Sheeroe Hills); empyrean sentinel (Cruachan Gorge); etvarg packleader (Delling Crater); etvarg packleader (Iarnvidiur); fading spirit (Avalon Marsh); faerie badger (Cruachan Gorge); far liath (Mt. Collory); firbolg spirit (Sheeroe Hills); fire giant spirit (Muspelheim); fishing bear forager (Lough Gur); fomorian carnivian (Fomor); fomorian chapestian (Fomor); fomorian cruerrior (Fomor); fomorian depressoer (Fomor); fomorian dibreer (Fomor); fomorian ferad (Fomor); fomorian hiccor (Fomor); fomorian insipistruct (Vale of Balor); fomorian marhoder (Fomor); fomorian nelmar (Fomor); fomorian pecitor / fomorian pelistruct (Fomor); fomorian radden (Caillte Garran); fomorian radiac (Caillte Garran); fomorian saveast (Fomor); fomorian zasser (Fomor); forest grazer calf (Vigilant Rock); frosty colt (Uppland); frosty colt (Yggdra Forest); fungal shredder (Faraheim); ghoulie (Cruachan Gorge); ghoulie (Mt. Collory); giant ant (Mt. Collory); giant beetle (Lough Gur); giant beetle (Mt. Collory); glimmer spirit (Sheeroe Hills); goblin imperator (Dungeon: Stonehenge Barrows); graugach (Mt. Collory); greater angler (Caillte Garran); greater zephyr (Mt. Collory); grimwood keeper (Pennine Mountains); gungledar (Trollheim); hibernian tiarna (DARKNESS FALLS DUNGEON); hill hound (Cruachan Gorge); hrimthursa trophy-hunter (Delling Crater); juvenile megafelid (Breifine); lesser angler (Caillte Garran); lough wolf (Lough Gur); luch catcher (Mt. Collory); lunger (Bog of Cullen); lurikeen spirit (Sheeroe Hills); mantid dissembler (Caillte Garran); mantid exterminator (Caillte Garran); mantid priest (Caillte Garran); mantid warlock (Caillte Garran); master hunter (Forest Sauvage); mist wraith (Lough Gur); morghoul (Mt. Collory); mountain mephit (Cruachan Gorge); mountain mephit (Mt. Collory); murrisk (Silvermine Mountains); norse stormur herra (DARKNESS FALLS DUNGEON); pixie imp (Campacorentin Forest); poisonous sylvanshade (Caillte Garran); rage sprite (Cruachan Gorge); rage wolf (Mt. Collory); rapacious shriller (Caillte Garran); river drakeling (Avalon Marsh); river sprite (Avalon Marsh); roane companion (Shannon Estuary); robber (Campacorentin Forest); rock guardian (Mt. Collory); rot (Trollheim); sand ooze (Munin Sound); serpentine shard (Gripklosa Mountains); sett dweller (Breifine); sett youngling (Mt. Collory); siog raider (Cruachan Gorge); skimmer (Domnann); spirit (Avalon Isle); spraggonale (Cruachan Gorge); spraggonale (Mt. Collory); squabbler (Mt. Collory); starving trained guagaran (Avalon City); streaming wisp (Cruachan Gorge); streaming wisp (Mt. Collory); syhr'phint caird (Avalon City); syhr'phint crozier (Avalon City); syhr'phint gaoler (Avalon City); syhr'phint verger (Avalon City); thrawn modig beorn (Caer Sidi); thrawn ogre attacker (Caer Sidi); torcan (Mt. Collory); tree spirit (Vigilant Rock); undead hem'varn (Trollheim); vindictive bocan (Cruachan Gorge); vindictive bocan (Lough Gur); vyr'em bloodman (Avalon City); vyr'em ordinary (Avalon City); vyr'em ostler (Avalon City); vyr'em riftere (Avalon City); walking rock (Mt. Collory); wi'voron alchemist (Avalon City); wi'voron archiller (Avalon City); wi'voron bowyer (Avalon City); wi'voron gynour (Avalon City); wicked sylvanshade (Vale of Balor); wight (Dungeon: Stonehenge Barrows); wild lucradan (Lough Gur); wrath sprite (Cruachan Gorge); young forest runner (Forest Sauvage); zephyr wraith (Mt. Collory)
   no model: Anne Fhitich (Forest Sauvage); Atax (Emain Macha); Blaieseach (Valley of Bri Leith); Cachia (Connacht); Caelis Manoi (Skona Ravine); Celtic brehon (Cruachan Gorge); Celtic brehon (Mt. Collory); Dissolver (Gwyddneau); Evian Fhitich (Forest Sauvage); Fanin (Jamtland Mountains); Fearg (Connacht); Frej (Yggdra Forest); Frykte (Vale of Mularn); Grakin (Iarnvidiur); Gualach (Mt. Collory); Krisen Flek (Gotar); Major Terentius (Vanern Swamp); Maol (Cruachan Gorge); Nik (Myrkwood Forest); Norseman chopper (Cruachan Gorge); Norseman chopper (Mt. Collory); Quinlan (Emain Macha); Ralsen (Myrkwood Forest); Rat Trap (Cruachan Gorge); Ria (Myrkwood Forest); Sir Charles (Yggdra Forest); Smerte (Vale of Mularn); Sunderer (Breifine); Tracker (Valley of Bri Leith); Yip (Myrkwood Forest); carnitaur (Delling Crater); carnitaur (Iarnvidiur); elf-eater (Domnann); enoga (Vale of Mularn); kraken (Gotar); rack of spikes (Tur Suil); spinolich (Delling Crater); spinolich (Iarnvidiur); undead minion (Uppland); wall spike (Tur Suil)
+  boss or scripted: Aine (Lough Gur); Arr (Gripklosa Mountains); Bodb (Lough Gur); Earl Gerald (Lough Gur); Emissary of Logi (Delling Crater); Garran Treant Seedling (Cothrom Gorge); Gormror (Munin Sound); Hamorik (Caldey); Spirit of the Forge (Delling Crater); Talvor's Spirit (Munin Sound); Tyian Pieces (Dales of Devwy); Yecats (Skona Ravine); central treant sprout (Domnann); forest grazer calf (Caillte Garran); ixthiar creeper (Vale of Balor); lesser sylvanshade (Caillte Garran); mastered weapon (Delling Crater); obsidian doomward (Delling Crater); panicked syhr'phint (Avalon City); scourgin (Domnann); siabra escort (Lough Gur); thrawn ogre squad-leader (Aldland); treant sprout (Domnann); undead armswoman (Salisbury Plains); undead cleric (Salisbury Plains); undead mercenary (Salisbury Plains); undead mercenary lieutenant (Salisbury Plains); undead paladin (Salisbury Plains); undead paladin lieutenant (Salisbury Plains)
+  other: Ciar the Merrow Maiden (Shannon Estuary); Major Terentius (Raumarik); tomb raider scout (Vanern Swamp); water vapor (Delling Crater)
 Equipment with no period stat source (not built, no invented stats): 243
   Acid Etched Gauntlets; Acid Etched Sleeves; Aeiry Belt; Aotrom Pearls; Arrows of Slaying; Arrows of the Fallen; Ashen Axe; Basher's Finger; Basher's Sash; Beater's Bludgeon; Beater's Poked Eye; Bevard's Ghostly Chain; Bilk's Spear; Bloodstone Left Eye; Bloodstone Right Eye; Bog Strider (any piece of armor); Boots of the Lost; Bracer of Restless Souls; Cailiondar Bracer of Piety; Caster's Missing Eye; Celestial Cailiondar Hauberk; Celestial Cailiondar Jerkin; Celestial Pearl Necklace; Ceremonial Dirk; Chain Boots of Disparity; Chain Coif of Disparity; Chain Leggings of Disparity; Chain of Rage; Cliff Dweller Drum; Cliff Dweller Hammer; Cliff Dweller Lute; Cliff Dweller Recurved Bow; Cliff Dweller Skewer; Cliff Dweller Sword; Conquerer's Cloak; Crackling Ebon Gloves; Cronsidhe Biter; Cronsidhe's Red Eye; Crossbow of the Penitent; Crystalized Dwarven Remains; Crystalized Kobold Remains; Cyclop's Pupil; Cyclops Headsman's Axe; Dancing Bones Drum; Dancing Bones Flute; Dancing Bones Lute; Deo Hauberk; Diamond Dusted Robe; Draoi Shield; Draoish Sickle; Dusk Dweller (any piece of armor); Dusty Leggings; Elder Fellwood Staff; Elder Staff of Earthen Fire; Elder Staff of Wintry Winds; Empathetic Jewel; Empyreal Helm; Empyreal Leggings; Empyreal Ranger Gauntlets; Empyreal Sleeves; Enchanter's Fine (armor set pieces); Enslaved Biter's Muzzle Wrap; Enslaved Orm's Collar; Ether Cloak; Ethereal Zephyr Bracelet; Faerie Eye; Fainne Necklace; Fallen Archer's Stiletto; Fanatical Great Sword; Fanged Tooth; Fiery Staff; Filthy Hide Pants; Flame of the Earth Boots; Flame of the Earth Pants; Flattened Eye Shield; Flawed Gem; Fomorian Staff of Light; Fomorian Staff of Mana; Forked Mephit Tail; Frozen Staff; Gem of a Champion; Granite Seer's Gloves of the Spirit; Herb Gatherer's Gloves; High Priest's Gem of Retribution; High Priest's Silken Vestment; High Priest's Velvet Cape; Hunter's Vest; Huntsman's Leather Jerkin; Ilmenite Laced Chain Sleeves; Imbued Shield of Bone; Imperial Golden Hammer; Impish Bracer; Impish Cloak; Impish Frock; Impish Gem; Impish Leather (armor set pieces); Impish Necklace; Impish Ring; Infernal Edge; Intricate Sea Shell Bracelet; Ircon Bound Chain Mittens; Iridescent Sylph Druid Gloves; Iron-Strapped Shield; Jewel of Adroitness; Kedger Flute; Kedger Lute; Kedger Staff of Enchantment; Kedger Staff of Mentalism; Kedger Staff of Void Magic; Keeper's Friend; Keeper's Shade; Kraken's Maw; Large Stone Mace; Large Tomte Axe; Leather Deo Jerkin; Light Coral Crown; Lost Soul's Gauche; Lost Sword of the Eternals; Lost Tooth; Lucky Bootsyn; Lucky Failm; Lucky Perree; Lucky Rhusag; Lucky Striker; Macabre Muire Club; Mace of the Meek; Magmas Imbued Helm; Malefic Shield; Malevolent Shield; Malroch's Tenderizer; Masterful Moonglade Boots; Melodic Moonglade Sleeves; Mephit Eye; Missing Caster's Belt; Missing Caster's Cap; Missing Caster's Gloves; Mithran Crusher; Mithran Slasher; Mora Staff of Runecarving; Mora Staff of Suppression; Morbid Jewel of Skill; Morbid Muire Mace; Nearahd Boots; Nearahd Gloves; Nearahd Hauberk; Nearahd Leggings; Nearahd Sleeves; Night's Fall Halberd; Noble Overlord Pendant; Perfect Gem; Phantom Arrows; Phantom Short Bow; Pitted Fellwood Cudgel; Pitted Firesteel; Pitted Glowing Ng Kit Ire Wood Sapling Staff; Pitted Hard Leather Shield; Pitted Main Gauche; Pitted Rapier; Pitted Shimmering Battle Axe; Pitted Shimmering Great Sword; Pitted Shimmering Sharp Claw; Pitted Staff; Pluc; Porcine Amulet; Pulsing Gem; Rage Sprite Belt; Ranger's Last Flight; Razor Bone Edge; Reinforced Deo Vest; Ring of Alteration; Ring of Elemental Fury; Royal Lupine Gem; Royal Lupine Necklace; Royal Lupine Ring; Runed Bloodbound Cap; Runed Bone Staff; Runed Clay Buckler; Runic Clay War Hammer; Sacrificial Dagger; Sapphire Dusted Robe; Serrated Black Tooth; Shield of Bone; Shield of Spirit Might; Shimmering Am Willow Dirge Flute; Shrug; Sidhe Spine Barbed Spear; Silvered Arrow; Sleeves of the Lost; Small Tusk; Soiagh Blade; Soot Encrusted Cap; Soothsayer's Ring; Soulbinder's Gauntlets; Soulrager's Boots; Soulrager's Helm; Soulrager's Legs; Spectral Arms; Spectral Crusher; Spectral Flight; Spectral Flight Arrows; Spirit Bone Staff; Stonewatch Gauntlets; Stormcaller Woeful Gloves; Sure Shot Crossbow; Sword of Valor; Tattered Cailiocht; Tattered Chain Legs; Tattered Chain Mittens; Tattered Chain Sleeves; Tattered Hard Leather; Tattered Lamellar Arms; Tattered Quilted; Tattered Sapphire Brea Sleeves; Tattered Shimmering Leather; Tattered Shimmering Sapphire Tacuil; Tattered Stone Cailiocht; Tattered Studded Gauntlets; Tattered Woolen Robes; Throwing Knives; Tomte Axe; Twined Sentinel; Twisted Melody Helm; Valorous Hauberk; Valorous Mane; Vaporous Sleeves; Varulv Icy Spear; Vest of Living Flame; Vindicator's Staff of Mentalism; Vindicator's Staff of the Void; War Mattock; Waylayer Short Sword; Wicked Wulf Belt; Wicked Wulf Gem; Windy Crusher; Windy Staff; Wispy Rigid Orm Spine; Woeful Chain Coif; Woeful Melody Gloves; Wormskin Gloves; Wormskin Jerkin; Wormskin Sleeves; Wrathfully Righteous Beads; a Suit of Tattered Shimmering Studded armor
+Drops left out by the 15-level rule (a low-level monster of the same name elsewhere): Pebble -> p165_prima_chunk_of_silver; tree spirit -> p165_prima_glowing_green_seed; tree spirit -> p165_prima_seed_pod

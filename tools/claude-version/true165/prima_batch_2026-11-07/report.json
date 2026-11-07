@@ -549,7 +549,8 @@
     "Bonuses": "page: Constitution +7 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1805"
+   "Id_nb": "p165_item_1805",
+   "price_source": "derived: median of 6 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Sharp Snake Fang",
@@ -588,7 +589,8 @@
     "Bonuses": "page: Dexterity +4 pts; Piety +3 pts; Heat Resist +6 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_9860"
+   "Id_nb": "p165_item_9860",
+   "price_source": "derived: median of 15 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Sleeves",
@@ -714,7 +716,8 @@
     "Bonuses": "page: Dexterity +7 pts; Strength +2 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1810"
+   "Id_nb": "p165_item_1810",
+   "price_source": "derived: median of 13 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Chipped Mirror",
@@ -834,7 +837,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1365"
+   "Id_nb": "p165_item_1365",
+   "price_source": "derived: median of 37 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bone-Splitter",
@@ -1061,7 +1065,8 @@
     "Bonuses": "page: Hits +12 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1743"
+   "Id_nb": "p165_item_1743",
+   "price_source": "derived: median of 25 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Dissolution (Worn)",
@@ -1086,7 +1091,8 @@
     "Bonuses": "page: Dexterity +2 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1963"
+   "Id_nb": "p165_item_1963",
+   "price_source": "derived: median of 20 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1118,7 +1124,8 @@
     "Bonuses": "page: Constitution +6 pts; Strength +3 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1094"
+   "Id_nb": "p165_item_1094",
+   "price_source": "derived: median of 10 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1143,7 +1150,8 @@
     "Bonuses": "page: Strength +4 pts; Hits +15 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1956"
+   "Id_nb": "p165_item_1956",
+   "price_source": "derived: median of 11 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1168,7 +1176,8 @@
     "Bonuses": "page: Constitution +6 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1134"
+   "Id_nb": "p165_item_1134",
+   "price_source": "derived: median of 10 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1193,7 +1202,8 @@
     "Bonuses": "page: Dexterity +3 pts; Empathy +2 pts; Strength +3 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1411"
+   "Id_nb": "p165_item_1411",
+   "price_source": "derived: median of 12 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1218,7 +1228,8 @@
     "Bonuses": "page: Empathy +4 pts; Hits +9 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1436"
+   "Id_nb": "p165_item_1436",
+   "price_source": "derived: median of 14 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Earth Crafted",
@@ -1243,7 +1254,8 @@
     "Bonuses": "page: Quickness +6 pts; Constitution +9 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1953"
+   "Id_nb": "p165_item_1953",
+   "price_source": "derived: median of 31 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Skewer",
@@ -1611,7 +1623,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Evil_Eye (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_5989"
+   "Id_nb": "p165_item_5989",
+   "price_source": "derived: median of 41 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Expended Commanding Stone",
@@ -2283,7 +2296,8 @@
     "AllowedClasses": "page (Requires Class: Eldritch)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_3203"
+   "Id_nb": "p165_item_3203",
+   "price_source": "derived: median of 95 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Diabolical Fomorian Gloves [53]",
@@ -2394,7 +2408,8 @@
     "AllowedClasses": "page (Requires Class: Mentalist)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_3206"
+   "Id_nb": "p165_item_3206",
+   "price_source": "derived: median of 95 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Diabolical Mentalist",
@@ -2889,7 +2904,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Anger_Axe_Lab_Mid (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_4094"
+   "Id_nb": "p165_item_4094",
+   "price_source": "derived: median of 59 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Axe",
@@ -3095,7 +3111,8 @@
     "Bonuses": "page: Power +1 pts; Constitution +4 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_838"
+   "Id_nb": "p165_item_838",
+   "price_source": "derived: median of 17 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Miscreant's",
@@ -3128,7 +3145,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from steel_starkakedja_boots (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_1214"
+   "Id_nb": "p165_item_1214",
+   "price_source": "derived: median of 12 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Necklace of Flames",
@@ -3200,7 +3218,8 @@
     "Bonuses": "page: Quickness +7 pts; Axe +1 pts; Hammer +1 pts; Sword +1 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1902"
+   "Id_nb": "p165_item_1902",
+   "price_source": "derived: median of 20 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Rovers Pack",
@@ -3953,7 +3972,8 @@
     "Bonuses": "page: Dexterity +9 pts; Hits +15 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_8824"
+   "Id_nb": "p165_item_8824",
+   "price_source": "derived: median of 26 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Glowing Ultra- marine Stone",
@@ -4486,7 +4506,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from carbide_daingean_coif2 (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_nearahd_coif"
+   "Id_nb": "p165_item_pa_nearahd_coif",
+   "price_source": "derived: median of 13 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Coif",
@@ -4560,7 +4581,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Braided_Ivy_Ring (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_ether_ring"
+   "Id_nb": "p165_item_pa_ether_ring",
+   "price_source": "derived: median of 291 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Etheric Spirit Shackles",
@@ -4689,7 +4711,8 @@
     "Bonuses": "page: Blunt +1 pts; Parry +1 pts; Crush Resist +2 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_parthanon_fist"
+   "Id_nb": "p165_item_pa_parthanon_fist",
+   "price_source": "derived: median of 14 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Siabrian Raider's Head",
@@ -5485,7 +5508,8 @@
     "Bonuses": "page: Intelligence +4 pts; Piety +4 pts; Power +2 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_6448"
+   "Id_nb": "p165_item_6448",
+   "price_source": "derived: median of 39 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Caster's Missing Eye",
@@ -5722,7 +5746,8 @@
     "Bonuses": "page: Quickness +4 pts; Mending +1 pts; Cold Resist +6 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_9862"
+   "Id_nb": "p165_item_9862",
+   "price_source": "derived: median of 16 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Boots",
@@ -5835,7 +5860,8 @@
     "Bonuses": "page: Strength +3 pts; Quickness +6 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_woeful_chain_gloves"
+   "Id_nb": "p165_item_pa_woeful_chain_gloves",
+   "price_source": "derived: median of 16 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Gloves",
@@ -6475,7 +6501,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Magma_Imbued_Cloak (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_furlined_cloak"
+   "Id_nb": "p165_item_pa_furlined_cloak",
+   "price_source": "derived: median of 16 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Glittering Dust",
@@ -6736,7 +6763,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Dragonslayer_Woven_Robe_classic (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_7992"
+   "Id_nb": "p165_item_7992",
+   "price_source": "derived: median of 223 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Robe",
@@ -7027,7 +7055,8 @@
     "Bonuses": "page: Power +3 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1962"
+   "Id_nb": "p165_item_1962",
+   "price_source": "derived: median of 38 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Sulfuric Slicer",
@@ -7066,7 +7095,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from iron_boned_arms (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_1769"
+   "Id_nb": "p165_item_1769",
+   "price_source": "derived: median of 23 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Tattered Brown Gloves",
@@ -7122,7 +7152,8 @@
     "Bonuses": "page: Constitution +4 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1376"
+   "Id_nb": "p165_item_1376",
+   "price_source": "derived: median of 21 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Ursine Forged Scale",
@@ -7324,7 +7355,8 @@
     "Bonuses": "page: Constitution +2 pts; Dexterity +7 pts; Power +2 pts; Hits +9 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_woven_elemental_boots"
+   "Id_nb": "p165_item_pa_woven_elemental_boots",
+   "price_source": "derived: median of 19 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "APOA: Woven Elemental",
@@ -7349,7 +7381,8 @@
     "Bonuses": "page: Dexterity +4 pts; Quickness +2 pts; Intelligence +4 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_woven_elemental_gloves"
+   "Id_nb": "p165_item_pa_woven_elemental_gloves",
+   "price_source": "derived: median of 24 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "APOA: Woven Elemental",
@@ -8760,7 +8793,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from 3_Netherworldly_Scale_Hauberk (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_iridescent_sylph_hauberk"
+   "Id_nb": "p165_item_pa_iridescent_sylph_hauberk",
+   "price_source": "derived: median of 59 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Ivory Handled Skinning Knife",
@@ -9527,7 +9561,8 @@
     "Bonuses": "page: Dexterity +15 pts; Quickness +15 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4041"
+   "Id_nb": "p165_item_4041",
+   "price_source": "derived: median of 46 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Fiery Gauntlets",
@@ -9559,7 +9594,8 @@
     "Bonuses": "page: Quickness +15 pts; Strength +15 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4629"
+   "Id_nb": "p165_item_4629",
+   "price_source": "derived: median of 28 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Fiery Gauntlets",
@@ -9585,7 +9621,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Primal_Spore_Covered_Gauntlets (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_4042"
+   "Id_nb": "p165_item_4042",
+   "price_source": "derived: median of 56 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Fire",
@@ -9912,7 +9949,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from elm_staff (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_3450"
+   "Id_nb": "p165_item_3450",
+   "price_source": "derived: median of 133 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Pitted Fellwood Cudgel",
@@ -10690,7 +10728,8 @@
     "Bonuses": "page: Strength +18 pts; Hits +48 pts; Quickness +15 pts; Thrust Resist +6 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4384"
+   "Id_nb": "p165_item_4384",
+   "price_source": "derived: median of 43 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Tarnished Silver Earring",
@@ -11109,7 +11148,8 @@
     "Bonuses": "page: Empathy +15 pts; Quickness +18 pts; Nurture +3 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_shimmering_iridescent_sylph_druid_gloves"
+   "Id_nb": "p165_item_pa_shimmering_iridescent_sylph_druid_gloves",
+   "price_source": "derived: median of 55 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "It's …>",
@@ -11708,7 +11748,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1481"
+   "Id_nb": "p165_item_1481",
+   "price_source": "derived: median of 23 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bone Shard [22-25]",
@@ -11732,7 +11773,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1482"
+   "Id_nb": "p165_item_1482",
+   "price_source": "derived: median of 21 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bone Shard [22-25]",
@@ -11756,7 +11798,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_439"
+   "Id_nb": "p165_item_439",
+   "price_source": "derived: median of 15 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bone Shard [22-25]",
@@ -11780,7 +11823,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1265"
+   "Id_nb": "p165_item_1265",
+   "price_source": "derived: median of 20 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bone Shard [22-25]",
@@ -11804,7 +11848,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_1266"
+   "Id_nb": "p165_item_1266",
+   "price_source": "derived: median of 16 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Bottle of Blessed Oils",
@@ -12323,7 +12368,8 @@
     "Bonuses": "page: Dexterity +3 pts; Power +2 pts; Spirit Resist +2 %; Runecarving +29 lvls",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_wind_swept_staff"
+   "Id_nb": "p165_item_pa_wind_swept_staff",
+   "price_source": "derived: median of 66 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Woodeater Leg",
@@ -12359,7 +12405,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from cured_siluric_leather_boots (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_wormskin_boots"
+   "Id_nb": "p165_item_pa_wormskin_boots",
+   "price_source": "derived: median of 30 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Wormskin Leggings",
@@ -12929,7 +12976,8 @@
     "Bonuses": "page: Hits +12 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_faded_chain_silksteel_gloves"
+   "Id_nb": "p165_item_pa_faded_chain_silksteel_gloves",
+   "price_source": "derived: median of 19 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Faded Chain Silksteel",
@@ -12954,7 +13002,8 @@
     "Bonuses": "page: Hits +12 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_faded_chain_silksteel_leggings"
+   "Id_nb": "p165_item_pa_faded_chain_silksteel_leggings",
+   "price_source": "derived: median of 21 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Faerie Eye",
@@ -13535,7 +13584,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Belt of the Blackheart (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_4102"
+   "Id_nb": "p165_item_4102",
+   "price_source": "derived: median of 21 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Berserker's Jeweled Insignia",
@@ -14173,7 +14223,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Braided Ivy Belt (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_1463"
+   "Id_nb": "p165_item_1463",
+   "price_source": "derived: median of 35 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Brown Bear Pelt",
@@ -14791,7 +14842,8 @@
     "AllowedClasses": "page (Requires Class: Scout)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4607"
+   "Id_nb": "p165_item_4607",
+   "price_source": "derived: median of 73 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Vest of the Vile Dominion",
@@ -14817,7 +14869,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from 3_Vest_of_The_Veil_Warder (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_9127"
+   "Id_nb": "p165_item_9127",
+   "price_source": "derived: median of 51 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Vial of Spittle",
@@ -15006,7 +15059,8 @@
     "Bonuses": "page: Dexterity +4 pts; Quickness +3 pts; Heat Resist +4 %; Matter Resist +2 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_2847"
+   "Id_nb": "p165_item_2847",
+   "price_source": "derived: median of 18 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Adremel's Avernal Hammer",
@@ -16482,7 +16536,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from 2_Ice_Shadow_Crown (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_coral_crown"
+   "Id_nb": "p165_item_pa_coral_crown",
+   "price_source": "derived: median of 91 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Cornish Hen Feathers",
@@ -16632,7 +16687,8 @@
     "Bonuses": "page: Hits +33 pts; Strength +10 pts; Quickness +10 pts; Cold Resist -10 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_crown_of_the_darkheart"
+   "Id_nb": "p165_item_pa_crown_of_the_darkheart",
+   "price_source": "derived: median of 75 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Crushed Leaf",
@@ -17068,7 +17124,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from steel_gladius (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_roman_gladius"
+   "Id_nb": "p165_item_pa_roman_gladius",
+   "price_source": "derived: median of 8 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Glassalab",
@@ -17197,7 +17254,8 @@
     "Bonuses": "page: Dexterity +4 pts; Body Resist +6 %; Spirit Resist +6 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_gloves_of_living_flame"
+   "Id_nb": "p165_item_pa_gloves_of_living_flame",
+   "price_source": "derived: median of 16 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Glow Worm Carapace",
@@ -17333,7 +17391,8 @@
     "Bonuses": "page: Intelligence +4 pts; Dexterity -5 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_gnarled_staff"
+   "Id_nb": "p165_item_pa_gnarled_staff",
+   "price_source": "derived: median of 154 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Gnarling Lupine",
@@ -17843,7 +17902,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Sleeves_of_Forebearance (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_granite_seer_s_sleeves_of_matter"
+   "Id_nb": "p165_item_pa_granite_seer_s_sleeves_of_matter",
+   "price_source": "derived: median of 106 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Sling Stones",
@@ -17927,7 +17987,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from 2Dragonsworn_Kite_Shield_Mid (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_4233"
+   "Id_nb": "p165_item_4233",
+   "price_source": "derived: median of 487 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Snowy Wolverine Pelt",
@@ -18138,7 +18199,8 @@
     "AllowedClasses": "page (Requires Class: Shadowblade, Hunter)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4372"
+   "Id_nb": "p165_item_4372",
+   "price_source": "derived: median of 106 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Tarnished Spurs",
@@ -19445,7 +19507,8 @@
     "Bonuses": "page: Thrust +1 pts; Quickness +1 pts; Cold Resist +2 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_heart_piercer"
+   "Id_nb": "p165_item_pa_heart_piercer",
+   "price_source": "derived: median of 8 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Heavy Silver Chain",
@@ -19480,7 +19543,8 @@
     "Bonuses": "page: Quickness +3 pts; Sword +1 pts; Matter Resist +2 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_helm_of_future_visions"
+   "Id_nb": "p165_item_pa_helm_of_future_visions",
+   "price_source": "derived: median of 27 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Herald's Beaded Insignia",
@@ -19706,7 +19770,8 @@
     "Bonus": "page (Default Bonus)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_hound_tooth"
+   "Id_nb": "p165_item_pa_hound_tooth",
+   "price_source": "derived: median of 17 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Howling Stone of the Banshee",
@@ -20434,7 +20499,8 @@
     "Bonuses": "page: Spear +5 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_2539"
+   "Id_nb": "p165_item_2539",
+   "price_source": "derived: median of 20 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Mistletoe Leaf",
@@ -22663,7 +22729,8 @@
     "ProcChance": "server default (0 = DOL default proc chance; page gives none)",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_4162"
+   "Id_nb": "p165_item_4162",
+   "price_source": "derived: median of 67 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Stiletto of Night [H]",
@@ -22802,7 +22869,8 @@
     "Bonuses": "page: Constitution +15 pts; Dexterity +3 pts; Slash Resist +2 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_2573"
+   "Id_nb": "p165_item_2573",
+   "price_source": "derived: median of 8 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Stormcaller Woeful Gloves",
@@ -23198,7 +23266,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from gemofspiritabhorrent (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_7526"
+   "Id_nb": "p165_item_7526",
+   "price_source": "derived: median of 47 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Woeful Chain Coif",
@@ -23797,7 +23866,8 @@
     "Bonuses": "page: Runecarving +43 lvls; Runecarving +6 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_runic_rigid_orm_spine"
+   "Id_nb": "p165_item_pa_runic_rigid_orm_spine",
+   "price_source": "derived: median of 469 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Runic Clay Axe",
@@ -24071,7 +24141,8 @@
     "Bonuses": "page: Intelligence +4 pts; Power +4 pts; Heat Resist +4 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_3153"
+   "Id_nb": "p165_item_3153",
+   "price_source": "derived: median of 34 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Serrated Cleaver",
@@ -24770,7 +24841,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Dragontooth (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_9863"
+   "Id_nb": "p165_item_9863",
+   "price_source": "derived: median of 21 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Tomte Axe",
@@ -24894,7 +24966,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from fine_alloy_spiked_axe (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_troika_s_cursed_axe"
+   "Id_nb": "p165_item_pa_troika_s_cursed_axe",
+   "price_source": "derived: median of 14 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Troll Skull",
@@ -24979,7 +25052,8 @@
     "Bonuses": "page: Dexterity +10 pts; Constitution +6 pts; Slash Resist +6 %; Hits +21 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_twisted_forestdweller_boots"
+   "Id_nb": "p165_item_pa_twisted_forestdweller_boots",
+   "price_source": "derived: median of 38 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Twisted Lusus Boots",
@@ -25004,7 +25078,8 @@
     "Bonuses": "page: Dexterity +10 pts; Quickness +6 pts; Slash Resist +6 %; Hits +21 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_twisted_lusus_boots"
+   "Id_nb": "p165_item_pa_twisted_lusus_boots",
+   "price_source": "derived: median of 38 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Twisted Lusus Boots [58]",
@@ -25758,7 +25833,8 @@
     "Bonuses": "page: Constitution +4 pts; Strength +3 pts; Body Resist +4 %; Cold Resist +4 %",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_sheet_of_aged_beech_bark"
+   "Id_nb": "p165_item_pa_sheet_of_aged_beech_bark",
+   "price_source": "derived: median of 73 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Shell",
@@ -25890,7 +25966,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from p165_item_4518 (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_shining_sheeroe_coif"
+   "Id_nb": "p165_item_pa_shining_sheeroe_coif",
+   "price_source": "derived: median of 34 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Shining Sheeroe Gloves",
@@ -25915,7 +25992,8 @@
     "Bonuses": "page: Quickness +9 pts; Constitution +6 pts; Strength +6 pts",
     "Price": "none: the page gives no price and no sibling sells at the same level"
    },
-   "Id_nb": "p165_item_pa_shining_sheeroe_gloves"
+   "Id_nb": "p165_item_pa_shining_sheeroe_gloves",
+   "price_source": "derived: median of 33 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Shiny Trinket",
@@ -26118,7 +26196,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from Evil_Eye (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_silvered_eye"
+   "Id_nb": "p165_item_pa_silvered_eye",
+   "price_source": "derived: median of 249 existing items of the same type and slot, level +-2"
   },
   {
    "atlas_name": "Silvermine Rank Insignia",
@@ -26203,7 +26282,8 @@
     "Price": "none: the page gives no price and no sibling sells at the same level",
     "flags": "from alloy_battle_axe (IsPickable/IsDropable/CanDropAsLoot/IsTradable/MaxCount/PackSize)"
    },
-   "Id_nb": "p165_item_pa_slaver_axe"
+   "Id_nb": "p165_item_pa_slaver_axe",
+   "price_source": "derived: median of 17 existing items of the same type and slot, level +-2"
   }
  ],
  "spawns": [
@@ -31353,20 +31433,8 @@
    "monster": "Agidad",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 10,
+   "drop_count": 7,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     5
-    ],
-    [
-     "Holy_Crushed_Breastplate",
-     3
-    ],
-    [
-     "Putrescent_Leggings",
-     5
-    ],
     [
      "p165_item_4384",
      3
@@ -31377,12 +31445,8 @@
    "monster": "Ailbe",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ],
     [
      "p165_prima_deamhan_hound_claw",
      60
@@ -31469,18 +31533,10 @@
    "monster": "Aodhan",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 6,
    "added": [
     [
-     "Left_Bracer_of_Skill",
-     1
-    ],
-    [
      "Right_Bracer_of_Skill",
-     1
-    ],
-    [
-     "Siabrian_Crusher",
      1
     ],
     [
@@ -31525,12 +31581,8 @@
    "monster": "Arawnite headhunter",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
-    [
-     "p165_drop_1734",
-     1
-    ],
     [
      "p165_prima_carved_bone_key",
      50
@@ -31822,10 +31874,6 @@
     [
      "p165_item_2865",
      3
-    ],
-    [
-     "p165_item_7992",
-     3
     ]
    ]
   },
@@ -31857,10 +31905,6 @@
     ],
     [
      "p165_item_2865",
-     3
-    ],
-    [
-     "p165_item_7992",
      3
     ]
    ]
@@ -31913,12 +31957,8 @@
    "monster": "Basher",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "p165_prima_cyclops_ear",
-     60
-    ],
     [
      "p165_prima_cyclops_toes",
      80
@@ -31929,12 +31969,8 @@
    "monster": "Beater",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "p165_prima_cyclops_ear",
-     60
-    ],
     [
      "p165_prima_cyclops_toes",
      80
@@ -31985,18 +32021,10 @@
    "monster": "Bjornvarg",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
     [
-     "Ancient_Granite_Stone",
-     3
-    ],
-    [
      "Shimmering_Golden_Alloy_Great_Spear",
-     5
-    ],
-    [
-     "p165_item_4974",
      5
     ]
    ]
@@ -32062,30 +32090,6 @@
    ]
   },
   {
-   "monster": "Breadlebane",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 4,
-   "added": [
-    [
-     "bloodstaff",
-     1
-    ],
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_pa_mind_staff",
-     1
-    ],
-    [
-     "spiritstaff",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "Bright Flame",
    "created": false,
    "old_drop_count": 2,
@@ -32117,14 +32121,10 @@
    "monster": "Brika",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "p165_item_9860",
+     "p165_item_9862",
      1
     ],
     [
@@ -32149,14 +32149,10 @@
    "monster": "Brimstone",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "p165_item_2847",
-     1
-    ],
-    [
-     "p165_item_9860",
      1
     ],
     [
@@ -32169,12 +32165,8 @@
    "monster": "Brodic",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
-    [
-     "p165_item_pa_roman_gladius",
-     1
-    ],
     [
      "p165_prima_bronze_buckled_roman_belt",
      5
@@ -32202,18 +32194,6 @@
     [
      "p165_uth_2282",
      20
-    ]
-   ]
-  },
-  {
-   "monster": "Brut",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 2,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
     ]
    ]
   },
@@ -32253,7 +32233,7 @@
    "monster": "Caradawc",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 5,
    "added": [
     [
      "Black_Sapphire",
@@ -32262,14 +32242,6 @@
     [
      "Chrysoberyl",
      5
-    ],
-    [
-     "Shimmering_Raven_Clan_Battle_Sword",
-     1
-    ],
-    [
-     "Shimmering_Raven_Clan_Skewer",
-     1
     ],
     [
      "p165_drop_6974",
@@ -32377,12 +32349,8 @@
    "monster": "Chieftain Dergal",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_prima_flask_of_elven_spirits",
      10
@@ -32401,12 +32369,8 @@
    "monster": "Cirfans",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 4,
    "added": [
-    [
-     "Adder_Fang",
-     2
-    ],
     [
      "p165_prima_cornwall_drake_meat",
      40
@@ -32418,10 +32382,6 @@
     [
      "p165_prima_pristine_cornwall_drake_skin",
      45
-    ],
-    [
-     "p165_uth_1302",
-     50
     ]
    ]
   },
@@ -32442,34 +32402,6 @@
     [
      "p165_prima_obsidian",
      20
-    ]
-   ]
-  },
-  {
-   "monster": "Clywd",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 12,
-   "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     3
-    ],
-    [
-     "Jerkin_of_Opposition",
-     3
-    ],
-    [
-     "Putrescent_Leggings",
-     3
-    ],
-    [
-     "p165_item_4974",
-     3
-    ],
-    [
-     "p165_item_9860",
-     3
     ]
    ]
   },
@@ -32533,12 +32465,8 @@
    "monster": "Cornish giant",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "Giant_Ring_of_Wits",
-     1
-    ],
     [
      "p165_prima_dented_pewter_urn",
      20
@@ -32561,12 +32489,8 @@
    "monster": "Cornwall Drake",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "Brilliant_Long_Drake_Fang",
-     2
-    ],
     [
      "p165_prima_cornwall_drake_claw",
      26
@@ -32591,18 +32515,6 @@
    "old_drop_count": 12,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_agate_studded_waterskin",
      50
@@ -32753,16 +32665,8 @@
    "monster": "Desukva",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 9,
+   "drop_count": 7,
    "added": [
-    [
-     "Ageless_Bloodbound_Cap",
-     3
-    ],
-    [
-     "p165_item_2865",
-     5
-    ],
     [
      "p165_item_4974",
      5
@@ -32853,16 +32757,8 @@
    "monster": "Eildird",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 5,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     5
-    ],
-    [
-     "Jerkin_of_Opposition",
-     5
-    ],
     [
      "Timorous_Drakulv_Ebon_Leggings",
      5
@@ -32928,10 +32824,6 @@
      20
     ],
     [
-     "p165_item_2679",
-     1
-    ],
-    [
      "p165_prima_champion_royal_guardian_chevron",
      75
     ],
@@ -32980,10 +32872,6 @@
      10
     ],
     [
-     "p165_item_2679",
-     1
-    ],
-    [
      "p165_prima_ellyll_silken_hair",
      50
     ],
@@ -33007,10 +32895,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_prima_ellyll_silken_hair",
      50
@@ -33072,10 +32956,6 @@
    "drop_count": 12,
    "added": [
     [
-     "delugeddrum",
-     1
-    ],
-    [
      "p165_prima_ellyll_silken_hair",
      50
     ],
@@ -33104,10 +32984,6 @@
      10
     ],
     [
-     "p165_item_2679",
-     1
-    ],
-    [
      "p165_prima_gold_threaded_sash",
      50
     ],
@@ -33125,14 +33001,10 @@
    "monster": "Envy Drake Dorga",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
     [
      "p165_prima_envy_drakeling_hide",
-     68
-    ],
-    [
-     "p165_prima_envy_drakeling_tail",
      68
     ]
    ]
@@ -33345,14 +33217,10 @@
    "monster": "Fomorian grabeye",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "p165_item_2939",
-     2
-    ],
-    [
-     "p165_item_3205",
      2
     ],
     [
@@ -33373,7 +33241,7 @@
    "monster": "Fomorian grencher",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
      "enchanter",
@@ -33381,10 +33249,6 @@
     ],
     [
      "p165_item_3203",
-     2
-    ],
-    [
-     "p165_item_3206",
      2
     ],
     [
@@ -33429,10 +33293,6 @@
    "added": [
     [
      "3_Worn_Loyalist_Scale_Coif",
-     1
-    ],
-    [
-     "Loyalist_Scalemail_Boots",
      1
     ],
     [
@@ -33501,27 +33361,19 @@
    "monster": "Glimmer Arios",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 10,
+   "drop_count": 8,
    "added": [
-    [
-     "Glimmer_Striker_Ring",
-     5
-    ],
     [
      "Midnight Marauder Jerkin",
      5
     ],
     [
-     "Putrescent_Leggings",
+     "Midnight Marauder Sleeves",
      5
     ],
     [
      "Shimmering_Moonstrike_Mace",
      3
-    ],
-    [
-     "p165_item_9860",
-     5
     ],
     [
      "shimmering_Glimmer_Wrath_Great_Hammer",
@@ -33537,26 +33389,14 @@
    "monster": "Glimmer Kryl",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 5,
    "added": [
     [
      "3_Burnished_Shanshee_Boots",
      5
     ],
     [
-     "Potent_Deathwatcher_Chain",
-     3
-    ],
-    [
      "Shimmering_Deathmoon_Rapier",
-     3
-    ],
-    [
-     "Warshadow_Staff_of_the_Moon",
-     3
-    ],
-    [
-     "p165_item_9860",
      3
     ],
     [
@@ -33597,22 +33437,14 @@
    "monster": "Glimmer Stikil",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 11,
+   "drop_count": 9,
    "added": [
-    [
-     "Glimmer_Striker_Ring",
-     5
-    ],
     [
      "Midnight Marauder Jerkin",
      5
     ],
     [
      "Midnight Marauder Sleeves",
-     5
-    ],
-    [
-     "Putrescent_Leggings",
      5
     ],
     [
@@ -33629,27 +33461,19 @@
    "monster": "Glimmer Zanllvi",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
-    [
-     "Glimmer_Striker_Ring",
-     5
-    ],
     [
      "Midnight Marauder Jerkin",
      5
     ],
     [
-     "Putrescent_Leggings",
+     "Midnight Marauder Sleeves",
      5
     ],
     [
      "Shimmering_Moonstrike_Mace",
      3
-    ],
-    [
-     "p165_item_9860",
-     5
     ],
     [
      "shimmering_Glimmer_Wrath_Great_Hammer",
@@ -33658,26 +33482,6 @@
     [
      "shimmering_Glimmerstrike_Crusher",
      5
-    ]
-   ]
-  },
-  {
-   "monster": "Goborchen Vindicator",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 3,
-   "added": [
-    [
-     "Shimmering_Vindicator's_Staff_of_Enchantments",
-     1
-    ],
-    [
-     "Vindicator's_Staff_of_Light",
-     1
-    ],
-    [
-     "Vindicator's_Staff_of_Mana",
-     1
     ]
    ]
   },
@@ -33694,22 +33498,6 @@
     [
      "p165_prima_pristine_fylgja_pelt",
      2
-    ]
-   ]
-  },
-  {
-   "monster": "Great Worg",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 4,
-   "added": [
-    [
-     "p165_uth_2330",
-     8
-    ],
-    [
-     "p165_uth_2818",
-     8
     ]
    ]
   },
@@ -33738,38 +33526,6 @@
     [
      "p165_uth_188",
      5
-    ]
-   ]
-  },
-  {
-   "monster": "Grimbuld",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 7,
-   "added": [
-    [
-     "Bow_of_the_Stonewatch",
-     5
-    ],
-    [
-     "Gossamer_Seolc_Boots",
-     5
-    ],
-    [
-     "ilmenite_crafted_crossbow",
-     3
-    ]
-   ]
-  },
-  {
-   "monster": "Grimnought Ejnar",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "Ghastly_Mendicant_Gem",
-     1
     ]
    ]
   },
@@ -33809,7 +33565,7 @@
    "monster": "Grurk",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "p165_drop_7005",
@@ -33817,10 +33573,6 @@
     ],
     [
      "p165_drop_7006",
-     1
-    ],
-    [
-     "p165_item_2865",
      1
     ],
     [
@@ -33861,16 +33613,8 @@
    "monster": "Guardian Cahal",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 5,
    "added": [
-    [
-     "Noble_Lord_Pendant",
-     1
-    ],
-    [
-     "Royal_Guardian_Pendant",
-     1
-    ],
     [
      "p165_prima_diamond_dust",
      35
@@ -33933,12 +33677,8 @@
    "monster": "Gunnolfr",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "p165_item_2865",
-     1
-    ],
     [
      "p165_prima_blood_filled_crystal",
      19
@@ -33997,15 +33737,11 @@
    "monster": "Haglion",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "Noble_Wanderer's_Axe",
      1
-    ],
-    [
-     "p165_prima_black_bear_paw",
-     50
     ],
     [
      "p165_prima_werewolf_hide",
@@ -34065,12 +33801,8 @@
    "monster": "Headsman Yantu",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
-    [
-     "Wolftooth_Hauberk",
-     1
-    ],
     [
      "p165_uth_3461",
      70
@@ -34165,16 +33897,8 @@
    "monster": "Hugrath Wormly",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 6,
    "added": [
-    [
-     "Polished Mittens of Eldspar",
-     5
-    ],
-    [
-     "p165_item_9860",
-     5
-    ],
     [
      "p165_prima_small_silver_nugget",
      10
@@ -34192,7 +33916,7 @@
    "drop_count": 5,
    "added": [
     [
-     "Shimmering_Gnawed_Bone_165l12",
+     "Shimmering_Gnawed_Bone_165l9",
      70
     ],
     [
@@ -34213,10 +33937,10 @@
    "monster": "Ifor",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l27",
      1
     ],
     [
@@ -34229,10 +33953,6 @@
     ],
     [
      "p165_prima_severed_bwgan_hand",
-     5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
      5
     ]
    ]
@@ -34257,10 +33977,10 @@
    "monster": "Islwyn",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l27",
      1
     ],
     [
@@ -34277,10 +33997,6 @@
     ],
     [
      "p165_prima_severed_bwgan_hand",
-     5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
      5
     ]
    ]
@@ -34301,20 +34017,8 @@
    "monster": "Kaen Kedger",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 6,
    "added": [
-    [
-     "Kedger_Recurve_Bow",
-     1
-    ],
-    [
-     "Lute_of_Sacred_Hymns",
-     1
-    ],
-    [
-     "delugeddrum",
-     1
-    ],
     [
      "p165_prima_large_fish",
      80
@@ -34466,29 +34170,13 @@
    ]
   },
   {
-   "monster": "Kor",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 12,
-   "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     5
-    ]
-   ]
-  },
-  {
    "monster": "Kunsgnos",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "Paradisical_Cloak",
-     1
-    ],
-    [
-     "Supernal_Cloak",
      1
     ],
     [
@@ -34713,7 +34401,7 @@
    "monster": "Lord Elidyn",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
     [
      "Alexandrite",
@@ -34722,10 +34410,6 @@
     [
      "p165_drop_6976",
      15
-    ],
-    [
-     "p165_item_2679",
-     1
     ],
     [
      "p165_prima_chevron_of_the_royal_lord",
@@ -34806,30 +34490,6 @@
     [
      "p165_prima_changeling_tongue",
      35
-    ]
-   ]
-  },
-  {
-   "monster": "Malroch the Cook",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 5,
-   "added": [
-    [
-     "Luminous_Malrochs_Cleaver",
-     10
-    ]
-   ]
-  },
-  {
-   "monster": "Manstrale",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "2_GG_Coif",
-     1
     ]
    ]
   },
@@ -34925,7 +34585,7 @@
    "monster": "mithra acolyte",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
     [
      "p165_prima_bottle_of_blessed_oils",
@@ -34948,15 +34608,7 @@
      15
     ],
     [
-     "p165_prima_high_priest_s_bracer_of_defense",
-     6
-    ],
-    [
      "p165_prima_high_priest_s_gem_of_rejuvenation",
-     6
-    ],
-    [
-     "p165_prima_high_priest_s_golden_prayer_chain",
      6
     ],
     [
@@ -35029,12 +34681,8 @@
    "monster": "Morana",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
-    [
-     "Ornate_Bracer",
-     1
-    ],
     [
      "p165_prima_bag_of_dark_powder",
      35
@@ -35121,24 +34769,8 @@
    "monster": "Murgar",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 3,
    "added": [
-    [
-     "Boogieman_Mantle",
-     1
-    ],
-    [
-     "Eagle_Mantle",
-     1
-    ],
-    [
-     "Goblin_Mantle",
-     1
-    ],
-    [
-     "Horse_Mantle",
-     1
-    ],
     [
      "p165_prima_pooka_hair",
      80
@@ -35237,20 +34869,8 @@
    "monster": "Nasco",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 4,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "Waylayer_Shillelagh",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_bandit_mask",
      70
@@ -35301,12 +34921,8 @@
    "monster": "Neese",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "General_Pendant",
-     1
-    ],
     [
      "Noble_Lord_Pendant",
      1
@@ -35329,16 +34945,8 @@
    "monster": "Niy the Overseer",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 4,
    "added": [
-    [
-     "Gossamer_Mentalist_Robe",
-     1
-    ],
-    [
-     "Gossamer_Voided_Robe",
-     1
-    ],
     [
      "enchanter",
      1
@@ -35357,18 +34965,10 @@
    "monster": "Norseman chopper",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 6,
    "added": [
     [
-     "Left_Bracer_of_Skill",
-     1
-    ],
-    [
      "Right_Bracer_of_Skill",
-     1
-    ],
-    [
-     "Siabrian_Crusher",
      1
     ],
     [
@@ -35390,18 +34990,6 @@
     [
      "p165_prima_siabrian_raider_s_head",
      2
-    ]
-   ]
-  },
-  {
-   "monster": "Olag",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
     ]
    ]
   },
@@ -35461,15 +35049,11 @@
    "monster": "Pebble",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
     [
      "p165_prima_chunk_of_copper",
      60
-    ],
-    [
-     "p165_prima_chunk_of_silver",
-     5
     ],
     [
      "p165_prima_fine_unworked_stone",
@@ -35486,22 +35070,6 @@
     [
      "p165_prima_unworked_stone",
      45
-    ]
-   ]
-  },
-  {
-   "monster": "Pellinistra",
-   "created": false,
-   "old_drop_count": 5,
-   "drop_count": 7,
-   "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
     ]
    ]
   },
@@ -35549,12 +35117,8 @@
    "monster": "Piercer",
    "created": false,
    "old_drop_count": 6,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_prima_amber_beaded_necklace",
      1
@@ -35577,12 +35141,8 @@
    "monster": "Priest Thaxtix",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "Spider-claw_Arrows",
      10
@@ -35725,18 +35285,10 @@
    "monster": "Rotting corpse",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 5,
+   "drop_count": 3,
    "added": [
     [
      "Bevards_Ghastly_Chain",
-     1
-    ],
-    [
-     "Ghostly_Gem",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
      1
     ]
    ]
@@ -35745,7 +35297,7 @@
    "monster": "Sacrificer Harish",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
     [
      "PittedOakenWoodenShield",
@@ -35758,10 +35310,6 @@
     [
      "p165_item_1074",
      6
-    ],
-    [
-     "p165_item_4974",
-     1
     ],
     [
      "p165_prima_bottle_of_elderberry_wine",
@@ -35893,12 +35441,8 @@
    "monster": "Scurry",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "Lustrous_Crude_Leather_Sleeves",
-     2
-    ],
     [
      "p165_prima_scragger_s_pouch",
      80
@@ -36005,10 +35549,10 @@
    "monster": "Siemus Tracksniffer",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l27",
      1
     ],
     [
@@ -36017,10 +35561,6 @@
     ],
     [
      "p165_prima_severed_bwgan_hand",
-     5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
      5
     ]
    ]
@@ -36057,12 +35597,8 @@
    "monster": "Sjor",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "p165_prima_chiller_head",
-     2
-    ],
     [
      "p165_prima_frosty_leg",
      18
@@ -36134,27 +35670,11 @@
    ]
   },
   {
-   "monster": "Smack",
+   "monster": "Smarta",
    "created": true,
    "old_drop_count": 1,
    "drop_count": 1,
    "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ]
-   ]
-  },
-  {
-   "monster": "Smarta",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "p165_drop_1101",
-     2
-    ],
     [
      "p165_prima_glowing_chainless_shackle",
      30
@@ -36201,12 +35721,8 @@
    "monster": "Soulfear",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
-    [
-     "p165_item_pa_woven_elemental_cap",
-     1
-    ],
     [
      "p165_prima_cyhraeth_hair",
      80
@@ -36265,16 +35781,8 @@
    "monster": "Stonecrush demolisher",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 5,
    "added": [
-    [
-     "Putrescent_Leggings",
-     2
-    ],
-    [
-     "p165_item_4974",
-     2
-    ],
     [
      "p165_prima_stonefinger_necklace",
      6
@@ -36292,10 +35800,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "p165_prima_bag_of_ilmenite_powder",
      12
     ],
@@ -36309,19 +35813,11 @@
    "monster": "Stonecrush rockgrinder",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 8,
    "added": [
-    [
-     "Shimmering_Hammer_of_Crushing_Might",
-     2
-    ],
     [
      "Shimmering_Stone_Breaker",
      1
-    ],
-    [
-     "p165_item_pa_nearahd_coif",
-     2
     ],
     [
      "p165_prima_cracked_ireon_ring",
@@ -36357,12 +35853,8 @@
    "monster": "Strykr",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_uth_1793",
      18
@@ -36397,14 +35889,10 @@
    "monster": "Su'Valkur",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "Forgotten_Svartalf_Sword",
-     1
-    ],
-    [
-     "p165_item_2865",
      1
     ],
     [
@@ -36441,14 +35929,10 @@
    "monster": "Ta'Thaliur",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "Forgotten_Svartalf_Sword",
-     1
-    ],
-    [
-     "p165_item_4974",
      1
     ],
     [
@@ -36493,7 +35977,7 @@
    "monster": "Thegn Aki",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
      "p165_prima_amber_beaded_necklace",
@@ -36506,10 +35990,6 @@
     [
      "p165_prima_polished_wooden_bowl",
      11
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ],
     [
      "p165_prima_valkyrie_figurine",
@@ -36621,12 +36101,8 @@
    "monster": "Tric",
    "created": false,
    "old_drop_count": 5,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_prima_faerie_drakes_rainbow_scale",
      60
@@ -36649,12 +36125,8 @@
    "monster": "Troika",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "Troikas_Enchanted_Ring",
-     1
-    ],
     [
      "p165_item_pa_troika_s_cursed_axe",
      1
@@ -36674,18 +36146,6 @@
     [
      "p165_prima_smooth_blue_stone",
      80
-    ]
-   ]
-  },
-  {
-   "monster": "Tusker",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 3,
-   "added": [
-    [
-     "p165_uth_2733",
-     60
     ]
    ]
   },
@@ -36838,18 +36298,6 @@
    ]
   },
   {
-   "monster": "Valfanar",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "p165_uth_4352",
-     2
-    ]
-   ]
-  },
-  {
    "monster": "Vefyn",
    "created": false,
    "old_drop_count": 2,
@@ -36897,10 +36345,14 @@
    "monster": "Vindvasen",
    "created": false,
    "old_drop_count": 6,
-   "drop_count": 9,
+   "drop_count": 10,
    "added": [
     [
      "Wind_Swept_Pants",
+     1
+    ],
+    [
+     "Wind_Swept_Vest",
      1
     ],
     [
@@ -36949,23 +36401,15 @@
    "monster": "Vixitr",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
+     "Svartalf_Crafted_Belt",
+     1
     ],
     [
      "p165_prima_arachite_carapace",
      10
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ],
     [
      "p165_prima_small_arachite_chitin_plates",
@@ -37201,12 +36645,8 @@
    "monster": "Yadnik",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "Softened_Bark_Frock",
-     1
-    ],
     [
      "p165_prima_sheet_of_shimmering_bark",
      9
@@ -37221,12 +36661,8 @@
    "monster": "Ykxat",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "Spider-claw_Arrows",
      8
@@ -37400,14 +36836,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Granny's_Kettle",
-     1
-    ],
-    [
-     "p165_prima_august_levian_al_pelt",
-     3
-    ],
-    [
      "p165_prima_exotic_herbs",
      2
     ],
@@ -37418,10 +36846,6 @@
     [
      "p165_prima_luminous_golden_flower",
      6
-    ],
-    [
-     "p165_uth_5422",
-     1
     ]
    ]
   },
@@ -37556,8 +36980,8 @@
    "drop_count": 12,
    "added": [
     [
-     "2_WS_Vest",
-     2
+     "Svartalf_Crafted_Belt",
+     1
     ],
     [
      "p165_prima_arachite_carapace",
@@ -37566,10 +36990,6 @@
     [
      "p165_prima_husker_s_silksteel_cutters",
      35
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -37580,24 +37000,12 @@
    "drop_count": 12,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
-    ],
-    [
      "p165_prima_arachite_carapace",
      10
     ],
     [
      "p165_prima_impaler_s_barbed_leg",
      32
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -37608,20 +37016,8 @@
    "drop_count": 12,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
-    ],
-    [
      "p165_prima_blood_rune_krigare_carapace",
      30
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -37632,24 +37028,12 @@
    "drop_count": 12,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
-    ],
-    [
      "p165_prima_polished_blood_runed_tablets",
      25
     ],
     [
      "p165_prima_prelate_s_polished_carapace",
      10
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -37708,20 +37092,12 @@
    "drop_count": 12,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
+     "Svartalf_Crafted_Belt",
+     1
     ],
     [
      "p165_prima_arachite_carapace",
      10
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ],
     [
      "p165_prima_small_arachite_chitin_plates",
@@ -37735,10 +37111,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "Spider-claw_Arrows",
      5
@@ -37904,27 +37276,11 @@
      1
     ],
     [
-     "Ethereal_Gem_of_the_Sky",
-     1
-    ],
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "Shimmering_Gossamer_Seolc_Sleeves",
      1
     ],
     [
      "midnight vengeance falcata",
-     1
-    ],
-    [
-     "p165_item_2865",
-     1
-    ],
-    [
-     "p165_item_7992",
      1
     ],
     [
@@ -37941,12 +37297,8 @@
    "monster": "azure banisher",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     2
-    ],
     [
      "p165_item_pa_shining_sheeroe_coif",
      2
@@ -37967,18 +37319,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_sky_worshipper_totem",
      15
@@ -38122,18 +37462,6 @@
    ]
   },
   {
-   "monster": "bantam spectre",
-   "created": false,
-   "old_drop_count": 6,
-   "drop_count": 7,
-   "added": [
-    [
-     "spectral_essence",
-     40
-    ]
-   ]
-  },
-  {
    "monster": "barca",
    "created": false,
    "old_drop_count": 2,
@@ -38241,12 +37569,8 @@
    "monster": "black badger",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_black_badger_claw",
      68
@@ -38269,15 +37593,11 @@
    "monster": "black bear",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
      "p165_prima_black_bear_claw",
      80
-    ],
-    [
-     "p165_prima_black_bear_paw",
-     50
     ],
     [
      "p165_prima_black_bear_pelt",
@@ -38453,12 +37773,8 @@
    "monster": "bleeder",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
-    [
-     "p165_item_1365",
-     1
-    ],
     [
      "p165_prima_blackened_silver_locket",
      29
@@ -38595,10 +37911,6 @@
    "old_drop_count": 10,
    "drop_count": 12,
    "added": [
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
     [
      "p165_prima_amber_beaded_necklace",
      1
@@ -38808,10 +38120,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "p165_prima_amber_beaded_necklace",
      5
     ],
@@ -38822,10 +38130,6 @@
     [
      "p165_prima_polished_wooden_bowl",
      8
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ],
     [
      "p165_prima_valkyrie_figurine",
@@ -38845,7 +38149,7 @@
    "monster": "blodfelag thralldriver",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
     [
      "p165_prima_amber_beaded_necklace",
@@ -38858,10 +38162,6 @@
     [
      "p165_prima_polished_wooden_bowl",
      21
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ],
     [
      "p165_prima_valkyrie_figurine",
@@ -38955,10 +38255,6 @@
    "old_drop_count": 8,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_prima_amber_beaded_necklace",
      1
@@ -39213,12 +38509,8 @@
    "monster": "boulder imp",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 5,
    "added": [
-    [
-     "Round_Chert",
-     10
-    ],
     [
      "p165_drop_7004",
      1
@@ -39232,16 +38524,8 @@
      30
     ],
     [
-     "p165_prima_rock_imp_hand",
-     30
-    ],
-    [
      "p165_prima_rock_imp_head",
      30
-    ],
-    [
-     "p165_prima_thin_flint_chert",
-     10
     ],
     [
      "p165_uth_118",
@@ -39429,15 +38713,11 @@
    "monster": "bwca",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
     [
      "Bucca_Silver_Mirror",
      9
-    ],
-    [
-     "Smoldering_Robes",
-     1
     ]
    ]
   },
@@ -39445,7 +38725,7 @@
    "monster": "bwgan",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
     [
      "Chrome_Diopside",
@@ -39470,10 +38750,6 @@
     [
      "p165_prima_severed_bwgan_hand",
      5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
-     5
     ]
    ]
   },
@@ -39481,7 +38757,7 @@
    "monster": "bwgan elder",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
     [
      "p165_drop_6987",
@@ -39493,10 +38769,6 @@
     ],
     [
      "p165_prima_elder_head",
-     5
-    ],
-    [
-     "p165_prima_rock_imp_hand",
      5
     ],
     [
@@ -39512,7 +38784,7 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_drop_6988",
+     "p165_drop_6988_165l24",
      1
     ],
     [
@@ -39538,10 +38810,6 @@
     [
      "p165_prima_severed_bwgan_hand",
      5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
-     5
     ]
    ]
   },
@@ -39549,7 +38817,7 @@
    "monster": "bwgan horde leader",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "p165_drop_6994",
@@ -39566,10 +38834,6 @@
     [
      "p165_prima_severed_bwgan_hand",
      5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
-     5
     ]
    ]
   },
@@ -39577,7 +38841,7 @@
    "monster": "bwgan hunter",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
     [
      "Arrow_of_the_Bwgan",
@@ -39589,10 +38853,6 @@
     ],
     [
      "p165_prima_severed_bwgan_hand",
-     5
-    ],
-    [
-     "p165_prima_severed_bwgan_leg",
      5
     ]
    ]
@@ -39697,12 +38957,8 @@
    "monster": "carrion drake",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
-    [
-     "Shimmering_Gnawed_Bone_165l12",
-     65
-    ],
     [
      "p165_prima_carrion_drake_tongue",
      45
@@ -39781,12 +39037,8 @@
    "monster": "cave bear",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "p165_prima_shape_changer_s_tooth",
-     75
-    ],
     [
      "p165_uth_4872",
      2
@@ -39921,7 +39173,7 @@
    "monster": "cave viper",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
     [
      "p165_prima_cave_viper_meat",
@@ -39934,10 +39186,6 @@
     [
      "p165_prima_pristine_cave_viper_skin",
      2
-    ],
-    [
-     "p165_prima_shape_changer_s_tooth",
-     75
     ]
    ]
   },
@@ -40006,18 +39254,6 @@
     [
      "p165_prima_unworked_stone",
      90
-    ]
-   ]
-  },
-  {
-   "monster": "chthonian crawler",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "DiamondSeal",
-     11
     ]
    ]
   },
@@ -40181,24 +39417,8 @@
    "monster": "cliff dweller spearman",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 4,
    "added": [
-    [
-     "Lute_of_Sacred_Hymns",
-     1
-    ],
-    [
-     "Shimmering_Raven_Clan_Skewer",
-     1
-    ],
-    [
-     "delugeddrum",
-     1
-    ],
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_prima_carved_granite_bracer",
      57
@@ -40498,18 +39718,6 @@
    ]
   },
   {
-   "monster": "crusher",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 10,
-   "added": [
-    [
-     "2_SLS_Boots",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "crypt spider",
    "created": false,
    "old_drop_count": 1,
@@ -40614,38 +39822,6 @@
    ]
   },
   {
-   "monster": "cursed mora dancer",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 3,
-   "added": [
-    [
-     "Cursed_Mora_Ring",
-     1
-    ],
-    [
-     "Scroll_of_Eternal_Sorrow",
-     13
-    ]
-   ]
-  },
-  {
-   "monster": "cursed mora weeper",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "Cursed_Mora_Ring",
-     1
-    ],
-    [
-     "Scroll_of_Eternal_Sorrow",
-     13
-    ]
-   ]
-  },
-  {
    "monster": "cursed necyomancer",
    "created": true,
    "old_drop_count": 1,
@@ -40654,26 +39830,6 @@
     [
      "SapphireSeal",
      16
-    ]
-   ]
-  },
-  {
-   "monster": "cursed spirit",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 12,
-   "added": [
-    [
-     "Cursed_Mora_Ring",
-     1
-    ],
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "p165_item_2865",
-     1
     ]
    ]
   },
@@ -40740,10 +39896,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_pa_woven_elemental_cap",
-     1
-    ],
-    [
      "p165_prima_cyhraeth_hair",
      30
     ],
@@ -40770,18 +39922,6 @@
     [
      "p165_prima_pearl",
      40
-    ]
-   ]
-  },
-  {
-   "monster": "dappled lynx cub",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 3,
-   "added": [
-    [
-     "PittedSharpClaw",
-     15
     ]
    ]
   },
@@ -40863,14 +40003,6 @@
    "old_drop_count": 4,
    "drop_count": 12,
    "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_item_pa_infernal_cloak",
      1
@@ -40956,18 +40088,6 @@
    "drop_count": 12,
    "added": [
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
-    [
      "p165_prima_deathly_reanimated_bones",
      15
     ],
@@ -41028,10 +40148,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_1365",
-     1
-    ],
-    [
      "p165_prima_essence_of_the_anguished_soul",
      56
     ],
@@ -41053,10 +40169,6 @@
     ],
     [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1743",
      1
     ],
     [
@@ -41244,10 +40356,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_2679",
-     1
-    ],
-    [
      "p165_prima_siabrian_fury_s_head",
      2
     ],
@@ -41261,15 +40369,11 @@
    "monster": "dergan tussler",
    "created": false,
    "old_drop_count": 5,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
     [
      "flight_bodkin_arrows4",
      10
-    ],
-    [
-     "p165_item_2679",
-     1
     ],
     [
      "p165_prima_siabra_skirmisher_s_head",
@@ -41345,12 +40449,8 @@
    "monster": "devout follower",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "p165_item_1365",
-     1
-    ],
     [
      "p165_prima_blackened_silver_locket",
      27
@@ -41410,30 +40510,6 @@
     [
      "p165_prima_pristine_diseased_rat_skin",
      2
-    ]
-   ]
-  },
-  {
-   "monster": "dishonored hagbui",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 12,
-   "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
     ]
    ]
   },
@@ -41540,28 +40616,12 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_1365",
-     1
-    ],
-    [
      "p165_prima_etheric_sash_of_honor",
      72
     ],
     [
      "p165_prima_spirit_orb_of_the_forlorn",
      18
-    ]
-   ]
-  },
-  {
-   "monster": "dragon ant queen",
-   "created": false,
-   "old_drop_count": 3,
-   "drop_count": 4,
-   "added": [
-    [
-     "p165_uth_1272",
-     90
     ]
    ]
   },
@@ -41584,10 +40644,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Putrescent_Leggings",
-     2
-    ],
-    [
      "p165_item_2539",
      2
     ],
@@ -41608,26 +40664,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
-     "fallensoldiersaxe",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_forgotten_clan_necklace",
      5
     ],
@@ -41641,20 +40677,8 @@
    "monster": "drakulv axehand",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 9,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     2
-    ],
-    [
-     "fallensoldiersaxe",
-     2
-    ],
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_prima_etched_golden_bracer",
      6
@@ -41672,14 +40696,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_prepared_ebony_metal_rod",
      6
     ],
@@ -41696,19 +40712,7 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "p165_item_4233",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_pa_nearahd_coif",
      1
     ],
     [
@@ -41728,14 +40732,6 @@
      1
     ],
     [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     2
-    ],
-    [
      "p165_prima_mystic_dragon_idol",
      13
     ],
@@ -41752,18 +40748,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Ancient_Granite_Stone",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_golden_ornamental_armguard",
      15
     ],
@@ -41777,12 +40761,8 @@
    "monster": "drakulv sacrificer",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
-    [
-     "Putrescent_Leggings",
-     2
-    ],
     [
      "p165_prima_etched_silver_orb",
      15
@@ -41800,19 +40780,11 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "Soul Forge",
      1
     ],
     [
      "Soulrager's_Gauntlets",
-     1
-    ],
-    [
-     "p165_item_9860",
      1
     ],
     [
@@ -41829,12 +40801,8 @@
    "monster": "draugr hound",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
-    [
-     "Shimmering_Gnawed_Bone_165l12",
-     25
-    ],
     [
      "p165_prima_draugr_hound_pelt",
      25
@@ -41852,15 +40820,7 @@
    "drop_count": 12,
    "added": [
     [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
      "Putrescent_Bowyers_Gloves",
-     1
-    ],
-    [
-     "p165_item_9860",
      1
     ]
    ]
@@ -41871,10 +40831,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "p165_item_1365",
-     1
-    ],
     [
      "p165_prima_blackened_silver_locket",
      23
@@ -41918,10 +40874,6 @@
     [
      "TatteredTannedBrownGloves",
      5
-    ],
-    [
-     "p165_item_2865",
-     1
     ],
     [
      "p165_prima_bottle_of_elderberry_wine",
@@ -42089,23 +41041,15 @@
    "monster": "duegarhunter",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
     [
-     "2_WS_Vest",
-     2
-    ],
-    [
-     "p165_drop_966",
-     2
+     "Svartalf_Crafted_Belt",
+     1
     ],
     [
      "p165_prima_phosphorescent_carapace",
      25
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -42314,10 +41258,6 @@
     [
      "Earth_Crafted_Scale_Boots",
      1
-    ],
-    [
-     "p165_item_1094",
-     1
     ]
    ]
   },
@@ -42327,18 +41267,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
     [
      "p165_prima_essence_of_the_haunted",
      25
@@ -42355,18 +41283,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
     [
      "p165_prima_ectoplasmic_goo",
      30
@@ -42420,14 +41336,6 @@
      1
     ],
     [
-     "Braided_Darksteel_Jerkin",
-     1
-    ],
-    [
-     "Darksteel_Bracer",
-     1
-    ],
-    [
      "p165_prima_phosphorescent_fungus",
      20
     ],
@@ -42443,10 +41351,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Braided_Darksteel_Jerkin",
-     1
-    ],
     [
      "p165_prima_phosphorescent_fungus",
      10
@@ -42553,22 +41457,14 @@
    "monster": "empyrean guardian",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 9,
+   "drop_count": 7,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_item_2613",
      1
     ],
     [
      "p165_item_3153",
-     1
-    ],
-    [
-     "p165_item_9860",
      1
     ],
     [
@@ -42609,12 +41505,8 @@
    "monster": "empyrean overseer",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "Gossamer_Mentalist_Robe",
-     1
-    ],
     [
      "enchanter",
      1
@@ -42626,18 +41518,6 @@
     [
      "p165_prima_guardian_veil_ring",
      20
-    ]
-   ]
-  },
-  {
-   "monster": "empyrean sentinel",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 4,
-   "added": [
-    [
-     "p165_item_9860",
-     1
     ]
    ]
   },
@@ -42837,14 +41717,10 @@
    "monster": "envy drakeling",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
     [
      "p165_prima_envy_drakeling_hide",
-     68
-    ],
-    [
-     "p165_prima_envy_drakeling_tail",
      68
     ]
    ]
@@ -42925,16 +41801,8 @@
    "monster": "eriu kedger",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 11,
+   "drop_count": 9,
    "added": [
-    [
-     "Lute_of_Sacred_Hymns",
-     1
-    ],
-    [
-     "delugeddrum",
-     1
-    ],
     [
      "p165_prima_large_fish",
      80
@@ -42961,20 +41829,8 @@
    "monster": "eriu waylayer",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 5,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "Waylayer_Shillelagh",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_bandit_mask",
      70
@@ -43117,12 +41973,8 @@
    "monster": "faerie drake",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_prima_faerie_drakes_rainbow_scale",
      60
@@ -43145,12 +41997,8 @@
    "monster": "faerie frog",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "Faerie_Frog_Eye",
-     10
-    ],
     [
      "p165_prima_faerie_frog_legs",
      55
@@ -43249,12 +42097,8 @@
    "monster": "faint grim",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_grim_scraps",
      15
@@ -43262,18 +42106,6 @@
     [
      "p165_prima_grim_shreds",
      75
-    ]
-   ]
-  },
-  {
-   "monster": "fallen paladin",
-   "created": false,
-   "old_drop_count": 3,
-   "drop_count": 4,
-   "added": [
-    [
-     "p165_item_1365",
-     1
     ]
    ]
   },
@@ -43295,18 +42127,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
     [
      "p165_prima_burial_wrap",
      30
@@ -43669,15 +42489,11 @@
    "monster": "fire giant scout",
    "created": false,
    "old_drop_count": 8,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
     [
      "p165_prima_fire_giant_finger",
      70
-    ],
-    [
-     "p165_uth_2538",
-     45
     ]
    ]
   },
@@ -43701,14 +42517,10 @@
    "monster": "firecat",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "p165_item_9860",
+     "p165_item_9862",
      1
     ],
     [
@@ -43730,27 +42542,11 @@
    ]
   },
   {
-   "monster": "fishing bear forager",
+   "monster": "fitful bwca",
    "created": false,
    "old_drop_count": 1,
    "drop_count": 2,
    "added": [
-    [
-     "p165_uth_2733",
-     80
-    ]
-   ]
-  },
-  {
-   "monster": "fitful bwca",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 3,
-   "added": [
-    [
-     "Fell_Creatures_Tooth",
-     8
-    ],
     [
      "p165_item_6448",
      2
@@ -43849,12 +42645,8 @@
    "monster": "footman",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "fallensoldiersaxe",
-     1
-    ],
     [
      "symbolofloyalty",
      2
@@ -43897,7 +42689,7 @@
    "monster": "forest cat",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "p165_drop_3446",
@@ -43906,10 +42698,6 @@
     [
      "p165_prima_pristine_forest_cat_skin",
      2
-    ],
-    [
-     "p165_uth_1302",
-     25
     ]
    ]
   },
@@ -44144,10 +42932,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Faerie_Frog_Eye",
-     24
-    ],
-    [
      "p165_prima_crystalized_viper_skin",
      2
     ],
@@ -44163,14 +42947,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Legions_Scaled_Armplates",
-     1
-    ],
     [
      "p165_prima_golden_seal_of_rome",
      2
@@ -44243,18 +43019,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "p165_item_2865",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_frost_rimmed_silver_cup",
      2
@@ -44416,10 +43180,6 @@
    "drop_count": 12,
    "added": [
     [
-     "3_Worn_Jewel_Pierced_Jerkin",
-     1
-    ],
-    [
      "3_Worn_Loyalist_Scale_Coif",
      1
     ],
@@ -44493,12 +43253,8 @@
    "monster": "ghost wolf",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "Fell_Creatures_Tooth",
-     8
-    ],
     [
      "p165_prima_ghost_wolf_hide",
      50
@@ -44673,16 +43429,8 @@
    "monster": "giant lusus",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 7,
    "added": [
-    [
-     "Melodic Moonglade Gauntlets",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
     [
      "p165_item_pa_twisted_forestdweller_boots",
      1
@@ -44736,10 +43484,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     2
-    ],
-    [
      "p165_prima_glimmering_spirit_orb",
      15
     ],
@@ -44755,14 +43499,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_bottled_stench_of_death",
      5
@@ -44784,15 +43520,7 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "Masterful_Moonglade_Gauntlets",
-     1
-    ],
-    [
-     "Melodic Moonglade Gauntlets",
      1
     ],
     [
@@ -44816,14 +43544,6 @@
      1
     ],
     [
-     "Gossamer_Seolc_Boots",
-     2
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
      "p165_prima_ghoulish_spirit_necklace",
      5
     ],
@@ -44837,16 +43557,8 @@
    "monster": "glimmer griever",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 11,
+   "drop_count": 9,
    "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     2
-    ],
     [
      "p165_item_pa_shining_sheeroe_gloves",
      2
@@ -44888,10 +43600,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
      "Shimmering_Moonstrike_Mace",
      1
     ],
@@ -44913,20 +43621,8 @@
    "monster": "glimmer ward",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 11,
+   "drop_count": 8,
    "added": [
-    [
-     "Glimmer_Spirit_Band",
-     1
-    ],
-    [
-     "p165_item_2865",
-     1
-    ],
-    [
-     "p165_item_9860",
-     2
-    ],
     [
      "p165_prima_death_ward_token",
      5
@@ -44944,27 +43640,7 @@
    "drop_count": 12,
    "added": [
     [
-     "Glimmershade_Bracer",
-     1
-    ],
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
      "Shimmering_Warshadow_Staff_of_the_Enchantments",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
-    [
-     "p165_item_pa_nearahd_coif",
      1
     ],
     [
@@ -44985,20 +43661,8 @@
    "monster": "glimmerling",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
-    [
-     "p165_item_9860",
-     2
-    ],
     [
      "p165_prima_glimmer_spirit_shackle",
      5
@@ -45029,10 +43693,6 @@
     ],
     [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1743",
      1
     ]
    ]
@@ -45209,16 +43869,8 @@
    "monster": "goborchend piercer",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
-    [
-     "Shimmering_Shagreen_Champion_Boots",
-     2
-    ],
-    [
-     "Shimmering_Shagreen_Hero_Boots",
-     2
-    ],
     [
      "p165_prima_goborchend_hoof",
      5
@@ -45241,12 +43893,8 @@
    "monster": "goborchend wounder",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
-    [
-     "p165_item_9860",
-     2
-    ],
     [
      "p165_prima_goborchend_hoof",
      3
@@ -45262,18 +43910,6 @@
     [
      "p165_prima_viscous_fragrant_fluid",
      3
-    ]
-   ]
-  },
-  {
-   "monster": "Gold Oaken Fellwood",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 2,
-   "added": [
-    [
-     "p165_uth_2284",
-     1
     ]
    ]
   },
@@ -45336,10 +43972,6 @@
      5
     ],
     [
-     "Brilliant_Stonewatch_Breastplate",
-     2
-    ],
-    [
      "p165_prima_broken_flint",
      8
     ],
@@ -45357,7 +43989,7 @@
    "monster": "granite giant elder",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 9,
    "added": [
     [
      "Granite Seer`s Boots",
@@ -45365,22 +43997,6 @@
     ],
     [
      "Granite Seer`s Vest of the Body",
-     1
-    ],
-    [
-     "Granite_Seer's_Cap_of_the_Mind",
-     1
-    ],
-    [
-     "Polished_Granite_Staff_of_Matter",
-     1
-    ],
-    [
-     "p165_item_pa_granite_seer_s_sleeves_of_matter",
-     1
-    ],
-    [
-     "p165_item_pa_mind_staff",
      1
     ],
     [
@@ -45395,10 +44011,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_grass_stained_stone",
      4
@@ -45445,30 +44057,10 @@
    "monster": "granite giant oracle",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 4,
    "added": [
     [
-     "Fire Imbued Cap",
-     1
-    ],
-    [
      "Granite Seer`s Pants",
-     1
-    ],
-    [
-     "Polished_Granite_Staff_of_Cold",
-     1
-    ],
-    [
-     "Robe of Stone Speaking",
-     1
-    ],
-    [
-     "Robe_of_Eternal_Wind",
-     1
-    ],
-    [
-     "p165_item_pa_mind_staff",
      1
     ],
     [
@@ -45484,10 +44076,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "p165_prima_polished_granite_stone",
      20
     ]
@@ -45499,18 +44087,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Holy_Crushed_Breastplate",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
     [
      "p165_item_4384",
      1
@@ -45528,14 +44104,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "p165_item_2865",
-     2
-    ],
-    [
      "p165_prima_powdered_ilmenite",
      2
     ],
@@ -45552,39 +44120,7 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Ilmenite_Laced_Chain_Coif",
-     1
-    ],
-    [
-     "Ircon Bound Chain Coif",
-     1
-    ],
-    [
      "Polished Boots of Eldspar",
-     1
-    ],
-    [
-     "Polished Hauberk of Eldspar",
-     1
-    ],
-    [
-     "Polished Mittens of Eldspar",
-     1
-    ],
-    [
-     "Polished Sleeves of Eldspar",
-     1
-    ],
-    [
-     "p165_drop_3037",
-     1
-    ],
-    [
-     "p165_item_pa_nearahd_coif",
      1
     ],
     [
@@ -45599,30 +44135,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_7992",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_granite_shard",
      2
@@ -45740,19 +44252,7 @@
    "drop_count": 12,
    "added": [
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
      1
     ],
     [
@@ -45773,22 +44273,6 @@
    "added": [
     [
      "Worn_Plate_of_Mortification",
-     1
-    ],
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1743",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
      1
     ],
     [
@@ -45842,10 +44326,6 @@
     [
      "p165_prima_spirit_shackles",
      80
-    ],
-    [
-     "spectral_essence",
-     50
     ]
    ]
   },
@@ -45921,7 +44401,7 @@
    "monster": "great tingler",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "p165_prima_multifaceted_eye",
@@ -45929,10 +44409,6 @@
     ],
     [
      "p165_prima_tingler_chitin",
-     42
-    ],
-    [
-     "p165_uth_1302",
      40
     ]
    ]
@@ -45974,6 +44450,10 @@
     [
      "p165_drop_6987",
      5
+    ],
+    [
+     "p165_drop_6988_165l27",
+     20
     ],
     [
      "p165_prima_expended_commanding_stone",
@@ -46217,12 +44697,8 @@
    "monster": "gurite lookout",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "General_Pendant",
-     1
-    ],
     [
      "p165_prima_emerald_dust",
      20
@@ -46265,18 +44741,10 @@
    "monster": "gurite raider",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 8,
+   "drop_count": 6,
    "added": [
     [
-     "Left_Bracer_of_Skill",
-     1
-    ],
-    [
      "Right_Bracer_of_Skill",
-     1
-    ],
-    [
-     "Siabrian_Crusher",
      1
     ],
     [
@@ -46301,16 +44769,8 @@
    "monster": "gurite seeker",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 6,
+   "drop_count": 4,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_siog_brandy",
      35
@@ -46323,14 +44783,6 @@
    "old_drop_count": 4,
    "drop_count": 12,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_bandit_mask",
      70
@@ -46349,24 +44801,8 @@
    "monster": "gwr-drwgiaid",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 9,
    "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ],
-    [
-     "Ghastly_Mendicant_Frock",
-     1
-    ],
-    [
-     "Ghastly_Mendicant_Gem",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
     [
      "p165_prima_bloody_gwr_drwgiaid_finger",
      1
@@ -46378,10 +44814,6 @@
     [
      "p165_prima_severed_gwr_drwgiaid_leg",
      25
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
     ]
    ]
   },
@@ -46451,10 +44883,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Embossed_Hagbui_Bracelet",
-     1
-    ],
     [
      "p165_prima_carved_elemental_idol",
      20
@@ -46555,10 +44983,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Ghastly_Mendicant_Frock",
-     1
-    ],
     [
      "p165_prima_sheet_of_shimmering_bark",
      4
@@ -46729,7 +45153,7 @@
    "monster": "hill scrag",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
     [
      "p165_prima_chisled_stone_statue",
@@ -46738,18 +45162,6 @@
     [
      "p165_prima_small_chisled_statue",
      50
-    ],
-    [
-     "staffoftherast",
-     1
-    ],
-    [
-     "staffofthesouth",
-     1
-    ],
-    [
-     "staffofthewest",
-     1
     ]
    ]
   },
@@ -46929,14 +45341,10 @@
    "monster": "hollow man",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
     [
      "p165_prima_hollow_bone_totem",
-     50
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
      50
     ]
    ]
@@ -46989,14 +45397,6 @@
    "added": [
     [
      "Bright_Snowdonia_Bandit_Bow",
-     1
-    ],
-    [
-     "Knifemans_Crystal_Dagger",
-     1
-    ],
-    [
-     "Knifemans_Silver_Dagger",
      1
     ],
     [
@@ -47180,10 +45580,6 @@
      1
     ],
     [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_frostweaver_web",
      2
     ],
@@ -47201,46 +45597,18 @@
    "monster": "icestrider interceptor",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
-    [
-     "2_SSL_Bracer",
-     1
-    ],
-    [
-     "2_STC_2hAxe",
-     2
-    ],
-    [
-     "2_STM_Coif",
-     1
-    ],
-    [
-     "2_STM_Gloves",
-     1
-    ],
-    [
-     "2_STM_Leggings",
-     1
-    ],
     [
      "2_TBC_2hHammer",
      2
     ],
     [
      "2_TWL_Bracer",
-     2
-    ],
-    [
-     "Shimmering_Twilight_Soul_Searer",
-     2
-    ],
-    [
-     "p165_item_9860",
      1
     ],
     [
-     "p165_item_pa_nearahd_coif",
+     "Shimmering_Twilight_Soul_Searer",
      1
     ],
     [
@@ -47457,12 +45825,8 @@
    "monster": "knight",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "cloak",
-     1
-    ],
     [
      "lustrousavengingknightshammer",
      1
@@ -47573,12 +45937,8 @@
    "monster": "large enslaved orm",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "Giant_Alexandrite_Ring",
-     1
-    ],
     [
      "p165_prima_black_orm_claw",
      24
@@ -47735,10 +46095,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_prima_jewel_studded_circlet",
      2
@@ -47981,12 +46337,8 @@
    "monster": "luch catcher",
    "created": false,
    "old_drop_count": 5,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
-    [
-     "p165_item_4974",
-     1
-    ],
     [
      "p165_prima_pristine_luch_hide",
      22
@@ -48012,24 +46364,8 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
-    [
      "p165_drop_6987",
      5
-    ],
-    [
-     "p165_item_4974",
-     1
     ],
     [
      "p165_item_pa_nearahd_coif",
@@ -48136,10 +46472,6 @@
      1
     ],
     [
-     "Braided_Darksteel_Jerkin",
-     1
-    ],
-    [
      "p165_prima_cursed_ekyps_control_orb",
      30
     ]
@@ -48181,12 +46513,8 @@
    "monster": "magmatasm",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "p165_item_pa_gloves_of_living_flame",
      1
@@ -48470,42 +46798,6 @@
    ]
   },
   {
-   "monster": "minor fideal",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 12,
-   "added": [
-    [
-     "fallensoldiersaxe",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ]
-   ]
-  },
-  {
-   "monster": "minor werewolf noble",
-   "created": false,
-   "old_drop_count": 12,
-   "drop_count": 12,
-   "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "mist monster",
    "created": false,
    "old_drop_count": 1,
@@ -48700,10 +46992,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_4974",
-     1
-    ],
-    [
      "p165_prima_bag_of_dark_powder",
      35
     ],
@@ -48727,10 +47015,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
     [
      "Shining_Ornate_Studded_Vest",
      1
@@ -48869,16 +47153,8 @@
    "monster": "mud frog",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 11,
+   "drop_count": 9,
    "added": [
-    [
-     "Poor_Sods_Belt",
-     1
-    ],
-    [
-     "p165_prima_crystalized_kobold_remains",
-     1
-    ],
     [
      "p165_prima_glistening_mud_frog_skin",
      3
@@ -48934,18 +47210,6 @@
     [
      "p165_prima_torn_silk_mummy_wrap",
      10
-    ]
-   ]
-  },
-  {
-   "monster": "mummy hag wizard",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 2,
-   "added": [
-    [
-     "delugeddrum",
-     1
     ]
    ]
   },
@@ -49169,12 +47433,8 @@
    "monster": "patrolling drakulv",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
-    [
-     "Gossamer_Seolc_Boots",
-     2
-    ],
     [
      "p165_prima_drakulv_patrol_insignia",
      5
@@ -49182,22 +47442,6 @@
     [
      "p165_prima_scaled_sword_baldric",
      15
-    ]
-   ]
-  },
-  {
-   "monster": "peallaidh",
-   "created": false,
-   "old_drop_count": 4,
-   "drop_count": 12,
-   "added": [
-    [
-     "2_sfic_1hsword",
-     1
-    ],
-    [
-     "p165_item_pa_mind_staff",
-     1
     ]
    ]
   },
@@ -49362,10 +47606,6 @@
     [
      "Earth_Crafted_Scale_Boots",
      1
-    ],
-    [
-     "p165_item_1094",
-     1
     ]
    ]
   },
@@ -49446,18 +47686,6 @@
     [
      "p165_prima_large_garnet",
      45
-    ]
-   ]
-  },
-  {
-   "monster": "plated fiend",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "EmeraldSeal",
-     16
     ]
    ]
   },
@@ -49607,10 +47835,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Eagle_Mantle",
-     1
-    ],
     [
      "p165_prima_pooka_hair",
      75
@@ -49833,12 +48057,8 @@
    "monster": "raven wraith",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
-    [
-     "Royal_Guardian_Pendant",
-     1
-    ],
     [
      "p165_prima_etheric_spirit_shackles",
      40
@@ -49854,18 +48074,6 @@
    ]
   },
   {
-   "monster": "ravenclan giant",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 12,
-   "added": [
-    [
-     "Shimmering_Raven_Clan_Skewer",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "reanimated foe",
    "created": false,
    "old_drop_count": 2,
@@ -49876,23 +48084,7 @@
      1
     ],
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1743",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
      1
     ],
     [
@@ -50020,23 +48212,7 @@
      1
     ],
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1743",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
      1
     ],
     [
@@ -50053,14 +48229,10 @@
    "monster": "reincarnate orm",
    "created": false,
    "old_drop_count": 3,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
     [
      "Black_Sapphire",
-     1
-    ],
-    [
-     "p165_item_pa_runic_rigid_orm_spine",
      1
     ],
     [
@@ -50108,23 +48280,7 @@
      1
     ],
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
      "light_teal_cloth_dye_anyrealm",
-     1
-    ],
-    [
-     "p165_item_1743",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
      1
     ],
     [
@@ -50134,26 +48290,6 @@
     [
      "p165_prima_torn_luminescent_skin",
      30
-    ]
-   ]
-  },
-  {
-   "monster": "ridgeback worg",
-   "created": false,
-   "old_drop_count": 3,
-   "drop_count": 6,
-   "added": [
-    [
-     "p165_prima_shape_changer_s_tooth",
-     40
-    ],
-    [
-     "p165_uth_2330",
-     8
-    ],
-    [
-     "p165_uth_2818",
-     8
     ]
    ]
   },
@@ -50212,10 +48348,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_prima_flat_flint_chert",
-     10
-    ],
-    [
      "p165_prima_half_eaten_fish",
      57
     ],
@@ -50233,18 +48365,14 @@
    "monster": "roaming corpse",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
     [
      "Bevards_Ghastly_Chain",
      1
     ],
     [
-     "Ghostly_Gem",
-     1
-    ],
-    [
-     "p165_item_4974",
+     "p165_item_pa_woeful_chain_gloves",
      1
     ]
    ]
@@ -50500,26 +48628,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_dented_defenders_helm",
      20
     ]
@@ -50529,12 +48637,8 @@
    "monster": "sacrificed slave",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
-    [
-     "p165_item_1365",
-     1
-    ],
     [
      "p165_prima_essence_of_the_anguished_soul",
      72
@@ -50721,12 +48825,8 @@
    "monster": "scorned bwca",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "Fell_Creatures_Tooth",
-     8
-    ],
     [
      "p165_item_6448",
      2
@@ -50749,12 +48849,8 @@
    "monster": "scragger",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
-    [
-     "Lustrous_Crude_Leather_Sleeves",
-     2
-    ],
     [
      "p165_prima_scragger_s_pouch",
      50
@@ -50969,23 +49065,11 @@
    "monster": "sharpfang worg",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 2,
    "added": [
-    [
-     "p165_prima_shape_changer_s_tooth",
-     46
-    ],
     [
      "p165_uth_1213",
      46
-    ],
-    [
-     "p165_uth_2330",
-     8
-    ],
-    [
-     "p165_uth_2818",
-     8
     ],
     [
      "p165_uth_2981",
@@ -51037,12 +49121,8 @@
    "monster": "sheevra chieftain",
    "created": false,
    "old_drop_count": 6,
-   "drop_count": 10,
+   "drop_count": 9,
    "added": [
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_prima_flask_of_elven_spirits",
      10
@@ -51093,15 +49173,11 @@
    "monster": "sheevra skirmisher",
    "created": false,
    "old_drop_count": 6,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
     [
      "flight_bodkin_arrows4",
      10
-    ],
-    [
-     "p165_item_2679",
-     1
     ],
     [
      "p165_prima_siabra_skirmisher_s_head",
@@ -51273,24 +49349,8 @@
    "monster": "siabra seeker",
    "created": false,
    "old_drop_count": 7,
-   "drop_count": 12,
+   "drop_count": 10,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
     [
      "p165_prima_luminescent_orb",
      30
@@ -51309,12 +49369,8 @@
    "monster": "siabra venator",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 12,
+   "drop_count": 11,
    "added": [
-    [
-     "General_Pendant",
-     1
-    ],
     [
      "Lustrous_Crimson_Heart-stoppers",
      2
@@ -51529,14 +49585,10 @@
    "monster": "silverscale drakeling",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
     [
      "p165_prima_silver_drakeling_hide",
-     60
-    ],
-    [
-     "p165_prima_silver_drakeling_tail",
      60
     ]
    ]
@@ -51604,18 +49656,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
      "p165_prima_luminescent_orb",
      30
     ],
@@ -51633,20 +49673,8 @@
    "monster": "siog waylayer",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 7,
+   "drop_count": 4,
    "added": [
-    [
-     "Cath Charms",
-     1
-    ],
-    [
-     "Waylayer_Shillelagh",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
     [
      "p165_prima_bandit_mask",
      70
@@ -51719,14 +49747,6 @@
    "old_drop_count": 1,
    "drop_count": 12,
    "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_prima_ghostly_roman_lantern",
      50
@@ -51829,12 +49849,8 @@
    "monster": "slave master bodyguard",
    "created": false,
    "old_drop_count": 5,
-   "drop_count": 8,
+   "drop_count": 7,
    "added": [
-    [
-     "cailiondarlongbow",
-     1
-    ],
     [
      "p165_drop_6968",
      10
@@ -51873,12 +49889,8 @@
    "monster": "small black orm",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "Black_Orm_Gland",
-     11
-    ],
     [
      "p165_prima_black_orm_hide",
      18
@@ -52088,10 +50100,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
      "p165_prima_chunk_of_soot",
      85
     ],
@@ -52111,18 +50119,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
     [
      "p165_prima_jeweled_skull_totem",
      30
@@ -52178,6 +50174,10 @@
     [
      "p165_prima_malefic_spirit_orb",
      10
+    ],
+    [
+     "spectral_essence_165l15",
+     25
     ]
    ]
   },
@@ -52410,18 +50410,6 @@
    ]
   },
   {
-   "monster": "spraggon cutter",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 12,
-   "added": [
-    [
-     "p165_item_1094",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "spraggonale",
    "created": false,
    "old_drop_count": 4,
@@ -52478,10 +50466,6 @@
     [
      "Earth_Crafted_Scale_Boots",
      1
-    ],
-    [
-     "p165_item_1094",
-     1
     ]
    ]
   },
@@ -52510,10 +50494,6 @@
     [
      "Earth_Crafted_Scale_Boots",
      1
-    ],
-    [
-     "p165_item_1094",
-     1
     ]
    ]
   },
@@ -52539,14 +50519,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Round_Chert",
-     8
-    ],
-    [
-     "p165_prima_flat_flint_chert",
-     8
-    ],
     [
      "p165_prima_polished_wooden_bowl",
      10
@@ -52579,14 +50551,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "Round_Chert",
-     8
-    ],
-    [
-     "p165_prima_flat_flint_chert",
-     8
-    ],
     [
      "p165_prima_polished_wooden_bowl",
      10
@@ -52713,15 +50677,11 @@
    "monster": "stordo werewolf",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
     [
      "Noble_Wanderer's_Axe",
      1
-    ],
-    [
-     "p165_prima_black_bear_paw",
-     50
     ],
     [
      "p165_prima_silver_full_moon_pin",
@@ -52749,14 +50709,10 @@
    "monster": "sulphuric ghoul",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "p165_item_2847",
-     1
-    ],
-    [
-     "p165_item_9860",
      1
     ]
    ]
@@ -52792,10 +50748,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_drop_1101",
-     2
-    ],
-    [
      "p165_prima_glowing_gold_key",
      25
     ]
@@ -52807,18 +50759,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "p165_item_2865",
-     1
-    ],
-    [
-     "p165_item_4974",
-     1
-    ],
-    [
-     "p165_item_9860",
-     1
-    ],
     [
      "p165_item_pa_runed_bloodhound_cap",
      1
@@ -52833,20 +50773,8 @@
    "monster": "svartalf foister",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 12,
+   "drop_count": 9,
    "added": [
-    [
-     "Putrescent_Leggings",
-     2
-    ],
-    [
-     "fallensoldiersaxe",
-     2
-    ],
-    [
-     "p165_item_2679",
-     1
-    ],
     [
      "p165_item_pa_crown_of_the_darkheart",
      1
@@ -52861,12 +50789,8 @@
    "monster": "svartalf foreman",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "p165_drop_1101",
-     2
-    ],
     [
      "p165_prima_foreman_s_plans",
      25
@@ -52877,26 +50801,14 @@
    "monster": "svartalf infiltrator",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 10,
+   "drop_count": 7,
    "added": [
-    [
-     "Drakulv_Militia_Great_Axe",
-     1
-    ],
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
     [
      "greater_infectious_serum_anyrealm",
      1
     ],
     [
      "p165_item_3147",
-     2
-    ],
-    [
-     "p165_item_9860",
      2
     ],
     [
@@ -52909,12 +50821,8 @@
    "monster": "svartalf predator",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "p165_item_2865",
-     1
-    ],
     [
      "p165_prima_human_bone_necklace",
      30
@@ -52933,14 +50841,10 @@
    "monster": "svartalf sorcerer",
    "created": false,
    "old_drop_count": 7,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
     [
      "Forgotten_Svartalf_Sword",
-     1
-    ],
-    [
-     "p165_item_4974",
      1
     ],
     [
@@ -52960,10 +50864,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_pa_faded_chain_silksteel_gloves",
-     2
-    ],
-    [
      "p165_prima_glowing_chainless_shackle",
      30
     ]
@@ -52973,14 +50873,10 @@
    "monster": "svartalf watcher",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
     [
      "Forgotten_Svartalf_Sword",
-     1
-    ],
-    [
-     "Gossamer_Seolc_Boots",
      1
     ],
     [
@@ -53185,14 +51081,10 @@
    "monster": "tingler",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
     [
      "p165_prima_tingler_chitin",
-     25
-    ],
-    [
-     "p165_uth_1302",
      25
     ]
    ]
@@ -53201,15 +51093,11 @@
    "monster": "Tingler Webmother",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 4,
+   "drop_count": 3,
    "added": [
     [
      "p165_prima_multifaceted_eye",
      27
-    ],
-    [
-     "p165_prima_tingler_chitin",
-     50
     ]
    ]
   },
@@ -53240,18 +51128,6 @@
    "drop_count": 12,
    "added": [
     [
-     "dissolutionstaff",
-     1
-    ],
-    [
-     "p165_item_1805",
-     1
-    ],
-    [
-     "p165_item_1810",
-     1
-    ],
-    [
      "p165_prima_essence_of_the_haunted",
      25
     ],
@@ -53268,14 +51144,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Gossamer_Seolc_Boots",
-     1
-    ],
-    [
-     "Putrescent_Leggings",
-     1
-    ],
-    [
      "p165_prima_canteen_of_water",
      25
     ],
@@ -53289,12 +51157,8 @@
    "monster": "tomb raider commander",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 6,
+   "drop_count": 5,
    "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ],
     [
      "p165_drop_6971",
      40
@@ -53346,18 +51210,6 @@
    ]
   },
   {
-   "monster": "tomb sentry",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 12,
-   "added": [
-    [
-     "Putrescent_Leggings",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "tomb wight",
    "created": false,
    "old_drop_count": 2,
@@ -53386,63 +51238,11 @@
    ]
   },
   {
-   "monster": "tomte aggressor",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ]
-   ]
-  },
-  {
-   "monster": "tomte pillager",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 9,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ]
-   ]
-  },
-  {
-   "monster": "tomte plunderer",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ]
-   ]
-  },
-  {
-   "monster": "tomte skirmisher",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 12,
-   "added": [
-    [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "tortured soul",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 5,
+   "drop_count": 4,
    "added": [
-    [
-     "p165_item_1365",
-     1
-    ],
     [
      "p165_prima_essence_of_the_anguished_soul",
      64
@@ -53470,18 +51270,6 @@
    ]
   },
   {
-   "monster": "trapped thrall",
-   "created": false,
-   "old_drop_count": 1,
-   "drop_count": 11,
-   "added": [
-    [
-     "Cursed_Mora_Ring",
-     1
-    ]
-   ]
-  },
-  {
    "monster": "tree spirit",
    "created": false,
    "old_drop_count": 10,
@@ -53494,14 +51282,6 @@
     [
      "TatteredTannedBrownGloves",
      20
-    ],
-    [
-     "p165_prima_glowing_green_seed",
-     50
-    ],
-    [
-     "p165_prima_seed_pod",
-     80
     ],
     [
      "p165_uth_118",
@@ -53547,10 +51327,6 @@
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "3_Worn_Jewel_Pierced_Jerkin",
-     1
-    ],
     [
      "3_Worn_Loyalist_Scale_Coif",
      1
@@ -53602,27 +51378,11 @@
    ]
   },
   {
-   "monster": "umbrood warrior",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 2,
-   "added": [
-    [
-     "DiamondSeal",
-     32
-    ]
-   ]
-  },
-  {
    "monster": "undead drudger",
    "created": false,
    "old_drop_count": 2,
    "drop_count": 12,
    "added": [
-    [
-     "3_Worn_Jewel_Pierced_Jerkin",
-     1
-    ],
     [
      "p165_prima_small_shadow_crystal",
      25
@@ -53768,18 +51528,6 @@
    "drop_count": 12,
    "added": [
     [
-     "Flayed_Wolfskin_Bracer",
-     1
-    ],
-    [
-     "cloak",
-     1
-    ],
-    [
-     "p165_prima_silver_pearl_necklace",
-     1
-    ],
-    [
      "p165_uth_188",
      10
     ],
@@ -53797,10 +51545,6 @@
    "added": [
     [
      "Worn_Plate_of_Mortification",
-     1
-    ],
-    [
-     "p165_item_1743",
      1
     ],
     [
@@ -54053,14 +51797,10 @@
    "monster": "vendo reaver",
    "created": false,
    "old_drop_count": 2,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
     [
      "Cave_Prowlers_Vest",
-     1
-    ],
-    [
-     "dark_gray_cloth_dye_anyrealm",
      1
     ],
     [
@@ -54113,12 +51853,8 @@
    "monster": "venomspitter",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 3,
+   "drop_count": 2,
    "added": [
-    [
-     "p165_prima_envy_drakeling_tail",
-     45
-    ],
     [
      "p165_prima_venomspitter_s_head",
      65
@@ -54241,12 +51977,8 @@
    "monster": "way keeper",
    "created": true,
    "old_drop_count": 1,
-   "drop_count": 2,
+   "drop_count": 1,
    "added": [
-    [
-     "Mildewed_Leather_Belt",
-     1
-    ],
     [
      "Moldy_Leather_Belt",
      1
@@ -54356,10 +52088,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_prima_black_bear_paw",
-     50
-    ],
-    [
      "p165_prima_silver_full_moon_pin",
      40
     ],
@@ -54406,26 +52134,6 @@
     [
      "p165_prima_small_werewolf_pelt",
      80
-    ]
-   ]
-  },
-  {
-   "monster": "werewolf elite guard",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 12,
-   "added": [
-    [
-     "2_GL_1hAxe",
-     1
-    ],
-    [
-     "2_LP_1hAxe",
-     1
-    ],
-    [
-     "Lycanthropic_Necklace",
-     1
     ]
    ]
   },
@@ -54490,18 +52198,6 @@
     [
      "p165_prima_lieutenant_s_ration",
      46
-    ]
-   ]
-  },
-  {
-   "monster": "werewolf noble",
-   "created": false,
-   "old_drop_count": 2,
-   "drop_count": 4,
-   "added": [
-    [
-     "2_GG_Coif",
-     1
     ]
    ]
   },
@@ -54737,10 +52433,14 @@
    "monster": "wind spirit",
    "created": false,
    "old_drop_count": 4,
-   "drop_count": 7,
+   "drop_count": 8,
    "added": [
     [
      "Wind_Swept_Pants",
+     1
+    ],
+    [
+     "Wind_Swept_Vest",
      1
     ],
     [
@@ -54772,10 +52472,6 @@
    "drop_count": 12,
    "added": [
     [
-     "p165_item_9860",
-     1
-    ],
-    [
      "p165_prima_orb_of_wind",
      18
     ],
@@ -54789,12 +52485,8 @@
    "monster": "winter wolf",
    "created": false,
    "old_drop_count": 1,
-   "drop_count": 9,
+   "drop_count": 8,
    "added": [
-    [
-     "Frozen_Teardrop",
-     18
-    ],
     [
      "p165_prima_icy_winter_wolf_pelt",
      18
@@ -54876,7 +52568,7 @@
    "drop_count": 3,
    "added": [
     [
-     "Shimmering_Gnawed_Bone_165l12",
+     "Shimmering_Gnawed_Bone_165l3",
      70
     ],
     [
@@ -54949,12 +52641,8 @@
    "monster": "wood ogre lord",
    "created": false,
    "old_drop_count": 7,
-   "drop_count": 11,
+   "drop_count": 10,
    "added": [
-    [
-     "Jerkin_of_Opposition",
-     1
-    ],
     [
      "p165_prima_bottle_of_elderberry_wine",
      16
@@ -55041,15 +52729,11 @@
    "monster": "wood rat",
    "created": false,
    "old_drop_count": 5,
-   "drop_count": 7,
+   "drop_count": 6,
    "added": [
     [
      "p165_uth_1629",
      41
-    ],
-    [
-     "p165_uth_38",
-     22
     ]
    ]
   },
@@ -55362,18 +53046,6 @@
    ]
   },
   {
-   "monster": "young wyvern",
-   "created": true,
-   "old_drop_count": 1,
-   "drop_count": 1,
-   "added": [
-    [
-     "Malefic_Tooth",
-     8
-    ]
-   ]
-  },
-  {
    "monster": "zephyr wraith",
    "created": false,
    "old_drop_count": 8,
@@ -55450,6 +53122,10 @@
   {
    "sql": "UPDATE ItemTemplate SET PackSize=1 WHERE lower(Id_nb) IN ('wolf_fang','torn_wolf_pelt','chunk_of_wolf_meat') AND PackSize<>1",
    "reason": "wolf drop stack fix (owner 2026-11-07): wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time"
+  },
+  {
+   "sql": "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
+   "reason": "True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are 39-43) is a data error"
   }
  ],
  "counts": {
@@ -55472,7 +53148,28 @@
    "SKIP_BOSS_OR_SCRIPTED": 29
   },
   "spawn_rows": 810,
-  "drop_rows_added": 3656,
-  "monsters_with_new_drops": 1187
- }
+  "drop_rows_added": 3146,
+  "level_gap_skipped": 3,
+  "monsters_with_new_drops": 1141
+ },
+ "level_gap_skipped": [
+  {
+   "monster": "Pebble",
+   "monster_lowest_level": 4,
+   "item": "p165_prima_chunk_of_silver",
+   "item_level": 21
+  },
+  {
+   "monster": "tree spirit",
+   "monster_lowest_level": 6,
+   "item": "p165_prima_glowing_green_seed",
+   "item_level": 26
+  },
+  {
+   "monster": "tree spirit",
+   "monster_lowest_level": 6,
+   "item": "p165_prima_seed_pod",
+   "item_level": 26
+  }
+ ]
 }

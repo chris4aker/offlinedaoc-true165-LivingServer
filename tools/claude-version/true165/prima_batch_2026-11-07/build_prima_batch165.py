@@ -84,6 +84,7 @@ def finish(row):
     return row
 
 
+fragment_names = {n(it.get('atlas_name')) for b in res['items'] for it in b.get('items', []) if it['verdict'] == 'FRAGMENT'}
 built = {}           # Id_nb -> row
 name_to_id = {}      # n(atlas name) and n(built name) -> Id_nb
 ic = collections.Counter()
@@ -94,7 +95,8 @@ for b in res['items']:
         ent = {'atlas_name': it.get('atlas_name'), 'item': it.get('item'), 'verdict': v, 'evidence': it.get('evidence'),
                'notes': it.get('notes')}
         report['items'].append(ent)
-        keys = {n(it.get('atlas_name')), n(it.get('item'))} - {''}
+        keys = {n(it.get('item')) or n(it.get('atlas_name'))} | ({n(it.get('atlas_name'))} - fragment_names)
+        keys -= {''}
         if v == 'EXISTS_AS':
             eid = (it.get('existing_id') or '').strip()
             if eid.lower() in existing_ids:
@@ -165,6 +167,21 @@ for b in res['items']:
         ent['Id_nb'] = row['Id_nb']
         for k in keys | {n(row['Name'])}:
             name_to_id.setdefault(k, row['Id_nb'])
+# gear the page priced at nothing (owner 2026-11-07: no 0-value items): the median price of existing items of the same
+# type and slot within 2 levels (a derived value, never a stat; marked in the report)
+priced = collections.defaultdict(list)
+for r in W.rows:
+    if r['Price'] and r['Price'] > 0 and r['Object_Type']:
+        priced[(r['Object_Type'], r['Item_Type'])].append((r['Level'], r['Price']))
+for row in built.values():
+    if row['Price'] or not row['Object_Type']:
+        continue
+    near = sorted(pr for lv, pr in priced.get((row['Object_Type'], row['Item_Type']), []) if abs(lv - row['Level']) <= 2)
+    if near:
+        row['Price'] = int(statistics.median(near))
+        e = next((x for x in report['items'] if x.get('Id_nb') == row['Id_nb']), None)
+        if e is not None:
+            e['price_source'] = f'derived: median of {len(near)} existing items of the same type and slot, level +-2'
 report['counts']['item_verdicts'] = dict(ic)
 report['counts']['items_built'] = len(built)
 
@@ -266,7 +283,8 @@ report['counts']['spawn_actions'] = dict(sc)
 report['counts']['spawn_rows'] = len(spawn_rows)
 
 # ================================================================ 3. Atlas drops
-drops = json.load(open(os.path.join(T165, 'drops165.json'), encoding='utf-8'))
+# the content before this batch (base/, a copy of the pre-batch files) so a rebuild is exact
+drops = json.load(open(os.path.join(HERE, 'base', 'drops165.json'), encoding='utf-8'))
 mons = drops['monsters']
 mkeys = {k.lower(): k for k in mons}
 loot = json.load(open(os.path.join(PT, 'atlas_loot.json'), encoding='utf-8'))['entries']
@@ -311,6 +329,11 @@ for r in built.values():
     ids_by_name[n(r['Name'])].append(r)
 
 
+GENERIC_PIECES = {"boots", "sleeves", "helm", "leggings", "gloves", "gauntlets", "vest", "pants", "shield", "necklace", "arms",
+                  "legs", "hauberk", "jerkin", "cap", "coif", "robe", "tunic", "breeches", "hood", "belt", "cloak", "bracer",
+                  "ring", "bracelet", "mantle", "greaves", "vambraces", "chausses", "coat", "shirt", "skirt", "gem"}
+
+
 def roll_items(roll):
     ch = roll.get('chances') or []
     if not ch:
@@ -322,23 +345,54 @@ def roll_items(roll):
         share = p / len(band) if roll.get('mode') in ('single', 'pick') and len(band) > 1 else p
         if roll.get('mode') == 'pick' and roll.get('pick_size', 1) > 1:
             share = p / roll['pick_size']
-        out += [(b, max(1, min(100, int(round(share))))) for b in band]
+        first = band[0].split() if band else []
+        def full(b):
+            if b.lower() in GENERIC_PIECES and len(first) > 1 and first[-1].lower() in GENERIC_PIECES:
+                return ' '.join(first[:-1] + [b])
+            return b
+        out += [(full(b), max(1, min(100, int(round(share))))) for b in band]
     return out
 
 
-def resolve(item, realm):
+FREESHARD_PKG = {'atlasxpitem', 'dratlasxpitem', 'atlas_orbs_item', 'drmed', 'atlas_trophys'}
+
+
+def resolve(item, realm, mlevel=None):
     k = n(re.sub(r'\s*\(x\d+\)\s*$', '', item))
     if k == 'moonstone':
         return 'moonstone_gem'
+    if k in {n(x) for x in GENERIC_PIECES}:
+        return None
     if k in name_to_id:
         return name_to_id[k]
     c = ids_by_name.get(k, [])
-    c = [r for r in c if r['Realm'] in (realm, 0) and not r['Id_nb'].lower().startswith('cq_')]
-    return sorted(c, key=lambda r: (r['Realm'] != realm, r['Id_nb']))[0]['Id_nb'] if c else None
+    c = [r for r in c if r['Realm'] in (realm, 0) and not r['Id_nb'].lower().startswith('cq_')
+         and (r['PackageID'] or '').lower() not in FREESHARD_PKG]
+    # the copy nearest the monster's level (the drop fix pass made level copies, e.g. spectral_essence_165l15)
+    lv = mlevel or 0
+    return sorted(c, key=lambda r: (r['Realm'] != realm, abs((r['Level'] or 0) - lv) if lv else 0, r['Id_nb']))[0]['Id_nb'] if c else None
 
 
 # items the drop audit graded freeshard-only: their loot rows are removed by the rules (owner 2026-10-31); never add them
 EXCLUDE = {x.lower() for x in json.load(open(os.path.join(HERE, 'exclude_drop_items.json'), encoding='utf-8'))}
+mob_levels = collections.defaultdict(list)          # lowest spawn level of each monster name (live + this batch)
+for name, level in con.execute('select Name, Level from Mob where Level > 0'):
+    mob_levels[n(name)].append(level)
+for r in spawn_rows:
+    if r['Level']:
+        mob_levels[n(r['Name'])].append(r['Level'])
+item_level = {r['Id_nb'].lower(): r['Level'] for r in W.rows}
+item_level.update({k.lower(): r['Level'] for k, r in built.items()})
+report['level_gap_skipped'] = []
+# owner 2026-11-07: the frukta warg row at level 1 (of 93 in Varulvhamn, the rest 39-43) is a data error -> 39
+LEVEL_FIX = {'0e7c959a-c258-485d-9c4d-5d7e884efcfa': 39}
+for name, level in con.execute('select Name, Level from Mob where Mob_ID in (%s)' % ','.join('?' * len(LEVEL_FIX)), list(LEVEL_FIX)):
+    mob_levels[n(name)].remove(level)
+    mob_levels[n(name)].append(39)
+# owner: Darkness Falls seals are currency (worth 0 to a merchant) - their item level means nothing; and the two very
+# rare Atlas gear drops stay in as the Atlas lists them
+GAP_EXEMPT_ITEMS = {'diamondseal', 'emeraldseal', 'sapphireseal'}
+GAP_ALLOWED = {('tomb raider scout', 'p165_item_pa_spirit_crafted_shield'), ('gray spectre', 'p165_item_pa_ether_ring')}
 wanted = collections.defaultdict(dict)
 for e in loot:
     zid = zone_of_section(e['section'])
@@ -349,8 +403,14 @@ for e in loot:
     realm = zones[zid]['Realm'] if zones[zid]['Realm'] in (1, 2, 3) else 0
     for roll in e['rolls']:
         for item, ch in roll_items(roll):
-            iid = resolve(item, realm)
+            iid = resolve(item, realm, min(mob_levels.get(n(e['name'])) or [0]) or None)
             if iid and iid.lower() not in EXCLUDE:
+                low = min(mob_levels.get(n(e['name'])) or [0]) or None
+                if low and (item_level.get(iid.lower()) or 0) - low >= 15 and iid.lower() not in GAP_EXEMPT_ITEMS \
+                        and (e['name'].lower(), iid.lower()) not in GAP_ALLOWED:
+                    report['level_gap_skipped'].append({'monster': e['name'], 'monster_lowest_level': low, 'item': iid,
+                                                        'item_level': item_level.get(iid.lower())})
+                    continue
                 wanted[e['name']][iid] = max(ch, wanted[e['name']].get(iid, 0))
 base_random = collections.Counter()
 for tpl, ch in con.execute('select lower(TemplateName), Chance from LootTemplate'):
@@ -377,10 +437,11 @@ for mob, its in sorted(wanted.items()):
                             'drop_count': mons[key]['drop_count'], 'added': add})
 drops['source'] += ' + Prima batch 2026-11-07 (Atlas drops of the new monsters and of the Atlas items built)'
 report['counts']['drop_rows_added'] = added_rows
+report['counts']['level_gap_skipped'] = len(report['level_gap_skipped'])
 report['counts']['monsters_with_new_drops'] = len(report['drops'])
 
 # ================================================================ 4. wolf drop stack fix
-rules = json.load(open(os.path.join(T165, 'true165-rules.json'), encoding='utf-8'))
+rules = json.load(open(os.path.join(HERE, 'base', 'true165-rules.json'), encoding='utf-8'))
 WOLF = "('wolf_fang','torn_wolf_pelt','chunk_of_wolf_meat')"
 fix = [
     {'sql': f"UPDATE Inventory SET Count=1 WHERE lower(ITemplate_Id) IN {WOLF} AND Count>1",
@@ -388,6 +449,9 @@ fix = [
                'single drop came as one non-stacking "(20)" item; the ones already in bags become 1 (what dropped)'},
     {'sql': f"UPDATE ItemTemplate SET PackSize=1 WHERE lower(Id_nb) IN {WOLF} AND PackSize<>1",
      'reason': 'wolf drop stack fix (owner 2026-11-07): wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time'}]
+fix.append({'sql': "UPDATE Mob SET Level=39 WHERE Mob_ID='0e7c959a-c258-485d-9c4d-5d7e884efcfa' AND Level=1",
+            'reason': 'True 1.65 level fix (owner 2026-11-07): the one frukta warg in Varulvhamn at level 1 (the other 92 are '
+                      '39-43) is a data error'})
 have_sql = {u.get('sql') for u in rules['updates']}
 for f in fix:
     if f['sql'] not in have_sql:
