@@ -14,6 +14,7 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: in /defensive mode a /pull ends only when the monster is within 350 units of you - a puller that tags from range and runs back waits by you until then, and your own pet no longer runs out to a monster that is still far away.
 - Companions: hired companions follow you over zone borders (Lyonesse to Cornwall and every other border) instead of stopping at the line until they were teleported to you.
 - Companions: hovering a realm ability in a companion's REALM ABILITIES window shows its full description, as the trainer does for your own class, plus the companion's level in it, the next level's cost and its realm ability points.
+- Companions: charming. A companion with charming on and no pet charms the monster you select before anyone starts on it, and /charm or /charm <companion name> charms your target right away (its current pet is let go first). Charms take only monsters at least green to the companion. Hunters can charm too: the charm switch in AI Options is off by default (they keep their wolf); on, they charm animals or insects instead. Macro: /macro charm /charm Isolde.
 
 ## 0.3 (2026-11-06)
 
