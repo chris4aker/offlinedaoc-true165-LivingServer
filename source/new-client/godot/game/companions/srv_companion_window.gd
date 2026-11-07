@@ -266,7 +266,7 @@ func show_info(cell: GearSlot) -> void:
 	var stack := int(it.object_type) in GearSlot.STACKABLE or count > 1
 	_info.text = ("%s  x%d" % [String(it.name), count] if stack and count > 0
 			else "%s  %d%%" % [String(it.name), int(it.condition)]).to_upper()
-	_info.add_theme_color_override("font_color", CompanionUi.RED if not stack and int(it.condition) < 70 else UiArt.CREAM)
+	_info.add_theme_color_override("font_color", ItemTooltip.name_color(it, false))   # (its con to you)
 
 
 var _gear_drawn := ""                              # what the GEAR page shows (row + its gear list): rebuilt only on a change
@@ -383,8 +383,10 @@ class GearSlot extends Control:
 			return
 		var right := ("x%d" % count) if stack and count > 0 else ("%d%%" % cond if cond < 100 else "")
 		var rw := 30.0 if right != "" else 0.0
+		# its name in its con colour to you, as in your own backpack (owner 2026-11-07); a worn-out item's condition, on
+		# the right, in red
 		var nm := CompanionUi.text(self, String(item.name), Vector2(size.y + 2, 4), Vector2(size.x - size.y - 4 - rw, 12), 7,
-				CompanionUi.RED if not stack and cond < 70 else UiArt.CREAM)
+				ItemTooltip.name_color(item, false))
 		nm.clip_text = true
 		if right != "":
 			var r := CompanionUi.text(self, right, Vector2(size.x - rw - 2, 4), Vector2(rw, 12), 7,
@@ -432,7 +434,9 @@ class GearSlot extends Control:
 		var d := Server.item_lines(_key())
 		if d.is_empty() or (d.get("lines", []) as Array).is_empty():
 			return null
-		return ItemTooltip.text_box(String(d.get("caption", item.get("name", ""))), d.lines)
+		# its name in its con colour to YOU, as your own items' hover box (owner 2026-11-07: "all of the item names are
+		# yellow no matter what (con to me, not to the companion, visual only)")
+		return ItemTooltip.text_box(String(d.get("caption", item.get("name", ""))), d.lines, ItemTooltip.name_color(item, false))
 
 	## Dragged out onto your backpack (owner 2026-10-30: "i cant drag off weapons and bag items, i can only right click"):
 	## the backpack takes it with the server's "unequip" - right-click / double-click still do the same.

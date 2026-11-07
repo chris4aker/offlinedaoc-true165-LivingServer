@@ -81,11 +81,11 @@ static func skill(e: Dictionary) -> Control:
 	return text_box(String(e.get("name", "")), SkillInfo.lines(e))
 
 
-## A caption over lines of text, the delve box's look.
-static func text_box(caption: String, lines: Array) -> Control:
+## A caption over lines of text, the delve box's look (an item's caption in its con colour: `caption_color`).
+static func text_box(caption: String, lines: Array, caption_color := UiArt.GOLD_HI) -> Control:
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", -1)
-	box.add_child(_line(caption, UiArt.GOLD_HI))
+	box.add_child(_line(caption, caption_color))
 	for l in lines:
 		if String(l).strip_edges() != "":
 			box.add_child(_line(String(l), UiArt.CREAM))
