@@ -760,17 +760,31 @@ def alpha_animation(mat):
                               for t in ts])
 
 
+def stray_cards(nif):
+    """An effect's leftover template cards (owner 2026-11-07: a ruby simulacrum's Fire Storm drew a long line of flames
+    on the ground): alb_ddfire3-5_hit and alb_fexplo3-6_hit keep nine flame cards, scene-root nodes "particle08" ..
+    "particle16" with no controller, in a row 100-1700 units beside the effect and 100 below it. The spell itself is
+    under "Spell" / "GSpell"; the client never drew these. Ids of those root nodes."""
+    import re
+    root = nif.roots[0] if nif.roots else None
+    return {id(c) for c in ((root.get('children') or []) if root is not None else [])
+            if c is not None and re.fullmatch(r'(?i)particle\d+', c.get('name') or '') and c.get('controller') is None}
+
+
 def collect(nif, node_anims=False):
     """[(mesh arrays, material key)] for every visible shape, in model space (DAoC units, DAoC axes). node_anims
     (effects): also the hidden shapes a NiVisController shows, tagged with their animated node."""
     sp = spec()
     shapes, doors = [], []
     collidees = {id(n) for n, _ in find_collidees(nif)}
+    strays = stray_cards(nif) if node_anims else set()
 
     def walk(b, parent_m, inherited):
         if b is None or any(sp.is_a(b.type, t) for t in SKIP_TYPES):
             return
         if id(b) in collidees:                             # walls only, never drawn (see collidee_shapes)
+            return
+        if id(b) in strays:                                # an effect's leftover template cards (stray_cards)
             return
         if b.get('flags', 0) & 1 and not (node_anims and _controller(b, 'NiVisController') is not None):   # hidden
             return
