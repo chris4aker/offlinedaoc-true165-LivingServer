@@ -8,6 +8,8 @@ hold). Its changelog has the history of everything this version inherits.
 ## Coming in 0.4
 
 - Guild emblems: a guild cloak shows its emblem as one emblem on the upper back again (the shield already did) - it was stretched over the whole cloak, a skull's eyes two black blots down the back.
+- Companions: no more freeze when you train a companion, equip it or move items in and out of its bag (and no small hitch every few seconds with its GEAR page open) - its window was redrawn once for every one of the server's 30-90 update messages instead of once.
+- Companions: the GEAR page is a paper doll like your own inventory - the companion's figure in its gear (drag to turn it, drop an item on it to equip), the slots round it, the hovered item's name and condition under the figure, worn-out gear edged in red - and its bag shows all 10 slots without a scroll bar.
 - Item names in the backpack, vault and merchant lists show level 0 items (vendor trash) in their con colour - grey - like their hover box, instead of white.
 - Spells: fire hits (the wizard and cabalist fire bolts and Fire Storm, and the fire explosions) no longer leave a long line of flames on the ground beside the target - leftover template flames in the effect files were being drawn.
 - Companions and gamebots carry their spare weapons like your own character: a two-hander they are not using on the back, a spare one-hander on the hip (an unused dual-wield pair one on each hip), the shield put away while the two-hander is out.
