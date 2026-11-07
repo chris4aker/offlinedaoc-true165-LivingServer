@@ -31,11 +31,27 @@ A blacksmith repairs the worn gear of the companions with you, free.
 /pull <companion name>
   That companion pulls instead, for example /pull Isolde (the start of a name is
   enough: /pull iso). Healers (Cleric, Druid, Healer) don't pull.
+  Not working properly until 0.4: in 0.3 the whole group attacks at once, and
+  in /defensive mode the companion may say it can't reach its target.
   Make it a quickbar button: /macro pull /pull Isolde
   (then click a quickbar slot to place it).
   With /defensive on (0.4): the puller may go past the 350-unit range to tag the
   monster and walks back to you; the rest of the group fights once the monster
   is within 350 units of you.
+
+/charm  (0.4)
+  Your companion that knows a charm spell charms your selected monster. Its
+  current pet, if it has one, is let go first. The monster must be at least
+  green to the companion and a kind its charm can hold.
+  Without the command, a charm companion with no pet charms your selected
+  monster on its own before the fight starts (charming on in AI Options).
+  Hunters keep their wolf: their charming starts off. Switch it on in their
+  AI Options and they let the wolf go and charm instead.
+
+/charm <companion name>  (0.4)
+  That companion charms your target, for example /charm Isolde (the start of a
+  name is enough: /charm iso). Use it to swap its pet for a better one.
+  Make it a quickbar button: /macro charm /charm Isolde
 
 /aggressive
   Companions attack what you attack (the default).

@@ -151,6 +151,15 @@ NORMAL PLAYER COMMANDS
   /charge
   Handler: DOL.GS.Commands.EmoteCommandHandler
 
+/charm  (0.4)
+  A companion that knows a charm spell charms your target (at least green to the
+  companion); its current pet is let go first. /charm <companion name> picks the
+  companion. Macro: /macro charm /charm Isolde. Hired Hunters keep their wolf until
+  charming is switched on in their AI Options.
+  /charm
+  /charm <companion name>
+  Handler: DOL.GS.Commands.CharmCompanionCommandHandler
+
 /chat (aliases: /c)
   Chat group command
   /c <text>
@@ -572,7 +581,8 @@ NORMAL PLAYER COMMANDS
 /pull
   Your tank pulls your target and the group follows up once it has the monster; with
   no tank, everyone engages at once. /pull <companion name> makes that companion the
-  puller (healers don't pull). Macro: /macro pull /pull Isolde. In /defensive mode (0.4)
+  puller (healers don't pull; not working properly until 0.4). Macro: /macro pull /pull
+  Isolde. In /defensive mode (0.4)
   the puller may go past the 350-unit range for its pull; the others wait until the
   monster is within 350 units. Solo, it orders your pet to attack.
   /pull
