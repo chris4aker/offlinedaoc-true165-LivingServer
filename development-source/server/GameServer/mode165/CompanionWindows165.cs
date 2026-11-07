@@ -168,7 +168,7 @@ namespace DOL.GS
             GameBot bot = hired == null ? null : HiredCompanions165.LiveBot(hired.BotId);
             if (verb is "delve")
             {
-                SendDelve(player, bot, args);   // always answered: the new client matches replies in order
+                SendDelve(player, bot, hired, args);   // always answered: the new client matches replies in order
                 return;
             }
             if (CompanionOptions165.Verbs.Contains(verb))
@@ -264,8 +264,11 @@ namespace DOL.GS
         /// &lt;line&gt; &lt;level&gt;" with the player style delve (endurance cost, threat, opening...) of the style the TRAIN
         /// preview lists at that line (ops 8/9 line index) and level. Every request gets a window, empty when there is
         /// nothing to show, because the client pairs replies with requests in order.
+        /// "delve &lt;row&gt; ra &lt;index&gt;" (owner 2026-11-06: no tooltip on a companion's realm abilities): the realm
+        /// ability at that index of the op 11 list, captioned with its name - the player trainer's delve text (description,
+        /// per-level values and costs) for the companion's class, then the companion's own level, next cost and points.
         /// </summary>
-        private static void SendDelve(GamePlayer player, GameBot bot, string[] args)
+        private static void SendDelve(GamePlayer player, GameBot bot, OfflineHiredCompanionRecord hired, string[] args)
         {
             string caption = string.Empty;
             var lines = new List<string>();
@@ -288,6 +291,21 @@ namespace DOL.GS
                     {
                         caption = style.Name;
                         DOL.GS.PacketHandler.Client.v168.DetailDisplayHandler.WriteStyleInfo(lines, style, player.Client);
+                    }
+                }
+                else if (bot != null && hired != null && kind == "ra")
+                {
+                    List<RealmAbilities.RealmAbility> list = RealmAbilityList(bot);
+                    if (first >= 0 && first < list.Count)
+                    {
+                        RealmAbilities.RealmAbility ra = list[first];
+                        caption = ra.Name ?? ra.KeyName;   // as op 11 names it: the client keys the answer by it
+                        if (ra.DelveInfo is { Count: > 0 } info)
+                            lines.AddRange(info);
+                        int level = ChosenRealmAbilities(hired).GetValueOrDefault(ra.KeyName);
+                        lines.Add(string.Empty);
+                        lines.Add(RealmAbilityStatus(bot.Name, level, ra.MaxLevel,
+                            level >= ra.MaxLevel ? 0 : ra.CostForUpgrade(level), RealmAbilityPoints(bot, hired)));
                     }
                 }
             }
@@ -671,6 +689,13 @@ namespace DOL.GS
                     bot.AddAbility(ability, false);
             AutonomousBotRealmAbilities.RefreshActives(bot);   // the actives it was given are used, not only granted
         }
+
+        /// <summary>Pure: the companion's line under a realm ability's delve: its level, and the next level's cost.</summary>
+        public static string RealmAbilityStatus(string name, int level, int maxLevel, int nextCost, int points) =>
+            level >= maxLevel
+                ? $"{name} has it at level {level} of {maxLevel} (the highest)."
+                : $"{name} has it at level {level} of {maxLevel}. Level {level + 1} costs {nextCost} realm ability points; " +
+                  $"{name} has {points}.";
 
         private static string BuyRealmAbility(GameBot bot, OfflineHiredCompanionRecord hired, int index)
         {
