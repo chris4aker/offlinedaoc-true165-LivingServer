@@ -8,6 +8,7 @@ hold). Its changelog has the history of everything this version inherits.
 ## Coming in 0.4
 
 - Guild emblems: a guild cloak shows its emblem as one emblem on the upper back again (the shield already did) - it was stretched over the whole cloak, a skull's eyes two black blots down the back.
+- Item names in the backpack, vault and merchant lists show level 0 items (vendor trash) in their con colour - grey - like their hover box, instead of white.
 - Spells: fire hits (the wizard and cabalist fire bolts and Fire Storm, and the fire explosions) no longer leave a long line of flames on the ground beside the target - leftover template flames in the effect files were being drawn.
 - Companions and gamebots carry their spare weapons like your own character: a two-hander they are not using on the back, a spare one-hander on the hip (an unused dual-wield pair one on each hip), the shield put away while the two-hander is out.
 - Companions: hovering a realm ability in a companion's REALM ABILITIES page shows what it does.
