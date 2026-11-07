@@ -49260,6 +49260,14 @@
   {
    "sql": "UPDATE ItemUnique SET Price = 1, IsDropable = 1 WHERE Id_nb LIKE 'bot!_starter!_%' ESCAPE '!' AND (Price <> 1 OR IsDropable = 0)",
    "reason": "owner 2026-11-06: bot training gear (training bows, throwing weapons, instruments) stays locked from trade and the exchange but a vendor takes it for 1 copper, so it leaves the bag after the first upgrade"
+  },
+  {
+   "sql": "UPDATE Inventory SET Count=1 WHERE lower(ITemplate_Id) IN ('wolf_fang','torn_wolf_pelt','chunk_of_wolf_meat') AND Count>1",
+   "reason": "wolf drop stack fix (owner 2026-11-07): the 3 wolf loot items had PackSize 20/100 with MaxCount 1, so a single drop came as one non-stacking \"(20)\" item; the ones already in bags become 1 (what dropped)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET PackSize=1 WHERE lower(Id_nb) IN ('wolf_fang','torn_wolf_pelt','chunk_of_wolf_meat') AND PackSize<>1",
+   "reason": "wolf drop stack fix (owner 2026-11-07): wolf fang / torn wolf pelt / chunk of wolf meat drop one at a time"
   }
  ]
 }
