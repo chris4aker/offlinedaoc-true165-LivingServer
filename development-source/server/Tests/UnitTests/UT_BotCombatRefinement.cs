@@ -423,10 +423,12 @@ namespace DOL.UnitTests
             Assert.That(BotCasterPriority.DebuffOpeningWorthwhile(30, 80, false, 20, 100, true, 0), Is.True);
         }
 
-        // Period forums (Jun 2002): debuff, Nearsight and root pulls bring the monster with little anger; a nuke pull
-        // "sticks the mob to the caster". Low-aggro pull spells count as pulls and are preferred.
+        // Period forums (Jun 2002): debuff and Nearsight pulls bring the monster with little anger; a nuke pull "sticks
+        // the mob to the caster". Low-aggro pull spells count as pulls and are preferred. Crowd control never pulls (owner
+        // 2026-11-07: a rooted monster cannot come to the group).
         [TestCase("Nearsight", 0, 0, true, true)] [TestCase("StrengthDebuff", 0, 0, true, true)]
-        [TestCase("SpeedDecrease", 0, 99, true, true)] [TestCase("SpeedDecrease", 0, 40, false, false)]
+        [TestCase("SpeedDecrease", 0, 99, false, false)] [TestCase("SpeedDecrease", 0, 40, false, false)]
+        [TestCase("Stun", 0, 0, false, false)]
         [TestCase("DirectDamage", 30, 0, true, false)] [TestCase("Mesmerize", 0, 0, false, false)]
         public void PullSpellsPreferLowAggro(string type, int damage, int value, bool pull, bool lowAggro)
         {

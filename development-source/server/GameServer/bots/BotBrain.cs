@@ -4830,7 +4830,9 @@ namespace DOL.AI.Brain
                     (Body.IsWithinRadius(Body.TargetObject, 550) || Body.ManaPercent <= 10 || _hybridOpenedOn == Body.TargetObject))
                     return false;
 
-                if (BotBody.CanCastCrowdControlSpells)
+                // never crowd control on the monster the player ordered pulled (owner 2026-11-07: a Cabalist /pulled with
+                // a root and the group stood waiting for a monster that could not come)
+                if (BotBody.CanCastCrowdControlSpells && Body.TargetObject != ActiveOrderedPullTarget)
                 {
                     int ccChance = 50;
 

@@ -51,13 +51,13 @@ namespace DOL.GS
 
         /// <summary>
         /// A pull that brings the monster with little anger at the puller (period forums, "Who makes the best puller?",
-        /// Jun 2002: debuff pulls (Spiritmaster, Cabalist), Nearsight pulls (Eldritch, Runemaster) and root pulls (the
-        /// monster arrives disabled) were favoured; a fire nuke pull "sticks the mob to the caster"). Preferred when known.
+        /// Jun 2002: debuff pulls (Spiritmaster, Cabalist) and Nearsight pulls (Eldritch, Runemaster) were favoured; a fire
+        /// nuke pull "sticks the mob to the caster"). Preferred when known. Crowd control is never a pull (owner 2026-11-07:
+        /// a Cabalist pulled with a root - a rooted monster cannot come to the group, so the group stood waiting).
         /// </summary>
         public static bool IsLowAggroPullSpell(Spell spell) => spell != null &&
             (BotCasterPriority.IsDebuff(spell) && spell.SpellType != eSpellType.Disease ||
-             spell.SpellType == eSpellType.Nearsight ||
-             spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99);
+             spell.SpellType == eSpellType.Nearsight);
 
         private static Spell PullSpell(GameBot bot) => bot.Spells?.Where(spell => IsPullSpell(spell, bot.Level))
             .OrderBy(spell => IsLowAggroPullSpell(spell) ? 0 : 1)
