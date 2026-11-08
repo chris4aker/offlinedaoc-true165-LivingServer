@@ -951,12 +951,28 @@ func _clicked_self(at: Vector2) -> bool:
 	return pts[0].distance_to(pts[1]) < 0.45
 
 
+## One of your hired companions in the world (its roster row carries its object id while it is with you).
+func _my_companion(oid: int) -> bool:
+	if oid == 0 or not (ui and ui.companion_net):
+		return false
+	for r in ui.companion_net.roster.values():
+		if int(r.get("oid", 0)) == oid:
+			return true
+	return false
+
+
 ## An inventory item dropped on the world: on a smith, a repair (old server Blacksmith: "It will cost {0} to repair
 ## {1}. Do you accept?", "You pay {0} {1}.", "{0} says, \"There, {1} is ready for combat.\""), on a merchant a sale.
 func _on_item_dropped(slot: int, screen_pos: Vector2) -> void:
 	var n: Npc = npcs.pick(player.camera, screen_pos) if npcs else null
 	if Server.active and n == null and npcs is ServerWorld and (npcs as ServerWorld).house_drop(slot, player.camera, screen_pos):
 		return                                              # housing: a deed on a lot, an item on a wall / floor
+	if Server.active and n and _my_companion(int(n.spawn.get("oid", 0))) \
+			and not (ui and ui.companion_manage and ui.companion_manage.visible):
+		# your own companion takes what it is given as gear (owner 2026-11-08: leather boots dropped on Osbert by
+		# accident while crafting swapped out his own) - only with its companion window open
+		PlayerData.message.emit("Open the companion window to give %s gear." % n.display_name(true), "error")
+		return
 	if Server.active:                                       # the server: onto an NPC = give it (slot 1000 + its id), else
 		var count := int(PlayerData.entry(slot).get("count", 1))   # onto the ground (slot 1) - PlayerMoveItem
 		Server.client.call("MoveItem", slot, 1000 + int(n.spawn.get("oid", 0)) if n else 1, count)
