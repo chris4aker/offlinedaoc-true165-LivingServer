@@ -32,6 +32,13 @@ hold). Its changelog has the history of everything this version inherits.
 - Bots no longer get stuck on the high ledge east of Brynhild, at a Camelot Hills / Salisbury border crossing or on a
   Camelot rooftop; lost escape spots on the Lough Derg ridge are back.
 - The Castle Sauvage keep sentinel by the west wall faces the teleporter.
+- Necromancer bots, round two: power gifts to the group go off (the servant was being called back mid-cast, turning
+  between the Necromancer and the healer); no more standing idle at full power in a fight (a command aimed at a monster
+  that had died blocked the servant); a held-back servant stays within casting range of the fight. Out of power a
+  Deathsight Necromancer no longer spams its level 1 Tormenting Cackle: it keeps power for its drain, and when it
+  cannot pay for it (or Save power holds it back) its servant goes into melee on that monster until it dies.
+- Melee healers (Shamans, Friars, Wardens and others) no longer turn back and forth between the monster and the
+  groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once.
 
 ## 0.4.1 (2026-11-07)
 
