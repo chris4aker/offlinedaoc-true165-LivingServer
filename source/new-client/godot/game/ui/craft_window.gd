@@ -55,7 +55,8 @@ const SLOTS := {"gloves": "hands", "gauntlets": "hands", "mittens": "hands", "ca
 		"robe": "chest"}
 const ASSIST_NET := "res://game/net/craft_assist_net.gd"
 const ASSIST_PANEL := "res://game/ui/craft_assist_panel.gd"
-const ASSIST_BUSY := "The crafting assistant is running - stop it in the ASSISTANT panel"
+const ENCHANT_PANEL := "res://game/ui/craft_enchant_panel.gd"
+const ASSIST_BUSY :="The crafting assistant is running - stop it in the ASSISTANT panel"
 const RECOMMENDED := 5                            # rows in the RECOMMENDED FOR YOU group
 const BEST_MAX := 25                              # rows in the BEST TO TRAIN view
 const AUTO_OPEN := 80                             # a filtered list this short opens all its categories
@@ -110,6 +111,9 @@ var _count: Label
 var _assist_btn: Button
 var _assist: Control = null                          # the crafting assistant panel (craft_assist_panel.gd), made once
 var _assist_on := false
+var _enchant_btn: Button
+var _enchant: Control = null                         # the enchant helper page (craft_enchant_panel.gd), made once
+var _enchant_on := false
 var _built_for := -1                                 # the trade the tabs / type / tier lists were made for
 var _types: Array = []                               # the TYPE list's keys ("" = all)
 var _tiers: Array = []
@@ -306,6 +310,14 @@ func build() -> void:
 			+ "(a quality of life option, not in 1.65 - Options > Crafting)"
 	_assist_btn.pressed.connect(func(): show_assistant(not _assist_on))
 	add_child(_assist_btn)
+	# the enchant helper (owner 2026-11-08: "add an enchant button ... dont give anything out for free just streamline
+	# it"): always there - every gem / tincture is still crafted with your own skill and costs real gold
+	_enchant_btn = UiArt.button("ENCHANT", Vector2(80, 18), 10)
+	_enchant_btn.position = Vector2(W * 0.5 + 132, H - 30)
+	_enchant_btn.tooltip_text = "The enchant helper: spellcraft gems or an alchemy tincture onto an item in your " \
+			+ "backpack - it buys the materials, crafts them with your skill at the normal time and combines them"
+	_enchant_btn.pressed.connect(func(): show_enchant(not _enchant_on))
+	add_child(_enchant_btn)
 	visibility_changed.connect(func():
 		if not visible and not _all.is_empty():
 			_stop_all("")                                # (the item being made goes on; no more after it)
@@ -1198,6 +1210,8 @@ func _assist_status() -> void:
 
 ## The crafting assistant page (C2's craft_assist_panel.gd) in place of the recipe page, or back.
 func show_assistant(on: bool) -> void:
+	if on and _enchant_on:
+		show_enchant(false)
 	_assist_on = on
 	if on and _assist == null:
 		var rect_pos := Vector2(10, Y_TABS)
@@ -1218,8 +1232,36 @@ func show_assistant(on: bool) -> void:
 					Vector2(rect_size.x - 8, 30), 9, UiArt.DIM, true)
 	if _assist:
 		_assist.visible = on
-	_page.visible = not on
+	_page.visible = not on and not _enchant_on
 	_assist_btn.text = "RECIPES" if on else "ASSISTANT"
+
+
+## The enchant helper page (craft_enchant_panel.gd) in place of the recipe page, or back - like the assistant's.
+func show_enchant(on: bool) -> void:
+	if on and _assist_on:
+		show_assistant(false)
+	_enchant_on = on
+	if on and _enchant == null:
+		var rect_pos := Vector2(10, Y_TABS)
+		var rect_size := Vector2(W - 20, H - 36 - Y_TABS - 2)
+		var scr = load(ENCHANT_PANEL) if ResourceLoader.exists(ENCHANT_PANEL) else null
+		if scr != null:
+			_enchant = scr.new()
+			_enchant.position = rect_pos
+			_enchant.size = rect_size
+			add_child(_enchant)
+			_enchant.call("setup", self)
+		else:
+			_enchant = Control.new()
+			_enchant.position = rect_pos
+			_enchant.size = rect_size
+			add_child(_enchant)
+			CompanionUi.text(_enchant, "The enchant helper is not in this build.", Vector2(4, 8),
+					Vector2(rect_size.x - 8, 30), 9, UiArt.DIM, true)
+	if _enchant:
+		_enchant.visible = on
+	_page.visible = not on and not _assist_on
+	_enchant_btn.text = "RECIPES" if on else "ENCHANT"
 
 
 func make_selected() -> void:

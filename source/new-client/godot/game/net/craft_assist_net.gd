@@ -3,6 +3,7 @@ extends RefCounted
 ## estimates cost to that skill goal"; a quality of life option, not in 1.65 - off by default, Options > Crafting).
 ## The server runs it and plans it; this only reads its 'H' messages and sends its /craftassist commands:
 ##   op 40 status (a run: after every craft), op 41 an estimate, op 42 the recipes' prices (several packets, K = 0 ends)
+##   op 43 / 44 the enchant helper (an item's enchant options / an enchant's status; see below)
 ## Every craft still takes the normal 1.65 time and costs real gold - the assistant only clicks, buys and sells.
 ## No class_name (a new one needs an editor class scan): preload("res://game/net/craft_assist_net.gd").
 
@@ -17,6 +18,32 @@ const REASONS := {0: "", 1: "the goal was reached", 2: "you ran out of money",
 		5: "nothing can raise it now: every recipe is grey or its requirements are not met",
 		6: "the craft could not start (see the chat)", 7: "you stopped it",
 		8: "the server refused - the chat says why"}
+
+# The enchant helper (owner 2026-11-08: "add an enchant button ... it can auto buy and enchant it if you have the skill
+# level. dont give anything out for free"): op 43 an item's enchant options (header, gem rows, tincture rows, names, end),
+# op 44 a run's status. Always available - it changes no rules.
+const OP_ENCHANT_INFO := 43
+const OP_ENCHANT_STATUS := 44
+const ENCHANT_STATES := ["Idle", "Buying materials", "Crafting", "Combining", "Done", "Stopped"]
+const ENCHANT_REASONS := {0: "", 1: "done", 2: "you ran out of money", 3: "your backpack is full",
+		4: "interrupted - you moved, fought or logged out (what was made is kept)", 5: "not enough skill",
+		6: "the item is gone or can't be enchanted", 7: "you stopped it",
+		8: "the combine failed", 9: "the server refused - the chat says why"}
+# op 43 header reason byte
+const ENCHANT_WHY := {0: "", 1: "Only crafted items can be enchanted (this item is not crafted or not allowed).",
+		2: "The item's level is too low to be enchanted.",
+		3: "No free bonus slots, and it already has a proc or charges.",
+		4: "You don't have the skill: Spellcrafting or Alchemy is needed."}
+
+## the last op 43 list: {slot, level, quality, free_slots, has_proc, can_spell, can_alch, imbue_max, imbue_used,
+## spell_skill, alch_skill, imbue_cap, reason, name, gems: [ {id, bonus, value, imbue10, cost, secs, req, owned,
+## can, quality, name} ], tinctures: [ {id, kind, charges, spell, level_req, owned, cost, secs, req, can, proc_chance,
+## name, desc} ], at} + the kind 4 imbue facts (raw_existing, biggest_existing, over_success [7], preserve_mod,
+## bonus_count, gem_quality, charges; has_imbue true once it came)
+static var enchant_info := {}
+## the last op 44: {state, reason, destroyed, exploded, step, steps, spent, recipe, secs_left, name, at}
+static var enchant_status := {}
+static var _enchant_new := {}                       # the op 43 list while it arrives (the end marker commits it)
 
 ## recipe id -> {level, cost, sell, sec_min, trains, status, secs, trade} (op 42; the last full list of each trade)
 static var recipe_info := {}
@@ -80,6 +107,33 @@ static func running() -> bool:
 	return int(status.get("state", 0)) == 1
 
 
+## The enchant helper: an item's options (op 43 answers).
+static func enchant_info_for(slot: int) -> bool:
+	return _send("enchantinfo %d" % slot)
+
+
+## kind "spell" (ids: gem recipe ids, one per bonus) or "alch" (ids: the one tincture recipe id).
+static func enchant(slot: int, kind: String, ids: Array, allow_overcharge := false) -> bool:
+	if ids.is_empty():
+		return false
+	var list := []
+	for id in ids:
+		list.append(str(int(id)))
+	if kind == "alch":
+		return _send("enchant %d alch %s" % [slot, list[0]])
+	return _send("enchant %d spell %s %d" % [slot, ",".join(list), 1 if allow_overcharge else 0])
+
+
+static func enchant_stop() -> bool:
+	return _send("enchantstop")
+
+
+## An enchant is going on (op 44 buying / crafting / combining).
+static func enchanting() -> bool:
+	var s := int(enchant_status.get("state", 0))
+	return s >= 1 and s <= 3
+
+
 # ---------------------------------------------------------------- the messages (CompanionNet.handle sends ops 40-42)
 
 static func handle(body: PackedByteArray) -> void:
@@ -95,6 +149,12 @@ static func handle(body: PackedByteArray) -> void:
 		OP_RECIPES:
 			if _recipes(body):
 				Server.craft_assist_changed.emit("recipes")
+		OP_ENCHANT_INFO:
+			if _enchant_info(body):
+				Server.craft_assist_changed.emit("enchant_info")
+		OP_ENCHANT_STATUS:
+			_enchant_status(body)
+			Server.craft_assist_changed.emit("enchant_status")
 
 
 static func _u16(b: PackedByteArray, i: int) -> int:
@@ -158,6 +218,99 @@ static func _recipes(b: PackedByteArray) -> bool:
 				"secs": _u16(b, i + 16), "trade": trade}
 	_pending[trade] = rows
 	return false
+
+
+static func _zstr(b: PackedByteArray, from: int) -> Array:
+	var end := from
+	while end < b.size() and b[end] != 0:
+		end += 1
+	return [b.slice(from, end).get_string_from_utf8() if end > from else "", end + 1]
+
+
+## One op 43 packet; true when it was the end marker (the list it ended is now enchant_info).
+static func _enchant_info(b: PackedByteArray) -> bool:
+	var kind := int(b[4])
+	match kind:
+		0:                                           # header: a new list starts
+			_enchant_new = {"slot": int(b[5]), "level": int(b[6]), "quality": int(b[7]), "free_slots": int(b[8]),
+					"has_proc": b[9] != 0, "can_spell": b[10] != 0, "can_alch": b[11] != 0,
+					"imbue_max": _u16(b, 12), "imbue_used": _u16(b, 14), "spell_skill": _u16(b, 16),
+					"alch_skill": _u16(b, 18), "imbue_cap": _u16(b, 20), "reason": int(b[22]),
+					"name": String(_zstr(b, 23)[0]), "gems": [], "tinctures": [], "names": {}, "desc": {},
+					"has_imbue": false, "raw_existing": 0, "biggest_existing": 0, "over_success": [], "preserve_mod": 0,
+					"bonus_count": 0, "gem_quality": 94, "charges": 0}
+		1:                                           # gem rows, 20 bytes each from [6]
+			if _enchant_new.is_empty():
+				return false
+			for k in int(b[5]):
+				var i := 6 + k * 20
+				if i + 20 > b.size():
+					break
+				(_enchant_new.gems as Array).append({"id": _u16(b, i), "bonus": _u16(b, i + 2), "value": _u16(b, i + 4),
+						"imbue10": _u16(b, i + 6), "cost": _u32(b, i + 8), "secs": _u16(b, i + 12), "req": _u16(b, i + 14),
+						"owned": int(b[i + 16]), "can": b[i + 17] != 0, "quality": int(b[i + 18]), "name": ""})
+		2:                                           # tincture rows, 20 bytes each from [6]
+			if _enchant_new.is_empty():
+				return false
+			for k in int(b[5]):
+				var i := 6 + k * 20
+				if i + 20 > b.size():
+					break
+				(_enchant_new.tinctures as Array).append({"id": _u16(b, i), "kind": int(b[i + 2]), "charges": int(b[i + 3]),
+						"spell": _u32(b, i + 4), "level_req": int(b[i + 8]), "owned": int(b[i + 9]), "cost": _u32(b, i + 10),
+						"secs": _u16(b, i + 14), "req": _u16(b, i + 16), "can": b[i + 18] != 0, "proc_chance": int(b[i + 19]),
+						"name": "", "desc": ""})
+		3:                                           # names: id u16 + zero-ended "name" or "name|spell description"
+			if _enchant_new.is_empty():
+				return false
+			var at := 6
+			for k in int(b[5]):
+				if at + 2 > b.size():
+					break
+				var id := _u16(b, at)
+				var s: Array = _zstr(b, at + 2)
+				at = int(s[1])
+				var parts := String(s[0]).split("|", true, 1)
+				_enchant_new.names[id] = parts[0].strip_edges()
+				if parts.size() > 1:
+					_enchant_new.desc[id] = parts[1].strip_edges()
+		4:                                           # the item's imbue facts (right after the header)
+			if _enchant_new.is_empty():
+				return false
+			var over := []
+			for k in 7:
+				over.append(int(b[10 + k]))
+			_enchant_new.merge({"has_imbue": true, "raw_existing": _u16(b, 6), "biggest_existing": _u16(b, 8),
+					"over_success": over, "preserve_mod": b.decode_s8(17), "bonus_count": int(b[18]),
+					"gem_quality": int(b[19]), "charges": int(b[20])}, true)
+		0xFF:                                        # the end: names into the rows, the list replaces the old one
+			if _enchant_new.is_empty():
+				return false
+			for g in _enchant_new.gems:
+				g.name = String(_enchant_new.names.get(int(g.id), ""))
+			for t in _enchant_new.tinctures:
+				t.name = String(_enchant_new.names.get(int(t.id), ""))
+				t.desc = String(_enchant_new.desc.get(int(t.id), ""))
+			_enchant_new.at = Time.get_ticks_msec()
+			enchant_info = _enchant_new
+			_enchant_new = {}
+			return true
+	return false
+
+
+static func _enchant_status(b: PackedByteArray) -> void:
+	enchant_status = {"state": int(b[4]), "reason": int(b[5]), "destroyed": b[6] != 0,
+			"exploded": int(b[5]) == 8 and b[9] != 0, "step": int(b[7]),
+			"steps": int(b[8]), "spent": _u32(b, 10), "recipe": _u16(b, 14), "secs_left": _u32(b, 16),
+			"name": String(_zstr(b, 20)[0]), "at": Time.get_ticks_msec()}
+
+
+static func enchant_state_text(state: int) -> String:
+	return ENCHANT_STATES[state] if state >= 0 and state < ENCHANT_STATES.size() else "State %d" % state
+
+
+static func enchant_reason_text(reason: int) -> String:
+	return String(ENCHANT_REASONS.get(reason, "code %d" % reason))
 
 
 # ---------------------------------------------------------------- helpers for the windows
