@@ -4098,6 +4098,10 @@ namespace DOL.AI.Brain
             return CheckHeals();
         }
 
+        /// <summary>Paladins and Wardens chant while they melee: a hit never stops the chant.</summary>
+        public static bool KeepsChantInMelee(GameBot bot) => bot?.CharacterClass != null &&
+            (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Paladin or eCharacterClass.Warden;
+
         private bool TryEngageUnderMeleePressure(GameLiving target)
         {
             // A Necromancer's shade has no melee: when hit it keeps commanding its servant (it swung its staff and
@@ -4126,7 +4130,10 @@ namespace DOL.AI.Brain
             if (Body.IsCasting)
                 Body.StopCurrentSpellcast();
 
-            StopTwistedSong();
+            // A Paladin's or Warden's chant pulses on while it fights (owner 2026-11-08: Osbert's chant dropped at every
+            // hit and was recast a second later); only the other classes' songs stop here.
+            if (!KeepsChantInMelee(BotBody))
+                StopTwistedSong();
             SwitchToUsableMeleeWeapon();
 
             CheckOffensiveAbilities();
