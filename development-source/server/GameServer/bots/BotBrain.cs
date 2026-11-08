@@ -1756,7 +1756,7 @@ namespace DOL.AI.Brain
         {
             GameBot owner = BotBody;
             if (owner?.ControlledBrain is not NecromancerPetBrain servantBrain ||
-                servantBrain.Body?.IsAlive != true || !servantBrain.HasPendingSelfBuffCommand ||
+                servantBrain.Body?.IsAlive != true || !servantBrain.HasPendingHelpfulCommand ||   // its buffs and power gifts
                 ActiveOrderedPullTarget?.IsAlive == true ||
                 BotRestRecovery.BlocksRest(owner))
             {
@@ -5036,6 +5036,10 @@ namespace DOL.AI.Brain
                 (CompanionFollowPolicy.WaitingForLeaderToStop(BotBody) || BotBody.IsRecoveryResting && Body.ManaPercent < GiftAfterRestPercent))
                 return false;
             int floor = Body.MaxMana * (fighting ? GiftFloorInCombatPercent : 50) / 100;
+            if (fighting)   // and enough left for the power drain that refills it (owner 2026-11-08)
+                floor = Math.Max(floor, Body.Spells.Where(spell => spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
+                        spell.Level <= Body.Level && SkillBase.GetSpellByID(spell.SubSpellID)?.SpellType == eSpellType.PowerDrainPet)
+                    .Select(spell => BotBody.PowerCost(spell)).DefaultIfEmpty(0).Min());
             Spell gift = Body.Spells
                 .Where(spell => spell != null && spell.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
                                 spell.Level <= Body.Level && Body.GetSkillDisabledDuration(spell) <= 0 &&
@@ -5089,13 +5093,42 @@ namespace DOL.AI.Brain
             if (target?.IsAlive != true || !GameServer.ServerRules.IsAllowedToAttack(Body, target, true))
                 return false;
 
+            // Owner 2026-11-08: out of power Aldith spammed the level 1 Tormenting Cackle (the only command she could still
+            // afford) at range and never got back to her drains. A damage command far below her best one is never cast; a
+            // Deathsight Necromancer keeps enough power for its power drain, and when it cannot afford the drain (or Save
+            // power holds it back) it sends the servant into melee and waits for power, draining again once it can.
+            var known = Body.Spells
+                .Where(spell => spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 && spell.Level <= Body.Level)
+                .Select(spell => (Wrapper: spell, Payload: SkillBase.GetSpellByID(spell.SubSpellID)))
+                .Where(entry => entry.Payload != null).ToList();
+            int bestDamageLevel = known.Where(entry => entry.Wrapper.IsHarmful && !IsServantDebuff(entry.Payload))
+                .Select(entry => entry.Wrapper.Level).DefaultIfEmpty(0).Max();
+            bool deathsight = AutonomousPetSupport.IsDeathsightSpec(BotBody.GetBaseSpecLevel(Specs.Deathsight),
+                BotBody.GetBaseSpecLevel(Specs.Painworking), BotBody.GetBaseSpecLevel(Specs.Death_Servant));
+            int drainCost = deathsight
+                ? known.Where(entry => entry.Payload.SpellType == eSpellType.PowerDrainPet)
+                    .Select(entry => BotBody.PowerCost(entry.Wrapper)).DefaultIfEmpty(0).Min()
+                : 0;
+            bool savingPower = deathsight && SavePowerForGroup();
+            if (DeathsightShortOfPower(deathsight, Body.Mana, drainCost, savingPower))
+                BotBody.ServantSentInOn = target;
+            HashSet<int> drains = known.Where(entry => entry.Payload.SpellType == eSpellType.PowerDrainPet)
+                .Select(entry => entry.Wrapper.ID).ToHashSet();
+            commands = commands.Where(spell =>
+                known.FirstOrDefault(entry => entry.Wrapper.ID == spell.ID).Payload is { } payload &&
+                !ServantDamageOutclassed(spell.Level, !IsServantDebuff(payload), bestDamageLevel) &&
+                (drains.Contains(spell.ID) || !savingPower && Body.Mana - BotBody.PowerCost(spell) >= drainCost));
+
             // Helpful servant commands are exclusively maintained by
             // AutonomousPetSupport. Keeping them out of this combat selector
             // prevents a second cooldown/queue from recasting buffs or treating
             // one-shot power transfer as idle upkeep.
             GameLiving servant = servantBrain.Body;
+            // a held-back servant casts from where it stands: its payload range counts from the servant, not the shade
+            bool heldBack = AutonomousPetSupport.ServantHoldsBack(Body);
             commands = commands.Where(spell => spell.IsHarmful &&
                 Body.IsWithinRadius(target, Math.Max(1, spell.CalculateEffectiveRange(Body))) &&
+                (!heldBack || ServantInPayloadRange(servant, target, spell)) &&
                 ServantCanReach(target, spell) &&
                 ServantPayloadNeedsApplication(target, spell));
 
@@ -5156,6 +5189,12 @@ namespace DOL.AI.Brain
                        servant.IsWithinRadius(commandTarget, Math.Max(100, payload.Radius * 8 / 10));
             }
 
+            static bool ServantInPayloadRange(GameLiving pet, GameLiving commandTarget, Spell wrapper)
+            {
+                Spell payload = SkillBase.GetSpellByID(wrapper.SubSpellID);
+                return payload == null || payload.Range <= 0 || pet.IsWithinRadius(commandTarget, payload.Range);
+            }
+
             bool ServantPayloadNeedsApplication(GameLiving commandTarget, Spell wrapper)
             {
                 Spell payload = SkillBase.GetSpellByID(wrapper.SubSpellID);
@@ -5211,6 +5250,18 @@ namespace DOL.AI.Brain
             return hit ?? (othersMelee ? Highest(debuffs) : null);
         }
 
+        /// <summary>
+        /// A damage command far below the Necromancer's best one (owner 2026-11-08: the level 1 Tormenting Cackle at level
+        /// 19): at least 5 levels and less than half the level of its best damage command. Debuffs are never outclassed.
+        /// </summary>
+        public static bool ServantDamageOutclassed(int commandLevel, bool damagePayload, int bestDamageLevel) =>
+            damagePayload && bestDamageLevel - commandLevel >= 5 && commandLevel * 2 < bestDamageLevel;
+
+        /// <summary>A Deathsight Necromancer that cannot pay for its power drain, or that Save power holds back: its servant
+        /// goes into melee while the shade waits for power (owner 2026-11-08).</summary>
+        public static bool DeathsightShortOfPower(bool deathsight, int mana, int drainCost, bool savingPower) =>
+            deathsight && (savingPower || drainCost > 0 && mana < drainCost);
+
         /// <summary>A snare payload (Constricting Pain, Vortex of Anguish): only for a runner.</summary>
         public static bool IsServantSnare(Spell payload) =>
             payload.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease;
@@ -5241,6 +5292,8 @@ namespace DOL.AI.Brain
 
         protected bool CanCastOffensiveSpell(Spell spell)
         {
+            if (IsServantCommandOutsideItsPath(spell))
+                return false;
             if (spell == null || spell.Level > Body.Level || IsOutclassedDamageSpell(spell) ||
                 Body.TargetObject is not GameLiving target || !target.IsAlive ||
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||
@@ -5368,8 +5421,15 @@ namespace DOL.AI.Brain
             return castSpell && Body.CastSpell(spell, m_mobSpellLine);
         }
 
+        /// <summary>A Necromancer's servant commands go only through TryIssueNecromancerServantCommand (owner 2026-11-08:
+        /// the generic offense cast the commands that path had just ruled out).</summary>
+        private bool IsServantCommandOutsideItsPath(Spell spell) =>
+            spell?.SpellType == eSpellType.PetSpell && Body.ControlledBrain is NecromancerPetBrain;
+
         protected virtual bool CheckInstantOffensiveSpells(Spell spell)
         {
+            if (IsServantCommandOutsideItsPath(spell))
+                return false;
             if (spell == null || IsOutclassedDamageSpell(spell) || Body.Mana < BotBody.PowerCost(spell) ||
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||
                 spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)

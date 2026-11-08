@@ -84,12 +84,22 @@ namespace DOL.AI.Brain
         private long _pendingCommandSince;
 
         /// <summary>True when a pending command was stuck past the limit and has just been dropped.</summary>
+        /// <summary>In a fight, a bot servant's queue that holds only commands it cannot start is cleared after this long
+        /// (owner 2026-11-08: Aldith stood at full power through a whole pull - a command on a monster that had died sat at
+        /// the head of the queue and kept the shade "busy" until the fight ended). Longer than the slowest servant swing.</summary>
+        public const long StuckInCombatMilliseconds = 7_000;
+
         public bool DropStuckCommand()
         {
             long now = GameLoop.GameLoopTime;
-            // Only out of combat: in a fight the servant's commands follow each other all the time.
-            if (!HasPendingBotCommand || Body?.InCombat == true || Owner is GameLiving { InCombat: true } ||
-                Owner is GameBot { Brain: BotBrain { HasAggro: true } })
+            bool fighting = Body?.InCombat == true || Owner is GameLiving { InCombat: true } ||
+                            Owner is GameBot { Brain: BotBrain { HasAggro: true } };
+            // In a fight the servant's commands follow each other all the time: only a bot servant's queue that is
+            // not being worked on at all (no cast, no cast request, no line-of-sight check) counts as stuck there.
+            bool onlyQueued = Owner is GameBot && (HasSpellsQueued() || HasAttackSpellsQueued()) && Body?.IsCasting != true &&
+                              Body?.castingComponent?.HasPendingSkillRequests != true &&
+                              Body?.castingComponent?.HasPendingLosCheckRequests != true;
+            if (!HasPendingBotCommand || fighting && !onlyQueued)
             {
                 _pendingCommandSince = 0;
                 return false;
@@ -99,7 +109,7 @@ namespace DOL.AI.Brain
                 _pendingCommandSince = now;
                 return false;
             }
-            if (now - _pendingCommandSince < PendingCommandLimitMilliseconds)
+            if (now - _pendingCommandSince < (fighting ? StuckInCombatMilliseconds : PendingCommandLimitMilliseconds))
                 return false;
             _pendingCommandSince = 0;
             ClearSpellQueue();
@@ -132,7 +142,11 @@ namespace DOL.AI.Brain
                     return !queued.Spell.IsHarmful;
                 if (m_spellQueue.TryPeek(out SpellQueueEntry command))
                     return command.Spell?.IsHarmful == false;
-                return Body.castingComponent?.TryPeekPendingSpell(out Spell pending) == true && pending?.IsHarmful == false;
+                if (Body.castingComponent?.TryPeekPendingSpell(out Spell pending) == true && pending?.IsHarmful == false)
+                    return true;
+                // a gift waiting for its line-of-sight answer: the queue entry is gone already, the cast not started yet
+                return Body.castingComponent?.HasPendingLosCheckRequests == true && Body.TargetObject is GameLiving friend &&
+                       friend != Body && GameServer.ServerRules.IsSameRealm(Body, friend, true);
             }
         }
 
@@ -153,6 +167,12 @@ namespace DOL.AI.Brain
                 CheckSpellQueue();
                 return;
             }
+
+            // A bot's servant that is held back (not swinging) gets no attack rounds, which is where queued commands
+            // are normally retried: retry them here (owner 2026-11-08). CheckSpellQueue still waits for a swing to end.
+            if (Owner is GameBot && (HasSpellsQueued() || HasAttackSpellsQueued()) && !Body.IsCasting &&
+                !Body.attackComponent.AttackState)
+                CheckSpellQueue();
 
             CheckTether();
             FSM.Think();
@@ -280,6 +300,10 @@ namespace DOL.AI.Brain
             if (!Body.IsCasting)
                 CheckAttackSpellQueue();
 
+            // A command whose target died or left can never start: drop it instead of blocking the queue for good.
+            while (m_spellQueue.TryPeek(out SpellQueueEntry head) && IsDeadWeight(head))
+                RemoveSpellFromQueue();
+
             SpellQueueEntry entry = GetSpellFromQueue();
 
             if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
@@ -292,8 +316,18 @@ namespace DOL.AI.Brain
         /// <summary>
         /// See if there are any spells queued up and if so, get the first one and cast it.
         /// </summary>
+        /// <summary>A queued command aimed at a target that died, left the world or the region (self and point-blank
+        /// commands need no target).</summary>
+        private bool IsDeadWeight(SpellQueueEntry entry) =>
+            entry?.Spell != null && entry.Spell.Target != eSpellTarget.SELF && entry.Spell.Range != 0 &&
+            (entry.Target == null || !entry.Target.IsAlive || entry.Target.ObjectState != GameObject.eObjectState.Active ||
+             entry.Target.CurrentRegionID != Body.CurrentRegionID);
+
         public void CheckAttackSpellQueue()
         {
+            while (m_attackSpellQueue.TryPeek(out SpellQueueEntry head) && IsDeadWeight(head))
+                RemoveSpellFromAttackQueue();
+
             int spellsQueued = m_attackSpellQueue.Count;
 
             for (int i = 0; i < spellsQueued; i++)

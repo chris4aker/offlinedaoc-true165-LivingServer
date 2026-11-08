@@ -676,6 +676,9 @@ namespace DOL.GS
 
         public GameLiving DuelPartner => Duel?.GetPartnerOf(this);
 
+        /// <summary>A Deathsight Necromancer short of power sent its servant into melee on this monster (owner 2026-11-08).</summary>
+        public GameLiving ServantSentInOn { get; set; }
+
         public void OnDuelStart(GameDuel duel)
         {
             Duel = duel;

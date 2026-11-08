@@ -93,5 +93,28 @@ namespace DOL.UnitTests
             Assert.That(AutonomousPetSupport.ServantHoldsBack(true, 2_000), Is.False, "hit 2 s ago: it fights back");
             Assert.That(AutonomousPetSupport.ServantHoldsBack(false, 60_000), Is.False);
         }
+
+        [Test]
+        public void LevelOneCackleIsOutclassedAtNineteen()
+        {
+            Assert.That(BotBrain.ServantDamageOutclassed(1, true, 19), Is.True, "Tormenting Cackle at level 19");
+            Assert.That(BotBrain.ServantDamageOutclassed(16, true, 19), Is.False, "Agony of the Dead stays");
+            Assert.That(BotBrain.ServantDamageOutclassed(18, true, 19), Is.False, "Energy Vacuum stays");
+            Assert.That(BotBrain.ServantDamageOutclassed(1, true, 5), Is.False, "a young necro keeps its level 1 spell");
+            Assert.That(BotBrain.ServantDamageOutclassed(1, true, 6), Is.True);
+            Assert.That(BotBrain.ServantDamageOutclassed(1, false, 40), Is.False, "debuffs are never outclassed");
+        }
+
+        [Test]
+        public void ShortOfPower_SendsTheServantIn()
+        {
+            Assert.That(BotBrain.DeathsightShortOfPower(true, 6, 11, false), Is.True, "can't pay for the power drain");
+            Assert.That(BotBrain.DeathsightShortOfPower(true, 11, 11, false), Is.False);
+            Assert.That(BotBrain.DeathsightShortOfPower(true, 80, 11, true), Is.True, "Save power holds it back");
+            Assert.That(BotBrain.DeathsightShortOfPower(false, 0, 11, true), Is.False, "other specs: unchanged");
+            Assert.That(BotBrain.DeathsightShortOfPower(true, 3, 0, false), Is.False, "no drain learned yet");
+            Assert.That(AutonomousPetSupport.ServantHoldsBack(true, 60_000, true), Is.False, "sent in: it stays in melee");
+            Assert.That(AutonomousPetSupport.ServantHoldsBack(true, 60_000, false), Is.True);
+        }
     }
 }

@@ -538,7 +538,7 @@ public static class AutonomousPetSupport
             else if (ServantHoldsBack(owner))
             {
                 CallOffServant(petBrain);
-                MaintainDefensivePetTree(petBrain, owner, capitalSafety);
+                HoldServantInCastRange(petBrain, owner, combatTarget, capitalSafety);
             }
             else if (combatTarget?.IsAlive == true && GameServer.ServerRules.IsAllowedToAttack(owner, combatTarget, true))
                 CommandPetTree(petBrain, combatTarget);
@@ -851,14 +851,51 @@ public static class AutonomousPetSupport
         owner is GameBot bot && bot.CharacterClass?.ID == (int)eCharacterClass.Necromancer &&
         bot.ControlledBrain?.Body is GameNPC servant &&
         ServantHoldsBack(IsDeathsightSpec(bot.GetBaseSpecLevel(Specs.Deathsight), bot.GetBaseSpecLevel(Specs.Painworking),
-            bot.GetBaseSpecLevel(Specs.Death_Servant)), GameLoop.GameLoopTime - servant.LastAttackedByEnemyTick);
+            bot.GetBaseSpecLevel(Specs.Death_Servant)), GameLoop.GameLoopTime - servant.LastAttackedByEnemyTick,
+            bot.ServantSentInOn is { IsAlive: true } sentOn && sentOn == bot.TargetObject);
 
-    public static bool ServantHoldsBack(bool deathsight, long sinceServantHit) =>
-        deathsight && sinceServantHit >= ServantHitMeleeMilliseconds;
+    public static bool ServantHoldsBack(bool deathsight, long sinceServantHit) => ServantHoldsBack(deathsight, sinceServantHit, false);
+
+    /// <summary>sentIn: the Necromancer ran short of power on this monster and sent the servant in (owner 2026-11-08); it
+    /// stays in melee until that monster dies or the target changes, as a veteran leaves a servant on a monster.</summary>
+    public static bool ServantHoldsBack(bool deathsight, long sinceServantHit, bool sentIn) =>
+        deathsight && !sentIn && sinceServantHit >= ServantHitMeleeMilliseconds;
 
     /// <summary>Deathsight is the trained line (above 1, and not below Painworking or Death Servant).</summary>
     public static bool IsDeathsightSpec(int deathsight, int painworking, int deathServant) =>
         deathsight > 1 && deathsight >= painworking && deathsight >= deathServant;
+
+    /// <summary>How far from the monster a held-back servant stands to cast (its drains and lifedrains reach 1,500).</summary>
+    public const int ServantCastStandoff = 1_200;
+
+    /// <summary>
+    /// A held-back servant stays within casting range of the fight and still (owner 2026-11-08: it followed its owner out of
+    /// range mid-command, and a walk into range was undone at once by the follow order). Out of a fight it follows.
+    /// </summary>
+    private static void HoldServantInCastRange(IControlledBrain petBrain, GameLiving owner, GameLiving combatTarget, bool capitalSafety)
+    {
+        GameNPC servant = petBrain?.Body;
+        if (servant == null)
+            return;
+        if (petBrain is NecromancerPetBrain busy && busy.HasPendingBotCommand)
+            return;   // let the command it is working on finish where it stands
+        if (combatTarget?.IsAlive != true || !GameServer.ServerRules.IsAllowedToAttack(owner, combatTarget, true) ||
+            combatTarget.CurrentRegionID != servant.CurrentRegionID)
+        {
+            MaintainDefensivePetTree(petBrain, owner, capitalSafety);
+            return;
+        }
+        if (petBrain is ControlledMobBrain controlled)
+        {
+            controlled.AggroLevel = 0;
+            if (controlled.AggressionState is not eAggressionState.Defensive)
+                controlled.SetAggressionState(eAggressionState.Defensive);
+        }
+        if (!servant.IsWithinRadius(combatTarget, ServantCastStandoff + 200))
+            servant.Follow(combatTarget, ServantCastStandoff, 6_000);
+        else if (servant.IsMoving)
+            servant.StopFollowing();
+    }
 
     /// <summary>Stops a held-back servant's melee chase, never in the middle of a cast or a queued command.</summary>
     public static void CallOffServant(IControlledBrain petBrain)
@@ -963,8 +1000,10 @@ public static class AutonomousPetSupport
         // Do not infer safety from clean combat flags: the exact defect is a
         // stale flag surviving into a real self-buff. Require the native
         // Necromancer queue/casting pipeline to prove a helpful self-command.
+        // a power gift to a groupmate counts too (owner 2026-11-08: ClearStalePetCombat disengaged the servant mid-gift
+        // because its target was the Cleric, and the shade re-cast it every 1.5 s)
         return owner is GameBot && brain is NecromancerPetBrain necromancer &&
-               necromancer.HasPendingSelfBuffCommand;
+               necromancer.HasPendingHelpfulCommand;
     }
 
     /// <summary>
