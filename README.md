@@ -119,7 +119,9 @@ is the result: the world database and the content files built from it.
   your own stat points, and choose your height, face and hair. The pre-game screens follow the 1.64 client.
 - You begin in your race and class's period starting town, with a weapon and a training shield. There are 8
   character slots per realm.
-- Crafting from the 1.64 client's recipe list, with the period success rates, hand tools and salvage.
+- Crafting from the 1.64 client's recipe list, with the period success rates, craft times, skill gains and salvage.
+  **The crafting system itself is a large deviation from 1.65:** crafting works anywhere without tools, MAKE buys
+  missing materials, and an optional crafting assistant and an enchant helper do the clicking (see the CHANGELOG).
 - Gear wears and is repaired for coin, and arrows, throwing weapons and poisons are bought or crafted.
 - Coin belongs to each character, deaths cost constitution, and songs need their own instrument type.
 - Period tasks (`/task`) and housing. Quests, epic quests and epic armour are being brought to their 1.65
