@@ -11,6 +11,8 @@ hold). Its changelog has the history of everything this version inherits.
   there is no snare and at most one debuff, then the power drain (its power goes to the group through the power
   gift), else their hardest-hitting spell. Before, they snared and debuffed most of a fight and picked damage spells
   at random, so a level 1 Tormenting Cackle could win over Soul Evacuation.
+- The innkeeper / healer companion list: dismissing a companion no longer hides the one listed below it
+  until your next hire (dismissing the third of four made the fourth vanish from the list).
 
 ## 0.4.1 (2026-11-07)
 
