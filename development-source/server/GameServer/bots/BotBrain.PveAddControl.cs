@@ -151,15 +151,20 @@ namespace DOL.AI.Brain
 
             bool classic165 = Classic165Mode.IsOn;
             GameLiving killTarget = classic165 ? GroupKillTarget() : null;
-            List<GameNPC> adds = bot.GetNPCsInRadius(1800)
+            List<GameNPC> nearby = bot.GetNPCsInRadius(1800);
+            // owner 2026-11-08: also skip adds hurt in the last seconds, with a DoT or snare on them, the bot's own target,
+            // or targeted by a groupmate's pet or elemental; untouched adds at full health first
+            HashSet<GameLiving> petTargets = GroupPetTargets(nearby, members);
+            List<GameNPC> adds = nearby
                 .Where(npc => npc?.IsAlive == true && npc.Realm == eRealm.None && !BotPvpCrowdControl.PlayerLike(npc) &&
                     !IsUntargetable(npc) && CanDefendAgainst(npc) &&
                     npc.TargetObject is GameLiving victim && members.Contains(victim) &&
                     !IsHandledAdd(classic165, selectedTargets.Contains(npc), attackedTargets.Contains(npc), npc == killTarget,
                         npc == Body.TargetObject) &&
+                    IsUntouchedAdd(npc, petTargets) &&
                     !(classic165 && IsReservedForMez(npc)) &&   // another mezzer is on it
                     !npc.IsMezzed && !npc.IsStunned && now >= _pveAddControlRetryUntil.GetValueOrDefault(npc))
-                .OrderBy(bot.GetDistanceTo).Take(16).ToList();
+                .OrderBy(npc => npc.HealthPercent >= 100 ? 0 : 1).ThenBy(bot.GetDistanceTo).Take(16).ToList();
             if (adds.Count == 0)
                 return false;
             bool emergency = adds.Count >= EmergencyAddCount;

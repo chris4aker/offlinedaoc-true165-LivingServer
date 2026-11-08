@@ -14,7 +14,8 @@ namespace DOL.GS
         public static bool IsHybrid(eCharacterClass characterClass) => characterClass == eCharacterClass.Shaman;
 
         public static bool IsRoot(Spell spell) =>
-            spell != null && spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99;
+            spell != null && spell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease &&
+            spell.Value >= 99;   // owner 2026-11-08: the unbreakable kind too
 
         /// <summary>
         /// Every healing class (Shaman, Druid, Healer, Cleric, Friar, Warden, Paladin) keeps its

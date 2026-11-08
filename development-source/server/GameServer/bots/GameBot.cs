@@ -2459,8 +2459,8 @@ namespace DOL.GS
                     BoltSpells ??= new List<Spell>(1);
                     BoltSpells.Add(spell);
                 }
-                else if (spell.SpellType == eSpellType.Mesmerize ||
-                        (spell.SpellType == eSpellType.SpeedDecrease && spell.Value >= 99))
+                // owner 2026-11-08: unbreakable roots too (ShamanBotCombatPolicy.IsRoot)
+                else if (spell.SpellType == eSpellType.Mesmerize || ShamanBotCombatPolicy.IsRoot(spell))
                 {
                     CrowdControlSpells ??= new List<Spell>(1);
                     CrowdControlSpells.Add(spell);

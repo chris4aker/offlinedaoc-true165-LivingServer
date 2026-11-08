@@ -9,6 +9,7 @@ namespace DOL.AI.Brain
     {
         private const long BardPveMezRetryMilliseconds = 15_000;
         private readonly Dictionary<GameLiving, long> _bardPveMezRetryUntil = new();
+        private long _nextBardPveMezLook;
 
         private bool TryBardPveAddMez()
         {
@@ -18,8 +19,10 @@ namespace DOL.AI.Brain
                 !BardBotCrowdControlPolicy.HasGroupForPveAdd(group?.MemberCount) ||
                 bard.CanCastCrowdControlSpells != true ||
                 bard.IsIncapacitated || bard.IsCasting ||
-                bard.castingComponent?.HasPendingSkillRequests == true)
+                bard.castingComponent?.HasPendingSkillRequests == true ||
+                GameLoop.GameLoopTime < _nextBardPveMezLook)
                 return false;
+            _nextBardPveMezLook = GameLoop.GameLoopTime + 1_000;   // owner 2026-11-08: once a second, as add control
 
             GameLiving[] members = group.GetMembersInTheGroup()
                 .Where(member => member?.IsAlive == true && member.CurrentRegion == bard.CurrentRegion)
@@ -64,7 +67,11 @@ namespace DOL.AI.Brain
             if (singleTargetMezzes.Length == 0)
                 return false;
 
-            foreach (GameNPC add in bard.GetNPCsInRadius(1800)
+            List<GameNPC> nearby = bard.GetNPCsInRadius(1800);
+            // owner 2026-11-08: no add a pet or elemental of the group targets, none hurt or DoT'd lately
+            HashSet<GameLiving> petTargets = GroupPetTargets(nearby, members);
+            List<GameNPC> safeAdds = new();
+            foreach (GameNPC add in nearby
                          .Where(npc => npc?.IsAlive == true && npc.Realm == eRealm.None &&
                              !BotPvpCrowdControl.PlayerLike(npc) && CanDefendAgainst(npc))
                          .OrderBy(bard.GetDistanceTo).Take(24))
@@ -74,14 +81,26 @@ namespace DOL.AI.Brain
                     add.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) ||
                     add.effectListComponent.ContainsEffectForEffectType(eEffect.NPCMezImmunity);
                 long retryUntil = _bardPveMezRetryUntil.GetValueOrDefault(add);
-                if (!BardBotCrowdControlPolicy.IsSafePveAdd(true,
+                if (BardBotCrowdControlPolicy.IsSafePveAdd(true,
                         activeTargets.Any(target => target != add), attacksMember,
                         selectedTargets.Contains(add), Body.TargetObject == add,
-                        add.HealthPercent, alreadyControlled, now, retryUntil))
-                    continue;
+                        add.HealthPercent, alreadyControlled, now, retryUntil) &&
+                    IsUntouchedAdd(add, petTargets))
+                    safeAdds.Add(add);
+            }
+            // owner 2026-11-08: Hypnotic Harmony (instant, 10-minute reuse) only by the long-reuse rule, as in TryPveAddControl
+            bool emergency = safeAdds.Count >= EmergencyAddCount;
+            bool castTimeBlocked = bard.IsBeingInterruptedByOther ||
+                !Array.Exists(singleTargetMezzes, spell => spell.CastTime > 0 && !BotControlSpells.IsLongReuse(spell) &&
+                    bard.GetSkillDisabledDuration(spell) <= 0 && bard.Mana >= bard.PowerCost(spell));
 
+            foreach (GameNPC add in safeAdds)
+            {
                 foreach (Spell spell in singleTargetMezzes)
                 {
+                    if (BotControlSpells.IsLongReuse(spell) &&
+                        !AllowsLongReuseControl(Classic165Mode.IsOn, emergency, true, castTimeBlocked))
+                        continue;
                     if (bard.Mana < bard.PowerCost(spell) || bard.GetSkillDisabledDuration(spell) > 0 ||
                         spell.CastTime > 0 && bard.IsBeingInterruptedByOther ||
                         !bard.IsWithinRadius(add, spell.CalculateEffectiveRange(bard)) ||

@@ -4023,6 +4023,7 @@ namespace DOL.AI.Brain
             return Body.Spells?.Where(spell => spell != null && spell.IsHarmful &&
                     spell.Level <= Body.Level && spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE &&
                     spell.SpellType is not eSpellType.Charm and not eSpellType.Amnesia and not eSpellType.Confusion and not eSpellType.Taunt &&
+                    !BotControlSpells.IsControl(spell) &&   // owner 2026-11-08: control is no attack spell to stand at
                     !AutonomousPetSupport.IsDisabledBotDamageShield(BotBody, spell) &&
                     AnimistSingleTargetPolicy.AllowsAutomatedSpell(BotBody, spell))
                 .Select(spell => spell.Target == eSpellTarget.AREA && spell.Range <= 0
@@ -4172,6 +4173,7 @@ namespace DOL.AI.Brain
                     spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE &&
                     spell.SpellType is not eSpellType.Charm and not eSpellType.Amnesia and
                         not eSpellType.Confusion and not eSpellType.Taunt &&
+                    !BotControlSpells.IsControl(spell) &&   // owner 2026-11-08: power for a snare or stun is no attack power
                     !AutonomousPetSupport.IsDisabledBotDamageShield(BotBody, spell) &&
                     !BotSpellPower.BlocksAttackerRotation(BotBody, spell) &&
                     !IsOutclassedDamageSpell(spell) &&
@@ -4847,7 +4849,10 @@ namespace DOL.AI.Brain
 
                 // never crowd control on the monster the player ordered pulled (owner 2026-11-07: a Cabalist /pulled with
                 // a root and the group stood waiting for a monster that could not come)
-                if (BotBody.CanCastCrowdControlSpells && Body.TargetObject != ActiveOrderedPullTarget)
+                // owner 2026-11-08: mez and root never go on the bot's own monster (the next hit breaks them; adds are
+                // TryPveAddControl/TryShamanPveAddRoot's job), so this block is for player-like targets only
+                if (BotBody.CanCastCrowdControlSpells && Body.TargetObject != ActiveOrderedPullTarget &&
+                    BotPvpCrowdControl.PlayerLike(Body.TargetObject as GameLiving))
                 {
                     int ccChance = 50;
 
@@ -4860,13 +4865,7 @@ namespace DOL.AI.Brain
                     {
                         foreach (Spell spell in BotBody.CrowdControlSpells)
                         {
-                            // Never mesmerize the monster this bot is trying to kill:
-                            // the next hit breaks it, so the cast only delays the fight
-                            // (solo level 1 Healers spent turns mezzing their own
-                            // target). PvP control and Bard add-mez use separate paths;
-                            // stuns stay allowed since they give free hits.
-                            if (Body.TargetObject is GameNPC and not GameBot &&
-                                spell.SpellType is eSpellType.Mesmerize or eSpellType.Mez)
+                            if (!ControlAllowedOnTarget(spell, livingTarget))
                                 continue;
                             if (CanCastOffensiveSpell(spell) && !LivingHasEffect((GameLiving)Body.TargetObject, spell))
                                 spellsToCast.Add(spell);
@@ -4918,9 +4917,17 @@ namespace DOL.AI.Brain
                     if (spellsToCast.Exists(spell => spell.SpellType == eSpellType.SummonTheurgistPet) &&
                         AutonomousPetSupport.TheurgistHoldsPets(BotBody))
                         spellsToCast.RemoveAll(spell => spell.SpellType == eSpellType.SummonTheurgistPet);
+                    // owner 2026-11-08: while holding damage only real debuffs (and an interrupt/peel stun) go, never a
+                    // snare, root or nearsight on the monster the tank holds
                     if (holdDamage)
-                        spellsToCast.RemoveAll(BotCasterPriority.IsDamage);   // debuffs and control may still go
+                    {
+                        bool playerLikeTarget = BotPvpCrowdControl.PlayerLike(Body.TargetObject as GameLiving);
+                        spellsToCast.RemoveAll(spell => BotControlSpells.HoldDamageStrips(spell, playerLikeTarget));
+                    }
                     if (spellsToCast.Count == 0) return Body.IsCasting;
+                    PreferPlainNukeOverSnareNuke(spellsToCast, Body.TargetObject as GameLiving);
+                    // a stun kept by ControlAllowedOnTarget interrupts a cast or peels: it goes first
+                    Spell urgentStun = spellsToCast.Find(BotControlSpells.IsStun);
                     if (PrefersCurrentSpellRange() &&
                         spellsToCast.Exists(spell => spell.Range > Body.MeleeAttackRange))
                         spellsToCast.RemoveAll(spell => spell.Range <= Body.MeleeAttackRange);
@@ -4928,7 +4935,7 @@ namespace DOL.AI.Brain
                         spellsToCast.RemoveAll(spell => !BotCasterPriority.IsDamage(spell) &&
                                                         !(debuffOpening && BotCasterPriority.IsDebuff(spell)));
                     // Debuff first, then nuke (owner 2026-11-05 class audit: casters never cast a single debuff).
-                    Spell openingDebuff = debuffOpening && !Body.IsBeingInterrupted
+                    Spell openingDebuff = urgentStun == null && debuffOpening && !Body.IsBeingInterrupted
                         ? spellsToCast.Where(BotCasterPriority.IsDebuff).OrderByDescending(spell => spell.Level).FirstOrDefault()
                         : null;
                     if (openingDebuff != null && CheckOffensiveSpells(openingDebuff))
@@ -4939,9 +4946,9 @@ namespace DOL.AI.Brain
                     bool shamanHybrid = ShamanBotCombatPolicy.IsHybrid((eCharacterClass)BotBody.CharacterClass.ID);
                     // Two or more monsters in the fight within an area damage spell's reach: that spell, when its total
                     // beats the best single nuke. Area spells that would wake a mez or pull a monster are dropped here.
-                    Spell areaChoice = ChooseAreaDamage(spellsToCast, Body.TargetObject as GameLiving);
-                    if (spellsToCast.Count == 0) return Body.IsCasting;
-                    Spell spellToCast = areaChoice ?? (shamanHybrid
+                    Spell areaChoice = urgentStun == null ? ChooseAreaDamage(spellsToCast, Body.TargetObject as GameLiving) : null;
+                    if (urgentStun == null && spellsToCast.Count == 0) return Body.IsCasting;
+                    Spell spellToCast = urgentStun ?? areaChoice ?? (shamanHybrid
                         ? spellsToCast.OrderBy(ShamanBotCombatPolicy.RotationPriority)
                             .ThenByDescending(spell => spell.Level).First()
                         : BotBody.IsEndgameCompanion
@@ -5238,6 +5245,7 @@ namespace DOL.AI.Brain
                 Body.TargetObject is not GameLiving target || !target.IsAlive ||
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||
                 !ShamanBotCombatPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell) ||
+                !ControlAllowedOnTarget(spell, target) ||   // owner 2026-11-08: snares, stuns, roots by their own rules
                 BotSpellPower.BlocksAttackerRotation(BotBody, spell) ||
                 !NeedsOffensiveSpellApplication(target, spell) ||
                 Body.GetSkillDisabledDuration(spell) > 0 || Body.Mana < BotBody.PowerCost(spell))
@@ -5366,6 +5374,10 @@ namespace DOL.AI.Brain
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||
                 spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
                 return false;
+            // owner 2026-11-08: an instant stun only interrupts or peels, an instant snare only stops a runner, no mez on
+            // the bot's own monster (Minstrel Stunning Yell, Healer Paralyzing Glance, Skald/Champion snares)
+            if (!ControlAllowedOnTarget(spell, Body.TargetObject as GameLiving))
+                return false;
 
             bool castSpell = false;
 
@@ -5417,8 +5429,11 @@ namespace DOL.AI.Brain
                     break;
                 // An instant snare (Champion Slowness, Valewalker Close Path, Nightshade Constrict Spirit) on a monster that is
                 // about to run, as players kept runners from bringing friends (owner 2026-11-05 class audit: never cast).
+                // owner 2026-11-08: only a real runner (moving, low, out of melee: ControlAllowedOnTarget checked above)
                 case eSpellType.SpeedDecrease:
-                    if (!spell.IsPBAoE && spell.Radius == 0 && Body.TargetObject is GameNPC runner && runner.HealthPercent < 35 &&
+                case eSpellType.UnbreakableSpeedDecrease:
+                    if (!spell.IsPBAoE && spell.Radius == 0 && Body.TargetObject is GameNPC runner &&
+                        (!BotPvpCrowdControl.PlayerLike(runner) || runner.HealthPercent < BotControlSpells.RunnerHealthPercent) &&
                         !LivingHasEffect(runner, spell) && Body.IsWithinRadius(runner, spell.Range))
                         castSpell = true;
                     break;

@@ -2,8 +2,16 @@ namespace DOL.GS
 {
     public static class BotCasterPriority
     {
+        // owner 2026-11-08: a bomber is damage only when its payload is (root bombers carry Damage 50 too)
         public static bool IsDamage(Spell spell) => spell != null &&
-            (spell.Damage > 0 || spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or
+            (spell.Damage > 0 && !BotControlSpells.IsControlBomber(spell) ||
+             spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or
+                eSpellType.Bolt or eSpellType.DirectDamageWithDebuff or eSpellType.DamageSpeedDecrease);
+
+        /// <summary>IsDamage with an explicit bomber payload lookup (tests).</summary>
+        public static bool IsDamageWith(Spell spell, System.Func<int, Spell> resolve) => spell != null &&
+            (spell.Damage > 0 && !BotControlSpells.IsControlBomberWith(spell, resolve) ||
+             spell.SpellType is eSpellType.DirectDamage or eSpellType.Lifedrain or
                 eSpellType.Bolt or eSpellType.DirectDamageWithDebuff or eSpellType.DamageSpeedDecrease);
 
         public static bool AllowInstant(Spell spell, bool rangedCaster, bool meleePressure, bool debuffOpening = false) =>
