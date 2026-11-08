@@ -532,6 +532,11 @@ public static class AutonomousPetSupport
                 SynchronizeIndependentPet(owner, petBrain, combatTarget);
             else if (defensiveOnlyPet)
                 MaintainDefensivePetTree(petBrain, owner, capitalSafety);
+            else if (ServantHoldsBack(owner))
+            {
+                CallOffServant(petBrain);
+                MaintainDefensivePetTree(petBrain, owner, capitalSafety);
+            }
             else if (combatTarget?.IsAlive == true && GameServer.ServerRules.IsAllowedToAttack(owner, combatTarget, true))
                 CommandPetTree(petBrain, combatTarget);
             else
@@ -831,6 +836,35 @@ public static class AutonomousPetSupport
         }
     }
 
+    /// <summary>How long a hit on the servant lets it fight back in melee.</summary>
+    public const long ServantHitMeleeMilliseconds = 5_000;
+
+    /// <summary>
+    /// A Deathsight Necromancer's servant stays back and casts (owner 2026-11-08: "death sight spec should never melee
+    /// unless its taking damage, they are caster/power batteries"; period players kept it on passive and let it swing
+    /// only once a monster reached it). Painworking and Death Servant servants still go in.
+    /// </summary>
+    public static bool ServantHoldsBack(GameLiving owner) =>
+        owner is GameBot bot && bot.CharacterClass?.ID == (int)eCharacterClass.Necromancer &&
+        bot.ControlledBrain?.Body is GameNPC servant &&
+        ServantHoldsBack(IsDeathsightSpec(bot.GetBaseSpecLevel(Specs.Deathsight), bot.GetBaseSpecLevel(Specs.Painworking),
+            bot.GetBaseSpecLevel(Specs.Death_Servant)), GameLoop.GameLoopTime - servant.LastAttackedByEnemyTick);
+
+    public static bool ServantHoldsBack(bool deathsight, long sinceServantHit) =>
+        deathsight && sinceServantHit >= ServantHitMeleeMilliseconds;
+
+    /// <summary>Deathsight is the trained line (above 1, and not below Painworking or Death Servant).</summary>
+    public static bool IsDeathsightSpec(int deathsight, int painworking, int deathServant) =>
+        deathsight > 1 && deathsight >= painworking && deathsight >= deathServant;
+
+    /// <summary>Stops a held-back servant's melee chase, never in the middle of a cast or a queued command.</summary>
+    public static void CallOffServant(IControlledBrain petBrain)
+    {
+        if (petBrain is NecromancerPetBrain servant && servant.Body != null && !servant.HasPendingBotCommand &&
+            (servant.OrderedAttackTarget != null || servant.Body.IsAttacking))
+            servant.Disengage();
+    }
+
     private static void MaintainDefensivePetTree(IControlledBrain petBrain, GameLiving owner, bool forcePassive)
     {
         if (petBrain?.Body == null)
@@ -949,6 +983,13 @@ public static class AutonomousPetSupport
             !GameServer.ServerRules.IsAllowedToAttack(owner, target, true))
         {
             leadTarget = null;
+            ownerHoldUntil = 0;
+            return false;
+        }
+
+        if (ServantHoldsBack(owner))
+        {
+            leadTarget = null;     // a Deathsight servant casts from where it stands; the shade opens with its commands
             ownerHoldUntil = 0;
             return false;
         }

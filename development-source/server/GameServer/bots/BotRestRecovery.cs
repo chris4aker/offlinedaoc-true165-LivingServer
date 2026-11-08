@@ -79,6 +79,14 @@ namespace DOL.GS
             return !RecentlyFought(now, lastCombatTick);
         }
 
+        /// <summary>
+        /// A Necromancer does not sit down while its servant finishes a buff or a power gift (owner 2026-11-08: Aldith sat,
+        /// stood to gift, sat again and the gift kept being cut off). A stuck command is dropped after 10 s
+        /// (NecromancerPetBrain.DropStuckCommand), so this cannot hold off a rest for good.
+        /// </summary>
+        public static bool ServantBusyHelping(GameBot bot) =>
+            bot?.ControlledBrain is DOL.AI.Brain.NecromancerPetBrain servantBrain && servantBrain.HasPendingHelpfulCommand;
+
         public static bool BlocksRest(GameBot bot)
         {
             if (bot == null || !bot.IsAlive || bot.IsCrowdControlled || bot.IsAttacking ||

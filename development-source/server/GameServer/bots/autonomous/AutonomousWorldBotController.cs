@@ -2782,7 +2782,8 @@ namespace DOL.GS
                     {
                         // Casters: open with the pet again and walk well inside
                         // spell range; the brain keeps that closer range for a while.
-                        bot.ControlledBrain?.Attack(target);
+                        if (!AutonomousPetSupport.ServantHoldsBack(bot))
+                            bot.ControlledBrain?.Attack(target);
                         brain.RequestCloserSpellApproach(nowTick + SavageBotCombatPolicy.PullGiveUpAfterNoProgressMilliseconds);
                         bot.ForcePathReplot();
                     }

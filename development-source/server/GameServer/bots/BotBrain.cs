@@ -1015,6 +1015,12 @@ namespace DOL.AI.Brain
         /// <summary>Orders the pet onto the resolved target; repeated identical orders are ignored by the pet brain.</summary>
         private void CommandPetAttack(GameLiving candidate)
         {
+            // A Deathsight servant is not sent into melee (it casts the shade's commands from where it stands)
+            if (AutonomousPetSupport.ServantHoldsBack(Body))
+            {
+                AutonomousPetSupport.CallOffServant(Body.ControlledBrain);
+                return;
+            }
             GameLiving target = ResolvePetCombatTarget(candidate);
             if (target != null)
                 Body.ControlledBrain?.Attack(target);
@@ -1126,7 +1132,7 @@ namespace DOL.AI.Brain
                                             leader.castingComponent?.SpellHandler?.Spell?.IsHarmful == true) ||
                                            ActiveOrderedPullTarget != null ||
                                            PlayerLedPullCoordinator.IsWaiting(bot) ||
-                                           BotRestRecovery.BlocksRest(bot);
+                                           BotRestRecovery.BlocksRest(bot) || BotRestRecovery.ServantBusyHelping(bot);
 
             bool shouldRest = BotRestRecovery.ShouldTemporaryCompanionRest(
                 true,
@@ -3483,7 +3489,7 @@ namespace DOL.AI.Brain
                             _brain.Body.IsMoving,
                             leader.IsMoving,
                             _brain._ambientWanderMovement),
-                        BotRestRecovery.BlocksRest(_brain.BotBody),
+                        BotRestRecovery.BlocksRest(_brain.BotBody) || BotRestRecovery.ServantBusyHelping(_brain.BotBody),
                         _brain.BotBody.IsRecoveryResting,
                         _brain.Body.HealthPercent,
                         _brain.Body.ManaPercent,
@@ -4094,6 +4100,10 @@ namespace DOL.AI.Brain
 
         private bool TryEngageUnderMeleePressure(GameLiving target)
         {
+            // A Necromancer's shade has no melee: when hit it keeps commanding its servant (it swung its staff and
+            // cancelled its own 3 s servant commands)
+            if (BotBody?.CharacterClass?.ID is (int)eCharacterClass.Necromancer or (int)eCharacterClass.Disciple)
+                return false;
             if (target?.IsAlive != true || !Body.IsWithinRadius(target, Body.MeleeAttackRange + 35))
                 return false;
 
@@ -4984,10 +4994,17 @@ namespace DOL.AI.Brain
                 _openingDebuffsCast++;
         }
 
+        /// <summary>A seated Necromancer rests to this much power before it gifts again (out of combat).</summary>
+        public const int GiftAfterRestPercent = 90;
+
+        /// <summary>In a fight a Necromancer gifts down to this much of its own power (period: "3 transfers and the
+        /// necros near enough oop", then the power drain refills it); out of a fight it keeps half.</summary>
+        public const int GiftFloorInCombatPercent = 30;
+
         /// <summary>
         /// A Deathsight necromancer as a power battery (owner 2026-11-05, reset-day S32): the servant's "Gift of ..."
         /// command gives power to a group member who uses it and is under 60%, healers first, in or out of combat - but
-        /// only while the necromancer keeps at least half its own power after paying for it, as a player would.
+        /// only while the necromancer keeps enough of its own power after paying for it (30% in a fight, half out of it).
         /// </summary>
         private bool TryNecromancerPowerGift()
         {
@@ -4997,11 +5014,19 @@ namespace DOL.AI.Brain
                 GameLoop.GameLoopTime < _nextNecromancerCommandTick || Body.IsCasting || servantBrain.HasPendingBotCommand ||
                 Body.Spells == null)
                 return false;
+            // Out of a fight (owner 2026-11-08: a sit-and-cast loop): no gift while the player is walking off (the servant
+            // holds still for its 3 s cast), and a seated Necromancer finishes most of its rest first, then gifts in one go
+            // instead of standing up for every gift and sitting down again.
+            bool fighting = Body.InCombat || HasAggro || Body.IsAttacking;
+            if (!fighting &&
+                (CompanionFollowPolicy.WaitingForLeaderToStop(BotBody) || BotBody.IsRecoveryResting && Body.ManaPercent < GiftAfterRestPercent))
+                return false;
+            int floor = Body.MaxMana * (fighting ? GiftFloorInCombatPercent : 50) / 100;
             Spell gift = Body.Spells
                 .Where(spell => spell != null && spell.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
                                 spell.Level <= Body.Level && Body.GetSkillDisabledDuration(spell) <= 0 &&
                                 SkillBase.GetSpellByID(spell.SubSpellID)?.SpellType == eSpellType.PowerTransferPet &&
-                                Body.Mana - BotBody.PowerCost(spell) >= Body.MaxMana / 2)
+                                Body.Mana - BotBody.PowerCost(spell) >= floor)
                 .OrderByDescending(spell => spell.Level).FirstOrDefault();
             if (gift == null)
                 return false;
@@ -5060,23 +5085,30 @@ namespace DOL.AI.Brain
                 ServantCanReach(target, spell) &&
                 ServantPayloadNeedsApplication(target, spell));
 
-            // One command per servant line (the highest learned rank of each payload kind), so every line gets used.
-            // Taking the four highest-level commands overall kept out the lower-level area debuffs (Shroud of
-            // Affliction, Vortex of Anguish) whenever damage lines had higher ranks (owner report 2026-10-15).
+            // One command per servant line (the hardest-hitting, then highest learned rank of each payload kind), so every
+            // line gets used. Taking the four highest-level commands overall kept out the lower-level area debuffs (Shroud
+            // of Affliction, Vortex of Anguish) whenever damage lines had higher ranks (owner report 2026-10-15). By damage
+            // first: the level 16 Cry of the Dead (35) no longer replaces the stronger Soul Evacuation (49) lifedrain.
             Spell[] best = commands
                 .GroupBy(ServantCommandKind)
-                .Select(line => line.OrderByDescending(spell => spell.Level).ThenByDescending(spell => spell.SubSpellID).First())
+                .Select(line => line.OrderByDescending(spell => SkillBase.GetSpellByID(spell.SubSpellID)?.Damage ?? 0)
+                    .ThenByDescending(spell => spell.Level).ThenByDescending(spell => spell.SubSpellID).First())
                 .ToArray();
             if (best.Length == 0)
                 return false;
 
-            // Held by the servant or a groupmate, the monster is not running away: no snare, and one debuff at most
-            // before the damage (owner 2026-11-08: Aldith snared and debuffed the whole fight and never drained).
-            bool held = target.TargetObject is GameLiving holder && holder.IsAlive && holder != Body &&
-                        (holder == servant || Body.Group?.IsInTheGroup(holder) == true);
+            // Owner 2026-11-08 (Aldith snared and debuffed the whole fight and never drained) and period play: the armour
+            // or stat debuff only when a groupmate melees the monster ("only useful if someone else will be hitting the
+            // mob"), one at a time; the snare only on a runner; otherwise the damage.
+            bool othersMelee = target.TargetObject is GameLiving holder && holder.IsAlive && holder != Body &&
+                               holder != servant && Body.Group?.IsInTheGroup(holder) == true;
+            // a runner: moving at low health and not in melee with anyone (fleeing)
+            bool runner = target.IsMoving && target.HealthPercent < 35 &&
+                          !(target.TargetObject is GameLiving victim && victim.IsAlive && target.IsWithinRadius(victim, 300));
             bool debuffOn = Body.Spells.Any(spell => spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
-                SkillBase.GetSpellByID(spell.SubSpellID) is { } payload && IsServantDebuff(payload) && LivingHasEffect(target, payload));
-            Spell command = ChooseServantCommand(best, SkillBase.GetSpellByID, held, debuffOn);
+                SkillBase.GetSpellByID(spell.SubSpellID) is { } payload && IsServantDebuff(payload) && !IsServantSnare(payload) &&
+                LivingHasEffect(target, payload));
+            Spell command = ChooseServantCommand(best, SkillBase.GetSpellByID, othersMelee, debuffOn, runner);
             if (command == null)
                 return false;
             // The Necromancer's Quick Cast is Facilitate Painworking (owner 2026-11-05): an instant servant command that
@@ -5136,35 +5168,42 @@ namespace DOL.AI.Brain
 
         /// <summary>
         /// The servant command to send, from one ready command per line (owner 2026-11-08: "why would she not use her best
-        /// ability"; "a death sight necro should cast power vacuums and then give power to their group").
-        /// A debuff the target lacks goes first (the highest rank); with the monster held, never the snare and only
-        /// when no debuff is on it yet. Then the damage: the power drain first (its power feeds the group through the
-        /// power gift), else the hardest-hitting payload. No random picks: a level 1 command never beats a better one.
+        /// ability"; "a death sight necro should cast power vacuums and then give power to their group"; period forums:
+        /// the snare on runners, the armour debuff only when others melee). The snare on a runner first; then one debuff
+        /// (the highest rank) while a groupmate melees and none is on the monster yet; then the damage: the power drain
+        /// first (its power feeds the group through the power gift), else the hardest-hitting payload. No random picks.
         /// </summary>
-        public static Spell ChooseServantCommand(IReadOnlyCollection<Spell> ready, Func<int, Spell> payloadOf, bool held, bool debuffOn)
+        public static Spell ChooseServantCommand(IReadOnlyCollection<Spell> ready, Func<int, Spell> payloadOf, bool othersMelee,
+            bool debuffOn, bool runner)
         {
             var commands = ready.Where(spell => spell != null)
                 .Select(spell => (Wrapper: spell, Payload: payloadOf(spell.SubSpellID)))
                 .Where(command => command.Payload != null).ToList();
-            var debuffs = commands.Where(command => IsServantDebuff(command.Payload) &&
-                !(held && command.Payload.SpellType == eSpellType.SpeedDecrease)).ToList();
+            var snares = commands.Where(command => IsServantSnare(command.Payload)).ToList();
+            var debuffs = commands.Where(command => IsServantDebuff(command.Payload) && !IsServantSnare(command.Payload)).ToList();
             var damage = commands.Where(command => !IsServantDebuff(command.Payload)).ToList();
             Spell Highest(IEnumerable<(Spell Wrapper, Spell Payload)> pool) => pool
                 .OrderByDescending(command => command.Wrapper.Level).ThenByDescending(command => command.Wrapper.SubSpellID)
                 .Select(command => command.Wrapper).FirstOrDefault();
-            if (debuffs.Count > 0 && !(held && debuffOn))
+            if (runner && snares.Count > 0)
+                return Highest(snares);
+            if (othersMelee && !debuffOn && debuffs.Count > 0)
                 return Highest(debuffs);
             Spell hit = damage
                 .OrderByDescending(command => command.Payload.SpellType == eSpellType.PowerDrainPet)
                 .ThenByDescending(command => command.Payload.Damage)
                 .ThenByDescending(command => command.Wrapper.Level)
                 .Select(command => command.Wrapper).FirstOrDefault();
-            return hit ?? Highest(debuffs);
+            return hit ?? (othersMelee ? Highest(debuffs) : null);
         }
+
+        /// <summary>A snare payload (Constricting Pain, Vortex of Anguish): only for a runner.</summary>
+        public static bool IsServantSnare(Spell payload) =>
+            payload.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease;
 
         /// <summary>Stat, resist, armor and speed debuffs (Shroud of Affliction, Vortex of Anguish and the like).</summary>
         public static bool IsServantDebuff(Spell payload) =>
-            payload.SpellType == eSpellType.SpeedDecrease ||
+            IsServantSnare(payload) ||
             payload.SpellType.ToString().Contains("Debuff", StringComparison.Ordinal);
 
         private SpellLine ResolveKnownSpellLine(Spell spell)

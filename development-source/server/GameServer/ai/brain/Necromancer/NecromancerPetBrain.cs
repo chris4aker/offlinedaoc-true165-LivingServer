@@ -113,15 +113,38 @@ namespace DOL.AI.Brain
             return true;
         }
 
+        /// <summary>
+        /// A helpful command the servant is working on for anyone: its own buff, or a power gift to a groupmate
+        /// (owner 2026-11-08: Aldith's gift to Healaonian kept being cancelled - the servant only held still for its
+        /// own buffs, so it followed off mid-cast and the shade retried over and over).
+        /// </summary>
+        public bool HasPendingHelpfulCommand
+        {
+            get
+            {
+                if (Body == null)
+                    return false;
+                SpellHandler current = Body.castingComponent?.SpellHandler;
+                if (current?.Spell != null)
+                    return !current.Spell.IsHarmful;
+                SpellHandler queued = Body.castingComponent?.QueuedSpellHandler;
+                if (queued?.Spell != null)
+                    return !queued.Spell.IsHarmful;
+                if (m_spellQueue.TryPeek(out SpellQueueEntry command))
+                    return command.Spell?.IsHarmful == false;
+                return Body.castingComponent?.TryPeekPendingSpell(out Spell pending) == true && pending?.IsHarmful == false;
+            }
+        }
+
         public override void Think()
         {
             DropStuckCommand();
-            // The shade issues a servant self-buff while its own route may still
+            // The shade issues a servant buff or power gift while its own route may still
             // be running. Follow movement then restarts the three-second servant
             // cast on every pet pulse. Freeze only this verified helpful
-            // self-command. Any attack against the shade or servant immediately
+            // command. Any attack against the shade or servant immediately
             // releases the hold and lets the normal combat FSM defend them.
-            if (HasPendingSelfBuffCommand && Owner is GameBot { Brain: BotBrain ownerBrain } owner &&
+            if (HasPendingHelpfulCommand && Owner is GameBot { Brain: BotBrain ownerBrain } owner &&
                 !owner.InCombat && !owner.IsAttacking && !ownerBrain.HasAggro &&
                 !Body.InCombat && !Body.IsAttacking)
             {
