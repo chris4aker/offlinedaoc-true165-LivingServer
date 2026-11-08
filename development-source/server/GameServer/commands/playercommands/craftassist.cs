@@ -1,0 +1,98 @@
+using System;
+
+namespace DOL.GS.Commands
+{
+    /// <summary>The crafting assistant's commands (True 1.65 quality of life option, owner 2026-11-08). The new client sends
+    /// these from its crafting window; answers come back as 'H' ops 40-42 (crafting_overhaul_spec).</summary>
+    [CmdAttribute(
+        "&craftassist",
+        ePrivLevel.Player,
+        "Crafting assistant: crafts toward a skill goal, buying and selling at merchant prices",
+        "/craftassist recipes <trade id> - recipe costs and sell values",
+        "/craftassist estimate <skill id> <goal> <sell 0|1> - cost and time to the goal",
+        "/craftassist start <skill id> <goal> <buy 0|1> <sell 0|1> - start crafting toward the goal",
+        "/craftassist stop - stop (no materials lost)",
+        "/craftassist status - the run's numbers")]
+    public class CraftAssistCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        public void OnCommand(GameClient client, string[] args)
+        {
+            GamePlayer player = client?.Player;
+            if (player == null)
+                return;
+            if (args.Length < 2)
+            {
+                DisplaySyntax(client);
+                return;
+            }
+
+            switch (args[1].ToLowerInvariant())
+            {
+                case "recipes":
+                    if (!TryParse(args, 2, out eCraftingSkill trade))
+                    {
+                        DisplayMessage(client, "Use: /craftassist recipes <trade id>");
+                        return;
+                    }
+                    CraftAssist165Economics.SendRecipes(player, trade);
+                    return;
+
+                case "estimate":
+                    if (!TryParse(args, 2, out eCraftingSkill skill) || !TryGoal(args, 3, out int goal) || !TryFlag(args, 4, out bool sell))
+                    {
+                        DisplayMessage(client, "Use: /craftassist estimate <skill id> <goal> <sell 0|1>");
+                        return;
+                    }
+                    CraftAssist165.SendEstimate(player, skill, goal, sell);
+                    return;
+
+                case "start":
+                    if (!TryParse(args, 2, out eCraftingSkill target) || !TryGoal(args, 3, out int to) ||
+                        !TryFlag(args, 4, out bool buy) || !TryFlag(args, 5, out bool sellToo))
+                    {
+                        DisplayMessage(client, "Use: /craftassist start <skill id> <goal> <buy 0|1> <sell 0|1>");
+                        return;
+                    }
+                    CraftAssist165.Start(player, target, to, buy, sellToo);
+                    return;
+
+                case "stop":
+                    CraftAssist165.Stop(player, CraftAssistReason.StoppedByPlayer, null);
+                    return;
+
+                case "status":
+                    CraftAssist165.Status(player);
+                    return;
+
+                default:
+                    DisplaySyntax(client);
+                    return;
+            }
+        }
+
+        /// <summary>A crafting skill id the player can train (any eCraftingSkill but NoCrafting / BasicCrafting).</summary>
+        public static bool TryParse(string[] args, int at, out eCraftingSkill skill)
+        {
+            skill = eCraftingSkill.NoCrafting;
+            if (args.Length <= at || !int.TryParse(args[at], out int id) || !Enum.IsDefined(typeof(eCraftingSkill), id))
+                return false;
+            skill = (eCraftingSkill)id;
+            return skill != eCraftingSkill.NoCrafting && skill != eCraftingSkill.BasicCrafting;
+        }
+
+        public static bool TryGoal(string[] args, int at, out int goal)
+        {
+            goal = 0;
+            return args.Length > at && int.TryParse(args[at], out goal) && goal > 0 && goal <= 1300;
+        }
+
+        public static bool TryFlag(string[] args, int at, out bool flag)
+        {
+            flag = false;
+            if (args.Length <= at)
+                return false;
+            if (args[at] == "1") { flag = true; return true; }
+            return args[at] == "0";
+        }
+    }
+}

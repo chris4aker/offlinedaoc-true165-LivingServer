@@ -111,7 +111,11 @@ namespace DOL.GS
 				return;
 			}
 
-			int craftingTime = GetCraftingTime(player, recipe);
+			// Crafting assistant crafts always take the normal player time, a GM's too (GetCraftingTime gives GMs 0 s)
+			bool assist = CraftAssist165.IsStarting(player);
+			int craftingTime = assist && player.Client.Account.PrivLevel > (uint)ePrivLevel.Player
+				? CraftAssist165Economics.PlayerCraftSeconds(player, recipe)
+				: GetCraftingTime(player, recipe);
 
 			var chanceToMakeItem = CalculateChanceToMakeItem(player, recipe.Level);
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.BeginWork", recipe.Product.Name, chanceToMakeItem.ToString()), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
@@ -120,7 +124,10 @@ namespace DOL.GS
 			player.Stealth(false);
 
 			//StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
+			CraftAction previous = player.craftComponent.CraftAction;
 			player.craftComponent.StartCraft(recipe, this, craftingTime);
+			if (assist && player.craftComponent.CraftAction != null && player.craftComponent.CraftAction != previous)
+				player.craftComponent.CraftAction.Assist = true;
 		}
 
 		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
@@ -135,6 +142,7 @@ namespace DOL.GS
 		protected virtual void StopCraftingCurrentItem(GamePlayer player, DbItemTemplate itemToCraft)
 		{
 			//player.CraftTimer.Stop();
+			player.craftComponent.CraftAction?.MarkStoppedByPlayer();   // a crafting assistant run ends as "stopped by you"
 			player.craftComponent.StopCraft();
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}

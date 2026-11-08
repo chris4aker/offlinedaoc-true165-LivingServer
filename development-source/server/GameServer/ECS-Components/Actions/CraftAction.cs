@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -17,6 +19,12 @@ namespace DOL.GS
         private int _craftTime;
         private long _startTick;
         private bool _finishedCraft;
+        // Crafting assistant (CraftAssist165): how this craft ended and what it added to the backpack
+        private CraftAssistOutcome _assistOutcome;
+        private List<(DbInventoryItem Item, int Count)> _assistMade;
+
+        /// <summary>A crafting assistant craft: no craft queue, real materials always, its end reported to CraftAssist165.</summary>
+        public bool Assist { get; set; }
 
         private long EndTime => _startTick + _craftTime;
 
@@ -34,25 +42,33 @@ namespace DOL.GS
         {
             if (_owner.IsCrowdControlled)
             {
+                _assistOutcome = CraftAssistOutcome.Interrupted;
                 CleanupCraftAction();
                 return;
             }
 
             if (_owner.CurrentSpellHandler?.Spell.Uninterruptible == false)
             {
+                _assistOutcome = CraftAssistOutcome.Interrupted;
                 CleanupCraftAction();
                 return;
             }
 
             if (_owner.IsMoving)
             {
+                _assistOutcome = CraftAssistOutcome.Interrupted;
                 CleanupCraftAction();
                 _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.CraftItem.MoveAndInterrupt"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (GameServiceUtils.ShouldTick(EndTime))
-                MakeItem();
+            {
+                if (Assist)
+                    MakeAssistItem();
+                else
+                    MakeItem();
+            }
 
             if (_finishedCraft)
                 CleanupCraftAction();
@@ -65,6 +81,60 @@ namespace DOL.GS
             _finishedCraft = false;
             _owner.Out.SendCloseTimerWindow();
             _owner.TempProperties.RemoveProperty(CRAFT_QUEUE_REMAINING_PROPERTY);
+
+            if (Assist)
+            {
+                // reported once, after the component is free, so the assistant can start its next craft
+                Assist = false;
+                CraftAssistOutcome outcome = _assistOutcome == CraftAssistOutcome.None ? CraftAssistOutcome.Interrupted : _assistOutcome;
+                CraftAssist165.OnCraftEnded(_owner, _recipe, outcome, _assistMade);
+            }
+        }
+
+        /// <summary>The player clicked MAKE again during this craft (AbstractCraftingSkill.StopCraftingCurrentItem).</summary>
+        public void MarkStoppedByPlayer()
+        {
+            if (_assistOutcome == CraftAssistOutcome.None)
+                _assistOutcome = CraftAssistOutcome.StoppedByPlayer;
+        }
+
+        /// <summary>An assistant craft's end: the same chance, materials, product and gains as MakeItem, but never the
+        /// /craftmacro queue, and real materials for everyone (a GM without them makes nothing).</summary>
+        private void MakeAssistItem()
+        {
+            Recipe recipe = _recipe;
+            AbstractCraftingSkill skill = _skill;
+            _finishedCraft = true;
+
+            if (recipe == null || skill == null)
+            {
+                _assistOutcome = CraftAssistOutcome.MaterialsGone;
+                return;
+            }
+
+            _owner.Out.SendCloseTimerWindow();
+
+            if (Util.Chance(skill.CalculateChanceToMakeItem(_owner, recipe.Level)))
+            {
+                if (!skill.RemoveUsedMaterials(_owner, recipe))
+                {
+                    _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    _assistOutcome = CraftAssistOutcome.MaterialsGone;
+                    return;
+                }
+
+                Dictionary<DbInventoryItem, int> before = CraftAssist165.SnapshotBackpack(_owner);
+                skill.BuildCraftedItem(_owner, recipe);
+                _assistMade = CraftAssist165.AddedSince(_owner, before);
+                skill.GainCraftingSkillPoints(_owner, recipe);
+                _assistOutcome = CraftAssistOutcome.Made;
+            }
+            else
+            {
+                _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _owner.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                _assistOutcome = CraftAssistOutcome.Failed;
+            }
         }
 
         protected virtual void MakeItem()
