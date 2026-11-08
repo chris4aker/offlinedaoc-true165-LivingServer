@@ -69,6 +69,25 @@ namespace DOL.GS
             return mayRetarget ? RouteThreatAction.Retarget : RouteThreatAction.Ignore;
         }
 
+        /// <summary>Owner 2026-11-08: a spot where this bot just died on the road is remembered this long, per bot only.</summary>
+        public const long RoadDeathMemoryMilliseconds = 8 * 60_000;
+        /// <summary>... and only a monster group within this distance of it counts (a detour goes around it; no area is banned).</summary>
+        public const int RoadDeathRadius = 600;
+
+        /// <summary>
+        /// Owner 2026-11-08 (Campacorentin pixie scouts: 1,748 road deaths in one night, solo bots pulled packs of 2-3 blue
+        /// and yellow scouts as "even fights"): a solo bot goes around a road threat instead of pulling it when it is a
+        /// linked pack of two or more, or stands where this same bot died on the road minutes ago, as long as a way around
+        /// exists and the detour allowance is not used up. Otherwise the ordinary decision stands. Never used for the
+        /// bot's camp or its camp's own monsters (those within <see cref="CampSkipRadius"/> are not route threats).
+        /// </summary>
+        public static RouteThreatAction PreferDetour(RouteThreatAction decided, bool grouped, int packSize,
+            bool nearOwnRecentRoadDeath, bool detourAvailable, int detoursSoFar) =>
+            decided == RouteThreatAction.Pull && !grouped && (packSize >= 2 || nearOwnRecentRoadDeath) &&
+            detourAvailable && detoursSoFar < MaxDetoursPerThreat
+                ? RouteThreatAction.Detour
+                : decided;
+
         /// <summary>
         /// The point on the route (within the look-ahead) nearest to a position, and the route's
         /// horizontal direction there.

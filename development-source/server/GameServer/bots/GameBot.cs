@@ -2003,8 +2003,11 @@ namespace DOL.GS
                 : Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item.Item);
             if (!stored)
             {
-                ReportLootRejection(item, Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == eInventorySlot.Invalid
-                    ? "backpack_full" : "inventory_insert_failed");
+                bool backpackFull = Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == eInventorySlot.Invalid;
+                ReportLootRejection(item, backpackFull ? "backpack_full" : "inventory_insert_failed");
+                // owner 2026-11-08: a full bag ends the solo hunt soon (AutonomousObjectiveAssignments.EndsHuntToUnload)
+                if (backpackFull)
+                    AutonomousBotEconomy.NoteBackpackFull(this);
                 return TryPickUpResult.Blocked;
             }
 

@@ -452,7 +452,9 @@ namespace DOL.GS;
             // occupied, finish clearing every disposable item before shopping.
             // True 1.65 Mode keeps its brokers at the traveler's inns, some in dangerous country (West Svealand's is
             // ringed by level-11 sveawolves): a bot below level 10 sells to a vendor instead (owner 2026-10-31 run).
-            bool exchangeOpen = !Classic165Mode.IsOn || bot.Level >= 10;
+            bool exchangeOpen = (!Classic165Mode.IsOn || bot.Level >= 10) &&
+                // owner 2026-11-08: no broker in reach for this bot right now - sell at a merchant instead of waiting
+                !AutonomousServiceFallback.IsExchangeUnreachable(bot.DatabaseID, GameLoop.GameLoopTime);
             if (exchangeOpen && HasListingSpace(bot) && FindValuableListingCandidate(bot) != null)
                 return eWorldServiceKind.RealmExchange;
 
@@ -824,13 +826,71 @@ namespace DOL.GS;
         /// 339 bots stood at vendors whose sale refused the item the choice had picked).</summary>
         public static bool CanListOnExchange(GameBot bot) => HasListingSpace(bot) && (!Classic165Mode.IsOn || bot.Level >= 10);
 
+        /// <summary>Whether the vendor phase keeps items worth listing: as <see cref="CanListOnExchange"/>, except that a bot
+        /// with no broker in reach sells them too while its bag is nearly full (owner 2026-11-08, AutonomousServiceFallback).
+        /// The choice and the sale use this same rule.</summary>
+        private static bool KeepsForExchange(GameBot bot) =>
+            AutonomousServiceFallback.KeepsForExchange(CanListOnExchange(bot),
+                AutonomousServiceFallback.IsExchangeUnreachable(bot.DatabaseID, GameLoop.GameLoopTime),
+                IsBackpackNearlyFull(bot));
+
+        // owner 2026-11-08: when a gamebot's backpack first refused loot (AUTONOMOUS_LOOT_REJECTED backpack_full) since its
+        // last unload. Cleared by an unload (a vendor sale, the end of the between-task errands) or when the bag has room
+        // again, so only a fresh refusal ends a later hunt. The task allocator ends a solo hunt that keeps a full bag.
+        private static readonly ConcurrentDictionary<long, long> BackpackFullSince = new();
+        private static int _backpackFullCount;
+        private const int MaxBackpackFullEntries = 16_384;
+
+        public static void NoteBackpackFull(GameBot bot)
+        {
+            if (bot?.IsAutonomousWorldBot != true || bot.IsTemporaryGroupHelper || bot.DatabaseID <= 0 ||
+                HiredCompanions165.IsHired(bot))
+                return;
+            NoteBackpackFull(bot.DatabaseID, GameLoop.GameLoopTime);
+        }
+
+        /// <summary>Records the first refusal since the last unload (later refusals keep the first tick).</summary>
+        public static void NoteBackpackFull(long botId, long now)
+        {
+            if (botId <= 0 || !BackpackFullSince.TryAdd(botId, now))
+                return;
+            // the size is only looked at when an entry is added (Count locks the whole dictionary)
+            if (Interlocked.Increment(ref _backpackFullCount) > MaxBackpackFullEntries)
+            {
+                BackpackFullSince.Clear();
+                Interlocked.Exchange(ref _backpackFullCount, 0);
+            }
+        }
+
+        /// <summary>An unload happened: the full-bag clock starts over at the next refusal.</summary>
+        public static void ClearBackpackFull(long botId)
+        {
+            if (botId > 0 && BackpackFullSince.TryRemove(botId, out _))
+                Interlocked.Decrement(ref _backpackFullCount);
+        }
+
+        /// <summary>The raw first-refusal tick since the last unload (tests and diagnostics).</summary>
+        public static long? BackpackFullSinceTick(long botId) =>
+            BackpackFullSince.TryGetValue(botId, out long since) ? since : null;
+
+        /// <summary>The tick the bag first refused loot, while it is still nearly full; null otherwise (and forgotten).</summary>
+        public static long? FullBackpackSince(GameBot bot)
+        {
+            if (bot == null || bot.DatabaseID <= 0 || !BackpackFullSince.TryGetValue(bot.DatabaseID, out long since))
+                return null;
+            if (IsBackpackNearlyFull(bot))
+                return since;
+            ClearBackpackFull(bot.DatabaseID);
+            return null;
+        }
+
         public static DbInventoryItem FindVendorTrashCandidate(GameBot bot)
         {
             if (bot?.Inventory == null)
                 return null;
 
             bool trainedCrafter = !string.IsNullOrWhiteSpace(bot.PersistentRecord?.SerializedCraftingSkills);
-            bool canList = CanListOnExchange(bot);
+            bool canList = KeepsForExchange(bot);
             HashSet<DbInventoryItem> operationalLoadout = FindOperationalLoadoutItems(bot);
             return bot.Inventory.AllItems
                 .Where(item => item != null && item.IsDropable && item.OwnerLot == 0 &&
@@ -952,7 +1012,7 @@ namespace DOL.GS;
                 return false;
 
             bool trainedCrafter = !string.IsNullOrWhiteSpace(bot.PersistentRecord?.SerializedCraftingSkills);
-            if (IsProtectedFromVendor(bot, item, trainedCrafter, CanListOnExchange(bot),
+            if (IsProtectedFromVendor(bot, item, trainedCrafter, KeepsForExchange(bot),
                     FindOperationalLoadoutItems(bot)))
                 return false;
 
@@ -976,6 +1036,7 @@ namespace DOL.GS;
 
             bot.MarkAutonomousStateDirty();
             MarkInventoryChanged(bot);
+            ClearBackpackFull(bot.DatabaseID);   // owner 2026-11-08: an unload restarts the full-bag clock
             AutonomousBotStatusPersistence.Queue(bot, true);
             // a big vendor sale is logged (2026-11-05: level-3 bots sold level-49 "Gnawed Bones" for ~37,700 copper each
             // and nothing in the log showed where their money came from)

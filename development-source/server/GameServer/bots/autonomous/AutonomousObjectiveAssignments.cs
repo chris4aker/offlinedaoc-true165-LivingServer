@@ -98,6 +98,10 @@ public static class AutonomousObjectiveAssignments
         record.ObjectivePveKills++;
         bot.MarkAutonomousStateDirty();
         AutonomousCampDangerBench.RecordKill(record.CurrentCampId);
+        // owner 2026-11-08: kills offset empty hunts in the camp memory
+        if (AutonomousCampCompetition.TryGetSpot(record.CurrentCampId, out AutonomousCampCompetition.CampSpot spot) && !spot.Dungeon)
+            AutonomousCampEmptyMemory.RecordKill(AutonomousCampEmptyMemory.Key(spot.Region, spot.Name, spot.X, spot.Y),
+                GameLoop.GameLoopTime);
     }
 
     public static bool HasActiveRvrTenure(OfflineWorldBotRecord record, DateTime utcNow)
@@ -266,7 +270,8 @@ public static class AutonomousObjectiveAssignments
                                                           // promoted like a player (run 1b: 182 waited at level 5+ on hour-long hunts)
                                                           (!HasActivePveAssignment(bot.PersistentRecord, utcNow) ||
                                                            BaseClassBots165.NeedsPromotion(bot) && bot.Group == null ||
-                                                           GoesShoppingAfterDefeat165(bot)))
+                                                           GoesShoppingAfterDefeat165(bot) ||
+                                                           EndsHuntToUnload(bot, utcNow)))
                 .ToArray();
             foreach (GameBot bot in completedPve)
             {
@@ -488,6 +493,15 @@ public static class AutonomousObjectiveAssignments
     {
         if (bot?.IsAutonomousWorldBot != true || bot.IsTemporaryGroupHelper || bot.PersistentRecord == null)
             return;
+        // owner 2026-11-08: the capital the watchdog sends a bot to has merchants and healers; a bot arriving with a
+        // nearly full bag (or Constitution to buy back) unloads there first instead of riding out with it full again
+        if (bot.Group == null && !HiredCompanions165.IsHired(bot) &&
+            (AutonomousBotEconomy.IsBackpackNearlyFull(bot) || DeathPenalty165.WantsHealer(bot)) &&
+            TryBeginBetweenTaskServices(bot))
+        {
+            bot.PersistentRecord.ObjectivePhase = reason + "; unloading in town first";
+            return;
+        }
         Assign(bot, eAutonomousObjectiveKind.SoloPve,
             (bot.Realm, bot.Level >= 50 ? 50 : bot.Level >= 20 ? 20 : 0),
             GameLoop.GameLoopTime + Math.Max(1, bot.PersistentRecord.RecoveryCount));
@@ -624,6 +638,9 @@ public static class AutonomousObjectiveAssignments
     /// sword all hour with 18 silver in its purse while an axe sold for 4s50c).
     /// </summary>
     private static bool GoesShoppingAfterDefeat165(GameBot bot) =>
+        // owner 2026-11-08: only a solo task ends this way (a GroupPve bot grinding while it waits for a party, or a
+        // battleground tour, keeps its task)
+        IsSoloHunt(bot.PersistentRecord?.ObjectiveKind, bot.Group != null) &&
         Classic165Mode.IsOn && bot.Group == null && bot.IsAlive && bot.LastDeathTick165 > 0 &&
         GameLoop.GameLoopTime - bot.LastDeathTick165 < 10 * 60_000 &&
         PlanKnownOrBudgeted(bot);
@@ -644,6 +661,51 @@ public static class AutonomousObjectiveAssignments
         return AutonomousWorldBotController.ShoppingPlanFor(bot) != null;
     }
 
+    /// <summary>Owner 2026-11-08: a solo hunt runs at least this long before a full bag or a death ends it early, so a bot
+    /// that could not unload is not sent straight back to town.</summary>
+    public static readonly TimeSpan MinimumHuntBeforeUnload = TimeSpan.FromMinutes(10);
+    /// <summary>Owner 2026-11-08: loot left on the ground this long ends the hunt (the bot goes to sell, like a player).</summary>
+    public const long FullBackpackGraceMilliseconds = 3 * 60_000;
+
+    /// <summary>
+    /// Pure rule (owner 2026-11-08): a solo hunt ends early to unload when the bag has refused loot for the grace time,
+    /// or after a recent death that cost Constitution worth buying back (the healer) or left a nearly full bag (selling);
+    /// never in the first <see cref="MinimumHuntBeforeUnload"/> of a hunt. Overnight 11/07: 20,664 loot rejections from
+    /// 1,426 bots - nearly every bot hunted with a full bag for the rest of a 45-120 minute hunt.
+    /// </summary>
+    public static bool ShouldEndHuntToUnload(bool solo, bool alive, TimeSpan huntAge, long? fullBackpackForMilliseconds,
+        bool diedSinceHuntStarted, bool wantsHealer, bool backpackNearlyFull) =>
+        solo && alive && huntAge >= MinimumHuntBeforeUnload &&
+        (fullBackpackForMilliseconds >= FullBackpackGraceMilliseconds ||
+         diedSinceHuntStarted && (wantsHealer || backpackNearlyFull));
+
+    // Evaluated by the one-minute allocator for each roster bot: the cheap checks come first, and the backpack is only
+    // looked at for a bot whose bag refused loot or that died recently.
+    /// <summary>Pure rule (owner 2026-11-08): only an ungrouped bot on a SoloPve task ends its hunt early to unload or
+    /// shop; GroupPve bots grinding while they wait for a party and battleground tours keep their task.</summary>
+    public static bool IsSoloHunt(string objectiveKind, bool grouped) =>
+        !grouped && Parse(objectiveKind) == eAutonomousObjectiveKind.SoloPve;
+
+    private static bool EndsHuntToUnload(GameBot bot, DateTime utcNow)
+    {
+        if (bot.PersistentRecord == null || !IsSoloHunt(bot.PersistentRecord.ObjectiveKind, bot.Group != null) ||
+            !bot.IsAlive || HiredCompanions165.IsHired(bot))
+            return false;
+        long now = GameLoop.GameLoopTime;
+        long? fullSince = AutonomousBotEconomy.FullBackpackSince(bot);
+        bool recentDeath = Classic165Mode.IsOn && bot.LastDeathTick165 > 0 && now - bot.LastDeathTick165 < 10 * 60_000;
+        if (fullSince == null && !recentDeath)
+            return false;
+        if (!DateTime.TryParse(bot.PersistentRecord.ObjectiveAssignedUtc, null,
+                System.Globalization.DateTimeStyles.RoundtripKind, out DateTime assigned))
+            return false;
+        TimeSpan age = utcNow - assigned.ToUniversalTime();
+        bool diedSinceStart = recentDeath && TimeSpan.FromMilliseconds(now - bot.LastDeathTick165) < age;
+        return ShouldEndHuntToUnload(true, true, age, fullSince is long since ? now - since : null, diedSinceStart,
+            diedSinceStart && bot.TotalConstitutionLostAtDeath > 0 && DeathPenalty165.WantsHealer(bot),
+            diedSinceStart && fullSince == null && AutonomousBotEconomy.IsBackpackNearlyFull(bot));
+    }
+
     public static void MarkPveTaskCompleted(GameBot bot)
     {
         if (bot?.PersistentRecord == null || Is(bot, eAutonomousObjectiveKind.RvR) || IsBetweenPveTasks(bot)) return;
@@ -659,12 +721,18 @@ public static class AutonomousObjectiveAssignments
             return false;
         // Unload at this task boundary when the bag is nearly full, not only
         // when completely full: otherwise the next task leaves loot on the ground.
+        bool backpackNearlyFull = AutonomousBotEconomy.IsBackpackNearlyFull(bot);
         BetweenTaskPlan plan = RollBetweenTaskPlan(bot.HasSpendableAutonomousTrainingPoints,
-            AutonomousBotEconomy.IsBackpackNearlyFull(bot) || TownErrands165.Reason(bot) != null ||
+            backpackNearlyFull || TownErrands165.Reason(bot) != null ||
             AutonomousWorldBotController.ShoppingPlanFor(bot) != null || DeathPenalty165.WantsHealer(bot),
-            Random.Shared.NextDouble(), Random.Shared.NextDouble());
+            Random.Shared.NextDouble(),
+            // owner 2026-11-08: a bag that refused loot is always unloaded (no 5% chance of hunting on with it full)
+            backpackNearlyFull && AutonomousBotEconomy.FullBackpackSince(bot) != null ? 0 : Random.Shared.NextDouble());
         bool downtime = AutonomousTownDowntime.RollAtTaskBoundary(Random.Shared.NextDouble());
         if (!plan.Train && !plan.Unload && !downtime) return false;
+        // owner 2026-11-08: this unload answers the refusals so far; only a fresh refusal ends a later hunt early
+        if (plan.Unload)
+            AutonomousBotEconomy.ClearBackpackFull(bot.DatabaseID);
         OfflineWorldBotRecord record = bot.PersistentRecord;
         record.ObjectiveKind = eAutonomousObjectiveKind.SoloPve.ToString();
         record.ObjectiveAssignmentId = BetweenTasksPrefix + (plan.Train ? "T" : "") + (plan.Unload ? "I" : "") + (downtime ? "D" : "") +
@@ -694,6 +762,7 @@ public static class AutonomousObjectiveAssignments
     public static void CompleteBetweenTaskServices(GameBot bot)
     {
         if (!IsBetweenPveTasks(bot)) return;
+        AutonomousBotEconomy.ClearBackpackFull(bot.DatabaseID);   // owner 2026-11-08: the errands are over
         if (BetweenTaskServiceExpired(bot))
             DOL.Logging.LoggerManager.Create(typeof(AutonomousObjectiveAssignments)).Warn(
                 $"AUTONOMOUS_BETWEEN_TASK_TIMEOUT bot=\"{bot.Name}\" id={bot.DatabaseID} level={bot.Level} " +

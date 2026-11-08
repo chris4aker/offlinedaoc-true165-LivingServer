@@ -27,6 +27,26 @@ namespace DOL.GS
         // forever. Now the puller takes the pull, and a hold ends after RouteThreatHoldLimitMilliseconds.
         private GameNPC _routeThreatHold;
         private long _routeThreatHoldSince;
+        // owner 2026-11-08: where THIS bot died on the road in the last few minutes (per bot, never shared, a few spots)
+        private readonly List<(ushort Region, int X, int Y, long Until)> _roadDeathSpots = new(4);
+
+        private void RememberRoadDeath(ushort region, int x, int y, long now)
+        {
+            _roadDeathSpots.RemoveAll(spot => spot.Until <= now);
+            if (_roadDeathSpots.Count >= 4)
+                _roadDeathSpots.RemoveAt(0);
+            _roadDeathSpots.Add((region, x, y, now + AutonomousRouteThreatPolicy.RoadDeathMemoryMilliseconds));
+        }
+
+        private bool NearOwnRecentRoadDeath(ushort region, int x, int y, long now)
+        {
+            foreach (var spot in _roadDeathSpots)
+                if (spot.Until > now && spot.Region == region &&
+                    DistanceSquared(spot.X, spot.Y, x, y) <=
+                    (long)AutonomousRouteThreatPolicy.RoadDeathRadius * AutonomousRouteThreatPolicy.RoadDeathRadius)
+                    return true;
+            return false;
+        }
         public const long RouteThreatHoldLimitMilliseconds = 75_000;
 
         /// <summary>
@@ -140,6 +160,10 @@ namespace DOL.GS
                                now - _lastRouteThreatRetargetTick >= AutonomousRouteThreatPolicy.RetargetCooldownMilliseconds;
             RouteThreatAction action = AutonomousRouteThreatPolicy.Decide(con, grouped, pack, bossLike,
                 detour.HasValue, detours, mayRetarget, lowLevelSolo: !grouped && bot.Level < 5);
+            // owner 2026-11-08: a solo bot goes around a pack, or a monster where it just died on the road, when it can
+            action = AutonomousRouteThreatPolicy.PreferDetour(action, grouped, pack,
+                !grouped && NearOwnRecentRoadDeath(blocker.CurrentRegionID, blocker.X, blocker.Y, now),
+                detour.HasValue, detours);
             if (action == RouteThreatAction.Ignore)
                 return false;
 

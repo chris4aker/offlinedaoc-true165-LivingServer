@@ -198,6 +198,38 @@ namespace DOL.UnitTests
         }
 
         [Test]
+        public void UnreachableBroker_SellsExchangeGoodsAtAVendorOnlyUntilTheBagHasRoom()
+        {
+            // owner 2026-11-08: a bot whose only broker is out of reach sells at a merchant instead of waiting
+            DecisionBot bot = Bot();
+            GivePersistentRecord(bot, true);
+            while (bot.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != eInventorySlot.Invalid)
+                AddBackpack(bot, Item("valuable but wrong-slot gear", 20, 99, (int)eInventorySlot.FirstBackpack, 10_000, 30)).IsROG = true;
+            try
+            {
+                Assert.That(AutonomousBotEconomy.FindVendorTrashCandidate(bot), Is.Null, "kept for the exchange while a broker is in reach");
+                Assert.That(AutonomousBotEconomy.GetNeededService(bot), Is.EqualTo(eWorldServiceKind.RealmExchange));
+
+                AutonomousServiceFallback.MarkExchangeUnreachable(bot.DatabaseID, GameLoop.GameLoopTime);
+                AutonomousBotEconomy.MarkEconomyChanged(bot.DatabaseID);
+                Assert.That(AutonomousBotEconomy.GetNeededService(bot), Is.EqualTo(eWorldServiceKind.Vendor));
+                int sold = 0;
+                for (DbInventoryItem sale = AutonomousBotEconomy.FindVendorTrashCandidate(bot); sale != null;
+                     sale = AutonomousBotEconomy.FindVendorTrashCandidate(bot))
+                {
+                    Assert.That(bot.Inventory.RemoveItemWithoutDbDeletion(sale), Is.True);
+                    sold++;
+                }
+                Assert.That(sold, Is.EqualTo(AutonomousBotEconomy.NearlyFullFreeSlots + 1), "only until the bag has room");
+                Assert.That(AutonomousBotEconomy.IsBackpackNearlyFull(bot), Is.False);
+            }
+            finally
+            {
+                AutonomousServiceFallback.Forget(bot.DatabaseID);
+            }
+        }
+
+        [Test]
         public void VendorValueMatchesStandardMerchantAppraisalFormula()
         {
             DbInventoryItem stack = GameInventoryItem.Create(Item("bundled cloth", 10, 90,
