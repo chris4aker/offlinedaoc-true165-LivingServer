@@ -71,6 +71,8 @@ PACKAGE = 'true165-keepguards'
 STAMP = '2026-11-06 12:00:00'
 
 RADIUS, CLUSTER, HELD_ANY, HELD_SAME, SNAP = 2500, 150, 100, 400, 160
+# owner fixes to a computed heading (2026-11-08: the Castle Sauvage sentinel faced the west wall; she faces Master Visur)
+HEADING_FIX = {'true165-keepguard-castle-sauvage-keepsentinel-04': 3067}
 ZONE_SHIFT = {12: (16384, 0)}          # CapnBry Snowdonia -> ours (see above)
 SKIP_ZONES = {154, 158}                # repeats of 111 / 115
 
@@ -384,6 +386,7 @@ def build(db=DB):
                 row.update(X=x, Y=y, Z=z, Heading=heading, Region=region, Guild='', PathID='', PackageID=PACKAGE,
                            RoamingRange=0, LastTimeRowUpdated=STAMP,
                            Mob_ID=f"true165-keepguard-{key}-{name.lower().replace(' ', '')}-{n:02d}")
+                row['Heading'] = heading = HEADING_FIX.get(row['Mob_ID'], heading)
                 rows.append(row)
                 new_here.append((x, y, z))
                 a = rep['added'].setdefault(name, {'count': 0, 'level': row['Level'], 'appearance': look,
