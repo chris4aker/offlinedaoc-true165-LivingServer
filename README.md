@@ -20,6 +20,8 @@
 > **v0.4.1 is out**, with an in-place update for v0.1, v0.2, v0.3 and v0.4 players. Large parts of the game haven't been played through by a person.
 > Expect bugs, and keep a backup of your save. Bug reports are welcome in [Issues](https://github.com/shadowofze/OfflineDAoC-True165/issues).
 
+(THIS PROJECT IS ON HOLD, NO FURTHER UPDATES)
+
 # Offline DAoC True 1.65: single-player Dark Age of Camelot as of patch 1.65
 
 Offline DAoC True 1.65 is a local, single-player Dark Age of Camelot that runs entirely on your own PC. It
