@@ -635,29 +635,51 @@ const SONG_SLOTS := {1: "IN COMBAT", 2: "OUT OF COMBAT", 3: "TRAVELLING", 4: "TW
 const OPT_X := 142.0                                # where an AI option's choices start (its caption left of it)
 
 
+const DEBUFF_MASTER := 7                            # "Debuff before nuking" (Automatic / Always / Never)
+const DEBUFF_LINE := 28                             # one row per debuff the companion knows (Automatic / Use / Skip)
+
+
 func _build_options(page: Control) -> void:
+	# scrolls: a caster's debuff rows (one per debuff it knows) can run past the page (0.5, owner 2026-11-08)
+	var sc := ScrollContainer.new()
+	sc.position = Vector2(12, 0)
+	sc.size = Vector2(SIZE.x - 24, 250)
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	page.add_child(sc)
 	_options_box = Control.new()
-	_options_box.position = Vector2(12, 0)
-	_options_box.size = Vector2(SIZE.x - 24, 250)
-	page.add_child(_options_box)
+	_options_box.size = Vector2(SIZE.x - 24 - 12, 250)       # (room for the scroll bar)
+	_options_box.custom_minimum_size = Vector2(_options_box.size.x, 0)
+	sc.add_child(_options_box)
 
 
 ## One row a choice (op 14): its caption and the server's choices - two-way ones (charm, Twist) as buttons, the others
 ## a drop-down list; picking one is the agreed /companionui verb and the server sends the rows again.
 func _refresh_options() -> void:
 	_clear(_options_box)
+	_options_box.custom_minimum_size.y = 0
 	var rows: Array = net.options.get(row, [])
 	if rows.is_empty():
 		CompanionUi.text(_options_box, "NO AI OPTIONS FOR THIS COMPANION", Vector2(2, 2), Vector2(300, 12), 8, CompanionUi.DIM)
 		return
 	var y := 0.0
 	var shown_cap := false
+	# the debuff lines follow "Debuff before nuking"; on Never the server ignores them: shown dimmed, not pickable
+	var debuffs_off := false
+	for o in rows:
+		if int(o.kind) == DEBUFF_MASTER:
+			debuffs_off = int(o.chosen) == 2
+	var in_debuffs := false
 	for o in rows:
 		var kind := int(o.kind)
 		var slot := int(o.slot)
 		var names: Array = o.names
+		var ids: Array = o.get("ids", [])
 		var chosen := int(o.chosen)
 		var caption := ""
+		var caption_id := 0
+		if in_debuffs and kind != DEBUFF_LINE:
+			y = _debuff_hint(y)
+		in_debuffs = kind == DEBUFF_LINE
 		match kind:
 			1: caption = "CHARM"
 			2: caption = "PET"
@@ -668,6 +690,10 @@ func _refresh_options() -> void:
 				# later"): its first name is the row's caption, the rest its choices; picked with "option"
 				caption = String(names[0]) if names.size() > 0 else "CHOICE"
 				names = names.slice(1)
+				if ids.size() > 0:
+					caption_id = int(ids[0])          # (the caption's spell: a debuff line's debuff)
+					ids = ids.slice(1)
+		var off := kind == DEBUFF_LINE and debuffs_off
 		if kind == 3 and not shown_cap and int(o.cap) > 0:
 			shown_cap = true                                  # the Bonedancer's sub-pet points, once: x / 75
 			CompanionUi.text(_options_box, "SUB-PETS %d / %d" % [int(o.used), int(o.cap)], Vector2(2, y), Vector2(300, 12),
@@ -675,10 +701,14 @@ func _refresh_options() -> void:
 			y += 16.0
 		# (the captions in a narrower column, the choices to the tab's edge - the server's long choices such as "Support
 		# (stay back: songs, spells, no melee)" fit; the server chat 2026-11-05)
-		var lc := CompanionUi.text(_options_box, caption, Vector2(2, y + 2), Vector2(OPT_X - 6, 12), 8, UiArt.GOLD)
+		# (a debuff line: indented under its master row)
+		var cx := 12.0 if kind == DEBUFF_LINE else 2.0
+		var lc := CompanionUi.text(_options_box, caption, Vector2(cx, y + 2), Vector2(OPT_X - 4 - cx, 12), 8,
+				CompanionUi.DIM if off else (UiArt.CREAM if kind == DEBUFF_LINE else UiArt.GOLD))
 		lc.clip_text = true
 		lc.tooltip_text = caption
 		lc.mouse_filter = Control.MOUSE_FILTER_PASS
+		_spell_tip(lc, caption_id, caption, caption)
 		var pick := func(i: int): _choose(kind, slot, i, names)
 		var room := _options_box.size.x - OPT_X - 2.0
 		if names.size() == 2 and (kind == 1 or (kind == 4 and slot == 4) or kind >= 5):   # (two-way ones: buttons)
@@ -689,19 +719,74 @@ func _refresh_options() -> void:
 				b.set_pressed_no_signal(i == chosen)
 				b.clip_text = true
 				b.tooltip_text = String(names[i])
+				b.disabled = off
+				_spell_tip(b, int(ids[i]) if i < ids.size() else 0, String(names[i]))
 		else:
 			var ob := ExchangeWindow._choice(names)
 			ob.position = Vector2(OPT_X, y)
 			ob.add_theme_font_size_override("font_size", 9)
 			ExchangeWindow._fix_size(ob, Vector2(room, 18))
+			ob.disabled = off
 			if chosen < names.size():
 				ob.select(chosen)
 				ob.tooltip_text = String(names[chosen])           # (the whole choice on hover, should it ever clip)
+				_spell_tip(ob, int(ids[chosen]) if chosen < ids.size() else 0, String(names[chosen]))
 			ob.item_selected.connect(func(i: int):
 				ob.tooltip_text = String(names[i]) if i < names.size() else ""
 				pick.call(i))
+			_popup_tips(ob.get_popup(), names, ids)
 			_options_box.add_child(ob)
 		y += 22.0
+	if in_debuffs:
+		y = _debuff_hint(y)
+	_options_box.custom_minimum_size.y = y                    # (the scroll's length)
+
+
+func _debuff_hint(y: float) -> float:
+	var h := CompanionUi.text(_options_box, "Use: cast only the debuffs marked Use (any number). Skip: never.",
+			Vector2(12, y), Vector2(_options_box.size.x - 14, 12), 7, CompanionUi.DIM)
+	h.clip_text = true
+	return y + 16.0
+
+
+## An AI option's spell on hover (0.5, owner 2026-11-08: "hovering over items in the AI options shows the spell
+## tooltips"): the server's delve of it as that companion casts it ("/companionui delve <row> spell <id>"), asked when
+## the pointer gets there; the plain name until it answers. Laid over the control, letting its clicks through.
+func _spell_tip(c: Control, spell_id: int, name: String, caption := "") -> void:
+	if spell_id <= 0:
+		return
+	var box := SkillTipLabel.new()
+	box.entry = {"name": name, "id": ""}
+	box.server_key = "csp:%d:%d" % [row, spell_id]
+	box.server_cmd = "/companionui delve %d spell %d" % [row, spell_id]
+	box.server_caption = caption
+	box.tooltip_text = name                                    # (any text: Godot asks _make_custom_tooltip only then)
+	box.mouse_filter = Control.MOUSE_FILTER_PASS
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	c.add_child(box)
+
+
+## A drop-down's items: each one's spell delve as its item tooltip (a menu item takes plain text) - asked when the
+## list opens, filled in as the answers come.
+func _popup_tips(pm: PopupMenu, names: Array, ids: Array) -> void:
+	if ids.is_empty():
+		return
+	var fill := func():
+		if not is_instance_valid(pm):
+			return                                         # (the page was redrawn meanwhile)
+		for i in mini(names.size(), ids.size()):
+			var d := Server.item_lines("csp:%d:%d" % [row, int(ids[i])]) if int(ids[i]) > 0 else {}
+			if not (d.get("lines", []) as Array).is_empty() and i < pm.item_count:
+				pm.set_item_tooltip(i, String(d.get("caption", names[i])) + "\n" + "\n".join(
+						(d.lines as Array).filter(func(l): return String(l).strip_edges() != "")))
+	pm.about_to_popup.connect(func():
+		for i in mini(names.size(), ids.size()):
+			if int(ids[i]) > 0:
+				Server.prefetch_command("csp:%d:%d" % [row, int(ids[i])], "/companionui delve %d spell %d" % [row, int(ids[i])])
+		fill.call()
+		pm.get_tree().create_timer(0.5).timeout.connect(fill)
+		pm.get_tree().create_timer(1.5).timeout.connect(fill))
+	pm.id_focused.connect(func(_i: int): fill.call())
 
 
 func _choose(kind: int, slot: int, i: int, names: Array) -> void:

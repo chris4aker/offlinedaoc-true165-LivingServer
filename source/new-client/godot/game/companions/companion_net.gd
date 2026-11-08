@@ -189,10 +189,16 @@ func handle(body: PackedByteArray) -> void:
 						end += 1
 					names.append(body.slice(at, end).get_string_from_ascii())
 					at = end + 1
+				# 0.5 (server chat 2026-11-08): after the names, some rows (pet, sub-pet, song, debuff line) carry one u32
+				# spell id per name (0 = none) for the hover delve; older rows end at the names
+				var ids := []
+				if body.size() - at >= 4 * names.size():
+					for k in names.size():
+						ids.append(_u32(body, at + 4 * k))
 				if not _options_new.has(row):
 					_options_new[row] = []
 				(_options_new[row] as Array).append({"kind": body[5], "slot": body[6], "chosen": body[7], "names": names,
-						"used": _u16(body, 9), "cap": _u16(body, 11)})
+						"used": _u16(body, 9), "cap": _u16(body, 11), "ids": ids})
 				return                                       # (the window redraws at the end of the list)
 		11:
 			var row := int(body[4])
