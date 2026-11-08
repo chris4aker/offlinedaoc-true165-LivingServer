@@ -157,17 +157,19 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (!CheckForTools(player, recipe))
-			{
-				return false;
-			}
-
-			if (!HasHandTool165(player, recipe))
-			{
-				return false;
-			}
+			// Crafting works anywhere: no forge, lathe, alchemy table or hand tool is needed (owner 2026-11-08). Players
+			// only - crafter gamebots craft through CrafterBots165. (CheckForTools / HasHandTool165 are kept, unused.)
 
 			if (!CheckSecondCraftingSkillRequirement(player, recipe))
+			{
+				return false;
+			}
+
+			// MAKE buys the missing materials of one craft at merchant prices when the player can afford them (owner
+			// 2026-11-08); the crafting assistant buys its own. Not while a craft runs (MAKE then stops it).
+			// (only when the checks below would pass, so nothing is bought for a craft that is then refused)
+			bool canStartNow = !player.IsMoving && !player.IsStrafing && !player.InCombat && !player.IsCasting;
+			if (canStartNow && !player.IsCrafting && !CraftAssist165.IsStarting(player) && !CraftAssist165.AutoBuyForMake(player, recipe))
 			{
 				return false;
 			}

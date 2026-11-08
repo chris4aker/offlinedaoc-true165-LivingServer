@@ -312,7 +312,7 @@ namespace DOL.GS
                     End(player, run, CraftAssistReason.Other, "materials are missing and auto-buy is off.");
                     return;
                 }
-                CraftAssistReason bought = BuyMissing(player, run, missing);
+                CraftAssistReason bought = BuyMissing(player, run, missing, "Crafting assistant: bought");
                 if (bought != CraftAssistReason.None)
                 {
                     End(player, run, bought, null);
@@ -338,7 +338,7 @@ namespace DOL.GS
 
             if (player.craftComponent?.CraftAction?.Assist != true)
             {
-                // CraftItem refused: tools, forge or station (it said why in chat)
+                // CraftItem refused (realm rule, secondary skill, materials, moving - it said why in chat)
                 End(player, run, CraftAssistReason.NoStation, null);
             }
         }
@@ -489,7 +489,33 @@ namespace DOL.GS
             return lines;
         }
 
-        private static CraftAssistReason BuyMissing(GamePlayer player, CraftAssistRun run, List<(DbItemTemplate Material, int Need)> missing)
+        /// <summary>The MAKE button (players only, not bots): the missing materials of one craft are bought at merchant
+        /// prices first when the player can afford them (owner 2026-11-08). Returns false (with a chat line) when they
+        /// can't be afforded or carried - the craft is then refused. Materials no merchant sells are left to the normal
+        /// missing-materials check.</summary>
+        public static bool AutoBuyForMake(GamePlayer player, Recipe recipe)
+        {
+            if (player?.Inventory == null || recipe == null)
+                return true;
+            List<(DbItemTemplate Material, int Need)> missing = MissingMaterials(player, recipe);
+            if (missing.Count == 0)
+                return true;
+            List<CraftAssistBuyLine> lines = PlanBuy(missing);
+            if (lines.Any(l => l.Material.Price <= 0))
+                return true;
+            long total = lines.Sum(l => l.Cost);
+            if (total > player.GetCurrentMoney())
+            {
+                Chat(player, $"You can't afford the missing materials for {recipe.Product.Name} ({MoneyText(total)}).");
+                return false;
+            }
+            CraftAssistReason result = BuyMissing(player, null, missing, "You buy");
+            if (result == CraftAssistReason.BackpackFull)
+                Chat(player, "Your backpack has no room for the missing materials.");
+            return result == CraftAssistReason.None;
+        }
+
+        private static CraftAssistReason BuyMissing(GamePlayer player, CraftAssistRun run, List<(DbItemTemplate Material, int Need)> missing, string boughtText)
         {
             List<CraftAssistBuyLine> lines = PlanBuy(missing);
             CraftAssistBuyLine unbuyable = lines.FirstOrDefault(l => l.Material.Price <= 0);
@@ -522,9 +548,10 @@ namespace DOL.GS
                 paid += line.Cost;
                 bought.Add($"{line.Amount} {Plural(line.Material.Name, line.Amount)}");
             }
-            run.Spent += paid;
+            if (run != null)
+                run.Spent += paid;
             if (bought.Count > 0)
-                Chat(player, $"Crafting assistant: bought {JoinAnd(bought)} for {MoneyText(paid)}.");
+                Chat(player, $"{boughtText} {JoinAnd(bought)} for {MoneyText(paid)}.");
             return result;
         }
 
@@ -759,7 +786,7 @@ namespace DOL.GS
             CraftAssistReason.BackpackFull => "your backpack is full.",
             CraftAssistReason.Interrupted => "interrupted (you moved, left, were attacked or were stunned).",
             CraftAssistReason.NothingRaisesIt => "no recipe can raise that skill now.",
-            CraftAssistReason.NoStation => "you are not at the right craft station or are missing tools.",
+            CraftAssistReason.NoStation => "the craft could not start (see the message above).",
             CraftAssistReason.StoppedByPlayer => "stopped by you.",
             _ => "the craft could not continue.",
         };
