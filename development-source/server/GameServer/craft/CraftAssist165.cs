@@ -154,6 +154,12 @@ namespace DOL.GS
                     SendStatus(player, run);
                     return;
                 }
+                if (CraftEnchant165.IsRunning(player))
+                {
+                    Chat(player, "The enchant helper is running. Stop it first.");
+                    SendStatus(player, run);
+                    return;
+                }
                 int now = player.GetCraftingSkillValue(target);
                 run.Begin(target, goal, buy, sell, now, GameLoop.GameLoopTime);
                 run.Region = player.CurrentRegionID;
@@ -326,6 +332,20 @@ namespace DOL.GS
                 return;
             }
 
+            if (!RunAssistCraft(player, skill, recipe))
+            {
+                // CraftItem refused (realm rule, secondary skill, materials, moving - it said why in chat)
+                End(player, run, CraftAssistReason.NoStation, null);
+            }
+        }
+
+        /// <summary>
+        /// Starts one craft through the normal CraftItem path as an assistant craft (normal player timer even for a GM,
+        /// real materials, its end reported to OnCraftEnded). False when CraftItem refused (it said why in chat).
+        /// Shared by the crafting assistant and the enchant helper (CraftEnchant165).
+        /// </summary>
+        internal static bool RunAssistCraft(GamePlayer player, AbstractCraftingSkill skill, Recipe recipe)
+        {
             Starting[player] = 1;
             try
             {
@@ -335,18 +355,15 @@ namespace DOL.GS
             {
                 Starting.TryRemove(player, out _);
             }
-
-            if (player.craftComponent?.CraftAction?.Assist != true)
-            {
-                // CraftItem refused (realm rule, secondary skill, materials, moving - it said why in chat)
-                End(player, run, CraftAssistReason.NoStation, null);
-            }
+            return player.craftComponent?.CraftAction?.Assist == true;
         }
 
         /// <summary>CraftAction.CleanupCraftAction reports an assistant craft's end here. made = the backpack items
-        /// the craft added (item, count), for the sale.</summary>
+        /// the craft added (item, count), for the sale. An enchant helper craft goes to CraftEnchant165.</summary>
         public static void OnCraftEnded(GamePlayer player, Recipe recipe, CraftAssistOutcome outcome, List<(DbInventoryItem Item, int Count)> made)
         {
+            if (CraftEnchant165.OnCraftEnded(player, recipe, outcome, made))
+                return;
             if (player == null || !Runs.TryGetValue(player, out CraftAssistRun run))
                 return;
             lock (run.Sync)
@@ -451,7 +468,11 @@ namespace DOL.GS
         // ---- buying
 
         /// <summary>The backpack's materials short of one craft (matched by name, as CheckRawMaterials does).</summary>
-        private static List<(DbItemTemplate Material, int Need)> MissingMaterials(GamePlayer player, Recipe recipe)
+        private static List<(DbItemTemplate Material, int Need)> MissingMaterials(GamePlayer player, Recipe recipe) =>
+            MissingMaterials(player, recipe.Ingredients);
+
+        /// <summary>The backpack's materials short of these ingredients (one craft, or several crafts' ingredients).</summary>
+        internal static List<(DbItemTemplate Material, int Need)> MissingMaterials(GamePlayer player, IEnumerable<Ingredient> ingredients)
         {
             var result = new List<(DbItemTemplate, int)>();
             lock (player.Inventory.Lock)
@@ -460,7 +481,7 @@ namespace DOL.GS
                 foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
                     if (item?.Name != null)
                         have[item.Name] = have.GetValueOrDefault(item.Name) + item.Count;
-                foreach (Ingredient ingredient in recipe.Ingredients)
+                foreach (Ingredient ingredient in ingredients)
                 {
                     DbItemTemplate material = ingredient.Material;
                     int got = have.GetValueOrDefault(material.Name);
@@ -517,11 +538,22 @@ namespace DOL.GS
 
         private static CraftAssistReason BuyMissing(GamePlayer player, CraftAssistRun run, List<(DbItemTemplate Material, int Need)> missing, string boughtText)
         {
+            CraftAssistReason result = BuyMissing(player, missing, boughtText, "Crafting assistant", out long paid);
+            if (run != null)
+                run.Spent += paid;
+            return result;
+        }
+
+        /// <summary>Buys the missing materials at merchant price (whole packs, never free). who names the helper in the
+        /// "can't be bought" line. paid = what was taken from the player. Shared with the enchant helper.</summary>
+        internal static CraftAssistReason BuyMissing(GamePlayer player, List<(DbItemTemplate Material, int Need)> missing, string boughtText, string who, out long paid)
+        {
+            paid = 0;
             List<CraftAssistBuyLine> lines = PlanBuy(missing);
             CraftAssistBuyLine unbuyable = lines.FirstOrDefault(l => l.Material.Price <= 0);
             if (unbuyable.Material != null)
             {
-                Chat(player, $"Crafting assistant: {unbuyable.Material.Name} can't be bought from a merchant.");
+                Chat(player, $"{who}: {unbuyable.Material.Name} can't be bought from a merchant.");
                 return CraftAssistReason.Other;
             }
             long total = lines.Sum(l => l.Cost);
@@ -529,7 +561,6 @@ namespace DOL.GS
                 return CraftAssistReason.OutOfMoney;
 
             var bought = new List<string>();
-            long paid = 0;
             CraftAssistReason result = CraftAssistReason.None;
             foreach (CraftAssistBuyLine line in lines)
             {
@@ -548,8 +579,6 @@ namespace DOL.GS
                 paid += line.Cost;
                 bought.Add($"{line.Amount} {Plural(line.Material.Name, line.Amount)}");
             }
-            if (run != null)
-                run.Spent += paid;
             if (bought.Count > 0)
                 Chat(player, $"{boughtText} {JoinAnd(bought)} for {MoneyText(paid)}.");
             return result;
@@ -573,7 +602,7 @@ namespace DOL.GS
         }
 
         /// <summary>Room for the product: a free backpack slot, or (stackable, not unique) room on a stack of it.</summary>
-        private static bool HasRoomForProduct(GamePlayer player, Recipe recipe)
+        internal static bool HasRoomForProduct(GamePlayer player, Recipe recipe)
         {
             DbItemTemplate product = recipe.Product;
             lock (player.Inventory.Lock)
@@ -793,7 +822,7 @@ namespace DOL.GS
 
         public static string SkillName(eCraftingSkill skill) => CraftingMgr.getSkillbyEnum(skill)?.Name ?? skill.ToString();
 
-        private static string MoneyText(long copper) => copper < 0 ? "-" + Money.GetString(-copper) : Money.GetString(copper);
+        internal static string MoneyText(long copper) => copper < 0 ? "-" + Money.GetString(-copper) : Money.GetString(copper);
 
         /// <summary>Plain English plural for chat lines ("cloth square" -> "cloth squares").</summary>
         public static string Plural(string name, int count)

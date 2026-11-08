@@ -105,11 +105,11 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
+		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
-			if (!base.IsAllowedToCombine(player, item)) return false;
+			if (!base.IsAllowedToCombine(player, item, materials)) return false;
 
-			if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) // first ingredient to combine is Dust => echantement
+			if (((DbInventoryItem)materials.Items[0]).Model == 525) // first ingredient to combine is Dust => echantement
 			{
 				if (item.Level < 15)
 				{
@@ -120,9 +120,9 @@ namespace DOL.GS
 					return false;
 				}
 
-				lock (player.TradeWindow.Lock)
+				lock (materials.Lock)
 				{
-					foreach (DbInventoryItem materialToCombine in player.TradeWindow.TradeItems)
+					foreach (DbInventoryItem materialToCombine in materials.Items)
 					{
 						if (materialToCombine.Model != 525)
 						{
@@ -157,11 +157,11 @@ namespace DOL.GS
 					}
 				}
 
-				lock (player.TradeWindow.Lock)
+				lock (materials.Lock)
 				{
-					for (int i = 0; i < player.TradeWindow.ItemsCount; i++)
+					for (int i = 0; i < materials.Count; i++)
 					{
-						DbInventoryItem currentItem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
+						DbInventoryItem currentItem = (DbInventoryItem)materials.Items[i];
 
 						if (currentItem.Object_Type != (int)eObjectType.SpellcraftGem)
 						{
@@ -185,7 +185,7 @@ namespace DOL.GS
 					}
 				}
 
-				int bonusLevel = GetTotalImbuePoints(player, item);
+				int bonusLevel = GetTotalImbuePoints(player, item, materials);
 				if (bonusLevel > player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) / 20)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.NotEnoughSkill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -212,17 +212,17 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item)
+		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
-			if (item == null || player.TradeWindow.TradeItems[0] == null) return; // be sure at least one item in each side
+			if (item == null || materials.Items[0] == null) return; // be sure at least one item in each side
 
-			if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) // Echant item
+			if (((DbInventoryItem)materials.Items[0]).Model == 525) // Echant item
 			{
-				ApplyMagicalDusts(player, item);
+				ApplyMagicalDusts(player, item, materials);
 			}
-			else if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type == (int)eObjectType.SpellcraftGem) // Spellcraft item
+			else if (((DbInventoryItem)materials.Items[0]).Object_Type == (int)eObjectType.SpellcraftGem) // Spellcraft item
 			{
-				ApplySpellcraftGems(player, item);
+				ApplySpellcraftGems(player, item, materials);
 			}
 
 			if (item.Template is DbItemUnique)
@@ -243,7 +243,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		private void ApplyMagicalDusts(GamePlayer player, DbInventoryItem item)
+		private void ApplyMagicalDusts(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
 			int spellCrafterLevel = player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting);
 
@@ -260,9 +260,9 @@ namespace DOL.GS
 			player.Inventory.BeginChanges();
 
 			int bonusMod = item.Bonus;
-			lock (player.TradeWindow.Lock)
+			lock (materials.Lock)
 			{
-				foreach (DbInventoryItem gemme in player.TradeWindow.TradeItems)
+				foreach (DbInventoryItem gemme in materials.Items)
 				{
 					switch (gemme.Name)
 					{
@@ -300,6 +300,7 @@ namespace DOL.GS
 			item.Bonus = Math.Min(bonusMod, bonusCap);
 
 			player.Inventory.CommitChanges();
+			materials.Outcome = CombineOutcome.Applied;
 		}
 
 		/// <summary>
@@ -308,24 +309,25 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		private void ApplySpellcraftGems(GamePlayer player, DbInventoryItem item)
+		private void ApplySpellcraftGems(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
 			int maxBonusLevel = GetItemMaxImbuePoints(item);
-			int bonusLevel = GetTotalImbuePoints(player, item);
+			int bonusLevel = GetTotalImbuePoints(player, item, materials);
 
 			int sucessChances = 100;
 			if (bonusLevel > maxBonusLevel) sucessChances = CalculateChanceToOverchargeItem(player, item, maxBonusLevel, bonusLevel);
-			int destroyChance = 100 - CalculateChanceToPreserveItem(player, item, maxBonusLevel, bonusLevel);
+			int destroyChance = 100 - CalculateChanceToPreserveItem(player, item, maxBonusLevel, bonusLevel, materials);
 
 
-			GamePlayer tradePartner = player.TradeWindow.Partner;
+			GamePlayer tradePartner = materials.Partner;
 
 			if (Util.Chance(sucessChances))
 			{
-				lock (player.TradeWindow.Lock)
+				materials.Outcome = CombineOutcome.Applied;
+				lock (materials.Lock)
 				{
 					player.Inventory.BeginChanges();
-					foreach (DbInventoryItem gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
+					foreach (DbInventoryItem gem in (ArrayList)materials.Items.Clone())
 					{
 						if (item.Bonus1Type == 0)
 						{
@@ -361,14 +363,15 @@ namespace DOL.GS
 			}
 			else if (Util.Chance(destroyChance))
 			{
+				materials.Outcome = CombineOutcome.Exploded;
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ApplySpellcraftGems.PowerExplodes"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-				lock (player.TradeWindow.Lock)
+				lock (materials.Lock)
 				{
 					player.Inventory.BeginChanges();
                     // Luhz Crafting Update:
                     // The base item is no longer lost when spellcrafting explodes - only gems are destroyed.
-                    foreach (DbInventoryItem gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
+                    foreach (DbInventoryItem gem in (ArrayList)materials.Items.Clone())
                     {
                         if (gem.Object_Type == (int)eObjectType.SpellcraftGem)
 						{
@@ -397,6 +400,7 @@ namespace DOL.GS
 			}
 			else
 			{
+				materials.Outcome = CombineOutcome.Failed;
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ApplySpellcraftGems.Failed"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				if (tradePartner != null)
 				{
@@ -486,6 +490,12 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected int CalculateChanceToOverchargeItem(GamePlayer player, DbInventoryItem item, int maxBonusLevel, int bonusLevel)
 		{
+			return OverchargeSuccessChance(item.Quality, player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting), maxBonusLevel, bonusLevel);
+		}
+
+		/// <summary>CalculateChanceToOverchargeItem for an item quality and spellcrafting skill (percent).</summary>
+		public static int OverchargeSuccessChance(int itemQuality, int spellcraftSkill, int maxBonusLevel, int bonusLevel)
+		{
             // Luhz Crafting Update:
             // Overcharge success rate is now dependent only on item quality, points overcharged, and spellcrafter skill.
             // This formula is taken from Kort's Spellcrafting Calculator, which appears to be correct (for 1.87). Much Thanks!
@@ -493,9 +503,9 @@ namespace DOL.GS
             if(bonusLevel - maxBonusLevel < 0) return 100;
 
             try {
-            int success = 34 + ItemQualOCModifiers[item.Quality - 94];
+            int success = 34 + ItemQualOCModifiers[itemQuality - 94];
             success -= OCStartPercentages[bonusLevel-maxBonusLevel];
-            int skillbonus = (player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) / 10);
+            int skillbonus = (spellcraftSkill / 10);
             if (skillbonus > 100) 
                 skillbonus = 100;
             success += skillbonus;
@@ -522,26 +532,32 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected int GetItemMaxImbuePoints(DbInventoryItem item)
 		{
+			return ItemMaxImbuePoints(item.Level, item.Quality);
+		}
+
+		/// <summary>GetItemMaxImbuePoints for an item level and quality.</summary>
+		public static int ItemMaxImbuePoints(int level, int quality)
+		{
 			//if (item.Level > 51) return 32;
-			if (item.Level < 1) return 0;
+			if (level < 1) return 0;
             // Luhz Crafting Update:
             // All items have MP level imbue points
             //return itemMaxBonusLevel[item.Level - 1, 100 - 94];
             
-            if (item.Quality == 100)
-	            return (int)Math.Round(0.625 * item.Level);
-            if (item.Quality == 99)
-	            return (int)Math.Round(0.55 * item.Level);
-            if (item.Quality == 98)
-	            return (int)Math.Round(0.475 * item.Level);
-            if (item.Quality == 97)
-	            return (int)Math.Round(0.42 * item.Level);
-            if (item.Quality == 96)
-	            return (int)Math.Round(0.353 * item.Level);
-            if (item.Quality == 95)
-	            return (int)Math.Round(0.295 * item.Level);
+            if (quality == 100)
+	            return (int)Math.Round(0.625 * level);
+            if (quality == 99)
+	            return (int)Math.Round(0.55 * level);
+            if (quality == 98)
+	            return (int)Math.Round(0.475 * level);
+            if (quality == 97)
+	            return (int)Math.Round(0.42 * level);
+            if (quality == 96)
+	            return (int)Math.Round(0.353 * level);
+            if (quality == 95)
+	            return (int)Math.Round(0.295 * level);
             
-            return (int)Math.Round(0.2 * item.Level);
+            return (int)Math.Round(0.2 * level);
             
 		}
 
@@ -553,40 +569,60 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected int GetTotalImbuePoints(GamePlayer player, DbInventoryItem item)
 		{
+			return GetTotalImbuePoints(player, item, CombineMaterials.Of(player.TradeWindow));
+		}
+
+		/// <summary>Get gems bonus level for these materials (the trade window's or the enchant helper's)</summary>
+		protected int GetTotalImbuePoints(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
+		{
+			var gems = new System.Collections.Generic.List<(int Type, int Value)>();
+			lock (materials.Lock)
+			{
+				for (int i = 0; i < materials.Items.Count; i++)
+				{
+					DbInventoryItem currentGem = (DbInventoryItem)materials.Items[i];
+					gems.Add((currentGem.Bonus1Type, currentGem.Bonus1));
+				}
+			}
+			return TotalImbuePoints(item, gems);
+		}
+
+		/// <summary>
+		/// The imbue points of the item's bonuses plus these gems: (sum of all + the biggest one) / 2. The item's own
+		/// bonuses count as GetTotalImbuePoints always counted them: Bonus1-3 in order (an item with Bonus4 can't be imbued).
+		/// </summary>
+		public static int TotalImbuePoints(DbInventoryItem item, System.Collections.Generic.IEnumerable<(int Type, int Value)> gems)
+		{
 			int totalGemBonus = 0;
 			int biggerGemCharge = 0;
 
 			if (item.Bonus1Type != 0)
 			{
-				int currentBonusImbuePoint = GetGemImbuePoints(item.Bonus1Type, item.Bonus1);
+				int currentBonusImbuePoint = GemImbuePoints(item.Bonus1Type, item.Bonus1);
 				totalGemBonus += currentBonusImbuePoint;
 				if (currentBonusImbuePoint > biggerGemCharge) biggerGemCharge = currentBonusImbuePoint;
 
 				if (item.Bonus2Type != 0)
 				{
-					currentBonusImbuePoint = GetGemImbuePoints(item.Bonus2Type, item.Bonus2);
+					currentBonusImbuePoint = GemImbuePoints(item.Bonus2Type, item.Bonus2);
 					totalGemBonus += currentBonusImbuePoint;
 					if (currentBonusImbuePoint > biggerGemCharge) biggerGemCharge = currentBonusImbuePoint;
 
 					if (item.Bonus3Type != 0)
 					{
-						currentBonusImbuePoint = GetGemImbuePoints(item.Bonus3Type, item.Bonus3);
+						currentBonusImbuePoint = GemImbuePoints(item.Bonus3Type, item.Bonus3);
 						totalGemBonus += currentBonusImbuePoint;
 						if (currentBonusImbuePoint > biggerGemCharge) biggerGemCharge = currentBonusImbuePoint;
 					}
 				}
 			}
 
-			lock (player.TradeWindow.Lock)
+			foreach ((int gemType, int gemValue) in gems)
 			{
-				for (int i = 0; i < player.TradeWindow.TradeItems.Count; i++)
-				{
-					DbInventoryItem currentGem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
-					int currentGemCharge = GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1);
-					if (currentGemCharge > biggerGemCharge) biggerGemCharge = currentGemCharge;
+				int currentGemCharge = GemImbuePoints(gemType, gemValue);
+				if (currentGemCharge > biggerGemCharge) biggerGemCharge = currentGemCharge;
 
-					totalGemBonus += currentGemCharge;
-				}
+				totalGemBonus += currentGemCharge;
 			}
 			totalGemBonus += biggerGemCharge;
 			totalGemBonus /= 2;
@@ -601,6 +637,12 @@ namespace DOL.GS
 		/// <param name="bonusValue"></param>
 		/// <returns></returns>
 		protected int GetGemImbuePoints(int bonusType, int bonusValue)
+		{
+			return GemImbuePoints(bonusType, bonusValue);
+		}
+
+		/// <summary>GetGemImbuePoints: the imbue points one bonus (gem) of this type and value uses.</summary>
+		public static int GemImbuePoints(int bonusType, int bonusValue)
 		{
 			int gemBonus;
 			if (bonusType <= (int)eProperty.Stat_Last) gemBonus = (int)(((bonusValue - 1) * 2 / 3) + 1); //stat
@@ -640,18 +682,44 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected int CalculateChanceToPreserveItem(GamePlayer player, DbInventoryItem item, int maxBonusLevel, int bonusLevel)
 		{
+			return CalculateChanceToPreserveItem(player, item, maxBonusLevel, bonusLevel, CombineMaterials.Of(player.TradeWindow));
+		}
+
+		/// <summary>Get the chance to preserve item while overcharging, for these materials</summary>
+		protected int CalculateChanceToPreserveItem(GamePlayer player, DbInventoryItem item, int maxBonusLevel, int bonusLevel, CombineMaterials materials)
+		{
+			var gemQualities = new System.Collections.Generic.List<int>();
+			lock (materials.Lock)
+			{
+				foreach (DbInventoryItem gem in materials.Items)
+					gemQualities.Add(gem.Quality);
+			}
+			return PreserveChance(item.Quality, gemQualities, player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting));
+		}
+
+		/// <summary>CalculateChanceToPreserveItem for an item quality, the gems' qualities and spellcrafting skill (percent).</summary>
+		public static int PreserveChance(int itemQuality, System.Collections.Generic.IEnumerable<int> gemQualities, int spellcraftSkill)
+		{
 			int baseChance = 0;
 
 			double gemModifier = 0;
-			lock (player.TradeWindow.Lock)
-			{
-				foreach (DbInventoryItem gem in player.TradeWindow.TradeItems)
-					gemModifier += (gem.Quality - 92) * 1.8;
-			}
+			foreach (int gemQuality in gemQualities)
+				gemModifier += (gemQuality - 92) * 1.8;
 
-			gemModifier = gemModifier * item.Quality / 100;
+			gemModifier = gemModifier * itemQuality / 100;
 
-			int intSkill = player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting);
+			int intSkillMod = PreserveSkillModifier(spellcraftSkill);
+
+			int finalChances = (int)(intSkillMod + gemModifier + baseChance);
+			if (finalChances > 100) finalChances = 100;
+			else if (finalChances < 0) finalChances = 0;
+
+			return finalChances;
+		}
+
+		/// <summary>The spellcrafting-skill part of the preserve chance (-50 below 50 skill .. +50 at 1000).</summary>
+		public static int PreserveSkillModifier(int intSkill)
+		{
 			int intSkillMod;
 			if (intSkill < 50) { intSkillMod = -50; }
 			else if (intSkill < 100) { intSkillMod = -45; }
@@ -675,11 +743,7 @@ namespace DOL.GS
 			else if (intSkill < 1000) { intSkillMod = 45; }
 			else { intSkillMod = 50; }
 
-			int finalChances = (int)(intSkillMod + gemModifier + baseChance);
-			if (finalChances > 100) finalChances = 100;
-			else if (finalChances < 0) finalChances = 0;
-
-			return finalChances;
+			return intSkillMod;
 		}
 
 		#endregion

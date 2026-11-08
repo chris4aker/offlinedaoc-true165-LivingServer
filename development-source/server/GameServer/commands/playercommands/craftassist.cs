@@ -12,7 +12,11 @@ namespace DOL.GS.Commands
         "/craftassist estimate <skill id> <goal> <sell 0|1> - cost and time to the goal",
         "/craftassist start <skill id> <goal> <buy 0|1> <sell 0|1> - start crafting toward the goal",
         "/craftassist stop - stop (no materials lost)",
-        "/craftassist status - the run's numbers")]
+        "/craftassist status - the run's numbers",
+        "/craftassist enchantinfo <backpack slot> - what the item can be enchanted with",
+        "/craftassist enchant <backpack slot> spell <gem id>[,<gem id>...] <overcharge 0|1> - craft and imbue gems",
+        "/craftassist enchant <backpack slot> alch <tincture id> - craft and apply a tincture",
+        "/craftassist enchantstop - stop the enchant helper")]
     public class CraftAssistCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -64,8 +68,63 @@ namespace DOL.GS.Commands
                     CraftAssist165.Status(player);
                     return;
 
+                // enchant helper (CraftEnchant165): ops 43 / 44 of enchant_helper_spec
+                case "enchantinfo":
+                    if (args.Length < 3 || !CraftEnchant165.TryBackpackSlot(args[2], out int infoSlot))
+                    {
+                        DisplayMessage(client, "Use: /craftassist enchantinfo <backpack slot>");
+                        return;
+                    }
+                    CraftEnchant165.SendInfo(player, infoSlot);
+                    return;
+
+                case "enchant":
+                    OnEnchant(client, player, args);
+                    return;
+
+                case "enchantstop":
+                    CraftEnchant165.Stop(player, EnchantReason.StoppedByPlayer, null);
+                    return;
+
+                case "enchantstatus":
+                    CraftEnchant165.Status(player);
+                    return;
+
                 default:
                     DisplaySyntax(client);
+                    return;
+            }
+        }
+
+        // /craftassist enchant <slot> spell <id>[,<id>...] <overcharge 0|1>  or  /craftassist enchant <slot> alch <id>
+        private void OnEnchant(GameClient client, GamePlayer player, string[] args)
+        {
+            const string use = "Use: /craftassist enchant <backpack slot> spell <gem recipe id>[,<id>...] <overcharge 0|1>  or  /craftassist enchant <backpack slot> alch <tincture recipe id>";
+            if (args.Length < 5 || !CraftEnchant165.TryBackpackSlot(args[2], out int slot))
+            {
+                DisplayMessage(client, use);
+                return;
+            }
+            switch (args[3].ToLowerInvariant())
+            {
+                case "spell":
+                    if (!CraftEnchant165.TryRecipeIds(args[4], out var gems) || !TryFlag(args, 5, out bool overcharge))
+                    {
+                        DisplayMessage(client, use);
+                        return;
+                    }
+                    CraftEnchant165.StartSpell(player, slot, gems, overcharge);
+                    return;
+                case "alch":
+                    if (!CraftEnchant165.TryRecipeIds(args[4], out var tincture) || tincture.Count != 1)
+                    {
+                        DisplayMessage(client, use);
+                        return;
+                    }
+                    CraftEnchant165.StartAlchemy(player, slot, tincture[0]);
+                    return;
+                default:
+                    DisplayMessage(client, use);
                     return;
             }
         }

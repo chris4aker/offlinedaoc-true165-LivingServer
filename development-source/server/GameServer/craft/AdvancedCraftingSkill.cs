@@ -16,12 +16,43 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
+	/// <summary>How a combine ended (the enchant helper reads it; the trade window ignores it).</summary>
+	public enum CombineOutcome : byte { None = 0, Applied, Failed, Exploded, Refused }
+
+	/// <summary>
+	/// The materials of one combine (gems / dust / tincture), the lock that guards them and the partner who watches.
+	/// The trade window passes its own items, lock and partner (so its combine is exactly as before); the enchant helper
+	/// (CraftEnchant165) passes backpack gems with no window and no partner.
+	/// </summary>
+	public sealed class CombineMaterials
+	{
+		public ArrayList Items { get; }
+		public Lock Lock { get; }
+		public GamePlayer Partner { get; }
+		public int Count => Items.Count;
+		/// <summary>Set by ApplyMagicalEffect: applied, failed (overcharge) or exploded.</summary>
+		public CombineOutcome Outcome { get; set; }
+
+		public CombineMaterials(ArrayList items, Lock sync, GamePlayer partner)
+		{
+			Items = items;
+			Lock = sync;
+			Partner = partner;
+		}
+
+		/// <summary>The trade window's own items, lock and partner.</summary>
+		public static CombineMaterials Of(ITradeWindow window) => new(window.TradeItems, window.Lock, window.Partner);
+	}
+
 	/// <summary>
 	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting whitch add all combine system
 	/// </summary>
@@ -67,11 +98,25 @@ namespace DOL.GS
 			}
 
 			DbInventoryItem itemToCombine = (DbInventoryItem)player.TradeWindow.PartnerTradeItems[0];
-			if(!IsAllowedToCombine(player, itemToCombine)) return false;
+			CombineMaterials materials = CombineMaterials.Of(player.TradeWindow);
+			if(!IsAllowedToCombine(player, itemToCombine, materials)) return false;
 
-			ApplyMagicalEffect(player, itemToCombine);
+			ApplyMagicalEffect(player, itemToCombine, materials);
 
 			return true;
+		}
+
+		/// <summary>
+		/// The enchant helper's combine (CraftEnchant165): the same checks, rolls, messages and item saving as accepting
+		/// the trade window, with the gems / tincture given from the player's own backpack and no window.
+		/// </summary>
+		public CombineOutcome CombineWithoutWindow(GamePlayer player, DbInventoryItem item, IEnumerable<DbInventoryItem> materials)
+		{
+			var set = new CombineMaterials(new ArrayList(new List<DbInventoryItem>(materials)), new Lock(), null);
+			if (!IsAllowedToCombine(player, item, set))
+				return CombineOutcome.Refused;
+			ApplyMagicalEffect(player, item, set);
+			return set.Outcome;
 		}
 
 		#endregion
@@ -84,11 +129,20 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public virtual bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
+		public bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
 		{
 			if(item == null) return false;
-			
-			if(player.TradeWindow.ItemsCount <= 0)
+			return IsAllowedToCombine(player, item, CombineMaterials.Of(player.TradeWindow));
+		}
+
+		/// <summary>
+        /// Check if the player can enchant the item with these materials (the trade window's or the enchant helper's)
+		/// </summary>
+		public virtual bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
+		{
+			if(item == null) return false;
+
+			if(materials.Count <= 0)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.Imbue", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;	
@@ -101,7 +155,7 @@ namespace DOL.GS
 			}
 
 
-            DbInventoryItem itemToCombine = (DbInventoryItem)player.TradeWindow.TradeItems[0];
+            DbInventoryItem itemToCombine = (DbInventoryItem)materials.Items[0];
 
             if (itemToCombine.Object_Type == (int)eObjectType.AlchemyTincture)
             {
@@ -159,7 +213,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		protected abstract void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item);
+		protected abstract void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item, CombineMaterials materials);
 		
 		#endregion
 

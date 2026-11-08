@@ -45,12 +45,12 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
+		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
-			if (!base.IsAllowedToCombine(player, item)) 
+			if (!base.IsAllowedToCombine(player, item, materials)) 
                 return false;
 			
-			if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type != 
+			if (((DbInventoryItem)materials.Items[0]).Object_Type != 
                 (int)eObjectType.AlchemyTincture)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, 
@@ -60,7 +60,7 @@ namespace DOL.GS
                 return false;
 			}
 
-			if (player.TradeWindow.ItemsCount > 1)
+			if (materials.Count > 1)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                     "Alchemy.IsAllowedToCombine.OneTincture"), PacketHandler.eChatType.CT_System, 
@@ -91,9 +91,9 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item)
+		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item, CombineMaterials materials)
 		{
-			DbInventoryItem tincture = player.TradeWindow.TradeItems[0] as DbInventoryItem;
+			DbInventoryItem tincture = materials.Items[0] as DbInventoryItem;
 
 			// One item each side of the trade window.
 			if (item == null || tincture == null)
@@ -113,7 +113,7 @@ namespace DOL.GS
 				item.SpellID = tincture.SpellID;
 
 				// Send an item update so that the tooltip shows the charge.
-				GamePlayer playerToSendUpdate = player.TradeWindow.Partner ?? player;
+				GamePlayer playerToSendUpdate = materials.Partner ?? player;
 				playerToSendUpdate.Out.SendInventoryItemsUpdate([item]);
 			}
 
@@ -121,6 +121,7 @@ namespace DOL.GS
 
 			player.Inventory.RemoveCountFromStack(tincture, 1);
 			InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, tincture.Template);
+			materials.Outcome = CombineOutcome.Applied;
 
 			if (item.Template is DbItemUnique uniqueTemplate)
 			{
@@ -145,15 +146,21 @@ namespace DOL.GS
 		/// <returns></returns>
 		public int GetItemMaxCharges(DbInventoryItem item)
 		{
-			if(item.Quality < 94)
+			return MaxChargesForQuality(item.Quality);
+		}
+
+		/// <summary>GetItemMaxCharges for an item quality (2 below 94%, 10 at 100%).</summary>
+		public static int MaxChargesForQuality(int quality)
+		{
+			if(quality < 94)
 			{
 				return 2;
 			}
-			if(item.Quality >= 100)
+			if(quality >= 100)
 			{
 				return 10;
 			}
-			return item.Quality - 92;
+			return quality - 92;
 		}
 	}
 }
