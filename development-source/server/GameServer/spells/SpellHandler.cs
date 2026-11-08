@@ -265,7 +265,9 @@ namespace DOL.GS.Spells
 		/// spells): it turned to the groupmate it was healing in the middle of a melee fight, then straight back to the
 		/// monster, over and over (owner 2026-11-08: Shamans, Friars, Wardens). Monsters and pets keep turning as before.
 		/// </summary>
-		protected bool TurnsToTarget(GameNPC caster) => NpcTurnsForSpell(caster is GameBot, Spell.Target);
+		protected bool TurnsToTarget(GameNPC caster) =>
+			// a bot's pet too (owner 2026-11-08: Aldith's servant turned between its monster and the Cleric it gave power to)
+			NpcTurnsForSpell(caster is GameBot || caster.Brain is DOL.AI.Brain.IControlledBrain { Owner: GameBot }, Spell.Target);
 
 		public static bool NpcTurnsForSpell(bool bot, eSpellTarget target) =>
 			!bot || target is eSpellTarget.ENEMY or eSpellTarget.CONE;
