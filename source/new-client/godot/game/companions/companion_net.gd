@@ -23,6 +23,7 @@ var slots := {"used": 0, "open": 0, "total": 7, "next": 0}
 var texts := {}                                  # text slot -> String (op 3)
 var hire := {}                                   # the hire page's numbers (op 4 kind 0)
 var roster := {}                                 # row -> {state, level, class, race, gender, buttons, model, oid, id, xp}
+var _rows_seen := {}                             # rows sent (op 4 kind 1) since the last op 5
 var preview_oid := 0
 var _own_preview := false                        # "/companionui ownpreview" sent this login
 var gear := {}                                   # row -> {slot: item}, rebuilt on each list (op 7, ends with 0xFF)
@@ -100,12 +101,16 @@ func handle(body: PackedByteArray) -> void:
 				roster[int(body[5])] = {"state": body[6], "level": body[7], "class": body[8], "race": body[9],
 						"gender": body[10], "buttons": body[11], "model": _u16(body, 12), "oid": _u16(body, 14),
 						"id": _u16(body, 16), "xp": _u16(body, 18), "hair": body[20]}   # [20] its hair colour (1.65)
+				_rows_seen[int(body[5])] = true
 		5:
 			slots = {"used": body[4], "open": body[5], "total": body[6], "next": body[7]}
-			# (the rows past the used count are gone: released)
+			# Op 5 closes the server's full window refresh (Hire165.SendAll), which sends a row packet for every occupied
+			# row first. A row it didn't send is empty now (dismissed / released). The server keeps fixed row numbers, so
+			# rows are not compared with the used count (owner 2026-11-08: dismissing row 3 of 4 hid row 4 until a hire).
 			for r in roster.keys():
-				if int(r) >= int(slots.used):
+				if not _rows_seen.has(int(r)):
 					roster.erase(r)
+			_rows_seen.clear()
 		6:
 			preview_oid = _u16(body, 4)
 		7:
