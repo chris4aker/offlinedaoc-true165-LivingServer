@@ -7,7 +7,10 @@ hold). Its changelog has the history of everything this version inherits.
 
 ## Coming in 0.5
 
-Nothing yet.
+- Necromancer bots play their servant like a Deathsight player: with the monster held by the servant or the group
+  there is no snare and at most one debuff, then the power drain (its power goes to the group through the power
+  gift), else their hardest-hitting spell. Before, they snared and debuffed most of a fight and picked damage spells
+  at random, so a level 1 Tormenting Cackle could win over Soul Evacuation.
 
 ## 0.4.1 (2026-11-07)
 
