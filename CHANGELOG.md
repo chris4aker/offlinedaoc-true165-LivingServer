@@ -39,6 +39,8 @@ hold). Its changelog has the history of everything this version inherits.
   cannot pay for it (or Save power holds it back) its servant goes into melee on that monster until it dies.
 - Melee healers (Shamans, Friars, Wardens and others) no longer turn back and forth between the monster and the
   groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once.
+- Spell glows on monsters whose skeleton lacks the bone the spell names now sit on the nearest bone instead of
+  the ground: a necroservant's and an abomination's cast sparkles are over their hands again, not at their feet.
 
 ## 0.4.1 (2026-11-07)
 
