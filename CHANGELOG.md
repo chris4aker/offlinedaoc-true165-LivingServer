@@ -46,9 +46,32 @@ hold). Its changelog has the history of everything this version inherits.
   Use or Skip - so you can pick which debuffs it casts before nuking (any number, just one, or none); the rows are
   greyed out while it is set to Never. Hovering a spell in the AI options (a debuff, a pet, a song) shows its
   tooltip as that companion casts it, and the options page scrolls when the list is long.
-- Crafting: a CRAFT ALL button next to MAKE makes the chosen recipe again and again until you run out of materials
-  or your backpack is full (it also stops if an item is interrupted). Not in 1.65, so it is a quality of life option,
-  off by default: turn it on in Options > Crafting; while off the button is greyed out.
+- Crafting: a CRAFT ALL button next to MAKE makes the chosen recipe again and again until you can't afford the
+  materials or your backpack is full (it also stops if an item is interrupted). Not in 1.65, so it is a quality of
+  life option, off by default: turn it on in Options > Crafting; while off the button is greyed out.
+- **Crafting overhaul - a large deviation from 1.65.** Crafting no longer plays like the period game. The 1.65 rules
+  for success chances, craft times, skill gains, recipe levels and secondary-skill requirements are kept, and nothing
+  is free (every craft costs real gold and takes the normal time, for a GM account too), but:
+  - Crafting works anywhere: no forge, lathe, alchemy table or hand tool is needed.
+  - MAKE buys the missing materials of one craft at the merchant price when you can afford them. What you make by
+    hand is not sold automatically.
+  - The tradeskill window is rebuilt for every trade: each recipe shows the trade level it needs and what else it
+    trains, a recipe your Leathercrafting / Clothworking / Metalworking is too low for says so instead of looking
+    makeable, a note names the skill holding your best recipes back, and there are filters (best to train, have
+    materials, trains a secondary skill, item type, material tier, difficulty, hide grey, can afford, sellable),
+    sorting, recommended recipes, and each recipe's chances, craft time and cost per skill point.
+  - The crafting assistant (optional, off by default: Options > Crafting): set a skill goal for any tradeskill or
+    secondary skill and it picks the cheapest recipe per skill point as you go, buys the materials, crafts with the
+    normal times, sells what it makes at the merchant price, and estimates the gold and time to the goal (a baseline
+    at average luck and a live estimate that follows your luck).
+  - The enchant helper (ENCHANT in the tradeskill window): pick an item and the spellcraft gems or alchemy tincture
+    to put on it; it uses the gems and tinctures you have, buys the materials for the rest, crafts them with your own
+    skill at the normal time and chances, and combines them with the normal rules (a failed overcharge can make the
+    gems explode and kill you - the item is kept - so overcharging needs a tick box).
+  - Crafter gamebots keep their own simplified crafting, and now get their crafted gear and weapons enchanted by
+    their realm's spellcrafter and alchemist bots, within those bots' skill; the crafter pays the materials and a fee.
+- Dropping an item on one of your companions in the world no longer equips it unless its companion window is open
+  (boots dragged onto a companion by accident swapped out its own).
 
 ## 0.4.1 (2026-11-07)
 
