@@ -13,6 +13,25 @@ hold). Its changelog has the history of everything this version inherits.
   at random, so a level 1 Tormenting Cackle could win over Soul Evacuation.
 - The innkeeper / healer companion list: dismissing a companion no longer hides the one listed below it
   until your next hire (dismissing the third of four made the fourth vanish from the list).
+- Deathsight Necromancer bots play as power batteries: the servant stays back and casts, and melees only once a
+  monster hits it; power gifts to the group finish instead of being cut off (no more sit-stand-cast loop), down to
+  30% of their own power in a fight; the armour debuff only when a groupmate melees, the snare only on a runner.
+  The Necromancer no longer swings its staff when hit. Painworking and Death Servant servants still go in.
+- Paladin and Warden bots keep chanting when a monster hits them (the chant dropped and was recast every pulse).
+- Companions wait for you to stop moving before summoning a pet, servant or Bonedancer minion.
+- Bots use crowd control like veterans: no snares, roots, mezzes, stuns or Nearsight on the monster being fought;
+  snares on runners, stuns to interrupt or to peel a monster off a healer or caster, mez and root on adds nobody is
+  attacking, long-reuse control only for three or more adds. Druids root incoming adds, not their own target;
+  Animist root shrooms no longer count as damage; Minstrels and Healers stop stunning as filler. PvP unchanged.
+- Gamebots with a full backpack sell at a merchant when no Realm Exchange is in reach instead of standing for 15
+  minutes; a full bag ends the hunt; after a death they pick the nearest service again.
+- Fewer empty camps: bots are counted by camp location, overlapping camps of the same monster are merged, camps
+  that keep coming up empty fade for a while, and low-level bots are not sent to camps among much stronger monsters.
+- Solo gamebots go around packs and the spot where they just died on the road instead of pulling them (per bot, for
+  a few minutes; camps are never blocked).
+- Bots no longer get stuck on the high ledge east of Brynhild, at a Camelot Hills / Salisbury border crossing or on a
+  Camelot rooftop; lost escape spots on the Lough Derg ridge are back.
+- The Castle Sauvage keep sentinel by the west wall faces the teleporter.
 
 ## 0.4.1 (2026-11-07)
 
