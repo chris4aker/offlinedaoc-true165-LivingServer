@@ -41,6 +41,10 @@ hold). Its changelog has the history of everything this version inherits.
   groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once.
 - Spell glows on monsters whose skeleton lacks the bone the spell names now sit on the nearest bone instead of
   the ground: a necroservant's and an abomination's cast sparkles are over their hands again, not at their feet.
+- Companion AI options: under "Debuff before nuking" each debuff the companion knows has its own row - Automatic,
+  Use or Skip - so you can pick which debuffs it casts before nuking (any number, just one, or none); the rows are
+  greyed out while it is set to Never. Hovering a spell in the AI options (a debuff, a pet, a song) shows its
+  tooltip as that companion casts it, and the options page scrolls when the list is long.
 
 ## 0.4.1 (2026-11-07)
 
