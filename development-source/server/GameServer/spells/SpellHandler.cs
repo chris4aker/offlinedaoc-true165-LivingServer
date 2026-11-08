@@ -260,6 +260,16 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
+		/// <summary>
+		/// Whether an NPC caster turns to face its target. A bot only does for spells that need facing (enemy and cone
+		/// spells): it turned to the groupmate it was healing in the middle of a melee fight, then straight back to the
+		/// monster, over and over (owner 2026-11-08: Shamans, Friars, Wardens). Monsters and pets keep turning as before.
+		/// </summary>
+		protected bool TurnsToTarget(GameNPC caster) => NpcTurnsForSpell(caster is GameBot, Spell.Target);
+
+		public static bool NpcTurnsForSpell(bool bot, eSpellTarget target) =>
+			!bot || target is eSpellTarget.ENEMY or eSpellTarget.CONE;
+
 
 		/// <summary>
 		/// Cancels first pulsing spell of type
@@ -470,7 +480,7 @@ namespace DOL.GS.Spells
 						npcOwner.StopMoving();
 				}
 
-				if (npcOwner != Target)
+				if (npcOwner != Target && TurnsToTarget(npcOwner))
 					npcOwner.TurnTo(Target);
 			}
 
@@ -861,7 +871,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 			
-			if (target != null && Caster != target && Caster is GameNPC casterNPC && Caster is not NecromancerPet)
+			if (target != null && Caster != target && Caster is GameNPC casterNPC && Caster is not NecromancerPet && TurnsToTarget(casterNPC))
 				casterNPC.TurnTo(target);
 
 			if (m_caster.ObjectState is not GameObject.eObjectState.Active)
@@ -1013,7 +1023,7 @@ namespace DOL.GS.Spells
 						npcOwner.StopFollowing();
 				}
 
-				if (npcOwner != Target)
+				if (npcOwner != Target && TurnsToTarget(npcOwner))
 					npcOwner.TurnTo(Target);
 			}
 

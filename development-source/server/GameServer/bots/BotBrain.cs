@@ -5009,6 +5009,11 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>A seated Necromancer rests to this much power before it gifts again (out of combat).</summary>
+        /// <summary>A cast-time heal waits while the bot's own last swing still blocks casting (owner 2026-11-08: trying
+        /// anyway turned it to the groupmate and back over and over). Hits from enemies are handled before this.</summary>
+        public static bool HealWaitsForSwing(bool instant, bool uninterruptible, bool selfInterrupted, bool interruptedByOther) =>
+            !instant && !uninterruptible && selfInterrupted && !interruptedByOther;
+
         public const int GiftAfterRestPercent = 90;
 
         /// <summary>In a fight a Necromancer gifts down to this much of its own power (period: "3 transfers and the
@@ -6476,6 +6481,15 @@ namespace DOL.AI.Brain
                         BotBody.StopCurrentSpellcast();
                     else if (BotBody.IsAttacking)
                         BotBody.StopAttack();
+                    // Owner 2026-11-08: melee healers (Shaman, Friar, Warden ...) turned between the monster and the groupmate
+                    // over and over before a heal went off: right after its own swing a bot cannot start a cast (the swing's
+                    // self-interrupt), so each try turned it to the groupmate, failed silently, and the melee follow turned it
+                    // back. Now it stops swinging and following once, stays facing the monster until the swing has passed,
+                    // then casts once; after the heal the normal melee start turns it back.
+                    BotBody.StopFollowing();
+                    if (HealWaitsForSwing(spellToCast.IsInstantCast, spellToCast.Uninterruptible,
+                            BotBody.IsBeingSelfInterrupted, BotBody.IsBeingInterruptedByOther))
+                        return true;
                 }
 
                 GameObject oldTarget = BotBody.TargetObject;
