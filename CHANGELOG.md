@@ -38,7 +38,8 @@ hold). Its changelog has the history of everything this version inherits.
   Deathsight Necromancer no longer spams its level 1 Tormenting Cackle: it keeps power for its drain, and when it
   cannot pay for it (or Save power holds it back) its servant goes into melee on that monster until it dies.
 - Melee healers (Shamans, Friars, Wardens and others) no longer turn back and forth between the monster and the
-  groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once.
+  groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once. Their pets
+  too: a Necromancer's servant giving power to a healer keeps facing its monster.
 - Spell glows on monsters whose skeleton lacks the bone the spell names now sit on the nearest bone instead of
   the ground: a necroservant's and an abomination's cast sparkles are over their hands again, not at their feet.
 - Companion AI options: under "Debuff before nuking" each debuff the companion knows has its own row - Automatic,
