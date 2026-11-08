@@ -42,7 +42,14 @@ namespace DOL.GS
         /// </summary>
         public static bool DebuffOpeningWorthwhile(int casterLevel, int casterPowerPercent, bool grouped,
             int targetLevel, int targetHealthPercent, bool targetIsPlayerLike, int debuffsCastOnTarget) =>
-            debuffsCastOnTarget < OpeningDebuffs && casterPowerPercent >= 30 && targetHealthPercent >= 60 &&
+            DebuffOpeningWorthwhile(casterLevel, casterPowerPercent, grouped, targetLevel, targetHealthPercent,
+                targetIsPlayerLike, debuffsCastOnTarget, OpeningDebuffs);
+
+        /// <summary>The same with the number of opening debuffs given (a companion whose player marked debuffs "Use"
+        /// casts each of those: owner 2026-11-08).</summary>
+        public static bool DebuffOpeningWorthwhile(int casterLevel, int casterPowerPercent, bool grouped,
+            int targetLevel, int targetHealthPercent, bool targetIsPlayerLike, int debuffsCastOnTarget, int openingDebuffs) =>
+            debuffsCastOnTarget < openingDebuffs && casterPowerPercent >= 30 && targetHealthPercent >= 60 &&
             (targetIsPlayerLike || grouped || targetLevel >= casterLevel);
 
         public const int SavePowerBelowPercent = 50;

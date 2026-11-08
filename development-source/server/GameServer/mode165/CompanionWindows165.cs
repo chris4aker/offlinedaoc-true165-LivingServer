@@ -293,6 +293,21 @@ namespace DOL.GS
                         DOL.GS.PacketHandler.Client.v168.DetailDisplayHandler.WriteStyleInfo(lines, style, player.Client);
                     }
                 }
+                else if (bot != null && kind == "spell" && first > 0 && SkillBase.GetSpellByID(first) is { } spell)
+                {
+                    // a spell in the AI Options rows (owner 2026-11-08: tooltips on songs, pets, sub-pets and debuffs),
+                    // delved as this companion casts it; a Necromancer's servant command shows the servant's spell too
+                    caption = spell.Name;
+                    SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
+                    if (ScriptMgr.CreateSpellHandler(bot, spell, spellLine) is { } handler)
+                        lines.AddRange(handler.DelveInfo);
+                    if (spell.SubSpellID > 0 && SkillBase.GetSpellByID(spell.SubSpellID) is { } payload &&
+                        ScriptMgr.CreateSpellHandler(bot, payload, spellLine) is { } payloadHandler)
+                    {
+                        lines.Add(" ");
+                        lines.AddRange(payloadHandler.DelveInfo);
+                    }
+                }
                 else if (bot != null && hired != null && kind == "ra")
                 {
                     List<RealmAbilities.RealmAbility> list = RealmAbilityList(bot);

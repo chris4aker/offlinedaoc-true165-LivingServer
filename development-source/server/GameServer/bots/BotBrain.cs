@@ -4998,9 +4998,19 @@ namespace DOL.AI.Brain
             int choice = CompanionOptions165.Choice(BotBody, "debuff");   // 1 always, 2 never
             if (choice == 2)
                 return false;
+            // debuffs the player marked "Use" are all cast (any number); otherwise the companion's own two at most
+            int picked = CompanionOptions165.PickedDebuffCount(BotBody);
             return BotCasterPriority.DebuffOpeningWorthwhile(Body.Level, Body.ManaPercent, Body.Group?.MemberCount > 1 || choice == 1,
-                target.Level, target.HealthPercent, target is GamePlayer or GameBot, _openingDebuffsCast);
+                target.Level, target.HealthPercent, target is GamePlayer or GameBot, _openingDebuffsCast,
+                picked > 0 ? picked : BotCasterPriority.OpeningDebuffs);
         }
+
+        /// <summary>The player's debuff choices (AI Options, owner 2026-11-08): never a debuff marked Skip or with
+        /// "Debuff before nuking" on Never, and only the ones marked Use when any is. Gamebots: every debuff.</summary>
+        private bool DebuffChosen(Spell spell) =>
+            !BotCasterPriority.IsDebuff(spell) ||
+            CompanionOptions165.DebuffAllowed(CompanionOptions165.Choice(BotBody, "debuff"),
+                CompanionOptions165.DebuffLineChoice(BotBody, spell), CompanionOptions165.PickedDebuffCount(BotBody) > 0);
 
         private void NoteOpeningDebuff(Spell spell)
         {
@@ -5146,6 +5156,14 @@ namespace DOL.AI.Brain
                 .Select(line => line.OrderByDescending(spell => SkillBase.GetSpellByID(spell.SubSpellID)?.Damage ?? 0)
                     .ThenByDescending(spell => spell.Level).ThenByDescending(spell => spell.SubSpellID).First())
                 .ToArray();
+            // the player's debuff choices (AI Options): Skip / "Debuff before nuking" Never removes a debuff; with any
+            // marked Use only those go, each one until it is on the monster (owner 2026-11-08)
+            int debuffMaster = CompanionOptions165.Choice(BotBody, "debuff");
+            bool debuffsPicked = CompanionOptions165.PickedDebuffCount(BotBody) > 0;
+            best = best.Where(spell => SkillBase.GetSpellByID(spell.SubSpellID) is not { } payload || !IsServantDebuff(payload) ||
+                IsServantSnare(payload) ||
+                CompanionOptions165.DebuffAllowed(debuffMaster, CompanionOptions165.DebuffLineChoice(BotBody, spell), debuffsPicked))
+                .ToArray();
             if (best.Length == 0)
                 return false;
 
@@ -5160,7 +5178,9 @@ namespace DOL.AI.Brain
             bool debuffOn = Body.Spells.Any(spell => spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
                 SkillBase.GetSpellByID(spell.SubSpellID) is { } payload && IsServantDebuff(payload) && !IsServantSnare(payload) &&
                 LivingHasEffect(target, payload));
-            Spell command = ChooseServantCommand(best, SkillBase.GetSpellByID, othersMelee, debuffOn, runner);
+            // "Debuff before nuking: Always" debuffs solo too; debuffs marked Use are all put on, not just one
+            Spell command = ChooseServantCommand(best, SkillBase.GetSpellByID, othersMelee || debuffMaster == 1,
+                debuffOn && !debuffsPicked, runner);
             if (command == null)
                 return false;
             // The Necromancer's Quick Cast is Facilitate Painworking (owner 2026-11-05): an instant servant command that
@@ -5297,7 +5317,7 @@ namespace DOL.AI.Brain
 
         protected bool CanCastOffensiveSpell(Spell spell)
         {
-            if (IsServantCommandOutsideItsPath(spell))
+            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell))
                 return false;
             if (spell == null || spell.Level > Body.Level || IsOutclassedDamageSpell(spell) ||
                 Body.TargetObject is not GameLiving target || !target.IsAlive ||
@@ -5433,7 +5453,7 @@ namespace DOL.AI.Brain
 
         protected virtual bool CheckInstantOffensiveSpells(Spell spell)
         {
-            if (IsServantCommandOutsideItsPath(spell))
+            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell))
                 return false;
             if (spell == null || IsOutclassedDamageSpell(spell) || Body.Mana < BotBody.PowerCost(spell) ||
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||

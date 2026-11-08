@@ -29,7 +29,8 @@ namespace DOL.GS
             KindShroomSpore = 23, KindShroomBurst = 24, KindShroomHeal = 25;
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
             KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
-            KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18, KindSavePower = 26, KindPositioning = 27;
+            KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18, KindSavePower = 26, KindPositioning = 27,
+            KindDebuffLine = 28;
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -44,7 +45,8 @@ namespace DOL.GS
                 bot => bot.StylesTaunt?.Count > 0 || bot.StylesDetaunt?.Count > 0),
             new(KindHealAt, "healat", "Heal at", ["Automatic", "Early (90%)", "Late (50%)"], bot => bot.CanCastHealSpells),
             new(KindDebuff, "debuff", "Debuff before nuking", ["Automatic", "Always", "Never"],
-                bot => (bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Any(BotCasterPriority.IsDebuff)),
+                bot => (bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Any(BotCasterPriority.IsDebuff) ||
+                       DebuffLines(bot).Count > 0),
             new(KindBolts, "bolts", "Bolts", ["Automatic", "Nukes only"], bot => bot.CanCastBolts),
             new(KindBerserk, "berserk", "Berserk", ["Automatic (hard fights)", "On cooldown", "Off"],
                 bot => bot.HasAbility(Abilities.Berserk)),
@@ -118,6 +120,57 @@ namespace DOL.GS
         public static int Choice(GameBot bot, string key) =>
             Get(bot, key) is { } v && int.TryParse(v, out int i) ? i : 0;
 
+        // ---- debuffs (owner 2026-11-08: "pick which debuffs are used before nuking as long as they stack on a target, or
+        // choose just one, or just two, or none ... if debuffs before nuking is on")
+
+        /// <summary>One debuff the companion knows, per kind of effect (debuffs of different kinds stack on a target):
+        /// its stored key and its highest-rank spell (for a Necromancer, the servant command).</summary>
+        public sealed record DebuffLine(string Key, Spell Spell);
+
+        /// <summary>The stored key of a debuff's kind: its effect, damage type and single/area shape.</summary>
+        public static string DebuffLineKey(Spell payload) =>
+            $"{(int)payload.SpellType}.{payload.DamageType}.{(payload.Radius > 0 ? "a" : "s")}";
+
+        private static Spell DebuffPayload(Spell spell) =>
+            spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 ? SkillBase.GetSpellByID(spell.SubSpellID) : spell;
+
+        private static bool IsChoosableDebuff(Spell spell, Spell payload) =>
+            payload != null && (spell.SpellType == eSpellType.PetSpell
+                ? BotBrain.IsServantDebuff(payload) && !BotBrain.IsServantSnare(payload)
+                : BotCasterPriority.IsDebuff(spell));
+
+        /// <summary>The debuffs the companion can choose between, one per kind (its best rank), in level order.</summary>
+        public static List<DebuffLine> DebuffLines(GameBot bot)
+        {
+            if (bot == null)
+                return [];
+            return (bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Concat(bot.Spells ?? [])
+                .Where(spell => spell != null && spell.Level <= bot.Level && spell.IsHarmful)
+                .DistinctBy(spell => spell.ID)
+                .Select(spell => (Spell: spell, Payload: DebuffPayload(spell)))
+                .Where(entry => IsChoosableDebuff(entry.Spell, entry.Payload))
+                .GroupBy(entry => DebuffLineKey(entry.Payload))
+                .Select(group => new DebuffLine(group.Key, group.OrderByDescending(entry => entry.Spell.Level).First().Spell))
+                .OrderBy(line => line.Spell.Level).ThenBy(line => line.Key, StringComparer.Ordinal)
+                .ToList();
+        }
+
+        /// <summary>The player's choice for one debuff: 0 Automatic, 1 Use, 2 Skip (always 0 for gamebots).</summary>
+        public static int DebuffLineChoice(GameBot bot, Spell spellOrCommand) =>
+            DebuffPayload(spellOrCommand) is { } payload && Get(bot, "dl." + DebuffLineKey(payload)) is { } v &&
+            int.TryParse(v, out int i) ? i : 0;
+
+        /// <summary>How many debuffs the player marked "Use" (0: the companion picks its own).</summary>
+        public static int PickedDebuffCount(GameBot bot) =>
+            HiredCompanions165.HiredRecord(bot) is { } hired ? Read(hired).Count(p => p.Key.StartsWith("dl.", StringComparison.Ordinal) && p.Value == "1") : 0;
+
+        /// <summary>
+        /// Pure: may this debuff be cast before nuking? master = "Debuff before nuking" (0 Automatic, 1 Always, 2 Never),
+        /// line = this debuff's choice (0 Automatic, 1 Use, 2 Skip). With any debuff marked Use, only those are cast.
+        /// </summary>
+        public static bool DebuffAllowed(int master, int line, bool anyPicked) =>
+            master != 2 && line != 2 && (!anyPicked || line == 1);
+
         // ---- storage: "key=value;key=value" in OfflineHiredCompanionRecord.Options
 
         private static Dictionary<string, string> Read(OfflineHiredCompanionRecord hired)
@@ -185,7 +238,8 @@ namespace DOL.GS
 
         // ---- what the window offers
 
-        private sealed record Row(byte Kind, byte Slot, int Chosen, List<string> Choices, int Used, int Cap);
+        /// <summary>Ids: the spell behind each name (0 none), for the client's spell tooltips (owner 2026-11-08).</summary>
+        private sealed record Row(byte Kind, byte Slot, int Chosen, List<string> Choices, int Used, int Cap, List<int> Ids = null);
 
         // a Hunter too, once it has learned a charm (owner 2026-11-06: charming on = no wolf, off = its wolf)
         private static bool CanCharm(GameBot bot) => bot.CharacterClass != null &&
@@ -198,20 +252,21 @@ namespace DOL.GS
         /// Ruby, Sapphire... simulacrums; Underhill Friend ... Zealot), keyed "spell:&lt;id&gt;". Theurgist: one choice
         /// per element line (earth, ice, air), keyed by the line.
         /// </summary>
-        private static List<(string Line, string Name)> PetLines(GameBot bot)
+        private static List<(string Line, string Name, int Id)> PetLines(GameBot bot)
         {
             if ((eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Theurgist)
                 return AutonomousPetSupport.TheurgistSummons(bot)
                     .Where(entry => entry.Line != null)
                     .GroupBy(entry => entry.Line.KeyName)
-                    .Select(group => (group.Key, group.OrderByDescending(entry => entry.Spell.Level).First().Spell.Name))
-                    .OrderBy(entry => entry.Key, StringComparer.Ordinal)
+                    .Select(group => group.OrderByDescending(entry => entry.Spell.Level).First())
+                    .Select(best => (Line: best.Line.KeyName, Name: best.Spell.Name, Id: best.Spell.ID))
+                    .OrderBy(entry => entry.Line, StringComparer.Ordinal)
                     .ToList();
             return AutonomousPetSupport.MainPetSummons(bot)
                 .GroupBy(entry => entry.Spell.ID)
                 .Select(group => group.First())
                 .OrderBy(entry => entry.Spell.Level).ThenBy(entry => entry.Spell.ID)
-                .Select(entry => ($"spell:{entry.Spell.ID}", entry.Spell.Name))
+                .Select(entry => (Line: $"spell:{entry.Spell.ID}", Name: entry.Spell.Name, Id: entry.Spell.ID))
                 .ToList();
         }
 
@@ -221,23 +276,25 @@ namespace DOL.GS
 
         /// <summary>The sub-pet kinds the Bonedancer can summon now: the name of its best rank (the minion spell, e.g.
         /// Bone Guard) and the level that rank comes at.</summary>
-        private static List<(BdSubPet.SubPetType Type, int Level, string Name)> SubPetKinds(GameBot bot) =>
+        private static List<(BdSubPet.SubPetType Type, int Level, string Name, int Id)> SubPetKinds(GameBot bot) =>
             SubPetTypes.Select(type => AutonomousPetSupport.MinionSummons(bot)
                     .Where(entry => (BdSubPet.SubPetType)entry.Spell.DamageType == type)
-                    .Select(entry => (Type: type, Level: AutonomousPetSupport.BonedancerSubPetLevel(bot.Level, entry.Spell), entry.Spell.Name))
+                    .Select(entry => (Type: type, Level: AutonomousPetSupport.BonedancerSubPetLevel(bot.Level, entry.Spell),
+                        Name: entry.Spell.Name, Id: entry.Spell.ID))
                     .OrderByDescending(entry => entry.Level).ThenBy(entry => entry.Name)
                     .FirstOrDefault())
                 .Where(entry => entry.Level > 0)
                 .ToList();
 
         /// <summary>The songs or chants the companion holds, one per kind (its best rank), in a fixed order.</summary>
-        private static List<(eSpellType Type, string Name)> Songs(GameBot bot) =>
+        private static List<(eSpellType Type, string Name, int Id)> Songs(GameBot bot) =>
             (bot.MiscSpells ?? []).Concat(bot.InstantMiscSpells ?? [])
                 .Where(spell => spell != null && spell.Level <= bot.Level && spell.IsPulsing && !spell.IsHarmful &&
                                 BotBrain.IsMaintainableClassBuff(spell))
                 .GroupBy(spell => spell.SpellType)
-                .Select(group => (group.Key, group.OrderByDescending(spell => spell.Level).First().Name))
-                .OrderBy(entry => (int)entry.Key)
+                .Select(group => group.OrderByDescending(spell => spell.Level).First())
+                .Select(best => (Type: best.SpellType, Name: best.Name, Id: best.ID))
+                .OrderBy(entry => (int)entry.Type)
                 .ToList();
 
         private static bool Performs(GameBot bot) => bot.CharacterClass != null &&
@@ -247,7 +304,7 @@ namespace DOL.GS
             bot.ControlledBrain?.Body is CommanderPet commander ? Math.Min(3, commander.SubPetCapacity)
                 : bot.Level >= 45 ? 3 : bot.Level >= 30 ? 2 : bot.Level >= 15 ? 1 : 0;
 
-        private static int PlanLevels(int?[] plan, List<(BdSubPet.SubPetType Type, int Level, string Name)> kinds) =>
+        private static int PlanLevels(int?[] plan, List<(BdSubPet.SubPetType Type, int Level, string Name, int Id)> kinds) =>
             plan.Sum(slot => slot is int type && type >= 0 ? kinds.FirstOrDefault(k => (int)k.Type == type).Level : 0);
 
         private static List<Row> Rows(GameBot bot)
@@ -265,7 +322,7 @@ namespace DOL.GS
                 {
                     string chosen = PetLine(bot);
                     rows.Add(new Row(KindPet, 0, pets.FindIndex(p => p.Line == chosen) + 1,
-                        ["Automatic", .. pets.Select(p => p.Name)], 0, 0));
+                        ["Automatic", .. pets.Select(p => p.Name)], 0, 0, [0, .. pets.Select(p => p.Id)]));
                 }
             }
             if (cls == eCharacterClass.Bonedancer)
@@ -285,7 +342,7 @@ namespace DOL.GS
                             -1 => 1,
                             int type => kinds.FindIndex(k => (int)k.Type == type) is var i && i >= 0 ? i + 2 : 0,
                         };
-                        rows.Add(new Row(KindSubPet, (byte)(slot + 1), chosen, names, used, 75));
+                        rows.Add(new Row(KindSubPet, (byte)(slot + 1), chosen, names, used, 75, [0, 0, .. kinds.Select(k => k.Id)]));
                     }
                 }
             }
@@ -298,14 +355,26 @@ namespace DOL.GS
                     for (int slot = 1; slot <= (Performs(bot) ? 3 : 2); slot++)
                     {
                         int index = Song(bot, slot) is { } type ? songs.FindIndex(s => s.Type == type) + 1 : 0;
-                        rows.Add(new Row(KindSong, (byte)slot, Math.Max(0, index), names, 0, 0));
+                        rows.Add(new Row(KindSong, (byte)slot, Math.Max(0, index), names, 0, 0, [0, .. songs.Select(s => s.Id)]));
                     }
                 }
             }
             foreach (Generic option in Generics)
-                if (option.Applies(bot))
-                    rows.Add(new Row(option.Kind, 0, Math.Clamp(Choice(bot, option.Key), 0, option.Choices.Length - 1),
-                        [option.Caption, .. option.Choices], 0, 0));
+            {
+                if (!option.Applies(bot))
+                    continue;
+                rows.Add(new Row(option.Kind, 0, Math.Clamp(Choice(bot, option.Key), 0, option.Choices.Length - 1),
+                    [option.Caption, .. option.Choices], 0, 0));
+                // under "Debuff before nuking": one row per debuff it knows (its best rank), slot = its place in the list;
+                // names[0] is the debuff's name (the caption), Ids[0] its spell for the tooltip
+                if (option.Kind == KindDebuff)
+                {
+                    List<DebuffLine> lines = DebuffLines(bot);
+                    for (int i = 0; i < lines.Count && i < 250; i++)
+                        rows.Add(new Row(KindDebuffLine, (byte)(i + 1), Math.Clamp(DebuffLineChoice(bot, lines[i].Spell), 0, 2),
+                            [lines[i].Spell.Name, "Automatic", "Use", "Skip"], 0, 0, [lines[i].Spell.ID, 0, 0, 0]));
+                }
+            }
             return rows;
         }
 
@@ -321,6 +390,14 @@ namespace DOL.GS
                     body.AddRange(Encoding.ASCII.GetBytes(name.Length > 60 ? name[..60] : name));
                     body.Add(0);
                 }
+                // then, for rows with spells, one u32 spell id per name (0 = none) for the tooltips (owner 2026-11-08);
+                // older clients stop reading after the names
+                if (option.Ids != null)
+                    for (int i = 0; i < Math.Min(option.Choices.Count, 255); i++)
+                    {
+                        int id = i < option.Ids.Count ? option.Ids[i] : 0;
+                        body.AddRange([(byte)id, (byte)(id >> 8), (byte)(id >> 16), (byte)(id >> 24)]);
+                    }
                 Hire165.Send(player, 14, body.ToArray());
             }
             Hire165.Send(player, 14, [(byte)row, 0xFF]);
@@ -377,6 +454,14 @@ namespace DOL.GS
                     if (bot.ControlledBrain?.Body is CommanderPet commander)
                         foreach (IControlledBrain minion in commander.ControlledNpcList?.Where(m => m?.Body != null).ToArray() ?? [])
                             minion.Body.Die(null);
+                    return null;
+                }
+                case "option" when Int(3) == KindDebuffLine:
+                {
+                    int slot = Int(4), i = Int(5);
+                    List<DebuffLine> lines = DebuffLines(bot);
+                    if (slot < 1 || slot > lines.Count || i is < 0 or > 2) return "Choose a debuff.";
+                    Set(hired, "dl." + lines[slot - 1].Key, i == 0 ? null : i.ToString());
                     return null;
                 }
                 case "option":
