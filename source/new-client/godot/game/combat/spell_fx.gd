@@ -237,6 +237,34 @@ static func _skeleton(root: Node) -> Skeleton3D:
 	return sk
 
 
+## The effect's bone, or the nearest one above it in the biped chain that the skeleton has. Some monster skeletons
+## lack bones the spell table names. The 1.64 hand sparkles sit on "Bip01 L / R Finger1", which 158 of the 629
+## monster skeletons don't have (the Roman Dead and Demon Knight figures: the necroservant and the abomination).
+## Their sparkles fell back to the feet (owner 2026-11-08: the glow on the ground, not over the hands).
+const _BIPED_UP := {"Held": "Hand", "Finger0": "Hand", "Finger1": "Hand", "Finger2": "Hand", "Hand": "Forearm",
+		"Forearm": "UpperArm", "Head": "Neck", "Neck": "Spine2", "Spine2": "Spine1", "Spine1": "Spine", "Spine": "Pelvis"}
+
+
+static func _bone_or_parent(skel: Skeleton3D, bone: String) -> int:
+	var b := bone
+	for _i in 6:
+		var bi := skel.find_bone(b)
+		if bi >= 0:
+			return bi
+		var words := b.split(" ")                 # "Bip01 R Finger1" -> side "R", part "Finger1"
+		var part := words[words.size() - 1]
+		if part.length() > 7 and part.begins_with("Finger"):
+			part = part.left(7)                     # Finger11 -> Finger1
+			words[words.size() - 1] = part
+			b = " ".join(words)
+			continue
+		if not _BIPED_UP.has(part):
+			return -1
+		words[words.size() - 1] = _BIPED_UP[part]
+		b = " ".join(words)
+	return -1
+
+
 ## One speffects entry on a character: on its bone, at its chest, or at its feet. Returns the node (freed after the
 ## effect's duration, or by the caller).
 static var prof_play_us := 0                 # debug timing (tests/crowd_probe.gd)
@@ -281,7 +309,7 @@ static func _play(fx_id: int, on: Node3D, height := 1.8, keep := false, target: 
 	_live[node.get_instance_id()] = node
 	var bone := String(f.get("node", ""))
 	var skel := _skeleton(on)
-	var bi := skel.find_bone(bone) if skel and bone.begins_with("Bip01") else -1
+	var bi := _bone_or_parent(skel, bone) if skel and bone.begins_with("Bip01") else -1
 	var fx := node
 	if bi >= 0:
 		var at := BoneAttachment3D.new()
