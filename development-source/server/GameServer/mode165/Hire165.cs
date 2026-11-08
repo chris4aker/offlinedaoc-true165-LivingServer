@@ -435,6 +435,8 @@ namespace DOL.GS
             numbers[16] = (byte)(s.Mode == 0 && roster.Count < open ? 1 : 0);
             numbers[17] = (byte)Math.Clamp(d.Height, 1, 3); numbers[18] = 3;   // [21] height 1-3, [22] height count (new client)
             Send(player, 4, numbers);
+            // Op 5 only here, after the kind-1 row of every occupied row: the new client drops the rows it did not get
+            // since the last op 5 (rows keep their numbers when one is dismissed; client 8506954, 2026-11-08).
             Send(player, 5, [(byte)roster.Count, (byte)open, 7, (byte)next]);
             Send(player, 6, s.Preview == null ? [0, 0] : [(byte)s.Preview.ObjectID, (byte)(s.Preview.ObjectID >> 8)]);
         }
