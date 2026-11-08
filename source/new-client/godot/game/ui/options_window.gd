@@ -551,6 +551,11 @@ func _interface() -> void:
 		if ui and ui.craft:
 			ui.craft._update_make()))
 	_hint("ON: THE CRAFT ALL BUTTON NEXT TO MAKE IN THE TRADESKILL WINDOW MAKES THE CHOSEN RECIPE AGAIN AND AGAIN UNTIL YOU RUN OUT OF MATERIALS OR YOUR BACKPACK IS FULL (NOT IN 1.65 - A QUALITY OF LIFE OPTION). OFF (THE DEFAULT): THE BUTTON IS GREYED OUT AND YOU PRESS MAKE FOR EACH ONE, AS IN THE ORIGINAL.")
+	# the crafting assistant (owner 2026-11-08: "set a skill goal and it automatically crafts and trains and estimates
+	# cost to that skill goal"; off by default, a quality of life option like CRAFT ALL)
+	var assist := preload("res://game/net/craft_assist_net.gd")
+	_row("CRAFTING ASSISTANT", _toggle(assist.enabled(), func(on: bool): assist.set_enabled(on)))
+	_hint("ON: THE ASSISTANT PAGE OF THE TRADESKILL WINDOW TRAINS A SKILL TO A GOAL YOU SET. AT A CRAFT STATION IT PICKS THE CHEAPEST RECIPES AS YOU GO, BUYS THE MATERIALS AND SELLS WHAT IT MAKES AT THE NORMAL MERCHANT PRICES, AND SHOWS THE ESTIMATED GOLD COST AND TIME. EVERY CRAFT STILL TAKES THE NORMAL 1.65 TIME, HAS THE NORMAL CHANCES AND COSTS REAL GOLD. NOT IN 1.65 - A QUALITY OF LIFE OPTION. OFF (THE DEFAULT): THE PAGE IS GREYED OUT.")
 	# the bots' names and map dots (bot plan phase 3, owner 2026-10-10: all on by default, mix and match)
 	_heading("BOTS")
 	_row("COMPANION NAMES", _toggle(BotView.option("names_companions"), func(on: bool): _save("bots", "names_companions", on)))

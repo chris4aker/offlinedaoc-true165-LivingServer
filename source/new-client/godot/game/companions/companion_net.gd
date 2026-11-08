@@ -14,6 +14,7 @@ signal horn_opened                               # op 20: the Horn of Rallying's
 signal horn_closed                               # op 22
 signal horn_changed                              # op 21 rows / op 23 message
 
+const CraftAssistNet := preload("res://game/net/craft_assist_net.gd")   # ops 40-42: the crafting assistant
 const SLOT_NAMES := {10: "RIGHT HAND", 11: "LEFT HAND", 12: "TWO HANDED", 13: "RANGED", 21: "HEAD", 22: "HANDS",
 		23: "FEET", 24: "JEWEL", 25: "TORSO", 26: "CLOAK", 27: "LEGS", 28: "ARMS", 29: "NECK", 32: "BELT",
 		33: "LEFT WRIST", 34: "RIGHT WRIST", 35: "LEFT RING", 36: "RIGHT RING"}
@@ -66,6 +67,9 @@ func handle(body: PackedByteArray) -> void:
 	var op := body[3]
 	if op >= 20 and op <= 23:
 		_horn(op, body)
+		return
+	if op >= 40 and op <= 42:                            # the crafting assistant (owner 2026-11-08; not the companions)
+		CraftAssistNet.handle(body)
 		return
 	if op == 15:                                         # the Realm Exchange chest page's time left (server S38)
 		Server.listing_times(body)

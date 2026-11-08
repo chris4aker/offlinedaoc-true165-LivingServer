@@ -1061,6 +1061,9 @@ var info_item_slot := -1                 # the inventory slot whose information 
 ## The server's timer window (0xF3): seconds and its text ("Currently Making: bronze dagger", "Salvaging: ...",
 ## "Repairing: ..."); seconds -1 when it closes.
 signal craft_timer(seconds: int, title: String)
+## The crafting assistant's messages arrived (game/net/craft_assist_net.gd): "recipes" (a trade's prices, op 42),
+## "status" (a run, op 40), "estimate" (op 41).
+signal craft_assist_changed(kind: String)
 var _recipes := {}
 
 
