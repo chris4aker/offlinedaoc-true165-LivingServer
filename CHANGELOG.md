@@ -46,6 +46,9 @@ hold). Its changelog has the history of everything this version inherits.
   Use or Skip - so you can pick which debuffs it casts before nuking (any number, just one, or none); the rows are
   greyed out while it is set to Never. Hovering a spell in the AI options (a debuff, a pet, a song) shows its
   tooltip as that companion casts it, and the options page scrolls when the list is long.
+- Crafting: a CRAFT ALL button next to MAKE makes the chosen recipe again and again until you run out of materials
+  or your backpack is full (it also stops if an item is interrupted). Not in 1.65, so it is a quality of life option,
+  off by default: turn it on in Options > Crafting; while off the button is greyed out.
 
 ## 0.4.1 (2026-11-07)
 
