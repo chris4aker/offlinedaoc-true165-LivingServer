@@ -107,16 +107,24 @@ namespace DOL.GS
             DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(recipe.ProductId);
             if (template == null)
                 return;
-            DbInventoryItem product = GameInventoryItem.Create(template);
+            // Gear is a unique copy, as a player's crafted gear is (AbstractCraftingSkill.BuildCraftedItem): its quality and any
+            // enchant are saved with it and stay on the Realm Exchange and with the buyer (setting the quality on the shared
+            // template changed every copy of that item).
+            DbInventoryItem product = template.IsStackable ? GameInventoryItem.Create(template) : GameInventoryItem.Create(new DbItemUnique(template));
             product.IsCrafted = true;
             product.Creator = bot.Name;
-            if (template.MaxCount <= 1)
+            if (!template.IsStackable)
                 product.Quality = Util.Chance(2) ? 100 : 94 + Util.Random(5);
+            // the realm's spellcrafter / alchemist bots may enchant it first, paid by this crafter (owner 2026-11-08)
+            BotEnchant165.Result enchant = BotEnchant165.TryEnchant(bot, product);
             eInventorySlot slot = bot.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             if (slot == eInventorySlot.Invalid || !bot.Inventory.AddItem(slot, product))
                 return;
             AutonomousBotEconomy.MarkInventoryChanged(bot);
             int price = Math.Max(1, AutonomousBotEconomy.RecommendListingPrice(product, Util.Random(30) / 100.0));
+            // an enchanted piece asks at least what the enchant cost on top (gems, tincture and fees are not given away)
+            if (enchant.Done)
+                price = (int)Math.Min(int.MaxValue, price + enchant.Cost);
             bool listed = AutonomousBotEconomy.TryList(bot, product, price);
             if (!listed)
             {
@@ -127,7 +135,7 @@ namespace DOL.GS
                 AutonomousBotEconomy.AddMoney(bot.DatabaseID, Math.Max(recipe.MaterialCost / 2, vendor));
             }
             Log.Info($"BOT_CRAFTED_165 bot={bot.Name} id={bot.DatabaseID} craft={craft} skill={record.CraftLevel} " +
-                     $"item=\"{template.Name}\" recipe={recipe.Level} listed={listed} price={price}");
+                     $"item=\"{template.Name}\" recipe={recipe.Level} listed={listed} price={price} enchanted={enchant.Done}");
             bot.MarkAutonomousStateDirty();
             AutonomousBotStatusPersistence.Queue(bot, true);
         }
@@ -281,8 +289,13 @@ namespace DOL.GS
         }
 
         /// <summary>Skill gain like a player's: likelier the harder the recipe compared to the skill, none when grey.</summary>
-        private static void Gain(GameBot bot, OfflineWorldBotRecord record, int difficulty)
+        private static void Gain(GameBot bot, OfflineWorldBotRecord record, int difficulty) => Gain(record, difficulty);
+
+        /// <summary>The same gain for a bot's record (BotEnchant165: an enchanter bot crafting the gems / tincture).</summary>
+        internal static void Gain(OfflineWorldBotRecord record, int difficulty)
         {
+            if (record == null)
+                return;
             int chance = difficulty >= 0 ? 80 : difficulty >= -15 ? 60 : difficulty >= -30 ? 35 : difficulty >= -50 ? 15 : 0;
             if (record.CraftLevel < MaxSkill && Util.Chance(chance))
             {
