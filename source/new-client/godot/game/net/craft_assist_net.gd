@@ -15,7 +15,7 @@ const STATES := ["Not running", "Running", "Finished - goal reached", "Stopped"]
 const REASONS := {0: "", 1: "the goal was reached", 2: "you ran out of money",
 		3: "your backpack is full", 4: "interrupted - you moved, were attacked or were stunned",
 		5: "nothing can raise it now: every recipe is grey or its requirements are not met",
-		6: "you are not at a craft station, or a tool is missing", 7: "you stopped it",
+		6: "the craft could not start (see the chat)", 7: "you stopped it",
 		8: "the server refused - the chat says why"}
 
 ## recipe id -> {level, cost, sell, sec_min, trains, status, secs, trade} (op 42; the last full list of each trade)

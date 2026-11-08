@@ -87,7 +87,7 @@ var _timer_secs := 0                                 # the open craft timer's le
 var _timer_at := 0
 static var _craft_all_on := -1                       # the option (-1: not read yet)
 const DONE_PART := 0.85                              # a timer closed this far through: the item was made (else interrupted)
-const REFUSED_MS := 3000                             # no timer this long after asking: the server refused (no forge ...)
+const REFUSED_MS := 3000                             # no timer this long after asking: the server refused (gold, room ...)
 
 # --- the overhaul's parts
 static var _filters := {}                            # trade -> its filter choices (kept while the game runs)
@@ -1146,11 +1146,16 @@ func _show_recipe() -> void:
 	elif assist_net() != null:
 		lines.append("[color=#9c9285]Prices: waiting for the server.[/color]")
 	lines.append("[color=#d9b661]Ingredients (need / you have):[/color]")
+	var short := false
 	for ing in selected.get("ingredients", []):
 		var need := int(ing[1])
 		var got := int(_have_map.get(String(ing[0]).to_lower(), 0))
 		var col := "#e8dcc0" if got >= need else "#ff6b59"
 		lines.append("[color=%s]%d %s   (%d)[/color]" % [col, need, String(ing[0]).replace("[", "[lb]"), got])
+		short = short or got < need
+	if short:
+		# the server buys what's missing when MAKE is pressed, if you can afford it (owner 2026-11-08)
+		lines.append("[color=#9fd59a]Missing materials are bought for you when you press MAKE (if you can afford them).[/color]")
 	_ingredients.text = "\n".join(lines)
 	_update_make()
 
@@ -1270,10 +1275,9 @@ func _next() -> void:
 
 
 ## Why the recipe can't be made again ("" when it can): an ingredient short, or no free backpack slot.
-func _cannot_make(r: Dictionary) -> String:
-	for ing in r.get("ingredients", []):
-		if have(String(ing[0])) < int(ing[1]):
-			return "out of %s." % String(ing[0])
+## (Missing materials no longer stop it: the server buys them on each MAKE when you can afford them, owner 2026-11-08 -
+## when you can't, it refuses, no timer opens and CRAFT ALL stops with the server's reason in chat.)
+func _cannot_make(_r: Dictionary) -> String:
 	for s in range(40, 80):
 		var it = Server.inv.get(s)
 		if it == null or (it is Dictionary and (it as Dictionary).is_empty()):

@@ -3,7 +3,8 @@ extends Node
 ## or you run out of materials"; greyed out unless the quality-of-life option is on; craft timers get shorter as a
 ## recipe gets easier): a fake server answers each Craft with a timer (a shorter one each time), uses the materials and
 ## puts the product in a free backpack slot.
-##   A  materials for 3, room: 3 made, then "out of"     B  an interrupted timer: stops after it
+##   A  materials for 3 and no gold for more, room: 3 made, then the server refuses ("could not be started" - it
+##      buys missing materials when it can, owner 2026-11-08)     B  an interrupted timer: stops after it
 ##   C  one free slot: 1 made, then "backpack is full"  D  option off: the button greyed, nothing made
 ##   --skip-login --zone=N --world-mode=1.65 --probe=craft_all_probe
 
@@ -14,6 +15,8 @@ class FakeClient extends Node:
 	var interrupt := false
 
 	func Craft(_id: int) -> void:
+		if not Server.inv.has(40) or int(Server.inv[40].count) < 2:
+			return                                       # (no materials and no gold to buy them: no timer)
 		crafts += 1
 		_run.call_deferred()
 
@@ -69,7 +72,7 @@ func _ready() -> void:
 	w.show()
 	var recipe := {"id": 7, "name": "bronze dagger", "skill": 1, "model": 0, "ingredients": [["bronze bar", 2]]}
 	var ok := true
-	var cases := [["A", 6, 41, false, 3, "out of bronze bar"], ["B", 6, 41, true, 1, "interrupted"],
+	var cases := [["A", 6, 41, false, 3, "could not be started"], ["B", 6, 41, true, 1, "interrupted"],
 			["C", 6, 78, false, 1, "backpack is full"]]
 	CraftWindow.set_craft_all(true)
 	for c in cases:

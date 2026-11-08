@@ -5,7 +5,7 @@ extends Control
 ## cost still applies and the time it takes still applies"). A quality of life option, not in 1.65: greyed out unless
 ## Options > Crafting > CRAFTING ASSISTANT is on.
 ## Pick the skill to raise (the window's trade or a secondary skill its recipes train) and a goal; ESTIMATE asks the
-## server for the expected crafts, time and gold; START runs it on the server at a craft station - it keeps going with
+## server for the expected crafts, time and gold; START runs it on the server (anywhere, no tools) - it keeps going with
 ## this window closed, and reopening shows the live run (op 40). Nothing is decided here: every button is a
 ## /craftassist command (game/net/craft_assist_net.gd).
 ## The craft window makes it (CraftAssistPanel.new()), sets its position and size, adds it and calls setup(window).
@@ -19,7 +19,7 @@ const SECONDARY := [7, 8, 6, 14, 10, 9]
 const MATERIALS := {"leather square": 7, "cloth square": 8, "heavy thread": 8, "metal bars": 6, "wooden boards": 14}
 const EXTRA := {4: [10], 13: [9]}                    # Alchemy needs Herbcraft, Spellcraft Gemcutting
 const OFF_NOTE := "Turn on in Options > Crafting (a quality of life option, not in 1.65)"
-const TIME_NOTE := "Every craft takes the normal 1.65 time and costs real gold. Works at any craft station and keeps going with this window closed."
+const TIME_NOTE := "Every craft takes the normal 1.65 time and costs real gold. Works anywhere, no tools needed, and keeps going with this window closed."
 
 var window: Control = null
 var trade := 0                                       # the window's trade the drop-down was built for
