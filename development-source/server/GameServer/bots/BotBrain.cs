@@ -5333,7 +5333,8 @@ namespace DOL.AI.Brain
                 case eSpellType.SummonHunterPet:
                     // Summons have an effect on the pet, not the caster. An
                     // owner-effect check incorrectly created a new pet every turn.
-                    castSpell = Body.ControlledBrain == null && CompanionOptions165.Choice(BotBody, "hunterpet") != 1;
+                    castSpell = Body.ControlledBrain == null && CompanionOptions165.Choice(BotBody, "hunterpet") != 1 &&
+                                !AutonomousPetSupport.WaitsToSummon(Body);
                     break;
 
                 case eSpellType.CombatHeal:
@@ -5451,8 +5452,9 @@ namespace DOL.AI.Brain
             bool casted = false;
 
             // No pet near an encounter that devours pets (AutonomousPetSupport.PetEaterNear).
+            // ... and no summon while the companion's player is on the move (owner 2026-11-08)
             if ((AutonomousPetSupport.IsMainPetSummon(spell.SpellType) || spell.SpellType == eSpellType.SummonMinion) &&
-                AutonomousPetSupport.PetEaterNear(Body) != null)
+                (AutonomousPetSupport.PetEaterNear(Body) != null || AutonomousPetSupport.WaitsToSummon(Body)))
                 return false;
 
             Body.TargetObject = null;

@@ -425,7 +425,10 @@ public static class AutonomousPetSupport
         // slots, so minion upkeep could never summon a skeleton. Only
         // GameBots use this autonomous replacement; ordinary players and
         // their manually controlled pets are untouched.
-        if (owner is GameBot bonedancerBot &&
+        // A companion does not stop to summon while its player is on the move (owner 2026-11-08: Aldith restarted her
+        // 20 s servant summon four times during a horse ride, each cut off by catching up); it summons once they stop.
+        bool waitToSummon = WaitsToSummon(owner);
+        if (!waitToSummon && owner is GameBot bonedancerBot &&
             characterClass == eCharacterClass.Bonedancer &&
             petBrain?.Body is CommanderPet commander &&
             ShouldUpgradeBonedancerCommander(bonedancerBot, commander, spells, combatTarget))
@@ -498,7 +501,7 @@ public static class AutonomousPetSupport
             if (summon.Spell == null && !hunterPetOff && !cabalistPeriodPet)
                 summon = ChooseCastableByRank(owner, spells, null,
                     owner is GameBot { IsEndgameCompanion: true });
-            if (summon.Spell != null)
+            if (summon.Spell != null && !waitToSummon)
             {
                 PrepareAnimistGroundTarget(owner, combatTarget, summon.Spell);
                 if (CastPreservingTarget(owner, owner, summon.Spell, summon.Line))
@@ -555,7 +558,7 @@ public static class AutonomousPetSupport
                 int desiredCount = planned
                     ? Math.Min(Math.Min(3, bonedancerCommander.SubPetCapacity), plan.Take(Math.Min(3, bonedancerCommander.SubPetCapacity)).Count(slot => slot != -1))
                     : DesiredBonedancerMinionCount(bonedancerCommander);
-                if (CanAddBonedancerMinion(bonedancerCommander, desiredCount))
+                if (!waitToSummon && CanAddBonedancerMinion(bonedancerCommander, desiredCount))
                 {
                     var minionSpells = spells.Where(entry => entry.Spell.SpellType == eSpellType.SummonMinion &&
                                                              CanCast(owner, entry.Spell)).ToList();
@@ -1180,6 +1183,10 @@ public static class AutonomousPetSupport
         int activeCount,
         bool hasKnownMinion) =>
         desiredCount > 0 && activeCount < desiredCount && hasKnownMinion;
+
+    /// <summary>A player's companion holds its pet, servant and minion summons while the player is moving.</summary>
+    public static bool WaitsToSummon(GameLiving owner) =>
+        owner is GameBot bot && CompanionFollowPolicy.WaitingForLeaderToStop(bot);
 
     public static bool IsMainPetSummon(eSpellType type) => type is
         eSpellType.SummonCommander or
