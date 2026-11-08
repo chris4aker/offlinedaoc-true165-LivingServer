@@ -141,6 +141,9 @@ func build() -> void:
 		if secs >= 0 and title.begins_with("Currently Making"):
 			_timer_secs = secs
 			_timer_at = Time.get_ticks_msec()
+		elif _timer_at == 0 and not _all.is_empty():
+			pass                                         # a close with no timer open: the server closes twice when an
+			                                             # item is done (CraftAction.MakeItem, then CleanupCraftAction)
 		else:
 			var made := _timer_at > 0 and Time.get_ticks_msec() - _timer_at >= int(_timer_secs * 1000.0 * DONE_PART)
 			_making = -1

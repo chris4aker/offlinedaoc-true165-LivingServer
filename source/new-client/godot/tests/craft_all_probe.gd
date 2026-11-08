@@ -25,6 +25,7 @@ class FakeClient extends Node:
 		Server.craft_timer.emit(-1, "")
 		if interrupt:
 			return
+		Server.craft_timer.emit(-1, "")                  # (the real server closes twice when an item is done)
 		var bar: Dictionary = Server.inv[40]
 		bar.count = int(bar.count) - 2
 		if int(bar.count) <= 0:
