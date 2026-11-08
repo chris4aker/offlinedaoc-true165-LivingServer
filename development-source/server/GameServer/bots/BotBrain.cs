@@ -5070,14 +5070,15 @@ namespace DOL.AI.Brain
             if (best.Length == 0)
                 return false;
 
-            // A debuff the target does not have yet goes first, on a single enemy as on a pack: area debuffs are worth
-            // casting on one target too.
-            Spell[] debuffs = best.Where(spell => SkillBase.GetSpellByID(spell.SubSpellID) is { } payload && IsServantDebuff(payload)).ToArray();
-            Spell command = debuffs.Length > 0
-                ? debuffs[Random.Shared.Next(debuffs.Length)]
-                : BotBody.IsEndgameCompanion
-                    ? TemporaryCompanionBalance.HighestSpell(best)
-                    : best[Random.Shared.Next(best.Length)];
+            // Held by the servant or a groupmate, the monster is not running away: no snare, and one debuff at most
+            // before the damage (owner 2026-11-08: Aldith snared and debuffed the whole fight and never drained).
+            bool held = target.TargetObject is GameLiving holder && holder.IsAlive && holder != Body &&
+                        (holder == servant || Body.Group?.IsInTheGroup(holder) == true);
+            bool debuffOn = Body.Spells.Any(spell => spell?.SpellType == eSpellType.PetSpell && spell.SubSpellID > 0 &&
+                SkillBase.GetSpellByID(spell.SubSpellID) is { } payload && IsServantDebuff(payload) && LivingHasEffect(target, payload));
+            Spell command = ChooseServantCommand(best, SkillBase.GetSpellByID, held, debuffOn);
+            if (command == null)
+                return false;
             // The Necromancer's Quick Cast is Facilitate Painworking (owner 2026-11-05): an instant servant command that
             // keeps the servant's casts from being interrupted for 6 s (30 s reuse; normal cast times, normal power). Used
             // as a player does: when the servant is being hit and a cast-time command is next.
@@ -5131,6 +5132,34 @@ namespace DOL.AI.Brain
                 return $"wrapper:{wrapper.ID}";
             string shape = payload.Radius <= 0 ? "single" : payload.Range <= 0 ? "pbaoe" : "area";
             return $"{payload.SpellType}/{payload.DamageType}/{shape}";
+        }
+
+        /// <summary>
+        /// The servant command to send, from one ready command per line (owner 2026-11-08: "why would she not use her best
+        /// ability"; "a death sight necro should cast power vacuums and then give power to their group").
+        /// A debuff the target lacks goes first (the highest rank); with the monster held, never the snare and only
+        /// when no debuff is on it yet. Then the damage: the power drain first (its power feeds the group through the
+        /// power gift), else the hardest-hitting payload. No random picks: a level 1 command never beats a better one.
+        /// </summary>
+        public static Spell ChooseServantCommand(IReadOnlyCollection<Spell> ready, Func<int, Spell> payloadOf, bool held, bool debuffOn)
+        {
+            var commands = ready.Where(spell => spell != null)
+                .Select(spell => (Wrapper: spell, Payload: payloadOf(spell.SubSpellID)))
+                .Where(command => command.Payload != null).ToList();
+            var debuffs = commands.Where(command => IsServantDebuff(command.Payload) &&
+                !(held && command.Payload.SpellType == eSpellType.SpeedDecrease)).ToList();
+            var damage = commands.Where(command => !IsServantDebuff(command.Payload)).ToList();
+            Spell Highest(IEnumerable<(Spell Wrapper, Spell Payload)> pool) => pool
+                .OrderByDescending(command => command.Wrapper.Level).ThenByDescending(command => command.Wrapper.SubSpellID)
+                .Select(command => command.Wrapper).FirstOrDefault();
+            if (debuffs.Count > 0 && !(held && debuffOn))
+                return Highest(debuffs);
+            Spell hit = damage
+                .OrderByDescending(command => command.Payload.SpellType == eSpellType.PowerDrainPet)
+                .ThenByDescending(command => command.Payload.Damage)
+                .ThenByDescending(command => command.Wrapper.Level)
+                .Select(command => command.Wrapper).FirstOrDefault();
+            return hit ?? Highest(debuffs);
         }
 
         /// <summary>Stat, resist, armor and speed debuffs (Shroud of Affliction, Vortex of Anguish and the like).</summary>
