@@ -544,6 +544,13 @@ func _interface() -> void:
 	_heading("LOOT")
 	_row("AUTO LOOT", _toggle(Loot.autoloot(), func(on: bool): Loot.set_autoloot(on)))
 	_hint("ON: COINS AND ITEMS FROM YOUR KILLS GO STRAIGHT INTO YOUR BACKPACK (NOT IN 1.65 - A QUALITY OF LIFE OPTION). OFF (THE DEFAULT): THEY DROP AT THE MONSTER'S FEET FOR YOU TO PICK UP, AS IN THE ORIGINAL.")
+	# CRAFT ALL (owner 2026-11-08: "default greyed out ... with a note that it is qol that is not period accurate")
+	_heading("CRAFTING")
+	_row("CRAFT ALL BUTTON", _toggle(CraftWindow.craft_all_enabled(), func(on: bool):
+		CraftWindow.set_craft_all(on)
+		if ui and ui.craft:
+			ui.craft._update_make()))
+	_hint("ON: THE CRAFT ALL BUTTON NEXT TO MAKE IN THE TRADESKILL WINDOW MAKES THE CHOSEN RECIPE AGAIN AND AGAIN UNTIL YOU RUN OUT OF MATERIALS OR YOUR BACKPACK IS FULL (NOT IN 1.65 - A QUALITY OF LIFE OPTION). OFF (THE DEFAULT): THE BUTTON IS GREYED OUT AND YOU PRESS MAKE FOR EACH ONE, AS IN THE ORIGINAL.")
 	# the bots' names and map dots (bot plan phase 3, owner 2026-10-10: all on by default, mix and match)
 	_heading("BOTS")
 	_row("COMPANION NAMES", _toggle(BotView.option("names_companions"), func(on: bool): _save("bots", "names_companions", on)))

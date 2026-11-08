@@ -8,6 +8,8 @@ extends ClassicWindow
 ## its difficulty for your skill (the server's con: grey, green, blue, yellow, orange, red, purple); the chosen recipe's
 ## ingredients with what your backpack holds; MAKE asks the server to make it (0xED) - asked again while it is being
 ## made, the server stops it. Open with /craft or a trade in the skills sheet's TRADESKILLS list.
+## CRAFT ALL (owner 2026-11-08, a quality-of-life option, not in 1.65 - off by default, Options > Crafting): makes the
+## chosen recipe again each time one finishes, until the materials run out or the backpack is full.
 
 const W := 320.0
 const H := 448.0
@@ -28,6 +30,29 @@ var _levels: Label
 var _ingredients: RichTextLabel
 var _make: Button
 var _open_bases := {}                                # "trade:base" -> true for the categories left open
+var _craft_all: Button
+var _all := {}                                       # the recipe CRAFT ALL is repeating ({} = not running)
+var _timer_secs := 0                                 # the open craft timer's length and when it opened (ticks ms)
+var _timer_at := 0
+static var _craft_all_on := -1                       # the option (-1: not read yet)
+const DONE_PART := 0.85                              # a timer closed this far through: the item was made (else interrupted)
+const REFUSED_MS := 3000                             # no timer this long after asking: the server refused (no forge ...)
+
+
+static func craft_all_enabled() -> bool:
+	if _craft_all_on < 0:
+		var cfg := ConfigFile.new()
+		cfg.load(UiArt.settings_path)
+		_craft_all_on = 1 if bool(cfg.get_value("interface", "craft_all", false)) else 0
+	return _craft_all_on == 1
+
+
+static func set_craft_all(on: bool) -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(UiArt.settings_path)
+	cfg.set_value("interface", "craft_all", on)
+	cfg.save(UiArt.settings_path)
+	_craft_all_on = 1 if on else 0
 
 
 func build() -> void:
@@ -95,9 +120,17 @@ func build() -> void:
 	UiArt.themed(_ingredients)
 	add_child(_ingredients)
 	_make = UiArt.button("MAKE", Vector2(80, 18), 10)
-	_make.position = Vector2(W * 0.5 - 40, H - 30)
+	_make.position = Vector2(W * 0.5 - 84, H - 30)
 	_make.pressed.connect(make_selected)
 	add_child(_make)
+	_craft_all = UiArt.button("CRAFT ALL", Vector2(80, 18), 10)
+	_craft_all.position = Vector2(W * 0.5 + 4, H - 30)
+	_craft_all.pressed.connect(craft_all)
+	add_child(_craft_all)
+	visibility_changed.connect(func():
+		if not visible and not _all.is_empty():
+			_stop_all("")                                # (the item being made goes on; no more after it)
+		)
 	PlayerData.hook(self, Server.craft_changed, func():
 		if visible:
 			refresh())
@@ -105,8 +138,18 @@ func build() -> void:
 		if visible:
 			_show_recipe())
 	PlayerData.hook(self, Server.craft_timer, func(secs: int, title: String):
-		if secs < 0 or not title.begins_with("Currently Making"):
+		if secs >= 0 and title.begins_with("Currently Making"):
+			_timer_secs = secs
+			_timer_at = Time.get_ticks_msec()
+		else:
+			var made := _timer_at > 0 and Time.get_ticks_msec() - _timer_at >= int(_timer_secs * 1000.0 * DONE_PART)
 			_making = -1
+			_timer_at = 0
+			if not _all.is_empty():
+				if made:
+					_next_soon()
+				else:
+					_stop_all("Craft all stopped: the item was interrupted.")
 		_update_make())
 
 
@@ -239,10 +282,16 @@ func _update_make() -> void:
 	else:
 		_make.text = "MAKE"
 		_make.disabled = selected.is_empty()
+	var on := craft_all_enabled()
+	_craft_all.text = "STOP ALL" if not _all.is_empty() else "CRAFT ALL"
+	_craft_all.disabled = not on or (_all.is_empty() and (selected.is_empty() or _making >= 0))
+	_craft_all.tooltip_text = ("Make it again and again until the materials run out or the backpack is full" if on
+			else "Turn it on in Options > Crafting (a quality of life option, not in 1.65)")
 
 
 func make_selected() -> void:
 	if _making >= 0:
+		_all = {}                                        # (STOP ends a CRAFT ALL too)
 		Server.craft(_making)                            # (the server's only cancel: the same request again)
 		_making = -1
 		_update_make()
@@ -251,4 +300,61 @@ func make_selected() -> void:
 		return
 	_making = int(selected.id)
 	Server.craft(int(selected.id))
+	_update_make()
+
+
+## CRAFT ALL: the chosen recipe now and again after each one, while there are materials and backpack room. Pressed
+## while running: stops (the item being made is cancelled, as STOP does).
+func craft_all() -> void:
+	if not _all.is_empty():
+		_stop_all("Craft all stopped.")
+		if _making >= 0:
+			Server.craft(_making)
+			_making = -1
+		_update_make()
+		return
+	if selected.is_empty() or _making >= 0 or not craft_all_enabled():
+		return
+	_all = selected
+	_next()
+
+
+func _next_soon() -> void:
+	await get_tree().create_timer(0.6).timeout           # (the product and the used materials reach the backpack)
+	if not _all.is_empty() and _making < 0:
+		_next()
+
+
+func _next() -> void:
+	var why := _cannot_make(_all)
+	if why != "":
+		_stop_all("Craft all finished: " + why)
+		return
+	var id := int(_all.id)
+	_making = id
+	_timer_at = 0
+	Server.craft(id)
+	_update_make()
+	await get_tree().create_timer(REFUSED_MS / 1000.0).timeout
+	if not _all.is_empty() and _making == id and _timer_at == 0:
+		_making = -1
+		_stop_all("Craft all stopped: the item could not be started.")   # (the server said why)
+
+
+## Why the recipe can't be made again ("" when it can): an ingredient short, or no free backpack slot.
+func _cannot_make(r: Dictionary) -> String:
+	for ing in r.get("ingredients", []):
+		if have(String(ing[0])) < int(ing[1]):
+			return "out of %s." % String(ing[0])
+	for s in range(40, 80):
+		var it = Server.inv.get(s)
+		if it == null or (it is Dictionary and (it as Dictionary).is_empty()):
+			return ""
+	return "your backpack is full."
+
+
+func _stop_all(message: String) -> void:
+	_all = {}
+	if message != "":
+		PlayerData.message.emit(message)
 	_update_make()
