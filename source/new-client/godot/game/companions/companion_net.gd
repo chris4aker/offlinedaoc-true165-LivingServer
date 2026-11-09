@@ -90,7 +90,8 @@ func handle(body: PackedByteArray) -> void:
 				command("ownpreview")
 			opened.emit(mode)
 		2:
-			closed.emit()
+			preview_oid = 0                           # (the window closed: its preview figure is gone - a later object
+			closed.emit()                             # that gets the same id must not be hidden as one, tester 0.3)
 		3:
 			texts[int(body[4])] = _text(body, 5, 126)
 		4:

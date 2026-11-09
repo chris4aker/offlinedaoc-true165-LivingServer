@@ -438,7 +438,14 @@ func _race_info(prefix: String) -> Dictionary:
 ## original client, which can't draw a figure in a window; the new client draws it in the hire window, so the world
 ## one is kept hidden and untargetable (owner 2026-10-30: "why is there a separate model in the inn floor moving around").
 func _is_hire_preview(oid: int) -> bool:
-	return oid != 0 and viewer and viewer.ui and viewer.ui.companion_net and viewer.ui.companion_net.preview_oid == oid
+	if oid == 0 or not (viewer and viewer.ui and viewer.ui.companion_net) or viewer.ui.companion_net.preview_oid != oid:
+		return false
+	# one of your hired companions is never the preview, even with a reused object id (tester 0.3: an invisible
+	# Valkyn Savage companion - a stale preview id is the one way the client hides a living figure)
+	for r in viewer.ui.companion_net.roster.values():
+		if r is Dictionary and int(r.get("oid", 0)) == oid:
+			return false
+	return true
 
 
 ## True 1.65 Mode: your hired companions' hair colours (owner 2026-10-30: the HAIR row of the hire window). The NPC
