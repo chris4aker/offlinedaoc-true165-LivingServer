@@ -64,21 +64,10 @@ internal sealed partial class MainForm : Form
     };
     private readonly ComboBox _realmFilter = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 130 };
     private readonly TextBox _search = new() { PlaceholderText = "Search name, class, zone or activity", Width = 280 };
-    private readonly CheckBox _onlineOnly = new()
-    {
-        Text = "ONLINE ONLY",
-        AutoSize = false,
-        Size = new Size(132, 31),
-        Margin = new Padding(8, 0, 0, 0),
-        Padding = new Padding(4, 0, 0, 0),
-        FlatStyle = FlatStyle.Flat,
-        ForeColor = DaocTheme.GoldLight,
-        BackColor = DaocTheme.Panel,
-        Font = new Font("Georgia", 8.25f, FontStyle.Bold),
-        TextAlign = ContentAlignment.MiddleLeft,
-        Cursor = Cursors.Hand,
-        AccessibleName = "Show online bots only",
-    };
+    // The grid lists live bots only; saved and archived bots are found on demand (at most 500).
+    private const int SavedSearchLimit = 500;
+    private Button? _searchSavedButton;
+    private readonly List<BotRow> _savedResults = [];
     private readonly TextBox _auctionSearch = new() { PlaceholderText = "Search item, seller or state", Width = 300 };
     private readonly TabControl _auctionRealmTabs = new() { Width = 280, Height = 29, SizeMode = TabSizeMode.Fixed, ItemSize = new Size(87, 22) };
     private readonly TextBox _groupSearch = new() { PlaceholderText = "Search bot, zone or faction", Width = 340 };
@@ -124,7 +113,39 @@ internal sealed partial class MainForm : Form
     private Button? _refreshExchangeButton;
     private Button? _deleteBotButton;
     private Button? _deleteAllBotsButton;
-    private readonly List<Button> _realmGenerateButtons = [];
+    // World population (goals file + the server's status report, both in server\state-165).
+    private readonly RealmGoalEditor[] _goalEditors =
+    [
+        new(eRealm.Albion, DaocTheme.Albion), new(eRealm.Midgard, DaocTheme.Midgard), new(eRealm.Hibernia, DaocTheme.Hibernia),
+    ];
+    private readonly WorldPopulationPanel _populationPanel = new();
+    private PopulationGoalSettings _goals = PopulationGoalSettings.Default;
+    private string? _goalsError;
+    private bool _goalsFileExists;
+    private bool _savingGoals;
+    private PopulationStatusReport? _status;
+    private string? _statusError;
+    private DateTime _nextStatusReadUtc;
+    private DateTime _lastStatusUpdateUtc;
+    private DateTime _serverSeenRunningUtc;
+    private bool _serverRunningKnown;
+    private long _appliedSeenRevision;
+    private DateTime _appliedSeenLocal;
+    private int[] _savedCounts = new int[4];
+    private int[] _snapshotOnline = new int[4];
+    private readonly RealmTrend[] _trends = [new(), new(), new(), new()];
+    private const int StatusReadMilliseconds = 3_000;
+    private const int StatusStaleSeconds = 90;
+    private const int StatusGraceSeconds = 90;
+    private const int StuckMinutes = 3;
+
+    private sealed class RealmTrend
+    {
+        public int? LastLive;
+        public int Direction;
+        public DateTime LastMoveUtc = DateTime.UtcNow;
+    }
+
     private readonly Button _startButton;
     private readonly Button _stopButton;
     private readonly Button _playButton;
@@ -136,7 +157,6 @@ internal sealed partial class MainForm : Form
     private bool _refreshingExchange;
     private bool _loadingOptions;
     private bool _savingOptions;
-    private bool _generatingBot;
     private DateTime _nextAutoRefreshUtc;
     private DateTime _nextRvrSnapshotRefreshUtc;
     private string _dashboardFooterSummary = string.Empty;
@@ -201,8 +221,29 @@ internal sealed partial class MainForm : Form
         _realmFilter.Items.AddRange(["All realms", "Albion", "Midgard", "Hibernia"]);
         _realmFilter.SelectedIndex = 0;
         _realmFilter.SelectedIndexChanged += (_, _) => ApplyFilter();
-        _search.TextChanged += (_, _) => ApplyFilter();
-        _onlineOnly.CheckedChanged += (_, _) => ApplyFilter();
+        _search.TextChanged += (_, _) =>
+        {
+            // Saved-bot results belong to the search that found them.
+            if (_savedResults.Count > 0) { _savedResults.Clear(); UpdateDeleteButton(); }
+            ApplyFilter();
+        };
+        _search.KeyDown += async (_, e) =>
+        {
+            if (e.KeyCode == Keys.Enter) { e.SuppressKeyPress = true; await SearchSavedBotsAsync(); }
+        };
+        foreach (RealmGoalEditor editor in _goalEditors)
+        {
+            editor.Submit = (box, goal) => SaveRealmGoalAsync(box.Realm, goal);
+            editor.SetToolTip(_helpTip, string.Empty);
+        }
+        _populationPanel.AdvancedSaveRequested += async (cap, floor, rotation, horn) =>
+        {
+            string? reason = await SaveGoalsAsync(
+                current => current with { Level50MaxPercent = cap, BracketFloorPercent = floor, Rotation = rotation, HornCallsArchived = horn },
+                "Advanced population settings");
+            if (!string.IsNullOrEmpty(reason))
+                MessageBox.Show(this, reason, "Not saved", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        };
         _auctionSearch.TextChanged += (_, _) => ApplyAuctionFilter();
         _auctionRealmTabs.SelectedIndexChanged += (_, _) => ApplyAuctionFilter();
         _groupSearch.TextChanged += (_, _) => ApplyGroupSearch();
@@ -221,12 +262,15 @@ internal sealed partial class MainForm : Form
         _serverReadinessPoll.Tick += async (_, _) => await RefreshWhenServerReadyAsync();
         Shown += async (_, _) =>
         {
+            ActiveControl = _grid;   // never start with the cursor in a realm's number box
             await RefreshDashboardAsync();
             _displayClock.Start();
             ScheduleNextAutoRefresh();
             UpdateAutoRefreshCountdown();
             _autoRefresh.Start();
         };
+        // The saved goals file is the source of truth: fill the boxes from it before the first dashboard refresh.
+        RefreshPopulationStatus(force: true);
         FormClosing += (_, _) =>
         {
             _serverReadinessPoll.Stop();
@@ -253,6 +297,7 @@ internal sealed partial class MainForm : Form
         // No ResetBindings, resort, card reconstruction, DB reads or server writes.
         UpdateAutoRefreshCountdown();
         RefreshRvrSnapshotIfDue();
+        RefreshPopulationStatusIfDue();
         if (_rvrObjectivesGrid.Visible)
             foreach (DataGridViewColumn column in _rvrObjectivesGrid.Columns)
                 if (column.DataPropertyName == "PhaseRemainingMilliseconds")
@@ -377,16 +422,21 @@ internal sealed partial class MainForm : Form
     private Control BuildCards()
     {
         var cards = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 6, RowCount = 1, Padding = new Padding(0, 4, 0, 5), BackColor = Color.Transparent };
-        // Realm cards need room for two generation actions; status cards do not.
+        // Realm cards hold the goal box and two count lines; status cards do not.
         foreach (float width in new[] { 16f, 13f, 19f, 19f, 19f, 14f })
             cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, width));
         cards.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         cards.Controls.Add(Card("SERVER", _serverState, DaocTheme.Iron), 0, 0);
         _serverState.Font = new Font("Georgia", 12f, FontStyle.Bold);
         cards.Controls.Add(Card("ONLINE BOTS", _onlineValue, DaocTheme.Gold), 1, 0);
-        cards.Controls.Add(Card("ALBION", _albionValue, DaocTheme.Albion, RealmGenerateButton(1, "ALBION", DaocTheme.Albion)), 2, 0);
-        cards.Controls.Add(Card("MIDGARD", _midgardValue, DaocTheme.Midgard, RealmGenerateButton(2, "MIDGARD", DaocTheme.Midgard)), 3, 0);
-        cards.Controls.Add(Card("HIBERNIA", _hiberniaValue, DaocTheme.Hibernia, RealmGenerateButton(3, "HIBERNIA", DaocTheme.Hibernia)), 4, 0);
+        cards.Controls.Add(Card("ALBION", _albionValue, DaocTheme.Albion, _goalEditors[0]), 2, 0);
+        cards.Controls.Add(Card("MIDGARD", _midgardValue, DaocTheme.Midgard, _goalEditors[1]), 3, 0);
+        cards.Controls.Add(Card("HIBERNIA", _hiberniaValue, DaocTheme.Hibernia, _goalEditors[2]), 4, 0);
+        foreach (RealmGoalEditor editor in _goalEditors)
+            editor.Dock = DockStyle.Fill;
+        // One big cream number per realm card.
+        foreach (Label value in new[] { _albionValue, _midgardValue, _hiberniaValue })
+            value.Font = new Font("Georgia", 12f, FontStyle.Bold);
         Panel performanceCard = Card("BOT AI DELAY", _performanceValue, DaocTheme.Gold);
         const string performanceHelp = PerformanceHelp;
         SetToolTip(performanceCard, performanceHelp);
@@ -403,72 +453,9 @@ internal sealed partial class MainForm : Form
             SetToolTip(child, text);
     }
 
-    // True 1.65: bots start at level 1 and level up in the world (no level 50 button).
-    private Control RealmGenerateButton(int realm, string realmName, Color accent) =>
-        RealmGenerateLevelButton(realm, realmName, accent, 1);
-
-    private Button RealmGenerateLevelButton(int realm, string realmName, Color accent, int level)
-    {
-        Button button = ActionButton($"+ Lv.{level}", accent);
-        if (button is RuneButton rune) rune.ShowOrnaments = false;
-        button.Margin = new Padding(1, 0, 1, 0);
-        button.Font = new Font("Georgia", 8f, FontStyle.Bold);
-        button.Height = 22;
-        button.Dock = DockStyle.Fill;
-        _realmGenerateButtons.Add(button);
-        button.Click += async (_, _) =>
-        {
-            if (_generatingBot)
-                return;
-
-            int batchSize = GetGenerationBatchSize();
-            _generatingBot = true;
-            SetRealmGenerationEnabled(false);
-            _footer.Text = batchSize == 1
-                ? $"Rolling a new level {level} {realmName[0] + realmName[1..].ToLowerInvariant()} character…"
-                : $"Creating {batchSize} level {level} {realmName[0] + realmName[1..].ToLowerInvariant()} characters as one protected batch…";
-            try
-            {
-                IReadOnlyList<BotCharacterGenerator.Identity> identities =
-                    await Task.Run(() => GenerateBotCharacters(realm, batchSize, level));
-                _realmFilter.SelectedItem = realmName[0] + realmName[1..].ToLowerInvariant();
-                await RefreshDashboardAsync();
-                BotCharacterGenerator.Identity last = identities[^1];
-                SelectBot(last.Name);
-                _footer.Text = batchSize == 1
-                    ? $"Created {last.Name}, a level {level} {last.RaceName} {last.ClassName}. Queued for staggered login."
-                    : $"Created all {batchSize} level {level} {realmName[0] + realmName[1..].ToLowerInvariant()} characters. All are queued for staggered login.";
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(this, exception.Message, "Unable to generate bot", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                _generatingBot = false;
-                SetRealmGenerationEnabled(true);
-            }
-        };
-        return button;
-    }
-
-    private static int GetGenerationBatchSize()
-    {
-        if ((GetAsyncKeyState(VkLeftControl) & 0x8000) != 0)
-            return 100;
-        if ((GetAsyncKeyState(VkLeftShift) & 0x8000) != 0)
-            return 10;
-        return 1;
-    }
-
     /// <summary>A server state file of True 1.65 Mode (the server's state-165 folder).</summary>
     private string StateFile(string name) => Path.Combine(_serverDirectory, "state-165", name);
-
-    private void SetRealmGenerationEnabled(bool enabled)
-    {
-        foreach (Button button in _realmGenerateButtons)
-            button.Enabled = enabled;
-    }
+    private string StateDirectory => Path.Combine(_serverDirectory, "state-165");
 
     private Control BuildTabs()
     {
@@ -488,6 +475,10 @@ internal sealed partial class MainForm : Form
         var options = new TabPage("Options") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
         options.Controls.Add(BuildOptionsPanel());
         tabs.TabPages.Add(population);
+        var world = new TabPage("World Population") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
+        world.Controls.Add(_populationPanel);
+        world.Enter += (_, _) => RefreshPopulationStatus(force: true);
+        tabs.TabPages.Add(world);
         tabs.TabPages.Add(groups);
         tabs.TabPages.Add(rvr);
         var battlegrounds = new TabPage("Battlegrounds") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
@@ -518,6 +509,18 @@ internal sealed partial class MainForm : Form
         _botGoalsSettings = new BotGoalsSettingsControl(
             StateFile(OfflineDaoc.Configuration.BotGoalSettings.FileName), BotGoalsServerStopped);
         botGoals.Controls.Add(_botGoalsSettings);
+        // Kept apart from World Population (owner): this tab is what online bots do; that one is how many are online.
+        botGoals.Controls.Add(new Label
+        {
+            Dock = DockStyle.Top,
+            Height = 30,
+            TextAlign = ContentAlignment.MiddleLeft,
+            Padding = new Padding(12, 0, 0, 0),
+            Font = new Font("Georgia", 9f, FontStyle.Bold | FontStyle.Italic),
+            ForeColor = DaocTheme.GoldLight,
+            BackColor = DaocTheme.StoneDark,
+            Text = "What online bots do (solo, group, RvR, battlegrounds). How many are online is set on the realm cards (World Population).",
+        });
         tabs.TabPages.Add(botGoals);
         return tabs;
     }
@@ -978,8 +981,12 @@ internal sealed partial class MainForm : Form
         _deleteBotButton.Enabled = false;
         _deleteBotButton.Click += async (_, _) => await DeleteSelectedBotAsync();
         panel.Controls.Add(_deleteBotButton);
-        panel.Controls.Add(_onlineOnly);
-        _helpTip.SetToolTip(_onlineOnly, "Show only online bots in the current realm and search results. Uncheck to show all bots.");
+        _searchSavedButton = ActionButton("SEARCH SAVED", DaocTheme.Tint(126, 104, 67));
+        _searchSavedButton.Width = 140;
+        _searchSavedButton.Margin = new Padding(8, 0, 0, 0);
+        _searchSavedButton.Click += async (_, _) => await SearchSavedBotsAsync();
+        panel.Controls.Add(_searchSavedButton);
+        _helpTip.SetToolTip(_searchSavedButton, $"This list shows live bots only. Type a name, class, race or zone and click SEARCH SAVED (or press Enter) to find logged-out and archived bots too (first {SavedSearchLimit} matches).");
         return panel;
     }
 
@@ -1266,9 +1273,14 @@ internal sealed partial class MainForm : Form
                     ? DaocTheme.Success
                     : DaocTheme.Muted;
             _onlineValue.Text = snapshot.Bots.Count(bot => bot.IsOnline).ToString("N0");
-            _albionValue.Text = RealmRosterValue(snapshot.Bots, "Albion");
-            _midgardValue.Text = RealmRosterValue(snapshot.Bots, "Midgard");
-            _hiberniaValue.Text = RealmRosterValue(snapshot.Bots, "Hibernia");
+            bool runningNow = snapshot.ServerState.Equals("Running", StringComparison.OrdinalIgnoreCase);
+            if (runningNow && !_serverRunningKnown) _serverSeenRunningUtc = DateTime.UtcNow;
+            _serverRunningKnown = runningNow;
+            if (snapshot.SavedCounts != null) _savedCounts = snapshot.SavedCounts;
+            _snapshotOnline = new int[4];
+            foreach (BotRow bot in snapshot.Bots)
+                if (bot.IsOnline && bot.BotId.HasValue && RealmIndex(bot.Realm) is int index and > 0) _snapshotOnline[index]++;
+            RefreshPopulationStatus(force: true);
             _performanceValue.Text = snapshot.BotAiDelay is { } aiDelay ? $"{aiDelay.AverageMs:0.0} ms" : "—";
             _helpTip.SetToolTip(_performanceValue, snapshot.BotAiDelay is { } aiPeak
                 ? $"{PerformanceHelp}{Environment.NewLine}Last minute: average {aiPeak.AverageMs:0.0} ms, slowest {aiPeak.PeakMs:N0} ms over {aiPeak.Samples:N0} ticks."
@@ -1283,7 +1295,10 @@ internal sealed partial class MainForm : Form
             RenderActiveRvr();
             // the Realm Exchange is seen in game only (owner 2026-10-31)
             _dashboardFooterSummary = $"Memory {snapshot.ServerMemoryMb:0} MB • Bot status updated {DateTime.Now:T}";
-            _footer.Text = _dashboardFooterSummary;
+            _footer.Text = snapshot.GoalsNotice.Length > 0 ? snapshot.GoalsNotice + " • " + _dashboardFooterSummary
+                : !runningNow && snapshot.Bots.Count(bot => bot.BotId.HasValue) == 0 && _savedCounts.Sum() > 0
+                    ? $"Server stopped • {_savedCounts.Sum():N0} saved bots • use SEARCH SAVED to find one • {_dashboardFooterSummary}"
+                    : _dashboardFooterSummary;
             UpdateAutoRefreshCountdown();
         }
         catch (Exception exception)
@@ -1666,7 +1681,11 @@ internal sealed partial class MainForm : Form
                 : "'' AS ObjectiveKind, '' AS ObjectiveAssignmentId, '' AS ObjectiveAssignedUtc, '' AS ObjectivePhase";
             objectiveColumns += ColumnExists(connection, "offline_world_bots", "ObjectiveExpiresUtc")
                 ? ", COALESCE(ObjectiveExpiresUtc, '')" : ", '' AS ObjectiveExpiresUtc";
-            command.CommandText = $"SELECT BotId, Name, Realm, RaceName, Gender, ClassName, Level, COALESCE(ZoneName, '—'), Activity, CurrentGoal, TargetName, TravelDestination, ObjectiveProgress, IsOnline, IsRetired, COALESCE(ItineraryJson, ''), {objectiveColumns} FROM offline_world_bots WHERE 1=1{NotHiredCompanion(connection, null, "BotId")} ORDER BY Realm, Level DESC, Name";
+            // Live and in-transit bots only (online, in the server's live snapshot, or retiring); saved and archived
+            // bots are found on demand with SEARCH SAVED.
+            string liveIdFilter = liveBots.Count == 0 ? string.Empty
+                : " OR BotId IN (" + string.Join(",", liveBots.Keys) + ")";
+            command.CommandText = $"SELECT BotId, Name, Realm, RaceName, Gender, ClassName, Level, COALESCE(ZoneName, '—'), Activity, CurrentGoal, TargetName, TravelDestination, ObjectiveProgress, IsOnline, IsRetired, COALESCE(ItineraryJson, ''), {objectiveColumns} FROM offline_world_bots WHERE (IsOnline=1 OR IsRetired=1{liveIdFilter}){NotHiredCompanion(connection, null, "BotId")} ORDER BY Realm, Level DESC, Name";
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -1689,8 +1708,8 @@ internal sealed partial class MainForm : Form
                 string objectiveExpiresUtc = hasLiveStatus ? live!.ObjectiveExpiresUtc : reader.GetString(20);
                 string activity = deletionQueued
                     ? running || serverProcessPresent
-                        ? "Deletion requested — waiting for safe server removal"
-                        : "Deletion pending — Delete is available while the server is stopped"
+                        ? "Retiring — the server logs it out at a safe moment, then deletes it"
+                        : "Retiring — finishes after the server starts"
                     : FormatBotActivity(rawActivity, currentGoal, targetName, destination, progress, isOnline);
                 GroupMetadata? group = isOnline ? ParseGroupMetadata(itinerary) : null;
                 bots.Add(new BotRow(botId, reader.GetString(1), RealmName(reader.GetInt32(2)), reader.GetString(3), GenderName(reader.GetInt32(4)), reader.GetString(5), level, zoneName, activity, isOnline, true, deletionQueued,
@@ -1757,8 +1776,19 @@ internal sealed partial class MainForm : Form
         }
         bool rvrAnnouncements = ReadSwitch(connection, "rvr_battleground_announcements");
         bool pveAnnouncements = ReadSwitch(connection, "pve_realm_event_announcements");
+        // Saved bots per realm: one grouped count, only while the server is stopped (it reports its own counts) or
+        // when the goals file has to be created.
+        bool goalsMissing = !PopulationGoalSettings.Exists(StateDirectory);
+        int[]? savedCounts = !running || goalsMissing ? PopulationLauncherData.SavedCounts(connection) : null;
+        string goalsNotice = string.Empty;
+        if (goalsMissing && savedCounts != null)
+        {
+            PopulationGoalSettings first = PopulationLauncherData.FirstRunGoals(savedCounts).WithNewRevision();
+            PopulationGoalSettings.Save(StateDirectory, first);
+            goalsNotice = $"Population goals created: Albion {first.Albion:N0}, Midgard {first.Midgard:N0}, Hibernia {first.Hibernia:N0}";
+        }
         return new DashboardSnapshot(serverState, bots, groups, active, memoryMb, botAiDelay, makeMeGm, ReadRvrWorld(),
-            rvrAnnouncements, pveAnnouncements);
+            rvrAnnouncements, pveAnnouncements, savedCounts, goalsNotice);
     }
 
     // Anything but an explicit "false" (including a missing row) reads as on.
@@ -1852,8 +1882,11 @@ internal sealed partial class MainForm : Form
     {
         var realm = _realmFilter.SelectedItem?.ToString() ?? "All realms";
         var search = _search.Text.Trim();
-        IEnumerable<BotRow> filtered = _bots.Where(bot =>
-            (!_onlineOnly.Checked || bot.IsOnline) &&
+        var liveIds = _bots.Where(bot => bot.BotId.HasValue).Select(bot => bot.BotId!.Value).ToHashSet();
+        // Online bots only (owner 2026-11-09: listing every saved bot lags and hides what the active ones do); saved
+        // bots appear only after a SEARCH SAVED.
+        IEnumerable<BotRow> filtered = _bots.Where(bot => bot.IsOnline)
+            .Concat(_savedResults.Where(bot => !liveIds.Contains(bot.BotId ?? 0))).Where(bot =>
             (realm == "All realms" || bot.Realm == realm) &&
             (search.Length == 0 || $"{bot.Name} {bot.Realm} {bot.RaceName} {bot.Gender} {bot.ClassName} {bot.ZoneName} {bot.Activity}".Contains(search, StringComparison.OrdinalIgnoreCase)));
         _botSource.DataSource = SortBots(filtered).ToList();
@@ -1996,214 +2029,61 @@ internal sealed partial class MainForm : Form
         }
     }
 
-    private static bool HasColumn(SQLiteConnection connection, SQLiteTransaction transaction, string table, string column)
-    {
-        using var info = connection.CreateCommand();
-        info.Transaction = transaction;
-        info.CommandText = $"PRAGMA table_info(\"{table}\")";
-        using SQLiteDataReader reader = info.ExecuteReader();
-        while (reader.Read())
-            if (string.Equals(reader.GetString(1), column, StringComparison.OrdinalIgnoreCase))
-                return true;
-        return false;
-    }
-
-    private IReadOnlyList<BotCharacterGenerator.Identity> GenerateBotCharacters(int realm, int count, int level = 1) =>
-        GenerateBotCharacters(_database, _mode.Is165, realm, count, level);
-
-    /// <summary>The ADD BOTS buttons' work, also run headless by --add-bots (Program.cs) for test rosters.</summary>
-    internal static IReadOnlyList<BotCharacterGenerator.Identity> GenerateBotCharacters(string database, bool is165, int realm, int count, int level = 1)
-    {
-        if (!File.Exists(database))
-            throw new InvalidOperationException("The prepared world database is missing.");
-        if (count is not (1 or 10 or 100))
-            throw new ArgumentOutOfRangeException(nameof(count));
-        if (level is not (1 or 50)) throw new ArgumentOutOfRangeException(nameof(level));
-
-        using var connection = new SQLiteConnection($"Data Source={database};Version=3;Pooling=False;Default Timeout=10");
-        connection.Open();
-        using (var busy = connection.CreateCommand())
-        {
-            busy.CommandText = "PRAGMA busy_timeout=10000; PRAGMA foreign_keys=OFF;";
-            busy.ExecuteNonQuery();
-        }
-
-        using var transaction = connection.BeginTransaction();
-        var reserved = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        using (var names = connection.CreateCommand())
-        {
-            names.Transaction = transaction;
-            names.CommandText = "SELECT Name FROM offline_world_bots UNION SELECT Name FROM DOLCharacters";
-            using var reader = names.ExecuteReader();
-            while (reader.Read()) reserved.Add(reader.GetString(0));
-        }
-
-        // True 1.65 Mode: a new level-1 bot starts as the base class of the class it rolled, which it keeps as its
-        // planned class (column added by the server; until the server has run once, the server converts it instead).
-        if (level == 1 && is165 && !HasColumn(connection, transaction, "offline_world_bots", "PlannedClassId"))
-        {
-            // the server adds this column at its first start in this build; bots made before then need it too
-            using var add = connection.CreateCommand();
-            add.Transaction = transaction;
-            add.CommandText = "ALTER TABLE offline_world_bots ADD COLUMN PlannedClassId INT(11) NOT NULL DEFAULT 0";
-            add.ExecuteNonQuery();
-        }
-        bool basePlan = level == 1 && is165 && HasColumn(connection, transaction, "offline_world_bots", "PlannedClassId");
-        var identities = new List<BotCharacterGenerator.Identity>(count);
-        for (int index = 0; index < count; index++)
-        {
-            BotCharacterGenerator.Identity identity = BotCharacterGenerator.Generate(realm, reserved, is165);
-            int plannedClass = 0;
-            if (basePlan && BotCharacterGenerator.BaseClass(identity.ClassId) is { } baseClass)
-            {
-                plannedClass = identity.ClassId;
-                identity = identity with { ClassId = baseClass.Id, ClassName = baseClass.Name };
-            }
-            BotStartingLocation start = level == 50
-                ? CapitalBotStartingLocation(identity.Realm)
-                : ChooseBotStartingLocation(connection, transaction, identity.Realm, identity.RaceId, identity.ClassId, plannedClass);
-            identities.Add(identity);
-            string now = DateTime.UtcNow.ToString("O");
-            using var insert = connection.CreateCommand();
-            insert.Transaction = transaction;
-            insert.CommandText = """
-                INSERT INTO offline_world_bots
-                    (Name, Realm, ClassId, ClassName, RaceId, RaceName, Gender, Level, Experience, RealmPoints,
-                     ZoneName, Activity, IsOnline, IsAlive, LastUpdateUtc, MoneyCopper, InventoryRevision,
-                     ZoneId, X, Y, Z, RegionId, Health, Mana, Endurance, BindRegionId, BindX, BindY, BindZ,
-                     CurrentGoal, ObjectiveProgress, LastMeaningfulProgressUtc, IsRetired)
-                VALUES
-                    (@name, @realm, @classId, @className, @raceId, @raceName, @gender, @level, @xp, 0,
-                     @zoneName, 'Queued at randomized starting location', 0, 1, @now, @money, 0,
-                     @zoneId, @x, @y, @z, @region, 1, 0, 0, @region, @x, @y, @z,
-                     'Awaiting staggered login queue', @placement, @now, 0)
-                """;
-            if (basePlan)
-                insert.CommandText = insert.CommandText.Replace("IsRetired)", "IsRetired, PlannedClassId)").Replace("@now, 0)", "@now, 0, @planned)");
-            insert.Parameters.AddWithValue("@planned", plannedClass);
-            insert.Parameters.AddWithValue("@name", identity.Name);
-            insert.Parameters.AddWithValue("@level", level);
-            insert.Parameters.AddWithValue("@xp", level == 50 ? 169999999950L : 0L);
-            insert.Parameters.AddWithValue("@money", level == 50 ? 100000000L : 0L);
-            insert.Parameters.AddWithValue("@realm", identity.Realm);
-            insert.Parameters.AddWithValue("@classId", identity.ClassId);
-            insert.Parameters.AddWithValue("@className", identity.ClassName);
-            insert.Parameters.AddWithValue("@raceId", identity.RaceId);
-            insert.Parameters.AddWithValue("@raceName", identity.RaceName);
-            insert.Parameters.AddWithValue("@gender", identity.Gender);
-            insert.Parameters.AddWithValue("@now", now);
-            insert.Parameters.AddWithValue("@region", start.RegionId);
-            insert.Parameters.AddWithValue("@x", start.X);
-            insert.Parameters.AddWithValue("@y", start.Y);
-            insert.Parameters.AddWithValue("@z", start.Z);
-            insert.Parameters.AddWithValue("@zoneId", start.ZoneId);
-            insert.Parameters.AddWithValue("@zoneName", level == 50 ? start.ZoneName : start.RegionId is 51 or 151 or 181
-                ? "Shrouded Isles starting area"
-                : "Classic starting area");
-            insert.Parameters.AddWithValue("@placement",
-                $"Launcher assigned a realm/race/class-valid random start in region {start.RegionId} before server startup");
-            insert.ExecuteNonQuery();
-            if (level == 50)
-            {
-                long botId = connection.LastInsertRowId;
-                using var gear = connection.CreateCommand();
-                gear.Transaction = transaction;
-                gear.CommandText = """
-                    INSERT INTO Inventory (Inventory_ID,OwnerID,ITemplate_Id,SlotPosition,Count,Condition,Durability,LastTimeRowUpdated)
-                    SELECT lower(hex(randomblob(16))),@owner,l.TemplateId,l.SlotPosition,1,t.MaxCondition,t.MaxDurability,@now
-                    FROM offline_level50_loadouts l JOIN ItemTemplate t ON t.Id_nb=l.TemplateId WHERE l.ClassId=@class
-                    """;
-                gear.Parameters.AddWithValue("@owner", $"offlinebot:{botId}");
-                gear.Parameters.AddWithValue("@now", now);
-                gear.Parameters.AddWithValue("@class", identity.ClassId);
-                if (gear.ExecuteNonQuery() < 15) throw new InvalidOperationException("The level-50 class template is missing or incomplete. No bots were added.");
-            }
-        }
-
-        UpdatePopulationTarget(connection, transaction);
-        transaction.Commit();
-        return identities;
-    }
-
-    private sealed record BotStartingLocation(int RegionId, int X, int Y, int Z, int ZoneId = 0, string ZoneName = "");
-
-    // Match the server's established capital recovery anchors. Its normal
-    // login validation grounds these positions on the current navmesh.
-    private static BotStartingLocation CapitalBotStartingLocation(int realm) => realm switch
-    {
-        1 => new(10, 35990, 30298, 8000, 26, "City of Camelot"),
-        2 => new(101, 32020, 28294, 8819, 120, "Jordheim"),
-        3 => new(201, 33197, 31200, 8000, 209, "Tir na Nog"),
-        _ => throw new ArgumentOutOfRangeException(nameof(realm)),
-    };
-
-    private static BotStartingLocation ChooseBotStartingLocation(
-        SQLiteConnection connection,
-        SQLiteTransaction transaction,
-        int realm,
-        int raceId,
-        int classId,
-        int plannedClassId = 0)
-    {
-        List<BotStartingLocation> starts = FindBotStartingLocations(connection, transaction, realm, raceId, classId);
-        // True 1.65 Mode base classes: a race and base class pair the table has no row for (a Saracen Disciple) starts
-        // where that race starts as the planned advanced class (Saracen Necromancer: Caer Gothwaite)
-        if (starts.Count == 0 && plannedClassId > 0 && plannedClassId != classId)
-            starts = FindBotStartingLocations(connection, transaction, realm, raceId, plannedClassId);
-
-        if (starts.Count == 0)
-        {
-            throw new InvalidOperationException(
-                $"No authoritative Classic/Shrouded Isles starting location exists for realm {realm}, race {raceId}, class {classId}" +
-                (plannedClassId > 0 && plannedClassId != classId ? $" (planned class {plannedClassId})" : "") + ". No capital fallback was used.");
-        }
-
-        return starts[Random.Shared.Next(starts.Count)];
-    }
-
-    private static List<BotStartingLocation> FindBotStartingLocations(
-        SQLiteConnection connection,
-        SQLiteTransaction transaction,
-        int realm,
-        int raceId,
-        int classId)
-    {
-        using var command = connection.CreateCommand();
-        command.Transaction = transaction;
-        command.CommandText = """
-            SELECT Region, XPos, YPos, ZPos
-            FROM StartupLocation
-            WHERE MinVersion <= 168
-              AND (RealmID=0 OR RealmID=@realm)
-              AND (RaceID=0 OR RaceID=@race)
-              AND (ClassID=0 OR ClassID=@class)
-              AND (XPos<>0 OR YPos<>0 OR ZPos<>0)
-              AND ((@realm=1 AND Region IN (1,51))
-                OR (@realm=2 AND Region IN (100,151))
-                OR (@realm=3 AND Region IN (200,181)))
-            GROUP BY Region, XPos, YPos, ZPos
-            """;
-        command.Parameters.AddWithValue("@realm", realm);
-        command.Parameters.AddWithValue("@race", raceId);
-        command.Parameters.AddWithValue("@class", classId);
-
-        var starts = new List<BotStartingLocation>();
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            starts.Add(new BotStartingLocation(
-                reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3)));
-        }
-        return starts;
-    }
+    // A server that writes population-status.json (protocol 1) understands 'Retire'. An older server only knows
+    // 'Delete', so the launcher keeps the old path for it.
+    private bool ServerSupportsRetire(out PopulationStatusReport? report) =>
+        PopulationStatusReport.TryLoad(StateDirectory, out report, out _);
 
     private async Task DeleteSelectedBotAsync()
     {
         BotRow? bot = SelectedBot();
         bool serverRunning = IsServerRunning() || FindExactServerProcess() is not null;
-        if (bot?.CanDelete != true || bot.BotId is null || bot.DeletionQueued && serverRunning)
+        if (bot?.CanDelete != true || bot.BotId is null)
+            return;
+        if (!ServerSupportsRetire(out _))
+        {
+            await LegacyDeleteSelectedBotAsync(bot, serverRunning);
+            return;
+        }
+        if (bot.DeletionQueued)
             return;
 
+        string what = $"{bot.Name}, the level {bot.Level} {bot.RaceName} {bot.ClassName}".Replace("  ", " ");
+        string when = !serverRunning
+            ? "The server is stopped, so nothing happens yet. When it next starts, it "
+            : bot.IsOnline
+                ? "The server logs the bot out at the next safe moment (out of combat and not grouped with you), then "
+                : "The server ";
+        string warning = $"Delete {what} forever?\n\n" + when +
+            "deletes the character with its equipment, backpack, bank, coins, Realm Exchange listings and guild membership. " +
+            "Its name becomes free again after a 30-day cool-down.\n\n" +
+            "Your realm goals do not change, so a new level-1 bot may later take its place. This cannot be undone.";
+        if (MessageBox.Show(this, warning, "Delete bot character forever", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            return;
+
+        try
+        {
+            long id = bot.BotId.Value;
+            int queued = await Task.Run(() => PopulationLauncherData.QueueRetire(_database, [id]));
+            _savedResults.RemoveAll(row => row.BotId == id);
+            await RefreshDashboardAsync();
+            MessageBox.Show(this,
+                queued == 0 ? $"{bot.Name} was already queued for deletion (or is a hired companion, which the launcher never deletes)."
+                : serverRunning ? $"{bot.Name} is queued for deletion. The server removes it shortly; the World Population tab counts it under Retired /h."
+                : $"{bot.Name} is queued for deletion. It is removed when the server next starts.",
+                "Deletion queued", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, "Unable to delete character", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    // Older server (no population status): the previous delete, without the old population-target update.
+    private async Task LegacyDeleteSelectedBotAsync(BotRow bot, bool serverRunning)
+    {
+        if (bot.DeletionQueued && serverRunning || bot.SavedState == "Archived")
+            return;
         string warning = $"Permanently delete {bot.Name}, the level {bot.Level} {bot.RaceName} {bot.ClassName}?\n\n" +
                          "This removes the character, equipment, backpack, bank contents, coins, and Realm Exchange listings. This cannot be undone.";
         if (MessageBox.Show(this, warning, "Delete bot character forever", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
@@ -2211,7 +2091,8 @@ internal sealed partial class MainForm : Form
 
         try
         {
-            bool queued = QueueOrDeleteBot(bot.BotId.Value);
+            bool queued = QueueOrDeleteBot(bot.BotId!.Value);
+            _savedResults.RemoveAll(row => row.BotId == bot.BotId);
             await RefreshDashboardAsync();
             MessageBox.Show(this,
                 queued ? $"{bot.Name} was marked for deletion. The server will boot the live bot first, then permanently remove its character data." : $"{bot.Name} and all owned character data were permanently deleted.",
@@ -2314,7 +2195,68 @@ internal sealed partial class MainForm : Form
     private async Task DeleteAllBotsAsync()
     {
         bool serverRunning = IsServerRunning() || FindExactServerProcess() is not null;
-        int count = _bots.Count(bot => bot.BotId.HasValue && (!bot.DeletionQueued || !serverRunning));
+        bool retire = ServerSupportsRetire(out _);
+        int warm;
+        List<long> archivedOnly;
+        try
+        {
+            warm = await Task.Run(CountSavedBots);
+            archivedOnly = retire ? await Task.Run(() => PopulationLauncherData.ArchivedOnlyIds(_database)) : [];
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, "Unable to delete all bots", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+        if (!retire)
+        {
+            await LegacyDeleteAllBotsAsync(warm);
+            return;
+        }
+        long total = warm + archivedOnly.Count;
+        if (total <= 0)
+            return;
+
+        string warning = $"Delete all {total:N0} saved bots forever?\n\n" +
+            "Every bot (live, logged out and archived) is queued for deletion. " +
+            (serverRunning
+                ? "The server logs live bots out a few at a time at safe moments, then deletes "
+                : "The server is stopped, so nothing happens yet. When it next starts, it deletes ") +
+            "their characters, equipment, bank contents, coins, Realm Exchange listings and guild rows. " +
+            "Hired companions, your account and your player characters are not affected.\n\n" +
+            "Your realm goals stay as they are, so the server then brings in new level-1 bots to meet them. " +
+            "Set the goals to 0 first if you want an empty world. This cannot be undone.";
+        if (MessageBox.Show(this, warning, "Delete every bot forever?", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            return;
+
+        try
+        {
+            int queued = await Task.Run(() => PopulationLauncherData.QueueRetireAll(_database, archivedOnly));
+            _savedResults.Clear();
+            await RefreshDashboardAsync();
+            MessageBox.Show(this,
+                $"{queued:N0} saved bots are queued for deletion. " +
+                (serverRunning ? "The server removes them over the next minutes." : "They are removed when the server next starts."),
+                "Delete-all queued", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, "Unable to delete all bots", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private int CountSavedBots()
+    {
+        if (!File.Exists(_database)) return 0;
+        using var connection = new SQLiteConnection($"Data Source={_database};Version=3;Read Only=True;Pooling=False;Default Timeout=5");
+        connection.Open();
+        return PopulationLauncherData.SavedCounts(connection).Sum();
+    }
+
+    // Older server (no population status): the previous delete-all, without the old population-target update.
+    private async Task LegacyDeleteAllBotsAsync(int count)
+    {
         if (count <= 0)
             return;
 
@@ -2328,6 +2270,7 @@ internal sealed partial class MainForm : Form
         try
         {
             bool queued = QueueOrDeleteAllBots();
+            _savedResults.Clear();
             await RefreshDashboardAsync();
             MessageBox.Show(this,
                 queued
@@ -2370,7 +2313,6 @@ internal sealed partial class MainForm : Form
             PurgeBotData(connection, transaction, botId);
         }
 
-        UpdatePopulationTarget(connection, transaction);
         transaction.Commit();
         return serverRunning;
     }
@@ -2429,7 +2371,6 @@ internal sealed partial class MainForm : Form
             }
         }
 
-        UpdatePopulationTarget(connection, transaction);
         transaction.Commit();
         return serverRunning;
     }
@@ -2456,34 +2397,6 @@ internal sealed partial class MainForm : Form
         }
     }
 
-    private static void UpdatePopulationTarget(SQLiteConnection connection, SQLiteTransaction transaction)
-    {
-        int count;
-        using (var countCommand = connection.CreateCommand())
-        {
-            countCommand.Transaction = transaction;
-            countCommand.CommandText = "SELECT COUNT(*) FROM offline_world_bots WHERE IsRetired=0" + NotHiredCompanion(connection, transaction, "BotId");
-            count = Convert.ToInt32(countCommand.ExecuteScalar());
-        }
-        int target = count;
-        using (var settings = connection.CreateCommand())
-        {
-            settings.Transaction = transaction;
-            settings.CommandText = "UPDATE offline_population_settings SET Value=CASE Key WHEN 'PopulationEnabled' THEN @enabled WHEN 'ActiveTarget' THEN @target WHEN 'HardActiveCap' THEN '0' ELSE Value END WHERE Key IN ('PopulationEnabled','ActiveTarget','HardActiveCap')";
-            settings.Parameters.AddWithValue("@enabled", count > 0 ? "true" : "false");
-            settings.Parameters.AddWithValue("@target", target.ToString());
-            settings.ExecuteNonQuery();
-        }
-        using (var serverProperties = connection.CreateCommand())
-        {
-            serverProperties.Transaction = transaction;
-            serverProperties.CommandText = "UPDATE ServerProperty SET Value=CASE Key WHEN 'population_enabled' THEN @enabled WHEN 'active_target' THEN @target WHEN 'hard_active_cap' THEN '0' ELSE Value END WHERE Key IN ('population_enabled','active_target','hard_active_cap')";
-            serverProperties.Parameters.AddWithValue("@enabled", count > 0 ? "true" : "false");
-            serverProperties.Parameters.AddWithValue("@target", target.ToString());
-            serverProperties.ExecuteNonQuery();
-        }
-    }
-
     private BotRow? SelectedBot() => _grid.CurrentRow?.DataBoundItem as BotRow;
 
     private void UpdateDeleteButton()
@@ -2493,8 +2406,10 @@ internal sealed partial class MainForm : Form
             _deleteBotButton.Enabled = SelectedBot() is { CanDelete: true } selected &&
                                        (!selected.DeletionQueued || !serverRunning);
         if (_deleteAllBotsButton != null)
+            // The grid shows live bots only, so saved and archived counts also enable it.
             _deleteAllBotsButton.Enabled = _bots.Any(bot => bot.BotId.HasValue &&
-                                                            (!bot.DeletionQueued || !serverRunning));
+                                                            (!bot.DeletionQueued || !serverRunning)) ||
+                                           _savedCounts.Sum() > 0 || (_status?.SavedTotal ?? 0) > 0;
     }
 
     private void SelectBot(string name)
@@ -2506,6 +2421,315 @@ internal sealed partial class MainForm : Form
                 row.Selected = true;
                 _grid.CurrentCell = row.Cells[0];
                 break;
+            }
+        }
+    }
+
+    private static int? RealmIndex(string realm) => realm switch { "Albion" => 1, "Midgard" => 2, "Hibernia" => 3, _ => null };
+
+    private void RefreshPopulationStatusIfDue()
+    {
+        if (DateTime.UtcNow >= _nextStatusReadUtc)
+            RefreshPopulationStatus(force: false);
+    }
+
+    /// <summary>Reads the goals file and the server's status report (both small files) and repaints cards and tab.</summary>
+    private void RefreshPopulationStatus(bool force)
+    {
+        DateTime now = DateTime.UtcNow;
+        _nextStatusReadUtc = now.AddMilliseconds(StatusReadMilliseconds);
+        _goalsFileExists = PopulationGoalSettings.Exists(StateDirectory);
+        if (PopulationGoalSettings.TryLoad(StateDirectory, out PopulationGoalSettings goals, out string? goalsError))
+        {
+            _goals = goals;
+            _goalsError = null;
+        }
+        else
+        {
+            _goalsError = goalsError;   // the last good goals stay on screen
+        }
+
+        bool ok = PopulationStatusReport.TryLoad(StateDirectory, out PopulationStatusReport? report, out string? statusError);
+        _status = ok ? report : null;
+        _statusError = ok ? null : statusError;
+        if (_status != null && (force || _status.UpdatedUtc != _lastStatusUpdateUtc))
+        {
+            if (_status.UpdatedUtc != _lastStatusUpdateUtc)
+            {
+                _lastStatusUpdateUtc = _status.UpdatedUtc;
+                for (int realm = 1; realm <= 3; realm++)
+                {
+                    RealmPopulationStatus? rs = _status.For((eRealm)realm);
+                    if (rs == null) continue;
+                    RealmTrend trend = _trends[realm];
+                    if (trend.LastLive is int last && last != rs.Live)
+                    {
+                        trend.Direction = Math.Sign(rs.Live - last);
+                        trend.LastMoveUtc = now;
+                    }
+                    trend.LastLive = rs.Live;
+                }
+            }
+        }
+        RenderPopulation();
+    }
+
+    private bool StatusIsFresh(DateTime nowUtc) => _status != null &&
+        Math.Abs((nowUtc - _status.UpdatedUtc.ToUniversalTime()).TotalSeconds) <= StatusStaleSeconds;
+
+    private void RenderPopulation()
+    {
+        DateTime now = DateTime.UtcNow;
+        // Only a running server's report counts: a status file written just before a stop is not "live" any more
+        // (owner 2026-11-09: the live counts, arrows and online total stayed up after the server stopped).
+        bool running = _serverRunningKnown;
+        bool fresh = running && StatusIsFresh(now);
+        bool inGrace = running && (now - _serverSeenRunningUtc).TotalSeconds < StatusGraceSeconds;
+        bool applied = fresh && _goalsError == null && _status!.AppliedRevision >= _goals.Revision;
+        if (applied && _appliedSeenRevision != _goals.Revision)
+        {
+            _appliedSeenRevision = _goals.Revision;
+            _appliedSeenLocal = DateTime.Now;
+        }
+        bool recentlyApplied = applied && (DateTime.Now - _appliedSeenLocal).TotalMinutes < StuckMinutes;
+
+        // Standard launcher colours only (owner): cream numbers, gold for notes. State is told in words.
+        string applyText;
+        RealmGoalEditor.GoalMark mark;
+        Color applyColor = DaocTheme.GoldLight;
+        if (_goalsError != null)
+        {
+            applyText = $"The saved numbers can't be read ({_goalsError}). Type a realm's number and press Enter to save it again.";
+            mark = RealmGoalEditor.GoalMark.Problem;
+        }
+        else if (_savingGoals)
+        {
+            applyText = "Saving…";
+            mark = RealmGoalEditor.GoalMark.Waiting;
+        }
+        else if (!running)
+        {
+            applyText = _goalsFileExists ? "Server stopped. The numbers are saved and apply when it starts." : "Server stopped.";
+            applyColor = DaocTheme.Text;
+            mark = RealmGoalEditor.GoalMark.None;
+        }
+        else if (!fresh)
+        {
+            mark = inGrace ? RealmGoalEditor.GoalMark.Waiting : RealmGoalEditor.GoalMark.Problem;
+            applyText = inGrace ? "Saved, waiting for the server's first population report…"
+                : _status == null && _statusError == "missing" ? "This server doesn't report its population. Update the server to use realm targets."
+                : _status == null ? $"The server's population report can't be used ({_statusError}). Update the launcher and the server together."
+                : $"The server's last population report is {FormatAge(now - _status.UpdatedUtc.ToUniversalTime())} old; the server may be busy or stuck.";
+        }
+        else if (applied)
+        {
+            applyText = $"Applied ✓ {_appliedSeenLocal:HH:mm:ss}";
+            applyColor = DaocTheme.Text;
+            mark = RealmGoalEditor.GoalMark.Applied;
+        }
+        else
+        {
+            applyText = "Saved, waiting for the server…";
+            mark = RealmGoalEditor.GoalMark.Waiting;
+        }
+        if (fresh && !string.IsNullOrWhiteSpace(_status!.Error))
+        {
+            applyText += "   •   Server: " + _status.Error;
+            applyColor = DaocTheme.GoldLight;
+        }
+
+        Label[] values = [_albionValue, _midgardValue, _hiberniaValue];
+        string[] names = ["Albion", "Midgard", "Hibernia"];
+        int liveTotal = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            int realm = i + 1;
+            int goal = _goals.GoalFor((eRealm)realm);
+            _goalEditors[i].ShowGoal(goal, mark);
+            _goalEditors[i].SetToolTip(_helpTip, applyText);
+            RealmPopulationStatus? rs = fresh ? _status!.For((eRealm)realm) : null;
+            string text, tip;
+            if (rs != null)
+            {
+                RealmTrend trend = _trends[realm];
+                bool movedLately = (now - trend.LastMoveUtc).TotalMinutes < StuckMinutes;
+                string arrow = !movedLately ? "" : trend.Direction > 0 ? " ▲" : trend.Direction < 0 ? " ▼" : "";
+                text = $"{rs.Live:N0} LIVE{arrow}";
+                tip = RealmTip(names[i], goal, rs, RealmStateWord(goal, rs, trend, now, recentlyApplied));
+                liveTotal += rs.Live;
+            }
+            else if (running)
+            {
+                // A problem gets a short second line; the count comes from the server's live bot list.
+                text = $"{_snapshotOnline[realm]:N0} ONLINE\n" + (inGrace ? "WAITING…" : _status == null ? "UPDATE SERVER" : "NO REPORT");
+                tip = applyText;
+            }
+            else
+            {
+                text = "0 LIVE";
+                tip = $"{names[i]}: the server is stopped. It brings {goal:N0} bots online when it starts " +
+                      $"({_savedCounts[realm]:N0} saved bots in the world database).";
+            }
+            if (!string.Equals(values[i].Text, text, StringComparison.Ordinal)) values[i].Text = text;
+            values[i].ForeColor = DaocTheme.Text;
+            if (!string.Equals(_helpTip.GetToolTip(values[i]), tip, StringComparison.Ordinal)) _helpTip.SetToolTip(values[i], tip);
+        }
+        if (fresh) _onlineValue.Text = liveTotal.ToString("N0");
+
+        var summary = new List<string>
+        {
+            $"Targets {_goals.Total:N0} bots online in all (server memory for them {PopulationGoalSettings.MemoryEstimate(_goals.Total)})",
+        };
+        if (fresh) summary.Add($"updated {_status!.UpdatedUtc.ToLocalTime():HH:mm:ss}");
+        summary.AddRange(_goals.Warnings());
+        _populationPanel.ShowApply(applyText, applyColor);
+        _populationPanel.LoadAdvanced(_goals);
+        _populationPanel.ShowRealms(_goals, fresh ? _status : null, string.Join("   •   ", summary));
+    }
+
+    private static string FormatAge(TimeSpan age) =>
+        age.TotalHours >= 1 ? $"{(int)age.TotalHours}h {age.Minutes}m" : age.TotalMinutes >= 1 ? $"{(int)age.TotalMinutes}m {age.Seconds}s" : $"{Math.Max(0, age.Seconds)}s";
+
+    // On target, moving toward it (or a new number was just applied), or not moving. Shown as words, not colour.
+    private static string RealmStateWord(int goal, RealmPopulationStatus rs, RealmTrend trend, DateTime nowUtc, bool recentlyApplied)
+    {
+        int gap = goal - rs.Live;
+        if (Math.Abs(gap) <= Math.Max(2, goal / 50)) return "On target.";
+        bool moving = recentlyApplied ||
+                      (nowUtc - trend.LastMoveUtc).TotalMinutes < StuckMinutes && trend.Direction == Math.Sign(gap) ||
+                      gap > 0 && rs.LoggingIn > 0 || gap < 0 && rs.LoggingOut > 0;
+        return moving ? (gap > 0 ? "Filling up toward the target." : "Thinning out toward the target.")
+            : $"Not moving for {StuckMinutes}+ minutes ({Math.Abs(gap):N0} {(gap > 0 ? "short" : "over")}); check the server log.";
+    }
+
+    private static string RealmTip(string realm, int goal, RealmPopulationStatus rs, string state)
+    {
+        var lines = new List<string>
+        {
+            $"{realm}: target {goal:N0}, {rs.Live:N0} live ({rs.LoggingIn:N0} logging in, {rs.LoggingOut:N0} logging out). {state}",
+        };
+        foreach (BracketStatus bracket in (rs.Brackets ?? []).Where(b => b != null).OrderBy(b => b.MinLevel))
+        {
+            string levels = bracket.MinLevel == bracket.MaxLevel ? $"Level {bracket.MinLevel}" : $"Levels {bracket.MinLevel}–{bracket.MaxLevel}";
+            lines.Add($"{levels}: {bracket.Live:N0} live of {bracket.Target:N0} (at least {bracket.Floor:N0}; {bracket.Archived:N0} offline can come back)");
+        }
+        lines.Add($"Last hour: {rs.CreatedLastHour:N0} new, {rs.ReturnedLastHour:N0} returned, {rs.RetiredLastHour:N0} retired.");
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private Task<string?> SaveRealmGoalAsync(eRealm realm, int goal) =>
+        SaveGoalsAsync(current => current.WithGoal(realm, goal), $"{PopulationGoalSettings.RealmName(realm)} target {goal:N0}");
+
+    /// <summary>
+    /// Saves a change to the goals file (atomic, allowed while the server runs). The change is applied to the file's
+    /// current contents, so two edits never undo each other.
+    /// </summary>
+    /// Returns null when saved, "" when the user cancelled, or a short reason it was not saved.
+    private async Task<string?> SaveGoalsAsync(Func<PopulationGoalSettings, PopulationGoalSettings> change, string what)
+    {
+        if (_savingGoals) return "Still saving the last change.";
+        PopulationGoalSettings current = PopulationGoalSettings.TryLoad(StateDirectory, out PopulationGoalSettings onDisk, out _) ? onDisk : _goals;
+        PopulationGoalSettings next = change(current);
+        string? problem = next.Validate();
+        if (problem != null)
+        {
+            RenderPopulation();
+            return problem;
+        }
+        bool goalsChanged = next.Albion != current.Albion || next.Midgard != current.Midgard || next.Hibernia != current.Hibernia;
+        if (goalsChanged && next.NeedsConfirmation() &&
+            MessageBox.Show(this,
+                $"A realm goal above {PopulationGoalSettings.ConfirmPerRealm:N0} is far beyond what has been tested " +
+                $"({PopulationGoalSettings.WarnPerRealm:N0} a realm, {PopulationGoalSettings.WarnTotal:N0} in total).\n\n" +
+                $"With every goal online the bots need {PopulationGoalSettings.MemoryEstimate(next.Total)} of server memory, " +
+                "and the game may slow down. Save anyway?",
+                "Very large population", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+        {
+            RenderPopulation();
+            return string.Empty;
+        }
+
+        _savingGoals = true;
+        RenderPopulation();
+        string enableNote = string.Empty;
+        string? result = null;
+        try
+        {
+            PopulationGoalSettings saved = next.WithNewRevision();
+            enableNote = await Task.Run(() =>
+            {
+                PopulationGoalSettings.Save(StateDirectory, saved);
+                if (saved.Total <= 0) return string.Empty;
+                try { PopulationLauncherData.EnsurePopulationEnabled(_database); return string.Empty; }
+                catch (Exception ex) { return " (the bot population switch could not be turned on yet: " + ex.Message + "; set the goal again later)"; }
+            });
+            _goals = saved;
+            _goalsError = null;
+            bool running = _serverRunningKnown;
+            IReadOnlyList<string> warnings = saved.Warnings();
+            _footer.Text = $"{what} saved" + (running ? ", waiting for the server to apply it." : "; it applies when the server starts.") +
+                           enableNote + (warnings.Count > 0 ? "  Note: " + string.Join(" ", warnings) : "");
+        }
+        catch (Exception exception)
+        {
+            result = "Not saved: " + exception.Message;
+        }
+        finally
+        {
+            _savingGoals = false;
+            RefreshPopulationStatus(force: true);
+        }
+        return result;
+    }
+
+    /// <summary>Finds saved (logged-out) and archived bots by name, class, race or zone; adds them below the live list.</summary>
+    private async Task SearchSavedBotsAsync()
+    {
+        string text = _search.Text.Trim();
+        if (text.Length < 2)
+        {
+            _footer.Text = "Type at least 2 letters of a name, class, race or zone, then click SEARCH SAVED.";
+            return;
+        }
+        int realm = RealmIndex(_realmFilter.SelectedItem?.ToString() ?? string.Empty) ?? 0;
+        if (_searchSavedButton != null)
+        {
+            _searchSavedButton.Enabled = false;
+            _searchSavedButton.Text = "SEARCHING…";
+        }
+        try
+        {
+            (List<PopulationLauncherData.SavedBot> found, string note) = await Task.Run(() =>
+            {
+                List<PopulationLauncherData.SavedBot> list = PopulationLauncherData.SearchSaved(_database, text, realm, SavedSearchLimit, out string n);
+                return (list, n);
+            });
+            _savedResults.Clear();
+            foreach (PopulationLauncherData.SavedBot bot in found)
+            {
+                _savedResults.Add(new BotRow(bot.BotId, bot.Name, RealmName(bot.Realm), bot.RaceName.Length > 0 ? bot.RaceName : "—",
+                    GenderName(bot.Gender), bot.ClassName.Length > 0 ? bot.ClassName : ClassInfo(bot.ClassId).Name, bot.Level, bot.ZoneName,
+                    bot.Archived ? "Archived — comes back when the server brings it online" : "Logged out — saved",
+                    false, true, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty)
+                {
+                    SavedState = bot.Archived ? "Archived" : "Saved",
+                });
+            }
+            ApplyFilter();
+            UpdateDeleteButton();
+            _footer.Text = $"{found.Count:N0} saved or archived bots match \"{text}\"." + (note.Length > 0 ? " " + note : "") +
+                           " Change the search to return to live bots only.";
+        }
+        catch (Exception exception)
+        {
+            _footer.Text = $"Saved-bot search failed: {exception.Message}";
+        }
+        finally
+        {
+            if (_searchSavedButton != null)
+            {
+                _searchSavedButton.Text = "SEARCH SAVED";
+                _searchSavedButton.Enabled = true;
             }
         }
     }
@@ -2537,6 +2761,12 @@ internal sealed partial class MainForm : Form
             MessageBox.Show(this, "Correct Bot Goals Setting before starting:\n" + ex.Message, "Invalid bot goals");
             return;
         }
+        // Population goals can be fixed while the server runs, so a bad file only warns.
+        if (!PopulationGoalSettings.TryLoad(StateDirectory, out _, out string? goalsProblem) &&
+            MessageBox.Show(this, $"The population goals file can't be used:\n{goalsProblem}\n\nThe server will use the default goals " +
+                "(500 a realm) until you set a realm's goal again. Start anyway?", "Population goals",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            return;
         if (!File.Exists(_serverExecutable))
         {
             MessageBox.Show(this, "The compiled server package is missing.", "Cannot start", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2923,13 +3153,6 @@ internal sealed partial class MainForm : Form
         return string.Join(" ", parts);
     }
 
-    private static string RealmRosterValue(IReadOnlyCollection<BotRow> bots, string realm)
-    {
-        int total = bots.Count(bot => bot.Realm == realm && !bot.DeletionQueued);
-        int online = bots.Count(bot => bot.Realm == realm && bot.IsOnline && !bot.DeletionQueued);
-        return $"{total:N0} ROSTER\n{online:N0} ONLINE";
-    }
-
     private static string FormatExpiry(string value)
     {
         if (!DateTime.TryParse(value, null, System.Globalization.DateTimeStyles.RoundtripKind, out var expires)) return value;
@@ -3047,12 +3270,6 @@ internal sealed partial class MainForm : Form
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GlobalMemoryStatusEx(ref MemoryStatus status);
 
-    private const int VkLeftShift = 0xA0;
-    private const int VkLeftControl = 0xA2;
-
-    [DllImport("user32.dll")]
-    private static extern short GetAsyncKeyState(int virtualKey);
-
     private static ulong AvailableMemoryBytes()
     {
         var status = new MemoryStatus { Length = (uint)Marshal.SizeOf<MemoryStatus>() };
@@ -3097,7 +3314,9 @@ internal sealed partial class MainForm : Form
         public string NameWithMeetUpTimer => IsOnline && GroupPhase == "Meeting up" &&
             TaskTimerDisplay.Remaining(MeetUpDeadlineUtc, DateTime.UtcNow) is long remaining
                 ? $"{Name} ({TaskTimerDisplay.Format(remaining)})" : Name;
-        public string State => DeletionQueued ? "Deleting…" : IsOnline ? "Online" : "Offline";
+        // "Saved" or "Archived" for rows found by SEARCH SAVED.
+        public string SavedState { get; init; } = string.Empty;
+        public string State => DeletionQueued ? "Deleting…" : SavedState.Length > 0 ? SavedState : IsOnline ? "Online" : "Offline";
         public string RvrFormation => GroupId.Length > 0 ? $"Warband {GroupId}" : "Solo roamer";
     }
 
@@ -3122,7 +3341,7 @@ internal sealed partial class MainForm : Form
     }
     private sealed record DashboardSnapshot(string ServerState, List<BotRow> Bots, List<GroupRow> Groups,
         int Active, double ServerMemoryMb, BotAiDelayReport? BotAiDelay, bool MakeMeGm = false, RvrWorldSnapshot? RvrWorld = null,
-        bool RvrAnnouncements = true, bool PveAnnouncements = true);
+        bool RvrAnnouncements = true, bool PveAnnouncements = true, int[]? SavedCounts = null, string GoalsNotice = "");
 
     private sealed record LiveBotStatus(long BotId, int Level, string ZoneName, string Activity,
         string CurrentGoal, string TargetName, string TravelDestination, string ObjectiveProgress,

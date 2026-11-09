@@ -25,32 +25,31 @@ internal static class Program
                 Environment.Exit(1);
             }
         }
-        // --add-bots <normal|1.65> <realm 1-3> <count> <level 1|50>: the ADD BOTS buttons headless, for test rosters
-        // (the same rows the buttons write). Writes data\add-bots.log. Never with the server running.
-        int addAt = Array.FindIndex(args, a => a.Equals("--add-bots", StringComparison.OrdinalIgnoreCase));
-        if (addAt >= 0)
+        // --population-goals <Albion> <Midgard> <Hibernia>: sets the realm goals headless (scripts and test runs).
+        // Allowed while the server runs; it picks them up within seconds. Writes data\population-goals.log.
+        // It replaces --add-bots: bots are no longer made by the launcher; the server creates level-1 bots to meet the goals.
+        int goalsAt = Array.FindIndex(args, a => a.Equals("--population-goals", StringComparison.OrdinalIgnoreCase) ||
+                                                 a.Equals("--add-bots", StringComparison.OrdinalIgnoreCase));
+        if (goalsAt >= 0)
         {
             string root = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
-            string log = Path.Combine(root, "data", "add-bots.log");
+            string log = Path.Combine(root, "data", "population-goals.log");
             try
             {
-                if (System.Diagnostics.Process.GetProcessesByName("CoreServer").Length > 0)
-                    throw new InvalidOperationException("the server is running");
-                if (args.Length < addAt + 5)
-                    throw new ArgumentException("usage: --add-bots <normal|1.65> <realm 1-3> <count> <level 1|50>");
-                bool is165 = args[addAt + 1] == "1.65";
-                if (!is165)
-                    throw new ArgumentException("normal mode is archived (OfflineDAoC True 1.65 has True 1.65 Mode only)");
-                int realm = int.Parse(args[addAt + 2]), count = int.Parse(args[addAt + 3]), level = int.Parse(args[addAt + 4]);
-                TrueMode.Mode mode = TrueMode.Describe(root, is165);
-                int left = count;
-                while (left > 0)
+                if (args[goalsAt].Equals("--add-bots", StringComparison.OrdinalIgnoreCase))
+                    throw new ArgumentException("--add-bots was removed: the server creates level-1 bots itself. Use --population-goals <Albion> <Midgard> <Hibernia>.");
+                if (args.Length < goalsAt + 4)
+                    throw new ArgumentException("usage: --population-goals <Albion> <Midgard> <Hibernia>");
+                string stateDirectory = Path.Combine(root, "server", "state-165");
+                DOL.GS.PopulationGoalSettings.TryLoad(stateDirectory, out DOL.GS.PopulationGoalSettings current, out _);
+                DOL.GS.PopulationGoalSettings next = (current with
                 {
-                    int batch = left >= 100 ? 100 : left >= 10 ? 10 : 1;
-                    MainForm.GenerateBotCharacters(mode.DatabasePath, is165, realm, batch, level);
-                    left -= batch;
-                }
-                File.AppendAllText(log, $"{DateTime.Now:s} added {count} level-{level} bots, realm {realm}, {(is165 ? "1.65" : "normal")}\r\n");
+                    Albion = int.Parse(args[goalsAt + 1]), Midgard = int.Parse(args[goalsAt + 2]), Hibernia = int.Parse(args[goalsAt + 3]),
+                }).WithNewRevision();
+                DOL.GS.PopulationGoalSettings.Save(stateDirectory, next);   // validates (0-5,000 a realm, 15,000 in total)
+                if (next.Total > 0)
+                    PopulationLauncherData.EnsurePopulationEnabled(TrueMode.Describe(root, true).DatabasePath);
+                File.AppendAllText(log, $"{DateTime.Now:s} goals Albion {next.Albion}, Midgard {next.Midgard}, Hibernia {next.Hibernia} (revision {next.Revision})\r\n");
                 Environment.Exit(0);
             }
             catch (Exception ex)

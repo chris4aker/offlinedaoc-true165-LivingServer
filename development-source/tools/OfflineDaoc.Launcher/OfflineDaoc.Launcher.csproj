@@ -14,6 +14,8 @@
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
     <Compile Include="../../server/GameServer/bots/autonomous/BotGoalSettings.cs" Link="Configuration/BotGoalSettings.cs" />
+    <Compile Include="../../server/GameServer/bots/autonomous/population/PopulationGoalSettings.cs" Link="Configuration/PopulationGoalSettings.cs" />
+    <Compile Include="../../server/GameServer/Enums/eRealm.cs" Link="Configuration/eRealm.cs" />
     <Compile Include="../../server/GameServer/bots/autonomous/RealmEventRecordStore.cs" Link="Records/RealmEventRecordStore.cs" />
     <Compile Include="../../server/GameServer/Managers/GameLoop/BotAiDelayReport.cs" Link="Records/BotAiDelayReport.cs" />
   </ItemGroup>
