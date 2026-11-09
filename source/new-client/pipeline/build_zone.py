@@ -929,12 +929,19 @@ def build(zone_id, upscale=True):
     # Catacombs-era ground blend (what the current client draws): per patch, a base texture and up to 8 layers laid
     # over it by weight maps, ending with the zone colour map (see terrain_splat.py; verified against the lod bake)
     splat = None
-    if (zdir / f'ter{zone_id:03d}.mpk').exists():
+    ter = zdir / f'ter{zone_id:03d}.mpk'
+    if not ter.exists() and borrowed and not (borrowed[2] or borrowed[3]) and zone_id not in _paths.HOUSING_164             and (borrowed[0] / f'ter{borrowed[1]:03d}.mpk').exists():
+        # a zone that paints its ground with another zone's tiles takes that zone's blend with them (tester 0.5:
+        # Abermenai, zone 253, drew the flat far-view ground up close - it ships no ground archive at all and borrows
+        # Caledonia's, zone 250, unmirrored; its heights are Caledonia's too). Mirrored borrowers (the housing zones)
+        # keep the painted ground: no zone needs a mirrored blend yet.
+        ter = borrowed[0] / f'ter{borrowed[1]:03d}.mpk'
+    if ter.exists():
         import terrain_splat
         sdir = out / 'splat'
         sdir.mkdir(exist_ok=True)
         splat = {'patches': {}}
-        for (px, py), layers in sorted(terrain_splat.decode(zone_id).items()):
+        for (px, py), layers in sorted(terrain_splat.decode(zone_id, ter).items()):
             if len(layers) > 9:
                 print(f'WARNING patch {px},{py}: {len(layers)} ground layers, engine draws base + 8')
             over = layers[1:9]
@@ -1114,8 +1121,7 @@ def build(zone_id, upscale=True):
     # close-up ground grain: the zone's most used tiling ground texture (ter<id>.mpk textures.csv), shaded in by
     # the terrain material at a few metres per repeat
     detail = None
-    ter = zdir / f'ter{zone_id:03d}.mpk'
-    if ter.exists():
+    if ter.exists():                                       # (the zone's own ground archive, or the one it borrows)
         rows = read_csv(read_mpk(str(ter)).get('textures.csv', b''))[1:]
         counts = {}
         for r in rows:
