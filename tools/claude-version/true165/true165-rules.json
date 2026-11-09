@@ -49328,12 +49328,180 @@
    "reason": "True 1.65 Prima encounter (fixed for 0.5): its own NPC template, so the shared template no longer puts back the level, look, pace or faction the encounter rules give it"
   },
   {
+   "sql": "UPDATE ItemTemplate SET Level = 0 WHERE lower(Id_nb) IN ('adder_fang', 'albino_grugners_remains', 'alexandrite', 'alp_luachra_eye', 'alp_luachra_hand', 'apple_fly_wings', 'aughisky_mane', 'aventurine_gem', 'badger_cub_claw', 'badger_cub_fur', 'balor''s_remains', 'bertha''s_remains', 'black_rocks', 'black_sapphire', 'bog_mud', 'broken_fragment_of_wood_and_arcanium', 'cadwallen''s_sacrificial_dagger', 'chrome_diopside', 'chrysoberyl', 'chunk_of_wolf_meat', 'cleddyf''s_head', 'coirmirceoirs_remains', 'complete_worry_wort_skin', 'copper_amethyst_bracelet', 'cronker''s_remains', 'cythraul_essence', 'dangerous_tooth', 'dead_swamp_goo', 'ebon_skeleton_tibia', 'evern''s_remains', 'fire_ant_frendrat''s_remains', 'flat_chert', 'flint', 'footman_cloak', 'frog_legs', 'ghostly_banshee_hair', 'gloves_of_the_bladehand', 'golden_orb', 'golestandt''s_remains', 'grass_ring', 'green_knight''s_remains', 'grunge''s_remains', 'high_priestess_ywera''s_remains', 'horn_of_drinking', 'hrrgyfs_remains', 'ibicuss_remains', 'imbued_sleeves', 'jade', 'jari''s_remains', 'kalnraw''s_remains', 'king_smugluk''s_head', 'kornerupine', 'lasholds_remains', 'mootang''s_head', 'morty''s_remains', 'nosdodens_remains', 'oldest''s_remains', 'onyx_gem', 'opaque_glass_disc', 'patch_of_aughisky_hide', 'peridot', 'precious_heliodor', 'pristine_aughisky_hide', 'pristine_boars_hide', 'prugor''s_remains', 'queen_majors_remains', 'rhodolite', 'round_chert', 'runed_hollow_clay_boots', 'runed_hollow_clay_gloves', 'runed_hollow_clay_helm', 'runed_hollow_clay_jerkin', 'runed_hollow_clay_leggings', 'runed_hollow_clay_sleeves', 'sentry_incin''s_remains', 'seolc cap of the void', 'sergeant_cosworth''s_remains', 'shard_of_sequence', 'sir_gerenth''s_remains', 'sladug''s_remains', 'slimy_swamp_goo_skin', 'small_copper_ring', 'small_mirror', 'small_silver_laden_box', 'snarls''_remains', 'spats_remains', 'spotted_larva', 'staff_of_enlightenment', 'stolen_bear_tooth', 'stripes_remains', 'thin_chert', 'throatripper''s_remains', 'thulin''s_remains', 'tomte_studded_helm', 'torn_wolf_pelt', 'vagdush''s_seer_amulet', 'veviel''s_remains', 'vial_of_shimmering_essence', 'water_opal', 'water_orb', 'well_crafted_lantern', 'windchaser_naiheras_remains', 'wizard_locked_box', 'wolf_fang', 'worm_rot', 'worn_carnelian_studded_belt', 'xcrzrks_remains', 'yellow_tourmaline', 'zrit-zrit''s_remains') AND Level <> 0",
+   "reason": "True 1.65 vendor trash is level 0 (owner 2026-11-07): 109 vendor-trash items that monsters drop show level 0 (cons grey), as on the period pages; drops unchanged"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_crushed_focus_stone' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Crushed Focus Stone - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_giant_blood' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Giant Blood - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_lich_tooth' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Lich Tooth - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_mirror' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Mirror - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_necrotic_brain_fluid' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Necrotic Brain Fluid - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_pure_mercury' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Pure Mercury - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'ancient_troll_blood' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ancient Troll Blood - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
    "sql": "UPDATE ItemTemplate SET Price = 5550 WHERE lower(Id_nb) = 'black_orm_gland' AND Price <> 5550",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Black Orm Gland - estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36) (sells for 2775 copper)"
   },
   {
+   "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'bone' AND Price <> 25000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Bone - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 200 WHERE lower(Id_nb) = 'botonid leaf branch' AND Price <> 200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Botonid Leaf Branch - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 95 period trash items dropped by level 7-11 monsters (droppers: level 9-9) (sells for 100 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 260 WHERE lower(Id_nb) = 'branch of bloinigein' AND Price <> 260",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Branch of Bloinigein - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 105 period trash items dropped by level 9-13 monsters (droppers: level 11-11) (sells for 130 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5174 WHERE lower(Id_nb) = 'coral' AND Price <> 5174",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Coral - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35) (sells for 2587 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1600 WHERE lower(Id_nb) = 'cq_bag_of_moss' AND Price <> 1600",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Bag of Moss - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 800 copper (sells for 800 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 260 WHERE lower(Id_nb) = 'cq_bandit_s_ear' AND Price <> 260",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Bandit's Ear - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 105 period trash items dropped by level 9-13 monsters (droppers: level 8-11) (sells for 130 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 10624 WHERE lower(Id_nb) = 'cq_changeling_skin' AND Price <> 10624",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Changeling Skin - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 44 period trash items dropped by level 37-41 monsters (droppers: level 39-39) (sells for 5312 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 20 WHERE lower(Id_nb) = 'cq_clump_of_seaweed' AND Price <> 20",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Clump of Seaweed - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 10 copper (sells for 10 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 80 WHERE lower(Id_nb) = 'cq_fish' AND Price <> 80",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Fish - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 40 copper (sells for 40 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1000 WHERE lower(Id_nb) = 'cq_giant_ant_mandible' AND Price <> 1000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Giant Ant Mandible - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21) (sells for 500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 6100 WHERE lower(Id_nb) = 'cq_gold_lined_drinking_horn' AND Price <> 6100",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Gold Lined Drinking Horn - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 60 period trash items dropped by level 36-40 monsters (droppers: level 37-40) (sells for 3050 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 902 WHERE lower(Id_nb) = 'cq_golden_chain' AND Price <> 902",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Golden Chain - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 83 period trash items dropped by level 17-21 monsters (droppers: level 19-19) (sells for 451 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 90 WHERE lower(Id_nb) = 'cq_rat_tail' AND Price <> 90",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Rat Tail - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 77 period trash items dropped by level 4-8 monsters (droppers: level 4-7) (sells for 45 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5550 WHERE lower(Id_nb) = 'cq_silk_spinnerets' AND Price <> 5550",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Silk Spinnerets - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-37) (sells for 2775 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 850 WHERE lower(Id_nb) = 'cq_soot_harvester_leg' AND Price <> 850",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Soot Harvester Leg - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 425 copper (sells for 425 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 72 WHERE lower(Id_nb) = 'cq_tomte_bracer' AND Price <> 72",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Tomte Bracer - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 85 period trash items dropped by level 3-7 monsters (droppers: level 5-5) (sells for 36 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 800 WHERE lower(Id_nb) = 'cq_wormtooth' AND Price <> 800",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Wormtooth - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17) (sells for 400 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 320 WHERE lower(Id_nb) = 'cq_yellow_quartz' AND Price <> 320",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Yellow Quartz - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 160 copper (sells for 160 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 3200 WHERE lower(Id_nb) = 'crater_cicada_leg' AND Price <> 3200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Crater Cicada Leg - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 43 period trash items dropped by level 29-33 monsters (droppers: level 31-31) (sells for 1600 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 40000 WHERE lower(Id_nb) = 'cyhraeth cloak' AND Price <> 40000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Cyhraeth Cloak - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 25 period trash items dropped by level 50-54 monsters (droppers: level 50-54) (sells for 20000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 300 WHERE lower(Id_nb) = 'death worm silk' AND Price <> 300",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Death Worm Silk - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 150 copper (sells for 150 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1000 WHERE lower(Id_nb) = 'diamondseal' AND Price <> 1000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Daemon Diamond Seal - no merchant took it (price 0, owner 2026-11-09); Darkness Falls currency, dropped by the handful: a small fixed value (no period value found) (sells for 500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 200 WHERE lower(Id_nb) = 'emeraldseal' AND Price <> 200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Daemon Emerald Seal - no merchant took it (price 0, owner 2026-11-09); Darkness Falls currency, dropped by the handful: a small fixed value (no period value found) (sells for 100 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'enriched_quicksilver' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Enriched Quicksilver - no merchant took it (price 0, owner 2026-11-09); a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 40000 WHERE lower(Id_nb) = 'faraheim_doe_meat' AND Price <> 40000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Faraheim Doe Meat - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 41 period trash items dropped by level 46-50 monsters (droppers: level 48-48) (sells for 20000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5174 WHERE lower(Id_nb) = 'fisher_grip_feather' AND Price <> 5174",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Fisher Grip Feather - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35) (sells for 2587 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 13750 WHERE lower(Id_nb) = 'frosted grimel root' AND Price <> 13750",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Frosted Grimel Root - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 28 period trash items dropped by level 41-45 monsters (droppers: level 43-43) (sells for 6875 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 12000 WHERE lower(Id_nb) = 'frozen_teardrop' AND Price <> 12000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Frozen Teardrop - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 49 period trash items dropped by level 38-42 monsters (droppers: level 40-40) (sells for 6000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 5550 WHERE lower(Id_nb) = 'golden_chain_necklace' AND Price <> 5550",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Golden Chain Necklace - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36) (sells for 2775 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1700 WHERE lower(Id_nb) = 'griffin_loner_feather' AND Price <> 1700",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Griffon Loner Feather - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 74 period trash items dropped by level 23-27 monsters (droppers: level 25-25) (sells for 850 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2074 WHERE lower(Id_nb) = 'ingester_stomach' AND Price <> 2074",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Ingester Stomach - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30) (sells for 1037 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 11476 WHERE lower(Id_nb) = 'morvalt_blandere_belt' AND Price <> 11476",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Morvalt Blandere Belt - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 32 period trash items dropped by level 42-46 monsters (droppers: level 44-44) (sells for 5738 copper)"
+  },
+  {
    "sql": "UPDATE ItemTemplate SET Price = 800 WHERE lower(Id_nb) = 'morvalt_obsidian_sword' AND Price <> 800",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Morvalt Obsidian Sword - estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17) (sells for 400 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'morvalt_strebers_head' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Morvalt Streber's Head - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 64 period trash items dropped by level 27-31 monsters (droppers: level 29-29) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 4000 WHERE lower(Id_nb) = 'mottled_boobrie_egg' AND Price <> 4000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Mottled Boobrie Egg - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 40 period trash items dropped by level 31-35 monsters (droppers: level 33-33) (sells for 2000 copper)"
   },
   {
    "sql": "UPDATE ItemTemplate SET Price = 5174 WHERE lower(Id_nb) = 'mud_crab_claw' AND Price <> 5174",
@@ -49344,28 +49512,96 @@
    "reason": "True 1.65 loot prices (owner 2026-11-07): Mud Frog Tongue - estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30) (sells for 1037 copper)"
   },
   {
+   "sql": "UPDATE ItemTemplate SET Price = 2000 WHERE lower(Id_nb) = 'myling_essence' AND Price <> 2000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Myling Essence - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 64 period trash items dropped by level 27-31 monsters (droppers: level 29-29) (sells for 1000 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 1200 WHERE lower(Id_nb) = 'pendant of the forsaken' AND Price <> 1200",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Pendant of the Forsaken - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23) (sells for 600 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 502 WHERE lower(Id_nb) = 'pittedbronzescimitar' AND Price <> 502",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Pitted Bronze Scimitar - no merchant took it (price 0, owner 2026-11-09); estimated: half the median price of 9 dropped items of its kind (object type 3), item level 1-9 (droppers: level 1-8) (sells for 251 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 502 WHERE lower(Id_nb) = 'pittedtarnisheddagger' AND Price <> 502",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Pitted Tarnished Dagger - no merchant took it (price 0, owner 2026-11-09); estimated: half the median price of 9 dropped items of its kind (object type 3), item level 1-9 (droppers: level 6-8) (sells for 251 copper)"
+  },
+  {
    "sql": "UPDATE ItemTemplate SET Price = 1446 WHERE lower(Id_nb) = 'polished_piece_of_obsidian' AND Price <> 1446",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Polished Piece of Obsidian - estimated: median Uthgard sell of 10 period gems dropped by level 21-25 monsters (droppers: level 23-23) (sells for 723 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 27744 WHERE lower(Id_nb) = 'prince ba`alorien`s remains' AND Price <> 27744",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Prince Ba'alorien's Remains - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 10 period trash items dropped by level 58-98 monsters (droppers: level 78-78) (sells for 13872 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 60 WHERE lower(Id_nb) = 'rat tongue' AND Price <> 60",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Rat Tongue - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 89 period trash items dropped by level 2-6 monsters (droppers: level 4-4) (sells for 30 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 6100 WHERE lower(Id_nb) = 'red_cap' AND Price <> 6100",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Red Cap - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 60 period trash items dropped by level 36-40 monsters (droppers: level 38-38) (sells for 3050 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 15000 WHERE lower(Id_nb) = 'respec_realm' AND Price <> 15000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Luminescent Abrogo Stone - no merchant took it (price 0, owner 2026-11-09); estimated: half the median price of 151 dropped items of its kind (object type 41), item level 51-109 (droppers: level 75-80) (sells for 7500 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 60 WHERE lower(Id_nb) = 'rotting hog tail' AND Price <> 60",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Rotting Hog Tail - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 89 period trash items dropped by level 2-6 monsters (droppers: level 4-5) (sells for 30 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 27744 WHERE lower(Id_nb) = 'royal iceweaver`s remains' AND Price <> 27744",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Royal Iceweaver's Remains - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 10 period trash items dropped by level 58-98 monsters (droppers: level 78-78) (sells for 13872 copper)"
   },
   {
    "sql": "UPDATE ItemTemplate SET Price = 8900 WHERE lower(Id_nb) = 'runemaster_sealed_pages' AND Price <> 8900",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Runemaster Sealed Pages - estimated: median Uthgard sell of 39 period trash items dropped by level 40-44 monsters (droppers: level 42-42) (sells for 4450 copper)"
   },
   {
+   "sql": "UPDATE ItemTemplate SET Price = 500 WHERE lower(Id_nb) = 'sapphireseal' AND Price <> 500",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Daemon Sapphire Seal - no merchant took it (price 0, owner 2026-11-09); Darkness Falls currency, dropped by the handful: a small fixed value (no period value found) (sells for 250 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 800 WHERE lower(Id_nb) = 'scimitar_cat_pelt' AND Price <> 800",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Scimitar Cat Pelt - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17) (sells for 400 copper)"
+  },
+  {
    "sql": "UPDATE ItemTemplate SET Price = 1200 WHERE lower(Id_nb) = 'scroll_of_eternal_sorrow' AND Price <> 1200",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Scroll of Eternal Sorrow - estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23) (sells for 600 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 27744 WHERE lower(Id_nb) = 'shimmering_bow_of_the_stonewatch' AND Price <> 27744",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Shimmering_Bow_of_the_Stonewatch - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 10 period trash items dropped by level 58-88 monsters (droppers: level 51-80) (sells for 13872 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 100 WHERE lower(Id_nb) = 'smallmaulerskin' AND Price <> 100",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Small Mauler Skin - no merchant took it (price 0, owner 2026-11-09); Uthgard sell value 50 copper (sells for 50 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 760 WHERE lower(Id_nb) = 'tatteredtannedbrowngloves' AND Price <> 760",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Tattered Tanned Brown Gloves - no merchant took it (price 0, owner 2026-11-09); estimated: half the median price of 23 dropped items of its kind (object type 33), item level 3-7 (droppers: level 6-8) (sells for 380 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 40000 WHERE lower(Id_nb) = 'trip string' AND Price <> 40000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Trip String - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 41 period trash items dropped by level 46-50 monsters (droppers: level 48-48) (sells for 20000 copper)"
   },
   {
    "sql": "UPDATE ItemTemplate SET Price = 1000 WHERE lower(Id_nb) = 'warm_fire_ant_larva' AND Price <> 1000",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Warm Fire Ant Larva - estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21) (sells for 500 copper)"
   },
   {
-   "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'windchaser_naiheras_remains' AND Price <> 25000",
-   "reason": "True 1.65 loot prices (owner 2026-11-07): Windchaser Naihera's Remains - estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
+   "sql": "UPDATE ItemTemplate SET Price = 1100 WHERE lower(Id_nb) = 'water_cat_pelt' AND Price <> 1100",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Water Cat Pelt - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 94 period trash items dropped by level 20-24 monsters (droppers: level 22-22) (sells for 550 copper)"
   },
   {
-   "sql": "UPDATE ItemTemplate SET Level = 0 WHERE lower(Id_nb) IN ('adder_fang', 'albino_grugners_remains', 'alexandrite', 'alp_luachra_eye', 'alp_luachra_hand', 'apple_fly_wings', 'aughisky_mane', 'aventurine_gem', 'badger_cub_claw', 'badger_cub_fur', 'balor''s_remains', 'bertha''s_remains', 'black_rocks', 'black_sapphire', 'bog_mud', 'broken_fragment_of_wood_and_arcanium', 'cadwallen''s_sacrificial_dagger', 'chrome_diopside', 'chrysoberyl', 'chunk_of_wolf_meat', 'cleddyf''s_head', 'coirmirceoirs_remains', 'complete_worry_wort_skin', 'copper_amethyst_bracelet', 'cronker''s_remains', 'cythraul_essence', 'dangerous_tooth', 'dead_swamp_goo', 'ebon_skeleton_tibia', 'evern''s_remains', 'fire_ant_frendrat''s_remains', 'flat_chert', 'flint', 'footman_cloak', 'frog_legs', 'ghostly_banshee_hair', 'gloves_of_the_bladehand', 'golden_orb', 'golestandt''s_remains', 'grass_ring', 'green_knight''s_remains', 'grunge''s_remains', 'high_priestess_ywera''s_remains', 'horn_of_drinking', 'hrrgyfs_remains', 'ibicuss_remains', 'imbued_sleeves', 'jade', 'jari''s_remains', 'kalnraw''s_remains', 'king_smugluk''s_head', 'kornerupine', 'lasholds_remains', 'mootang''s_head', 'morty''s_remains', 'nosdodens_remains', 'oldest''s_remains', 'onyx_gem', 'opaque_glass_disc', 'patch_of_aughisky_hide', 'peridot', 'precious_heliodor', 'pristine_aughisky_hide', 'pristine_boars_hide', 'prugor''s_remains', 'queen_majors_remains', 'rhodolite', 'round_chert', 'runed_hollow_clay_boots', 'runed_hollow_clay_gloves', 'runed_hollow_clay_helm', 'runed_hollow_clay_jerkin', 'runed_hollow_clay_leggings', 'runed_hollow_clay_sleeves', 'sentry_incin''s_remains', 'seolc cap of the void', 'sergeant_cosworth''s_remains', 'shard_of_sequence', 'sir_gerenth''s_remains', 'sladug''s_remains', 'slimy_swamp_goo_skin', 'small_copper_ring', 'small_mirror', 'small_silver_laden_box', 'snarls''_remains', 'spats_remains', 'spotted_larva', 'staff_of_enlightenment', 'stolen_bear_tooth', 'stripes_remains', 'thin_chert', 'throatripper''s_remains', 'thulin''s_remains', 'tomte_studded_helm', 'torn_wolf_pelt', 'vagdush''s_seer_amulet', 'veviel''s_remains', 'vial_of_shimmering_essence', 'water_opal', 'water_orb', 'well_crafted_lantern', 'windchaser_naiheras_remains', 'wizard_locked_box', 'wolf_fang', 'worm_rot', 'worn_carnelian_studded_belt', 'xcrzrks_remains', 'yellow_tourmaline', 'zrit-zrit''s_remains') AND Level <> 0",
-   "reason": "True 1.65 vendor trash is level 0 (owner 2026-11-07): 109 vendor-trash items that monsters drop show level 0 (cons grey), as on the period pages; drops unchanged"
+   "sql": "UPDATE ItemTemplate SET Price = 1800 WHERE lower(Id_nb) = 'white_wolf_fang' AND Price <> 1800",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): White Wolf Fang - no merchant took it (price 0, owner 2026-11-09); estimated: median Uthgard sell of 64 period trash items dropped by level 25-29 monsters (droppers: level 27-27) (sells for 900 copper)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'windchaser_naiheras_remains' AND Price <> 25000",
+   "reason": "True 1.65 loot prices (owner 2026-11-07): Windchaser Naihera's Remains - estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
   }
  ]
 }

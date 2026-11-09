@@ -2,7 +2,8 @@
 that drop it (owner 2026-11-07: "i want period values for those 34 if they can be found, and estimated based on what lvl of
 mobs drop the items not a generic amount").
 
-    python -I build_lootprices165.py <world db after a refresh>      (rerunnable; a second run changes nothing)
+    python -I build_lootprices165.py <world db after a refresh> [--dry]     (rerunnable; a second run changes nothing)
+Run it after any builder that rewrites an item add-file (build_primaquests165.py writes its quest items at price 0).
 
 Candidates: vendor trash a monster drops whose price is the placeholder 100 copper (sells for 50c), plus every item already in
 loot_prices165.json. For each:
@@ -12,6 +13,23 @@ loot_prices165.json. For each:
 Items whose Uthgard value really is 50c keep 100. Results (with their source) go to loot_prices165.json; the owning add-files
 are edited in place (both copies), other rows get one rules update (also written to prima_batch_2026-11-07/
 lootprices165_generated.json for the Prima batch builder). The batch builder and the drops builder read loot_prices165.json.
+
+Unsellable loot (owner 2026-11-09: "make all 104 items have a price even if you have to give an estimated price based on
+the level of mob that it drops from relative to similar other items without being op"): every item a monster drops whose
+price is 0 (a merchant "isn't interested") is a candidate too, whatever its kind:
+- a no-slot item with an Uthgard page: that sell value x 2, as above;
+- other no-slot items (trash, quest pieces, XP turn-ins): the same estimate by the level of their droppers (no dropper
+  level known: the item's own level);
+- equipment (it has an object type): half the median price of the priced equipment of its object type that monsters
+  drop, within 2 item levels (widening until 9 samples) - what similar drops of its level sell for;
+- the three Darkness Falls seals are the dungeon's currency and drop by the handful from every monster there: a small
+  fixed value (FIXED_SELL: 1s / 2s 50c / 5s; no period value found), far under the trash of those monsters;
+- the "Ancient ..." crafting ingredients and Enriched Quicksilver: about 35 monsters of level 40-55 carry the whole set
+  at 10% each, up to three at a time. At the trash estimate (2g) or Uthgard's values (2g and 5g, from far rarer drops)
+  the set would add about 2g 80s to every kill there, two or three times what those monsters drop today; at a fixed
+  10s each it adds about 12s.
+A later run never changes an entry whose price is still in the world.
+Once priced, a zero-price entry is kept as it is on later runs ('zero': true in loot_prices165.json).
 """
 import gzip, html, json, os, re, sqlite3, statistics, sys
 
@@ -23,6 +41,16 @@ MAP_PATH = os.path.join(HERE, 'loot_prices165.json')
 BATCH_GEN = os.path.join(HERE, 'prima_batch_2026-11-07', 'lootprices165_generated.json')
 TAG = 'True 1.65 loot prices (owner 2026-11-07)'
 PLACEHOLDER = 100
+SEALS = 'Darkness Falls currency, dropped by the handful: a small fixed value (no period value found)'
+ANCIENT = ('a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set '
+           'adds about 12s a kill (the trash estimate would add 2g 80s)')
+FIXED_SELL = {'emeraldseal': (100, SEALS), 'sapphireseal': (250, SEALS), 'diamondseal': (500, SEALS),   # copper for one
+              'ancient_crushed_focus_stone': (1000, ANCIENT), 'ancient_giant_blood': (1000, ANCIENT),
+              'ancient_lich_tooth': (1000, ANCIENT), 'ancient_mirror': (1000, ANCIENT),
+              'ancient_necrotic_brain_fluid': (1000, ANCIENT), 'ancient_pure_mercury': (1000, ANCIENT),
+              'ancient_troll_blood': (1000, ANCIENT), 'enriched_quicksilver': (1000, ANCIENT)}
+DRY = '--dry' in sys.argv
+U_ALL = {}                                          # every no-slot Uthgard item: lower name -> sell copper
 GEM_WORDS = ('opal', 'spinel', 'tourmaline', 'diopside', 'diamond', 'ruby', 'emerald', 'sapphire', 'garnet', 'topaz', 'jade',
              'onyx', 'amethyst', 'beryl', 'jasper', 'lapis', 'sphene', 'zircon', 'agate', 'moonstone', 'pearl', 'carnelian',
              'bloodstone', 'quartz', 'citrine', 'peridot', 'aquamarine', 'chrysoberyl', 'tanzanite', 'malachite', 'obsidian')
@@ -52,11 +80,14 @@ def uthgard_trash():
         t = html.unescape(re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', b)))
         m = re.search(r'Item Name Information Stats (.*?)\. Level \d+ Slot ?(.*?) ?Item type ?(.*?) ?Damage type.*?Sell value '
                       r'([0-9gsc ]+?) Salvages', t)
-        if not m or m.group(2).strip() or m.group(3).strip():
+        if not m or m.group(2).strip():
             continue
         name = m.group(1).strip(); h = len(name) // 2
         if len(name) % 2 == 1 and name[:h] == name[h + 1:]:
             name = name[:h]
+        U_ALL.setdefault(name.lower(), coin(m.group(4)))      # crafting pieces have an item type and no slot
+        if m.group(3).strip():
+            continue
         drops = []
         dm = re.search(r'Item can drop from these monsters Name Total dropped Drop rate (.*)', t)
         if dm:
@@ -101,18 +132,57 @@ for r in con.execute('select lower(MobName) m, lower(LootTemplateName) t from Mo
     templ_mobs.setdefault(r['t'], set()).add(r['m'])
 old = json.load(open(MAP_PATH, encoding='utf-8')) if os.path.exists(MAP_PATH) else {}
 items = {r['Id_nb'].lower(): dict(r) for r in con.execute(
-    'select Id_nb, Name, Price, PackageID, Object_Type from ItemTemplate where Object_Type = 0')}
+    'select Id_nb, Name, Price, PackageID, Object_Type, Level from ItemTemplate')}
+all_mobs = {r[0].lower() for r in con.execute('select Name from Mob')}
+gear = {}                                           # object type -> [(item level, price)] of priced dropped equipment
+for iid, it in items.items():
+    if it['Object_Type'] and it['Price'] > PLACEHOLDER and (it['Level'] or 0) > 0 and iid in dropped:
+        gear.setdefault(it['Object_Type'], []).append((it['Level'], it['Price']))
+
+
+def estimate_gear(object_type, level):
+    pool = gear.get(object_type) or [x for v in gear.values() for x in v]
+    for spread in range(2, 51):
+        near = [p for lv, p in pool if abs(lv - level) <= spread]
+        if len(near) >= 9:
+            return int(statistics.median(near)) // 2, spread, len(near)
+    return max(1, level * 20), None, 0
+
+
 result = {}
 for iid, it in sorted(items.items()):
-    if iid not in old and not (it['Price'] == PLACEHOLDER and iid in dropped):
-        continue
-    if iid in old and it['Price'] not in (PLACEHOLDER, old[iid]['price']):
-        continue                                    # someone set a real price since: leave it
     mobs = set()
     for t in dropped.get(iid, ()):
         mobs |= templ_mobs.get(t, {t})
+    zero = it['Price'] == 0 and any(m in all_mobs for m in mobs)       # a monster drops it and no merchant takes it
+    if iid in old and old[iid].get('zero') and it['Price'] in (0, old[iid]['price']):
+        result[iid] = old[iid]                      # priced on an earlier run: stays as it is
+        continue
+    if iid not in old and not (it['Object_Type'] == 0 and it['Price'] == PLACEHOLDER and iid in dropped) and not zero:
+        continue
+    if iid in old and it['Price'] not in (PLACEHOLDER, old[iid]['price']):
+        continue                                    # someone set a real price since: leave it
     levels = sorted(l for l in (level_of(m) for m in mobs) if l)
     level = int(statistics.median(levels)) if levels else 0
+    if zero:
+        droppers = f"droppers: level {levels[0]}-{levels[-1]}" if levels else 'no dropper level known'
+        if iid in FIXED_SELL:
+            sell, src = FIXED_SELL[iid]
+        elif it['Object_Type']:
+            ilv = it['Level'] or level or 1
+            sell, spread, n = estimate_gear(it['Object_Type'], ilv)
+            src = (f"estimated: half the median price of {n} dropped items of its kind (object type {it['Object_Type']}), "
+                   f"item level {max(1, ilv - (spread or 0))}-{ilv + (spread or 0)} ({droppers})")
+        elif U_ALL.get(it['Name'].lower(), 0) > 0:
+            sell = U_ALL[it['Name'].lower()]; src = f'Uthgard sell value {sell} copper'
+        else:
+            lv = level or it['Level'] or 1
+            sell, spread, n = estimate(lv, is_gem(it['Name']))
+            src = (f"estimated: median Uthgard sell of {n} period {'gems' if is_gem(it['Name']) and len(samples['gem']) >= 9 else 'trash items'} "
+                   f"dropped by level {max(1, lv - (spread or 0))}-{lv + (spread or 0)} monsters ({droppers})")
+        result[iid] = {'name': it['Name'], 'price': max(1, sell) * 2, 'sell': max(1, sell), 'source': src, 'drop_level': level,
+                       'zero': True}
+        continue
     u = U.get(it['Name'].lower())
     if u and u[0] > 0:
         sell, src = u[0], f'Uthgard sell value {u[0]} copper'
@@ -123,6 +193,10 @@ for iid, it in sorted(items.items()):
     else:
         continue
     result[iid] = {'name': it['Name'], 'price': sell * 2, 'sell': sell, 'source': src, 'drop_level': level}
+
+for iid in result:                                  # a later run changes no price that still stands
+    if iid in old and old[iid]['price'] == result[iid]['price']:
+        result[iid] = old[iid]
 
 # write the prices where each row lives
 owned = {}
@@ -142,12 +216,19 @@ for name in sorted(os.listdir(RUNTIME)):
             owned[k] = name
             if k in result and r.get('Price') != result[k]['price']:
                 r['Price'] = result[k]['price']; n += 1
-        if n and name != 'add-primaitems165.json':      # the batch builder writes that one (it reads loot_prices165.json)
+        if n and name != 'add-primaitems165.json' and not DRY:      # the batch builder writes that one (it reads loot_prices165.json)
             nl = '\r\n' if '\r\n' in raw else '\n'
             open(p, 'w', encoding='utf-8', newline=nl).write(json.dumps(d, ensure_ascii=False, indent=1) + ('\n' if raw.endswith('\n') else ''))
 rules = [{'sql': f"UPDATE ItemTemplate SET Price = {v['price']} WHERE lower(Id_nb) = '{k.replace(chr(39), chr(39) * 2)}' AND Price <> {v['price']}",
-          'reason': f"{TAG}: {v['name']} - {v['source']} (sells for {v['sell']} copper)"}
+          'reason': f"{TAG}: {v['name']} - {'no merchant took it (price 0, owner 2026-11-09); ' if v.get('zero') else ''}{v['source']} "
+                    f"(sells for {v['sell']} copper)"}
          for k, v in sorted(result.items()) if k not in owned]
+if DRY:
+    for k, v in sorted(result.items(), key=lambda kv: (not kv[1].get('zero'), kv[1]['name'].lower())):
+        print(f"  {'NEW ' if k not in old else '    '}{v['name'][:34]:34} lvl {v['drop_level']:>2}  {v['sell']:>6}c  {owned.get(k, 'rules')[:28]:28} {v['source'][:110]}")
+    changed = [k for k in old if k in result and result[k] != old[k]] + [k for k in old if k not in result]
+    print(f'DRY RUN: {len(result)} priced ({sum(1 for k in result if k not in old)} new), earlier entries changed or dropped: {changed}')
+    sys.exit(0)
 json.dump({'rules': rules}, open(BATCH_GEN, 'w', encoding='utf-8'), indent=1)
 for folder in (RUNTIME, HERE):
     p = os.path.join(folder, 'true165-rules.json')

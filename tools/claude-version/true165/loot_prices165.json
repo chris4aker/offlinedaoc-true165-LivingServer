@@ -1,4 +1,60 @@
 {
+ "ancient_crushed_focus_stone": {
+  "name": "Ancient Crushed Focus Stone",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "ancient_giant_blood": {
+  "name": "Ancient Giant Blood",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "ancient_lich_tooth": {
+  "name": "Ancient Lich Tooth",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 59,
+  "zero": true
+ },
+ "ancient_mirror": {
+  "name": "Ancient Mirror",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "ancient_necrotic_brain_fluid": {
+  "name": "Ancient Necrotic Brain Fluid",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 61,
+  "zero": true
+ },
+ "ancient_pure_mercury": {
+  "name": "Ancient Pure Mercury",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "ancient_troll_blood": {
+  "name": "Ancient Troll Blood",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
  "black_orm_gland": {
   "name": "Black Orm Gland",
   "price": 5550,
@@ -6,12 +62,284 @@
   "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36)",
   "drop_level": 36
  },
+ "bone": {
+  "name": "Bone",
+  "price": 25000,
+  "sell": 12500,
+  "source": "estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47)",
+  "drop_level": 47,
+  "zero": true
+ },
+ "botonid leaf branch": {
+  "name": "Botonid Leaf Branch",
+  "price": 200,
+  "sell": 100,
+  "source": "estimated: median Uthgard sell of 95 period trash items dropped by level 7-11 monsters (droppers: level 9-9)",
+  "drop_level": 9,
+  "zero": true
+ },
+ "branch of bloinigein": {
+  "name": "Branch of Bloinigein",
+  "price": 260,
+  "sell": 130,
+  "source": "estimated: median Uthgard sell of 105 period trash items dropped by level 9-13 monsters (droppers: level 11-11)",
+  "drop_level": 11,
+  "zero": true
+ },
+ "coral": {
+  "name": "Coral",
+  "price": 5174,
+  "sell": 2587,
+  "source": "estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35)",
+  "drop_level": 35,
+  "zero": true
+ },
+ "cq_bag_of_moss": {
+  "name": "Bag of Moss",
+  "price": 1600,
+  "sell": 800,
+  "source": "Uthgard sell value 800 copper",
+  "drop_level": 25,
+  "zero": true
+ },
+ "cq_bandit_s_ear": {
+  "name": "Bandit's Ear",
+  "price": 260,
+  "sell": 130,
+  "source": "estimated: median Uthgard sell of 105 period trash items dropped by level 9-13 monsters (droppers: level 8-11)",
+  "drop_level": 11,
+  "zero": true
+ },
+ "cq_changeling_skin": {
+  "name": "Changeling Skin",
+  "price": 10624,
+  "sell": 5312,
+  "source": "estimated: median Uthgard sell of 44 period trash items dropped by level 37-41 monsters (droppers: level 39-39)",
+  "drop_level": 39,
+  "zero": true
+ },
+ "cq_clump_of_seaweed": {
+  "name": "Clump of Seaweed",
+  "price": 20,
+  "sell": 10,
+  "source": "Uthgard sell value 10 copper",
+  "drop_level": 2,
+  "zero": true
+ },
+ "cq_fish": {
+  "name": "Fish",
+  "price": 80,
+  "sell": 40,
+  "source": "Uthgard sell value 40 copper",
+  "drop_level": 12,
+  "zero": true
+ },
+ "cq_giant_ant_mandible": {
+  "name": "Giant Ant Mandible",
+  "price": 1000,
+  "sell": 500,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21)",
+  "drop_level": 21,
+  "zero": true
+ },
+ "cq_gold_lined_drinking_horn": {
+  "name": "Gold Lined Drinking Horn",
+  "price": 6100,
+  "sell": 3050,
+  "source": "estimated: median Uthgard sell of 60 period trash items dropped by level 36-40 monsters (droppers: level 37-40)",
+  "drop_level": 38,
+  "zero": true
+ },
+ "cq_golden_chain": {
+  "name": "Golden Chain",
+  "price": 902,
+  "sell": 451,
+  "source": "estimated: median Uthgard sell of 83 period trash items dropped by level 17-21 monsters (droppers: level 19-19)",
+  "drop_level": 19,
+  "zero": true
+ },
+ "cq_rat_tail": {
+  "name": "Rat Tail",
+  "price": 90,
+  "sell": 45,
+  "source": "estimated: median Uthgard sell of 77 period trash items dropped by level 4-8 monsters (droppers: level 4-7)",
+  "drop_level": 6,
+  "zero": true
+ },
+ "cq_silk_spinnerets": {
+  "name": "Silk Spinnerets",
+  "price": 5550,
+  "sell": 2775,
+  "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-37)",
+  "drop_level": 36,
+  "zero": true
+ },
+ "cq_soot_harvester_leg": {
+  "name": "Soot Harvester Leg",
+  "price": 850,
+  "sell": 425,
+  "source": "Uthgard sell value 425 copper",
+  "drop_level": 20,
+  "zero": true
+ },
+ "cq_tomte_bracer": {
+  "name": "Tomte Bracer",
+  "price": 72,
+  "sell": 36,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 3-7 monsters (droppers: level 5-5)",
+  "drop_level": 5,
+  "zero": true
+ },
+ "cq_wormtooth": {
+  "name": "Wormtooth",
+  "price": 800,
+  "sell": 400,
+  "source": "estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17)",
+  "drop_level": 17,
+  "zero": true
+ },
+ "cq_yellow_quartz": {
+  "name": "Yellow Quartz",
+  "price": 320,
+  "sell": 160,
+  "source": "Uthgard sell value 160 copper",
+  "drop_level": 10,
+  "zero": true
+ },
+ "crater_cicada_leg": {
+  "name": "Crater Cicada Leg",
+  "price": 3200,
+  "sell": 1600,
+  "source": "estimated: median Uthgard sell of 43 period trash items dropped by level 29-33 monsters (droppers: level 31-31)",
+  "drop_level": 31,
+  "zero": true
+ },
+ "cyhraeth cloak": {
+  "name": "Cyhraeth Cloak",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 25 period trash items dropped by level 50-54 monsters (droppers: level 50-54)",
+  "drop_level": 52,
+  "zero": true
+ },
+ "death worm silk": {
+  "name": "Death Worm Silk",
+  "price": 300,
+  "sell": 150,
+  "source": "Uthgard sell value 150 copper",
+  "drop_level": 14,
+  "zero": true
+ },
+ "diamondseal": {
+  "name": "Daemon Diamond Seal",
+  "price": 1000,
+  "sell": 500,
+  "source": "Darkness Falls currency, dropped by the handful: a small fixed value (no period value found)",
+  "drop_level": 68,
+  "zero": true
+ },
+ "emeraldseal": {
+  "name": "Daemon Emerald Seal",
+  "price": 200,
+  "sell": 100,
+  "source": "Darkness Falls currency, dropped by the handful: a small fixed value (no period value found)",
+  "drop_level": 32,
+  "zero": true
+ },
+ "enriched_quicksilver": {
+  "name": "Enriched Quicksilver",
+  "price": 2000,
+  "sell": 1000,
+  "source": "a crafting ingredient about 35 monsters drop as a set, up to three at a time: a small fixed value, so the set adds about 12s a kill (the trash estimate would add 2g 80s)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "faraheim_doe_meat": {
+  "name": "Faraheim Doe Meat",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 41 period trash items dropped by level 46-50 monsters (droppers: level 48-48)",
+  "drop_level": 48,
+  "zero": true
+ },
+ "fisher_grip_feather": {
+  "name": "Fisher Grip Feather",
+  "price": 5174,
+  "sell": 2587,
+  "source": "estimated: median Uthgard sell of 50 period trash items dropped by level 33-37 monsters (droppers: level 35-35)",
+  "drop_level": 35,
+  "zero": true
+ },
+ "frosted grimel root": {
+  "name": "Frosted Grimel Root",
+  "price": 13750,
+  "sell": 6875,
+  "source": "estimated: median Uthgard sell of 28 period trash items dropped by level 41-45 monsters (droppers: level 43-43)",
+  "drop_level": 43,
+  "zero": true
+ },
+ "frozen_teardrop": {
+  "name": "Frozen Teardrop",
+  "price": 12000,
+  "sell": 6000,
+  "source": "estimated: median Uthgard sell of 49 period trash items dropped by level 38-42 monsters (droppers: level 40-40)",
+  "drop_level": 40,
+  "zero": true
+ },
+ "golden_chain_necklace": {
+  "name": "Golden Chain Necklace",
+  "price": 5550,
+  "sell": 2775,
+  "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 34-38 monsters (droppers: level 36-36)",
+  "drop_level": 36,
+  "zero": true
+ },
+ "griffin_loner_feather": {
+  "name": "Griffon Loner Feather",
+  "price": 1700,
+  "sell": 850,
+  "source": "estimated: median Uthgard sell of 74 period trash items dropped by level 23-27 monsters (droppers: level 25-25)",
+  "drop_level": 25,
+  "zero": true
+ },
+ "ingester_stomach": {
+  "name": "Ingester Stomach",
+  "price": 2074,
+  "sell": 1037,
+  "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30)",
+  "drop_level": 30,
+  "zero": true
+ },
+ "morvalt_blandere_belt": {
+  "name": "Morvalt Blandere Belt",
+  "price": 11476,
+  "sell": 5738,
+  "source": "estimated: median Uthgard sell of 32 period trash items dropped by level 42-46 monsters (droppers: level 44-44)",
+  "drop_level": 44,
+  "zero": true
+ },
  "morvalt_obsidian_sword": {
   "name": "Morvalt Obsidian Sword",
   "price": 800,
   "sell": 400,
   "source": "estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17)",
   "drop_level": 17
+ },
+ "morvalt_strebers_head": {
+  "name": "Morvalt Streber's Head",
+  "price": 2000,
+  "sell": 1000,
+  "source": "estimated: median Uthgard sell of 64 period trash items dropped by level 27-31 monsters (droppers: level 29-29)",
+  "drop_level": 29,
+  "zero": true
+ },
+ "mottled_boobrie_egg": {
+  "name": "Mottled Boobrie Egg",
+  "price": 4000,
+  "sell": 2000,
+  "source": "estimated: median Uthgard sell of 40 period trash items dropped by level 31-35 monsters (droppers: level 33-33)",
+  "drop_level": 33,
+  "zero": true
  },
  "mud_crab_claw": {
   "name": "Mud Crab Claw",
@@ -26,6 +354,94 @@
   "sell": 1037,
   "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 30-30)",
   "drop_level": 30
+ },
+ "myling_essence": {
+  "name": "Myling Essence",
+  "price": 2000,
+  "sell": 1000,
+  "source": "estimated: median Uthgard sell of 64 period trash items dropped by level 27-31 monsters (droppers: level 29-29)",
+  "drop_level": 29,
+  "zero": true
+ },
+ "p165_drop_11851": {
+  "name": "Wulfen Crescent Crown",
+  "price": 71032,
+  "sell": 35516,
+  "source": "estimated: half the median price of 155 dropped items of its kind (object type 32), item level 48-52 (droppers: level 55-55)",
+  "drop_level": 55,
+  "zero": true
+ },
+ "p165_drop_2296": {
+  "name": "Reincarnate Femur War Maul",
+  "price": 75436,
+  "sell": 37718,
+  "source": "estimated: half the median price of 38 dropped items of its kind (object type 12), item level 48-52 (droppers: level 54-54)",
+  "drop_level": 54,
+  "zero": true
+ },
+ "p165_drop_3446": {
+  "name": "Bright Long Animal Fang",
+  "price": 7422,
+  "sell": 3711,
+  "source": "estimated: half the median price of 9 dropped items of its kind (object type 3), item level 15-19 (droppers: level 14-20)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_drop_3470": {
+  "name": "Enlicimun",
+  "price": 75438,
+  "sell": 37719,
+  "source": "estimated: half the median price of 9 dropped items of its kind (object type 9), item level 45-55 (droppers: level 51-80)",
+  "drop_level": 51,
+  "zero": true
+ },
+ "p165_drop_3627": {
+  "name": "Manta Skin Cloak",
+  "price": 22442,
+  "sell": 11221,
+  "source": "estimated: half the median price of 94 dropped items of its kind (object type 41), item level 21-25 (droppers: level 23-23)",
+  "drop_level": 23,
+  "zero": true
+ },
+ "p165_drop_4342": {
+  "name": "Brilliant Daemon Fire-forged Bow",
+  "price": 75438,
+  "sell": 37719,
+  "source": "estimated: half the median price of 9 dropped items of its kind (object type 9), item level 45-55 (droppers: level 78-79)",
+  "drop_level": 78,
+  "zero": true
+ },
+ "p165_drop_4381": {
+  "name": "Brilliant Twisted Evil Sapphire Scepter",
+  "price": 75438,
+  "sell": 37719,
+  "source": "estimated: half the median price of 135 dropped items of its kind (object type 8), item level 48-52 (droppers: level 78-83)",
+  "drop_level": 79,
+  "zero": true
+ },
+ "p165_drop_442": {
+  "name": "Silvered Pilfered Jerkin",
+  "price": 5370,
+  "sell": 2685,
+  "source": "estimated: half the median price of 38 dropped items of its kind (object type 33), item level 7-11 (droppers: level 9-9)",
+  "drop_level": 9,
+  "zero": true
+ },
+ "p165_drop_5067": {
+  "name": "Brilliant Golden Tree-cleaver",
+  "price": 75436,
+  "sell": 37718,
+  "source": "estimated: half the median price of 12 dropped items of its kind (object type 6), item level 45-49 (droppers: level 49-49)",
+  "drop_level": 49,
+  "zero": true
+ },
+ "p165_drop_6968": {
+  "name": "Agate",
+  "price": 954,
+  "sell": 477,
+  "source": "Uthgard sell value 477 copper",
+  "drop_level": 19,
+  "zero": true
  },
  "p165_drop_6976": {
   "name": "Black Opal",
@@ -68,6 +484,46 @@
   "sell": 6123,
   "source": "Uthgard sell value 6123 copper",
   "drop_level": 33
+ },
+ "p165_drop_9139": {
+  "name": "Sublime Summoner's Sash",
+  "price": 15000,
+  "sell": 7500,
+  "source": "estimated: half the median price of 415 dropped items of its kind (object type 41), item level 48-52 (droppers: level 75-75)",
+  "drop_level": 75,
+  "zero": true
+ },
+ "p165_item_1216": {
+  "name": "Svartalf Crafted Necklace",
+  "price": 41336,
+  "sell": 20668,
+  "source": "estimated: half the median price of 113 dropped items of its kind (object type 41), item level 37-41 (droppers: level 13-42)",
+  "drop_level": 37,
+  "zero": true
+ },
+ "p165_item_1353": {
+  "name": "Svartalf Crafted Belt",
+  "price": 41336,
+  "sell": 20668,
+  "source": "estimated: half the median price of 121 dropped items of its kind (object type 41), item level 38-42 (droppers: level 13-42)",
+  "drop_level": 37,
+  "zero": true
+ },
+ "p165_item_1354": {
+  "name": "Svartalf Crafted Ring",
+  "price": 41334,
+  "sell": 20667,
+  "source": "estimated: half the median price of 116 dropped items of its kind (object type 41), item level 36-40 (droppers: level 13-42)",
+  "drop_level": 37,
+  "zero": true
+ },
+ "p165_item_3504": {
+  "name": "Svartalf Hair Collar",
+  "price": 20510,
+  "sell": 10255,
+  "source": "estimated: half the median price of 73 dropped items of its kind (object type 41), item level 23-27 (droppers: level 11-42)",
+  "drop_level": 37,
+  "zero": true
  },
  "p165_prima_bag_of_fruit": {
   "name": "Bag of Fruit",
@@ -244,6 +700,14 @@
   "source": "Uthgard sell value 50 copper",
   "drop_level": 8
  },
+ "p165_uth_1238": {
+  "name": "pristine cave mauler skin",
+  "price": 1700,
+  "sell": 850,
+  "source": "estimated: median Uthgard sell of 74 period trash items dropped by level 23-27 monsters (droppers: level 25-25)",
+  "drop_level": 25,
+  "zero": true
+ },
  "p165_uth_1272": {
   "name": "dragon ant larva",
   "price": 140,
@@ -251,12 +715,44 @@
   "source": "estimated: median Uthgard sell of 81 period trash items dropped by level 5-9 monsters (droppers: level 5-8)",
   "drop_level": 7
  },
+ "p165_uth_149": {
+  "name": "waterskin",
+  "price": 730,
+  "sell": 365,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 14-18 monsters (droppers: level 13-17)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_uth_1579": {
+  "name": "arachnid poison sac",
+  "price": 13750,
+  "sell": 6875,
+  "source": "estimated: median Uthgard sell of 28 period trash items dropped by level 41-45 monsters (droppers: level 37-43)",
+  "drop_level": 43,
+  "zero": true
+ },
+ "p165_uth_1582": {
+  "name": "arachnid carapace",
+  "price": 12000,
+  "sell": 6000,
+  "source": "estimated: median Uthgard sell of 49 period trash items dropped by level 38-42 monsters (droppers: level 28-43)",
+  "drop_level": 40,
+  "zero": true
+ },
  "p165_uth_2082": {
   "name": "bog frog leg",
   "price": 25000,
   "sell": 12500,
   "source": "estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47)",
   "drop_level": 47
+ },
+ "p165_uth_2282": {
+  "name": "hide sack",
+  "price": 500,
+  "sell": 250,
+  "source": "estimated: median Uthgard sell of 94 period trash items dropped by level 12-16 monsters (droppers: level 13-16)",
+  "drop_level": 14,
+  "zero": true
  },
  "p165_uth_3046": {
   "name": "Glare's Trophy",
@@ -272,6 +768,22 @@
   "source": "estimated: median Uthgard sell of 54 period trash items dropped by level 28-32 monsters (droppers: level 26-34)",
   "drop_level": 30
  },
+ "p165_uth_3146": {
+  "name": "chitin shard",
+  "price": 40,
+  "sell": 20,
+  "source": "estimated: median Uthgard sell of 83 period trash items dropped by level 1-4 monsters (droppers: level 2-2)",
+  "drop_level": 2,
+  "zero": true
+ },
+ "p165_uth_3147": {
+  "name": "huge crab claw",
+  "price": 40,
+  "sell": 20,
+  "source": "estimated: median Uthgard sell of 83 period trash items dropped by level 1-4 monsters (droppers: level 2-2)",
+  "drop_level": 2,
+  "zero": true
+ },
  "p165_uth_3153": {
   "name": "short piece of vine",
   "price": 140,
@@ -279,12 +791,148 @@
   "source": "estimated: median Uthgard sell of 81 period trash items dropped by level 5-9 monsters (droppers: level 7-7)",
   "drop_level": 7
  },
+ "p165_uth_3296": {
+  "name": "large eirebug carapace",
+  "price": 200,
+  "sell": 100,
+  "source": "estimated: median Uthgard sell of 95 period trash items dropped by level 7-11 monsters (droppers: level 9-9)",
+  "drop_level": 9,
+  "zero": true
+ },
  "p165_uth_33": {
   "name": "derg fillet",
   "price": 100,
   "sell": 50,
   "source": "Uthgard sell value 50 copper",
   "drop_level": 3
+ },
+ "p165_uth_3350": {
+  "name": "cave bear pelt",
+  "price": 730,
+  "sell": 365,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 14-18 monsters (droppers: level 16-16)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_uth_3409": {
+  "name": "frosty hide",
+  "price": 20000,
+  "sell": 10000,
+  "source": "estimated: median Uthgard sell of 19 period trash items dropped by level 51-57 monsters (droppers: level 54-54)",
+  "drop_level": 54,
+  "zero": true
+ },
+ "p165_uth_3410": {
+  "name": "sleipneirson hide",
+  "price": 16750,
+  "sell": 8375,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 52-58 monsters (droppers: level 55-55)",
+  "drop_level": 55,
+  "zero": true
+ },
+ "p165_uth_3411": {
+  "name": "mature wyvern hide",
+  "price": 16750,
+  "sell": 8375,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 52-58 monsters (droppers: level 53-57)",
+  "drop_level": 55,
+  "zero": true
+ },
+ "p165_uth_3418": {
+  "name": "pristine sleipneirson hide",
+  "price": 16750,
+  "sell": 8375,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 52-58 monsters (droppers: level 55-55)",
+  "drop_level": 55,
+  "zero": true
+ },
+ "p165_uth_3519": {
+  "name": "myrkcat claw",
+  "price": 44,
+  "sell": 22,
+  "source": "estimated: median Uthgard sell of 100 period trash items dropped by level 1-5 monsters (droppers: level 3-3)",
+  "drop_level": 3,
+  "zero": true
+ },
+ "p165_uth_4135": {
+  "name": "pristine cave crawler skin",
+  "price": 730,
+  "sell": 365,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 14-18 monsters (droppers: level 16-16)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_uth_4211": {
+  "name": "flayed levian-al pelt",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 44 period trash items dropped by level 48-52 monsters (droppers: level 50-50)",
+  "drop_level": 50,
+  "zero": true
+ },
+ "p165_uth_4347": {
+  "name": "large luch claw",
+  "price": 1000,
+  "sell": 500,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21)",
+  "drop_level": 21,
+  "zero": true
+ },
+ "p165_uth_4497": {
+  "name": "myrkcat skin",
+  "price": 44,
+  "sell": 22,
+  "source": "estimated: median Uthgard sell of 100 period trash items dropped by level 1-5 monsters (droppers: level 3-3)",
+  "drop_level": 3,
+  "zero": true
+ },
+ "p165_uth_4675": {
+  "name": "red tipped cwn annwn ear",
+  "price": 976,
+  "sell": 488,
+  "source": "estimated: median Uthgard sell of 86 period trash items dropped by level 18-22 monsters (droppers: level 20-20)",
+  "drop_level": 20,
+  "zero": true
+ },
+ "p165_uth_4956": {
+  "name": "forest cat skin",
+  "price": 730,
+  "sell": 365,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 14-18 monsters (droppers: level 16-16)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_uth_4958": {
+  "name": "forest cat tooth",
+  "price": 730,
+  "sell": 365,
+  "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 14-18 monsters (droppers: level 16-16)",
+  "drop_level": 16,
+  "zero": true
+ },
+ "p165_uth_5026": {
+  "name": "bog frog skin",
+  "price": 25000,
+  "sell": 12500,
+  "source": "estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47)",
+  "drop_level": 47,
+  "zero": true
+ },
+ "p165_uth_5420": {
+  "name": "supple bear pelt",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 46 period trash items dropped by level 47-51 monsters (droppers: level 49-49)",
+  "drop_level": 49,
+  "zero": true
+ },
+ "p165_uth_5422": {
+  "name": "cracked levian-al fang",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 44 period trash items dropped by level 48-52 monsters (droppers: level 50-50)",
+  "drop_level": 50,
+  "zero": true
  },
  "p165_uth_55": {
   "name": "leather pouch",
@@ -314,12 +962,52 @@
   "source": "Uthgard sell value 50 copper",
   "drop_level": 10
  },
+ "p165_uth_7866": {
+  "name": "bright Adroit crossbow",
+  "price": 800,
+  "sell": 400,
+  "source": "estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17)",
+  "drop_level": 17,
+  "zero": true
+ },
+ "p165_uth_8402": {
+  "name": "pristine wyvern hide",
+  "price": 10454,
+  "sell": 5227,
+  "source": "estimated: median Uthgard sell of 23 period trash items dropped by level 43-47 monsters (droppers: level 45-45)",
+  "drop_level": 45,
+  "zero": true
+ },
+ "p165_uth_8486": {
+  "name": "luminous Bodybender padded sleeves",
+  "price": 11476,
+  "sell": 5738,
+  "source": "estimated: median Uthgard sell of 32 period trash items dropped by level 42-46 monsters (droppers: level 44-44)",
+  "drop_level": 44,
+  "zero": true
+ },
  "p165_uth_8487": {
   "name": "luminous Sturdy dwarven short sword",
   "price": 11476,
   "sell": 5738,
   "source": "estimated: median Uthgard sell of 32 period trash items dropped by level 42-46 monsters (droppers: level 44-44)",
   "drop_level": 44
+ },
+ "p165_uth_8489": {
+  "name": "shimmering Sturdy moon claw",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 25 period trash items dropped by level 50-54 monsters (droppers: level 52-52)",
+  "drop_level": 52,
+  "zero": true
+ },
+ "p165_uth_8615": {
+  "name": "shimmering Spiritbender osnadurtha sleeves",
+  "price": 27744,
+  "sell": 13872,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 57-61 monsters (droppers: level 59-59)",
+  "drop_level": 59,
+  "zero": true
  },
  "p165_uth_904": {
   "name": "bulbous spider eye",
@@ -328,12 +1016,92 @@
   "source": "Uthgard sell value 50 copper",
   "drop_level": 5
  },
+ "p165_uth_980": {
+  "name": "harvestman carapace",
+  "price": 44,
+  "sell": 22,
+  "source": "estimated: median Uthgard sell of 100 period trash items dropped by level 1-5 monsters (droppers: level 3-3)",
+  "drop_level": 3,
+  "zero": true
+ },
+ "pendant of the forsaken": {
+  "name": "Pendant of the Forsaken",
+  "price": 1200,
+  "sell": 600,
+  "source": "estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23)",
+  "drop_level": 23,
+  "zero": true
+ },
+ "pittedbronzescimitar": {
+  "name": "Pitted Bronze Scimitar",
+  "price": 502,
+  "sell": 251,
+  "source": "estimated: half the median price of 9 dropped items of its kind (object type 3), item level 1-9 (droppers: level 1-8)",
+  "drop_level": 4,
+  "zero": true
+ },
+ "pittedtarnisheddagger": {
+  "name": "Pitted Tarnished Dagger",
+  "price": 502,
+  "sell": 251,
+  "source": "estimated: half the median price of 9 dropped items of its kind (object type 3), item level 1-9 (droppers: level 6-8)",
+  "drop_level": 6,
+  "zero": true
+ },
  "polished_piece_of_obsidian": {
   "name": "Polished Piece of Obsidian",
   "price": 1446,
   "sell": 723,
   "source": "estimated: median Uthgard sell of 10 period gems dropped by level 21-25 monsters (droppers: level 23-23)",
   "drop_level": 23
+ },
+ "prince ba`alorien`s remains": {
+  "name": "Prince Ba'alorien's Remains",
+  "price": 27744,
+  "sell": 13872,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 58-98 monsters (droppers: level 78-78)",
+  "drop_level": 78,
+  "zero": true
+ },
+ "rat tongue": {
+  "name": "Rat Tongue",
+  "price": 60,
+  "sell": 30,
+  "source": "estimated: median Uthgard sell of 89 period trash items dropped by level 2-6 monsters (droppers: level 4-4)",
+  "drop_level": 4,
+  "zero": true
+ },
+ "red_cap": {
+  "name": "Red Cap",
+  "price": 6100,
+  "sell": 3050,
+  "source": "estimated: median Uthgard sell of 60 period trash items dropped by level 36-40 monsters (droppers: level 38-38)",
+  "drop_level": 38,
+  "zero": true
+ },
+ "respec_realm": {
+  "name": "Luminescent Abrogo Stone",
+  "price": 15000,
+  "sell": 7500,
+  "source": "estimated: half the median price of 151 dropped items of its kind (object type 41), item level 51-109 (droppers: level 75-80)",
+  "drop_level": 75,
+  "zero": true
+ },
+ "rotting hog tail": {
+  "name": "Rotting Hog Tail",
+  "price": 60,
+  "sell": 30,
+  "source": "estimated: median Uthgard sell of 89 period trash items dropped by level 2-6 monsters (droppers: level 4-5)",
+  "drop_level": 4,
+  "zero": true
+ },
+ "royal iceweaver`s remains": {
+  "name": "Royal Iceweaver's Remains",
+  "price": 27744,
+  "sell": 13872,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 58-98 monsters (droppers: level 78-78)",
+  "drop_level": 78,
+  "zero": true
  },
  "runemaster_sealed_pages": {
   "name": "Runemaster Sealed Pages",
@@ -342,6 +1110,22 @@
   "source": "estimated: median Uthgard sell of 39 period trash items dropped by level 40-44 monsters (droppers: level 42-42)",
   "drop_level": 42
  },
+ "sapphireseal": {
+  "name": "Daemon Sapphire Seal",
+  "price": 500,
+  "sell": 250,
+  "source": "Darkness Falls currency, dropped by the handful: a small fixed value (no period value found)",
+  "drop_level": 45,
+  "zero": true
+ },
+ "scimitar_cat_pelt": {
+  "name": "Scimitar Cat Pelt",
+  "price": 800,
+  "sell": 400,
+  "source": "estimated: median Uthgard sell of 77 period trash items dropped by level 15-19 monsters (droppers: level 17-17)",
+  "drop_level": 17,
+  "zero": true
+ },
  "scroll_of_eternal_sorrow": {
   "name": "Scroll of Eternal Sorrow",
   "price": 1200,
@@ -349,12 +1133,60 @@
   "source": "estimated: median Uthgard sell of 83 period trash items dropped by level 21-25 monsters (droppers: level 23-23)",
   "drop_level": 23
  },
+ "shimmering_bow_of_the_stonewatch": {
+  "name": "Shimmering_Bow_of_the_Stonewatch",
+  "price": 27744,
+  "sell": 13872,
+  "source": "estimated: median Uthgard sell of 10 period trash items dropped by level 58-88 monsters (droppers: level 51-80)",
+  "drop_level": 73,
+  "zero": true
+ },
+ "smallmaulerskin": {
+  "name": "Small Mauler Skin",
+  "price": 100,
+  "sell": 50,
+  "source": "Uthgard sell value 50 copper",
+  "drop_level": 5,
+  "zero": true
+ },
+ "tatteredtannedbrowngloves": {
+  "name": "Tattered Tanned Brown Gloves",
+  "price": 760,
+  "sell": 380,
+  "source": "estimated: half the median price of 23 dropped items of its kind (object type 33), item level 3-7 (droppers: level 6-8)",
+  "drop_level": 6,
+  "zero": true
+ },
+ "trip string": {
+  "name": "Trip String",
+  "price": 40000,
+  "sell": 20000,
+  "source": "estimated: median Uthgard sell of 41 period trash items dropped by level 46-50 monsters (droppers: level 48-48)",
+  "drop_level": 48,
+  "zero": true
+ },
  "warm_fire_ant_larva": {
   "name": "Warm Fire Ant Larva",
   "price": 1000,
   "sell": 500,
   "source": "estimated: median Uthgard sell of 85 period trash items dropped by level 19-23 monsters (droppers: level 21-21)",
   "drop_level": 21
+ },
+ "water_cat_pelt": {
+  "name": "Water Cat Pelt",
+  "price": 1100,
+  "sell": 550,
+  "source": "estimated: median Uthgard sell of 94 period trash items dropped by level 20-24 monsters (droppers: level 22-22)",
+  "drop_level": 22,
+  "zero": true
+ },
+ "white_wolf_fang": {
+  "name": "White Wolf Fang",
+  "price": 1800,
+  "sell": 900,
+  "source": "estimated: median Uthgard sell of 64 period trash items dropped by level 25-29 monsters (droppers: level 27-27)",
+  "drop_level": 27,
+  "zero": true
  },
  "windchaser_naiheras_remains": {
   "name": "Windchaser Naihera's Remains",
