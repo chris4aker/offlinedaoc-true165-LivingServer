@@ -192,13 +192,29 @@ namespace DOL.UnitTests
 
         [Test] public void TankPreferredAndAttackersUsedWhenNoTankSupportNeverPulls()
         {
+            // nobody can pull from range: the tank walks up first, then any attacker; a healer never pulls
             var (player, tank, healer) = Party(); var attacker = Helper(player, new ClassWizard());
-            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, attacker, tank }), Is.SameAs(tank));
-            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, attacker }), Is.SameAs(attacker));
-            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer }), Is.Null);
+            Func<GameBot, bool> none = _ => false;
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, attacker, tank }, none), Is.SameAs(tank));
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, attacker }, none), Is.SameAs(attacker));
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer }, none), Is.Null);
             tank.Alive = false;
-            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { tank, attacker }), Is.SameAs(attacker));
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { tank, attacker }, none), Is.SameAs(attacker));
         }
+
+        [Test] public void RangedTankFirstThenRangedAttackerThenWalkingTank()
+        {
+            // owner 2026-11-08: a tank that can pull from range, then an archer / caster, then the tank walks up
+            var (player, tank, healer) = Party(); var archer = Helper(player, new ClassWizard());
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, archer, tank }, bot => true), Is.SameAs(tank));
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, archer, tank }, bot => bot == archer), Is.SameAs(archer));
+            Assert.That(PlayerCompanionGrind.SelectPuller(new[] { healer, archer, tank }, bot => bot == healer), Is.SameAs(tank),
+                "a healer with a ranged spell still never pulls");
+        }
+
+        [TestCase(true, true, 0)] [TestCase(false, true, 1)] [TestCase(true, false, 2)] [TestCase(false, false, 3)]
+        public void PullerRankOrder(bool tank, bool ranged, int rank) =>
+            Assert.That(PlayerCompanionGrind.PullerRank(tank, ranged), Is.EqualTo(rank));
 
         [TestCase(1, 1, 0, 1, true)] [TestCase(10, 9, -1, 7, true)]
         [TestCase(10, 1, -3, 7, false)] [TestCase(10, 30, 3, 7, true)]

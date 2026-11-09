@@ -41,6 +41,7 @@ namespace DOL.GS.Commands
             public long NextStatus;
             public long NextClientSessionRefresh;
             public string Detail = "Waiting for the party";
+            public string PullerName;                   // "/grind (name)": that companion pulls (null: chosen each pull)
             public readonly HashSet<GameLiving> SeatedByMode = new();
             public readonly Dictionary<GameNPC, long> FailedTargets = new();
         }
@@ -65,9 +66,27 @@ namespace DOL.GS.Commands
 
         public static bool IsActive(GamePlayer player) => player != null && Sessions.ContainsKey(player);
 
+        // Your own companions: /spawn helpers, and in True 1.65 Mode your hired companions (owner 2026-11-08: /grind back
+        // for the hired group).
         public static bool IsOwnedCompanion(GamePlayer player, Group group, GameLiving member) =>
-            player != null && group != null && member is GameBot bot && bot.IsTemporaryGroupHelper && !bot.IsAutonomousWorldBot &&
-            bot.Owner == player && bot.Group == group && bot.Realm == player.Realm;
+            player != null && group != null && member is GameBot bot && bot.Group == group && bot.Realm == player.Realm &&
+            (bot.IsTemporaryGroupHelper && !bot.IsAutonomousWorldBot && bot.Owner == player ||
+             HiredCompanions165.IsHired(bot) && bot.CompanionPlayer == player);
+
+        // True 1.65 Mode: /grind is a quality of life option, off by default (the client's Options > Bots > GRIND sends
+        // "/grind option on|off quiet" at every world entry and on a change; owner 2026-11-08).
+        private static readonly ConcurrentDictionary<GamePlayer, bool> Enabled = new();
+        public static bool IsEnabled(GamePlayer player) => !Classic165Mode.IsOn || player != null && Enabled.ContainsKey(player);
+        public static void SetEnabled(GamePlayer player, bool on)
+        {
+            if (player == null) return;
+            if (on) Enabled[player] = true;
+            else
+            {
+                Enabled.TryRemove(player, out _);
+                if (IsActive(player)) Stop(player, "turned off in Options");
+            }
+        }
 
         public static bool IsExclusiveParty(GamePlayer player, Group group, IReadOnlyList<GameLiving> members) =>
             player != null && group != null && player.Group == group && members.Count is >= 2 and <= 8 &&
@@ -103,16 +122,53 @@ namespace DOL.GS.Commands
                 member.IsCasting && member.castingComponent?.SpellHandler?.Spell?.IsPulsing != true && !BotSongTwistPolicy.HasMobileSongCast(bot);
         }
 
-        public static GameBot SelectPuller(IEnumerable<GameBot> companions) => companions
-            .Where(bot => bot.IsAlive && !bot.IsCrowdControlled && bot.CharacterClass != null &&
-                BotPartyRoles.For((eCharacterClass)bot.CharacterClass.ID) != BotPartyRole.Support)
-            .OrderBy(bot => BotPartyRoles.IsTank(bot) ? 0 : 1).FirstOrDefault();
+        // Who pulls (owner 2026-11-08): a tank that can pull from range first (the monster ends up on the tank), then a
+        // ranged damage dealer (an archer with ammunition, a caster with a ranged spell), then a tank that walks up, makes
+        // contact and walks back, then any other attacker (walks up too). Healers and buffers never pull. Every pull is brought back to the group (/pull's True
+        // 1.65 bring-back).
+        public static GameBot SelectPuller(IEnumerable<GameBot> companions) =>
+            SelectPuller(companions, AutonomousDefensivePull.HasRangedPull);
+
+        public static GameBot SelectPuller(IEnumerable<GameBot> companions, Func<GameBot, bool> rangedPull) => companions
+            .Where(CanPull)
+            .Select(bot => (Bot: bot, Rank: PullerRank(BotPartyRoles.IsTank(bot), rangedPull(bot))))
+            .OrderBy(pick => pick.Rank).ThenBy(pick => pick.Bot.ObjectID).Select(pick => pick.Bot).FirstOrDefault();
+
+        /// <summary>0 a tank with a ranged pull, 1 a ranged damage dealer, 2 a tank that walks up, 3 another attacker.</summary>
+        public static int PullerRank(bool tank, bool rangedPull) => tank && rangedPull ? 0 : rangedPull ? 1 : tank ? 2 : 3;
+
+        public static bool CanPull(GameBot bot) => bot != null && bot.IsAlive && !bot.IsCrowdControlled && bot.CharacterClass != null &&
+            BotPartyRoles.For((eCharacterClass)bot.CharacterClass.ID) != BotPartyRole.Support;
+
+        private static bool IsSupport(GameBot bot) => bot?.CharacterClass != null &&
+            BotPartyRoles.For((eCharacterClass)bot.CharacterClass.ID) == BotPartyRole.Support;
+
+        /// <summary>The companion named in "/grind (name)" (whole name first, else the start of a name).</summary>
+        public static GameBot FindNamed(IEnumerable<GameBot> companions, string name) =>
+            string.IsNullOrWhiteSpace(name) ? null : PlayerLedPullCoordinator.FindNamed(companions.ToArray(), name.Trim());
 
         public static bool IsSuitableLevel(int playerLevel, int monsterLevel, int conLevel, int companionCount) =>
             monsterLevel > 0 && conLevel > -3;
 
-        public static bool TryStart(GamePlayer player, out string message)
+        /// <summary>"/grind (name)" while grinding: that companion pulls from now on.</summary>
+        public static string SetPuller(GamePlayer player, string name)
         {
+            if (!Sessions.TryGetValue(player, out Session session))
+                return "Grind mode is not active.";
+            GameBot bot = FindNamed(session.Group.GetMembersInTheGroup().OfType<GameBot>()
+                .Where(member => IsOwnedCompanion(player, session.Group, member)), name);
+            if (bot == null) return $"No companion of yours named {name.Trim()} is in your group.";
+            if (IsSupport(bot)) return $"{bot.Name} heals and supports the group and does not pull.";
+            session.PullerName = bot.Name;
+            return $"{bot.Name} pulls from now on. /grind stop, then /grind alone, goes back to choosing the puller each pull.";
+        }
+
+        public static bool TryStart(GamePlayer player, out string message) => TryStart(player, null, out message);
+
+        public static bool TryStart(GamePlayer player, string pullerName, out string message)
+        {
+            if (!IsEnabled(player))
+            { message = "/grind is off. Turn it on in Options > Bots > GRIND (a quality of life option, not in 1.65)."; return false; }
             if (player?.Client?.ClientState != GameClient.eClientState.Playing || !player.IsAlive)
             { message = "You must be alive and in the world to use /grind."; return false; }
             if (IsActive(player))
@@ -123,10 +179,18 @@ namespace DOL.GS.Commands
             { message = "Finish your ride before using /grind."; return false; }
             GameLiving[] members = player.Group?.GetMembersInTheGroup().ToArray() ?? Array.Empty<GameLiving>();
             if (!IsExclusiveParty(player, player.Group, members))
-            { message = "/grind requires a party containing only you and your own temporary /spawn companions."; return false; }
-            if (SelectPuller(members.OfType<GameBot>()) == null)
+            { message = "/grind needs a group of only you and your own companions."; return false; }
+            string named = null;
+            if (!string.IsNullOrWhiteSpace(pullerName))
+            {
+                GameBot bot = FindNamed(members.OfType<GameBot>(), pullerName);
+                if (bot == null) { message = $"No companion of yours named {pullerName.Trim()} is in your group."; return false; }
+                if (IsSupport(bot)) { message = $"{bot.Name} heals and supports the group and does not pull."; return false; }
+                named = bot.Name;
+            }
+            if (named == null && SelectPuller(members.OfType<GameBot>()) == null)
             { message = "You need a living tank or damage-dealing companion. Healers and buffers will not pull."; return false; }
-            var session = new Session { Player = player, Group = player.Group, Region = player.CurrentRegionID,
+            var session = new Session { Player = player, Group = player.Group, Region = player.CurrentRegionID, PullerName = named,
                 Anchor = new(player.X, player.Y, player.Z),
                 NextClientSessionRefresh = GameLoop.GameLoopTime + ClientSessionRefreshInterval };
             if (!Sessions.TryAdd(player, session))
@@ -136,7 +200,9 @@ namespace DOL.GS.Commands
             player.CurrentSpeed = 0;
             player.Out.SendPlayerJump(false);
             ShowStatus(session, true);
-            message = "Grind mode active: stay here; tank pulls first, or attackers pull if no tank. " +
+            message = (named != null ? $"Grind mode active: {named} pulls and brings each monster back to you. " :
+                "Grind mode active: a tank that can pull from range pulls first, then an archer or caster, then the tank walks " +
+                "up; every pull is brought back to you. ") +
                 "The next pull waits for everyone to return and fully recover HP/power/endurance. /grind stop cancels; moving also stops it.";
             return true;
         }
@@ -228,16 +294,24 @@ namespace DOL.GS.Commands
                     {
                         session.SeatedByMode.Add(member);
                         if (member == player) player.Sit(true);
-                        else ((GameBot)member).BeginTemporaryCompanionRest();
+                        else if (((GameBot)member).IsTemporaryGroupHelper) ((GameBot)member).BeginTemporaryCompanionRest();
+                        else ((GameBot)member).BeginRecoveryRest();   // a hired companion (woken by WakeTemporaryCompanionRest)
                     }
                 }
                 if (members.Any(member => !AtCamp(session, member)))
                 { session.ReadySince = 0; session.Detail = "Waiting for companions to revive/return to camp"; return; }
                 if (members.Any(BlocksAutomaticPull))
                 { session.ReadySince = 0; session.Detail = "Resting/healing/buffing — waiting for full HP, power and endurance (75% for chanters and singers)"; return; }
-                GameBot puller = SelectPuller(members.OfType<GameBot>());
+                GameBot puller = session.PullerName != null
+                    ? FindNamed(members.OfType<GameBot>(), session.PullerName) is { } chosen && CanPull(chosen) ? chosen : null
+                    : SelectPuller(members.OfType<GameBot>());
                 if (puller == null)
-                { session.ReadySince = 0; session.Detail = "Waiting for a tank or attacker (support classes will not pull)"; return; }
+                {
+                    session.ReadySince = 0;
+                    session.Detail = session.PullerName != null ? $"Waiting for {session.PullerName} to be able to pull"
+                        : "Waiting for a tank or attacker (support classes will not pull)";
+                    return;
+                }
                 if (session.ReadySince == 0) session.ReadySince = now;
                 if (now - session.ReadySince < 2000 || now < session.NextSearch) return;
                 session.NextSearch = now + 5000;
@@ -249,7 +323,7 @@ namespace DOL.GS.Commands
                 session.Target = target; session.ContactDeadline = now + ContactTimeout; session.ReadySince = 0;
                 // This is precisely the existing /pull command's shared combat
                 // dispatch, protected by the strict temporary-only party gate.
-                session.Detail = PlayerLedPullCoordinator.Begin(player, target);
+                session.Detail = PlayerLedPullCoordinator.Begin(player, target, puller.Name);
             }
             catch (Exception exception)
             {
@@ -319,6 +393,14 @@ namespace DOL.GS.Commands
                 PlayerLedPullCoordinator.OnGroupThreat(session.Player);
         }
 
+        public static string StatusText(GamePlayer player)
+        {
+            if (!IsEnabled(player)) return "/grind is off (Options > Bots > GRIND).";
+            if (!Sessions.TryGetValue(player, out Session session))
+                return "Grind mode is not active. /grind starts it; /grind (name) makes that companion the puller.";
+            return $"Grind mode: {session.Detail}. Puller: {session.PullerName ?? "chosen each pull"}.";
+        }
+
         private static void ShowStatus(Session session, bool force = false)
         {
             if (!force && GameLoop.GameLoopTime < session.NextStatus) return;
@@ -327,19 +409,38 @@ namespace DOL.GS.Commands
         }
     }
 
-    [CmdAttribute("&grind", ePrivLevel.Player, "Stationary automatic pulls with your temporary companions", "/grind", "/grind stop")]
+    [CmdAttribute("&grind", ePrivLevel.Player, "Stationary automatic pulls with your companions", "/grind", "/grind <companion>", "/grind stop", "/grind status")]
     public sealed class PlayerGrindCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
+            if (args.Length >= 3 && args[1].Equals("option", StringComparison.OrdinalIgnoreCase))
+            {
+                // the client's Options switch (True 1.65 Mode: off by default)
+                bool on = args[2].Equals("on", StringComparison.OrdinalIgnoreCase);
+                PlayerCompanionGrind.SetEnabled(client.Player, on);
+                if (args.Length < 4 || !args[3].Equals("quiet", StringComparison.OrdinalIgnoreCase))
+                    DisplayMessage(client, on ? "/grind is on." : "/grind is off.");
+                return;
+            }
             if (args.Length == 2 && args[1].Equals("stop", StringComparison.OrdinalIgnoreCase))
             {
                 if (PlayerCompanionGrind.IsActive(client.Player)) PlayerCompanionGrind.Stop(client.Player, "cancelled by you");
                 else DisplayMessage(client, "Grind mode is not active.");
                 return;
             }
-            if (args.Length != 1) { DisplayMessage(client, "Use /grind or /grind stop."); return; }
-            PlayerCompanionGrind.TryStart(client.Player, out string message);
+            if (args.Length == 2 && args[1].Equals("status", StringComparison.OrdinalIgnoreCase))
+            {
+                DisplayMessage(client, PlayerCompanionGrind.StatusText(client.Player));
+                return;
+            }
+            string name = args.Length >= 2 ? string.Join(" ", args, 1, args.Length - 1) : null;
+            if (name != null && PlayerCompanionGrind.IsActive(client.Player))
+            {
+                DisplayMessage(client, PlayerCompanionGrind.SetPuller(client.Player, name));   // "/grind (name)" while grinding
+                return;
+            }
+            PlayerCompanionGrind.TryStart(client.Player, name, out string message);
             DisplayMessage(client, message);
         }
     }

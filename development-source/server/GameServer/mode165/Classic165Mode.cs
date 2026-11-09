@@ -83,7 +83,7 @@ namespace DOL.GS
         // commands are still working in true 1.65 mode").
         private static readonly string[] GmOnlyCommands =
         [
-            "&tele", "&tc", "&grind",                                           // travel and auto-play
+            "&tele", "&tc",                                                     // travel (/grind: an Options switch)
             "&freelevel", "&level", "&vault",                                   // free levels, vault anywhere
                                                                                 // (/autoloot is a player option again: Autoloot165)
             "&mobs", "&bountylocation", "&bountyrent", "&classrog", "&buff",    // monster finder, bounties, ROGs, buffs

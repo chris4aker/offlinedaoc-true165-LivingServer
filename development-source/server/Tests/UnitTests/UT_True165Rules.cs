@@ -1,4 +1,5 @@
 using DOL.GS;
+using DOL.GS.Commands;
 using DOL.GS.ServerProperties;
 using NUnit.Framework;
 
@@ -29,7 +30,17 @@ namespace DOL.UnitTests
             Properties.DISABLED_RACES = _races;
         }
 
-        [TestCase("&grind")]
+        [Test]
+        public void GrindIsAnOptionNotGmOnlyIn165Mode()
+        {
+            // owner 2026-11-08: /grind is back for players, behind an Options switch that is off by default
+            Properties.CLASSIC165_MODE = true;
+            Assert.That(Classic165Mode.IsGmOnlyCommand("&grind"), Is.False);
+            Assert.That(PlayerCompanionGrind.IsEnabled(null), Is.False, "off until the client's Options switch turns it on");
+            Properties.CLASSIC165_MODE = false;
+            Assert.That(PlayerCompanionGrind.IsEnabled(null), Is.True, "outside True 1.65 it needs no switch");
+        }
+
         [TestCase("&tc")]
         [TestCase("&spawn")]
         [TestCase("&tele")]
