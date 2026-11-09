@@ -574,6 +574,17 @@ namespace DOL.GS
 			}
 		}
 
+		/// <summary>A gamebot guildmate logged in (AutonomousBotGuilds.AnnounceLogin): the same line a player's login shows.</summary>
+		public void NotifyBotMemberLogin(string name)
+		{
+			if (string.IsNullOrEmpty(name)) return;
+			foreach (GamePlayer player in m_onlineGuildPlayers.Values)
+			{
+				if (player.ShowGuildLogins)
+					player.Out.SendMessage("Guild member " + name + " has logged in!", DOL.GS.PacketHandler.eChatType.CT_System, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+			}
+		}
+
 		/// <summary>
 		/// Removes a player from the guild
 		/// </summary>

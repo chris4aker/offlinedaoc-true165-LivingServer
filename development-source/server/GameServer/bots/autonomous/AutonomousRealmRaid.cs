@@ -63,6 +63,11 @@ namespace DOL.GS
             public readonly HashSet<long> Released = new();
             public long NextRefill;
             public long NextPostWarning;
+            /// <summary>Sounded on the horn under the new rules (population_scheduler_enabled): 300 staged, or 200+ after
+            /// 3 minutes; may have archived guests (RallyGuests165).</summary>
+            public bool Horn;
+            /// <summary>When 200 were first staged (the 3-minute wait starts there).</summary>
+            public long MinimumStagedTick;
         }
         private sealed class Party
         {
@@ -175,6 +180,8 @@ namespace DOL.GS
 
         public static void Pulse(long now)
         {
+            // horn guests: logins, hand-over to their raid, logouts (self-paced, outside the raid lock)
+            RallyGuests165.Pulse(now);
             lock (Sync)
             {
                 if (now < _nextPulse) return;
@@ -204,7 +211,7 @@ namespace DOL.GS
                     raid.Support = raid.Parties.Values.SelectMany(p => p.Members).Cast<GameLiving>().ToArray();
                     int presentAtHub = raid.Parties.Values.Sum(p => PresentAtHub(raid, p));
                     bool departing = !raid.HubDeparted && RealmRaidRecruitmentPolicy.DepartHub(false, presentAtHub,
-                        raid.Forced ? 0 : GameLoop.GameLoopTime - raid.Created);
+                        raid.Forced && !raid.Horn ? 0 : GameLoop.GameLoopTime - raid.Created);
                     raid.HubDeparted |= departing;
                     if (departing) raid.HubDepartedTick = GameLoop.GameLoopTime;
                     if (departing) RealmEventNotices.Queue(raid.Definition.Id, raid.Definition.Realm,
@@ -240,9 +247,15 @@ namespace DOL.GS
                             raid.StagingBest = present;
                             raid.StagingArrivalTick = now;
                         }
-                        if (RealmRaidRecruitmentPolicy.Ready(raid.Forced, now - raid.Created, present, DragonLanded(raid)))
+                        if (raid.Horn && present >= RallyAnswerPolicy.MinimumToSound && raid.MinimumStagedTick == 0)
+                            raid.MinimumStagedTick = now;
+                        bool ready = raid.Horn
+                            ? RallyAnswerPolicy.HornReady(present, Coming(raid), raid.MinimumStagedTick, now, DragonLanded(raid))
+                            : RealmRaidRecruitmentPolicy.Ready(raid.Forced, now - raid.Created, present, DragonLanded(raid));
+                        if (ready)
                         {
                             raid.Started = true;
+                            if (raid.Horn) RallyGuests165.OnRaidStarted(raid.Definition.Id);
                             raid.Deadline = raid.Forced ? long.MaxValue : now + RealmRaidRecruitmentPolicy.BattleMilliseconds;
                             RealmEventRecords.Progress(raid.Definition.Id, "Battle", "Expedition began advancing to the encounter.", raid.Support.Length, present);
                             RealmEventNotices.Queue(raid.Definition.Id, raid.Definition.Realm,
@@ -333,8 +346,18 @@ namespace DOL.GS
             return hub == null ? 0 : AutonomousBotGroupCoordinator.PlanForcedRaid(realm, hub.Region, hub.Center).Sum(p => p.Length);
         }
 
-        public static bool Start(string id, eRealm realm, out string reason, bool forced = false)
+        public static bool Start(string id, eRealm realm, out string reason, bool forced = false) =>
+            Start(id, realm, out reason, forced, null);
+
+        /// <summary>
+        /// Opens an event. A horn sound under the new rules passes <paramref name="rally"/>: it reserves idle live 50s
+        /// first, then calls archived 50s (RallyGuests165), then busy live 50s, up to 300; it needs 200 answerers instead
+        /// of 300, and goes in at 300 staged or 200+ after 3 minutes. Without it (launcher, or the property off) nothing
+        /// changes: 300 free live 50s are needed.
+        /// </summary>
+        public static bool Start(string id, eRealm realm, out string reason, bool forced, RallyRequest rally)
         {
+            if (!forced) rally = null;
             // Darkness Falls opens only to the realm that holds the most keeps (owner 2026-11-05 audit: 300 bots would
             // gather and then stall at a closed entrance)
             if (Definitions.FirstOrDefault(d => d.Id == id && d.Realm == realm) is { Region: AutonomousDarknessFallsPolicy.RegionId } &&
@@ -356,9 +379,24 @@ namespace DOL.GS
                 return false;
             }
             if (preview != null) SupersedeAutomatic(realm, id);
-            GameBot[][] recruits = forced && rallyHub != null
-                ? AutonomousBotGroupCoordinator.PlanForcedRaid(realm, rallyHub.Region, rallyHub.Center) : [];
-            if (forced && recruits.Sum(p => p.Length) < RealmRaidRecruitmentPolicy.MaximumBots)
+            GameBot[][] recruits;
+            RallyAnswer answer = default;
+            if (rally != null && rallyHub != null)
+            {
+                (recruits, answer) = AutonomousBotGroupCoordinator.PlanHornRaid(realm, rallyHub.Region, rallyHub.Center,
+                    rally.ArchiveAllowed ? RallyGuests165.ArchivedFree(realm) : 0,
+                    RallyGuests165.GuestCount(realm), RallyGuests165.TotalGuests, rally.ArchiveAllowed);
+                rally.Answer = answer;
+                if (answer.Total < RallyAnswerPolicy.MinimumToSound)
+                {
+                    reason = $"Not started: only {answer.Total} of {RallyAnswerPolicy.MinimumToSound} level-50 champions would answer. No tasks were cancelled.";
+                    return false;
+                }
+            }
+            else
+                recruits = forced && rallyHub != null
+                    ? AutonomousBotGroupCoordinator.PlanForcedRaid(realm, rallyHub.Region, rallyHub.Center) : [];
+            if (forced && rally == null && recruits.Sum(p => p.Length) < RealmRaidRecruitmentPolicy.MaximumBots)
             {
                 reason = $"Not started: only {recruits.Sum(p => p.Length)}/300 eligible level-50 bots could be reserved. No tasks were cancelled.";
                 return false;
@@ -410,18 +448,32 @@ namespace DOL.GS
                     GlobalConstants.RealmToName(realm), (forced ? "Forced" : "Automatic") + " rally via " + raid.Hub.Name);
                 raid.ForcedParties.AddRange(recruits);
                 foreach (GameBot bot in recruits.SelectMany(p => p)) Reservations[bot.DatabaseID] = id;
-                string startCondition = ForcedStartCondition(definition.IsDungeon);
+                if (rally != null)
+                {
+                    raid.Horn = true;
+                    // guests still online from a stopped raid answer again as live bots and stay guests
+                    foreach (GameBot bot in recruits.SelectMany(p => p).Where(b => RallyGuests165.IsRallyGuest(b.DatabaseID)))
+                        RallyGuests165.Attach(bot.DatabaseID, id);
+                    rally.GuestsSummoned = answer.Guests > 0
+                        ? RallyGuests165.Summon(id, realm, answer.Guests, rally.SounderGuildId, raid.Hub.Region, raid.Hub.Center, now) : 0;
+                }
+                string startCondition = rally != null ? HornStartCondition(definition.IsDungeon) : ForcedStartCondition(definition.IsDungeon);
                 // One quiet top-of-screen line for the realm's players (automatic and launcher-forced alike),
                 // so a player can join the bots at the rally point.
                 RealmEventNotices.QueueScreen(id, realm, $"A {definition.Name} raid is forming at {raid.Hub.Name}.", AnnouncementKind.PveRealmEvent);
                 RealmEventNotices.Queue(id, realm, forced
-                    ? $"{definition.Name}: {recruits.Sum(p => p.Length)} level-50 adventurers reserved; gather at {raid.Hub.Name}. {startCondition}"
+                    ? $"{definition.Name}: {recruits.Sum(p => p.Length)} level-50 adventurers reserved" +
+                      (rally?.GuestsSummoned > 0 ? $", {rally.GuestsSummoned} more answering the horn" : "") + $"; gather at {raid.Hub.Name}. {startCondition}"
                     : $"{definition.Name}: recruiting up to 300 level-50 adventurers via {raid.Hub.Name}; at least 200 must arrive before assault.");
                 reason = forced ? $"Reserved {recruits.Sum(p => p.Length)} level-50 bots, closest to {raid.Hub.Name} first. The raid starts as soon as 200 are staged and runs until the encounter is defeated or you press Stop event. {startCondition}" :
                     $"Recruiting up to 300 level-50 bots via {raid.Hub.Name}. At least 200 must arrive before assault; staging can last up to {RealmRaidRecruitmentPolicy.AutonomousStagingLimitMilliseconds / 60_000} minutes.";
                 return true;
             }
         }
+
+        public static string HornStartCondition(bool isDungeon) => isDungeon
+            ? "The assault begins at 300 staged, or 3 minutes after 200 are."
+            : "The assault begins at 300 staged, or 3 minutes after 200 are, once the dragon lands.";
 
         // Epic dungeons have no landing to wait for; only dragon rallies mention it.
         public static string ForcedStartCondition(bool isDungeon) => isDungeon
@@ -459,6 +511,12 @@ namespace DOL.GS
             raid.HubPosts[slot] = post;
             return true;
         }
+
+        /// <summary>Everyone a horn raid still expects: party members, reserved bots not in a party yet, and guests still
+        /// logging in.</summary>
+        private static int Coming(Raid raid) => raid.Support.Length +
+            raid.ForcedParties.SelectMany(p => p).Distinct().Count(b => IsEligible(b) && AutonomousBotRegistry.Contains(b.DatabaseID)) +
+            RallyGuests165.Pending(raid.Definition.Id);
 
         private static int PresentAtStaging(Raid raid) => raid.Parties.Values
             .Sum(p =>
@@ -589,6 +647,27 @@ namespace DOL.GS
                     }
                     foreach (GameBot bot in members) Reservations.TryRemove(bot.DatabaseID, out _);
                 }
+            }
+        }
+
+        /// <summary>
+        /// A horn guest (RallyGuests165) came online: it joins the raid's reserve and forms a party with the other free
+        /// reserved bots, closest to the hub first, then travels to the muster like any recruit. False while the raid is
+        /// gone, full, or the bot cannot answer yet (the guest book retries).
+        /// </summary>
+        public static bool ReserveGuest(string id, GameBot bot)
+        {
+            if (bot == null || !IsEligible(bot) || !bot.IsAlive || HiredCompanions165.IsHired(bot)) return false;
+            lock (Sync)
+            {
+                if (!Raids.TryGetValue(id, out Raid raid) || !raid.Horn || bot.Realm != raid.Definition.Realm) return false;
+                if (Reservations.GetValueOrDefault(bot.DatabaseID) == id) return true;
+                if (IsReserved(bot) || bot.Group != null && Membership.ContainsKey(bot.Group)) return false;
+                int reserved = raid.ForcedParties.SelectMany(p => p).Distinct().Count();
+                if (raid.Support.Length + reserved >= RealmRaidRecruitmentPolicy.MaximumBots) return false;
+                Reservations[bot.DatabaseID] = id;
+                raid.ForcedParties.Add([bot]);
+                return true;
             }
         }
 
@@ -1110,6 +1189,8 @@ namespace DOL.GS
             raid.Support = [];
             Raids.Remove(raid.Definition.Id);
             foreach (var reservation in Reservations.Where(p => p.Value == raid.Definition.Id).ToArray()) Reservations.TryRemove(reservation.Key, out _);
+            // horn guests loot, linger 5-20 minutes and log out; after a stop before the start they stay 10 minutes
+            if (raid.Horn) RallyGuests165.OnRaidEnded(raid.Definition.Id, raid.Started, now);
             // A player stop is not a failed attempt: no cooldown, so it can be restarted at once.
             if (!stoppedByPlayer)
                 Cooldowns[raid.Definition.Id] = now + (30 + Random.Shared.Next(61)) * 60_000L;
@@ -1155,9 +1236,9 @@ namespace DOL.GS
                 if (Raids.TryGetValue(d.Id, out var r)) return new Summary(d.Id, d.Name, GlobalConstants.RealmToName(d.Realm),
                     r.Started ? "RAID — " + (r.DungeonRoute?.Status ?? (DragonLanded(r) ? "underway" : "waiting for dragon landing")) :
                     $"Raid rally — {(r.Forced ? "forced" : "automatic")} — {(r.HubDeparted ? "travel/final staging" : r.Hub.Name)}" +
-                        (r.Forced ? " — starts when 200 are staged" + (!DragonLanded(r) ? " and the dragon lands" : "") :
+                        (r.Forced ? (r.Horn ? " — starts at 300 staged, or 200 after 3 min" : " — starts when 200 are staged") + (!DragonLanded(r) ? " and the dragon lands" : "") :
                         GameLoop.GameLoopTime >= r.Deadline ? !DragonLanded(r) ? " — waiting for dragon landing" : " — waiting for arrivals" : ""),
-                    r.Support.Length + r.ForcedParties.Sum(p => p.Count(IsEligible)),
+                    r.Support.Length + r.ForcedParties.Sum(p => p.Count(IsEligible)) + (r.Horn ? RallyGuests165.Pending(d.Id) : 0),
                     !r.HubDeparted ? r.Parties.Values.Sum(p => PresentAtHub(r,p)) : !r.Started ? PresentAtStaging(r) :
                     r.Parties.Values.Sum(p => p.Members.Count(b => b.IsAlive && b.CurrentRegionID == p.View.Camp.RegionId &&
                         b.IsWithinRadius(new Point3D(p.View.Camp.X, p.View.Camp.Y, p.View.Camp.Z), 1500))),

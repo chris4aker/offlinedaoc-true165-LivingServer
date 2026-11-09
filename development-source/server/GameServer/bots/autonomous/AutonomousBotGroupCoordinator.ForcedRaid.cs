@@ -35,9 +35,41 @@ public static partial class AutonomousBotGroupCoordinator
     public static double ForcedRecruitDistance(ushort botRegion, float x, float y, ushort hubRegion, Vector3 hub) =>
         botRegion == hubRegion ? Math.Sqrt((x - hub.X) * (double)(x - hub.X) + (y - hub.Y) * (double)(y - hub.Y)) : double.MaxValue;
 
-    public static GameBot[][] PlanForcedRaid(eRealm realm, ushort hubRegion, Vector3 hubCenter)
+    public static GameBot[][] PlanForcedRaid(eRealm realm, ushort hubRegion, Vector3 hubCenter) =>
+        PlanForcedRaid(realm, hubRegion, hubCenter, null, RealmRaidRecruitmentPolicy.MaximumBots);
+
+    /// <summary>A live 50 doing nothing that a horn should not interrupt first: no party, not fighting.</summary>
+    public static bool IsIdleAnswerer(GameBot bot) => bot.Group == null && !bot.InCombat && !bot.IsAttacking;
+
+    /// <summary>
+    /// The Horn of Rallying's answer (owner 2026-11-08, "whatever is most efficient to get a raid done"): idle live
+    /// level-50s first, then archived 50s (the guests RallyGuests165 logs in, counted here, reserved when they come
+    /// online), then busy live 50s, up to 300 in all and within the guest caps. Pure planning, like PlanForcedRaid.
+    /// </summary>
+    public static (GameBot[][] Parties, RallyAnswer Answer) PlanHornRaid(eRealm realm, ushort hubRegion, Vector3 hubCenter,
+        int archivedFree, int realmGuests, int totalGuests, bool archiveAllowed)
+    {
+        GameBot[][] idle = PlanForcedRaid(realm, hubRegion, hubCenter, IsIdleAnswerer, RealmRaidRecruitmentPolicy.MaximumBots);
+        int idleCount = idle.Sum(p => p.Length);
+        var taken = idle.SelectMany(p => p).ToHashSet();
+        GameBot[][] busy = idleCount >= RealmRaidRecruitmentPolicy.MaximumBots ? [] :
+            PlanForcedRaid(realm, hubRegion, hubCenter, b => !taken.Contains(b), RealmRaidRecruitmentPolicy.MaximumBots - idleCount);
+        RallyAnswer answer = RallyAnswerPolicy.Plan(idleCount, archivedFree, busy.Sum(p => p.Length), realmGuests, totalGuests, archiveAllowed);
+        var keptBusy = new List<GameBot[]>();
+        int busyCount = 0;
+        foreach (GameBot[] party in busy)
+            if (busyCount + party.Length <= answer.Busy)
+            {
+                keptBusy.Add(party);
+                busyCount += party.Length;
+            }
+        return (idle.Concat(keptBusy).ToArray(), answer with { Busy = busyCount });
+    }
+
+    public static GameBot[][] PlanForcedRaid(eRealm realm, ushort hubRegion, Vector3 hubCenter, Func<GameBot, bool> filter, int maximum)
     {
         var candidates = AutonomousBotRegistry.Snapshot().Where(b => AutonomousRealmRaid.IsEligible(b) &&
+            (filter == null || filter(b)) &&
             b.Realm == realm && b.PersistentRecord != null && b.CurrentRegion != null &&
             !AutonomousRealmRaid.IsReserved(b) && AutonomousRealmRaid.GetView(b.Group) == null &&
             !AutonomousRvrEventLayer.IsForceCommitted(RvrForceId(b), GameLoop.GameLoopTime) &&
@@ -45,7 +77,7 @@ public static partial class AutonomousBotGroupCoordinator
             .OrderBy(b => ForcedRecruitDistance(b.CurrentRegionID, b.X, b.Y, hubRegion, hubCenter))
             .ThenBy(b => b.Group == null ? 0 : 1).ThenBy(_ => Random.Shared.Next()).ToList();
         var parties = new List<GameBot[]>();
-        while (candidates.Count >= 8 && parties.Sum(p => p.Length) + 8 <= RealmRaidRecruitmentPolicy.MaximumBots)
+        while (candidates.Count >= 8 && parties.Sum(p => p.Length) + 8 <= maximum)
         {
             GameBot[] chosen = null;
             // The roster builder shuffles its pool, so offer it the closest bots first
@@ -61,7 +93,7 @@ public static partial class AutonomousBotGroupCoordinator
             parties.Add(chosen);
             foreach (var bot in chosen) candidates.Remove(bot);
         }
-        int remaining = RealmRaidRecruitmentPolicy.MaximumBots - parties.Sum(p => p.Length);
+        int remaining = maximum - parties.Sum(p => p.Length);
         if (remaining == 4 && candidates.Count >= 4) parties.Add(candidates.Take(4).ToArray());
         return parties.ToArray();
     }

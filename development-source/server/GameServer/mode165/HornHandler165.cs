@@ -149,9 +149,13 @@ namespace DOL.GS
                     "Encounter unavailable" => 4,
                     _ => 1,   // a raid is assembling or fighting
                 };
-                // Ready only when the horn could really start it: the 300 free level-50 champions a forced raid reserves
-                int free = code == 0 ? AutonomousRealmRaid.ForcedRecruitsAvailable(events[i].Id, events[i].Realm) : 0;
-                if (code == 0 && free < RealmRaidRecruitmentPolicy.MaximumBots)
+                // Ready only when the horn could really start it: the 300 free level-50 champions a forced raid reserves,
+                // or under the new rules (population_scheduler_enabled) 200 answerers: live 50s and archived guests
+                bool newRules = code == 0 && RallyGuests165.NewRulesOn;
+                RallyAnswer answer = newRules ? Forecast(player, events[i]) : default;
+                long rests = newRules ? RallyGuests165.CooldownRemaining(player, GameLoop.GameLoopTime) : 0;
+                int free = code == 0 && !newRules ? AutonomousRealmRaid.ForcedRecruitsAvailable(events[i].Id, events[i].Realm) : 0;
+                if (code == 0 && (newRules ? answer.Total < RallyAnswerPolicy.MinimumToSound : free < RealmRaidRecruitmentPolicy.MaximumBots))
                     code = 4;
                 // Darkness Falls is open only to the realm holding the most keeps (owner 2026-11-05): greyed out, with why
                 bool dfClosed = events[i].Region == AutonomousDarknessFallsPolicy.RegionId &&
@@ -170,6 +174,7 @@ namespace DOL.GS
                 string status = code switch
                 {
                     4 when dfClosed => "Closed: Darkness Falls opens to the realm holding the most keeps",
+                    0 or 4 when newRules => RallyAnswerPolicy.Status(answer, rests),
                     0 => $"Ready - {free} free champions (300 needed)",
                     4 when s?.State == "Available" => $"Not enough free champions: {free} of {RealmRaidRecruitmentPolicy.MaximumBots}",
                     2 => $"Respawning: {Duration(seconds)}",
@@ -180,6 +185,18 @@ namespace DOL.GS
                 Put(row, 58, status, 64);
                 Hire165.Send(player, 21, row);
             }
+        }
+
+        /// <summary>Who would answer this player's sound now (new rules): live 50s, plus archived 50s unless the horn
+        /// rests for this player (30 minutes after a sound that logged guests in).</summary>
+        public static RallyAnswer Forecast(GamePlayer player, AutonomousRealmRaid.Definition definition)
+        {
+            RealmRaidMuster.Hub hub = RealmRaidMuster.Hubs.FirstOrDefault(h => h.Event == definition.Id);
+            if (hub == null) return default;
+            bool archive = RallyGuests165.MayCallArchived(player, GameLoop.GameLoopTime);
+            return AutonomousBotGroupCoordinator.PlanHornRaid(definition.Realm, hub.Region, hub.Center,
+                archive ? RallyGuests165.ArchivedFree(definition.Realm) : 0, RallyGuests165.GuestCount(definition.Realm),
+                RallyGuests165.TotalGuests, archive).Answer;
         }
 
         private static string Duration(uint seconds)
@@ -206,12 +223,22 @@ namespace DOL.GS
             if (index < 0 || index >= events.Length)
                 return "Choose a great hunt first.";
             AutonomousRealmRaid.Definition chosen = events[index];
-            bool started = AutonomousRealmRaid.Start(chosen.Id, player.Realm, out string reason, forced: true);
+            long now = GameLoop.GameLoopTime;
+            // New rules (population_scheduler_enabled): idle live 50s, archived 50s, busy live 50s; otherwise as before
+            RallyRequest rally = RallyGuests165.NewRulesOn
+                ? new RallyRequest { SounderGuildId = player.Guild?.GuildID, ArchiveAllowed = RallyGuests165.MayCallArchived(player, now) }
+                : null;
+            bool started = AutonomousRealmRaid.Start(chosen.Id, player.Realm, out string reason, forced: true, rally);
             if (!started)
                 return $"The horn cannot be sounded for {chosen.Name} now: {reason}";
+            // a sound that logged guests in rests the horn for this player for 30 minutes; stopping the raid still counts
+            if (rally?.GuestsSummoned > 0)
+                RallyGuests165.NoteSound(player, now);
             foreach (GamePlayer near in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 near.Out.SendMessage($"{player.Name} sounds the Horn of Rallying: the realm gathers for {chosen.Name}!",
                     eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            if (rally?.GuestsSummoned > 0)
+                return $"The horn sounds! {rally.Answer.Live} answer from the field and {rally.GuestsSummoned} more are on their way to {chosen.Name}.";
             return $"The horn sounds across the land! The realm rallies for {chosen.Name}.";
         }
 
