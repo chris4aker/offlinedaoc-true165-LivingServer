@@ -49602,6 +49602,14 @@
   {
    "sql": "UPDATE ItemTemplate SET Price = 25000 WHERE lower(Id_nb) = 'windchaser_naiheras_remains' AND Price <> 25000",
    "reason": "True 1.65 loot prices (owner 2026-11-07): Windchaser Naihera's Remains - estimated: median Uthgard sell of 37 period trash items dropped by level 45-49 monsters (droppers: level 47-47) (sells for 12500 copper)"
+  },
+  {
+   "sql": "UPDATE Mob SET Realm = 0, Flags = Flags & ~16, RespawnInterval = 80 WHERE Mob_ID IN ('1f3d36b9-b842-5a00-9e05-ad0e704414a8', 'bc13c771-45ea-5ef7-930c-0e65695e7157', 'f7fd965b-d778-5cc3-8b6d-3c36fd5cfd92') AND PackageID = 'ClassicQuest'",
+   "reason": "True 1.65 quest twins (owner 2026-11-09, \"one neutral monster\"): Aessa, Macnol, Tradande - the quest's character is the monster of that name: no realm, so it can be killed for its period drops; it still talks and takes the quest items"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET AggroLevel = 0 WHERE TemplateId IN (60157597, 60163538, 60167202) AND AggroLevel <> 0",
+   "reason": "True 1.65 quest twins (owner 2026-11-09, \"one neutral monster\"): Aessa, Macnol, Tradande never attack first (the period bestiary lists them as quest characters with no aggro range); each template is theirs alone"
   }
  ]
 }
