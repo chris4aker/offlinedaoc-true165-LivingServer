@@ -835,7 +835,11 @@ func _tick_minigroup() -> void:
 		var m: Dictionary = rows[idx]
 		var gem_i := clampi(4 - int(floor(clampf(float(m.get("power", 0.0)), 0.0, 1.0) * 4.0 + 0.5)), 0, 4)
 		(r.get_node("Gem") as TextureRect).texture = UiArt.region("8x8gems", Rect2(0, gem_i * 8, 8, 8))
-		(r.get_node("N") as Label).text = String(m.get("name", "")).to_upper()
+		# a dead member: *NAME* in red until raised (tester 0.3: dead companions looked alive in the mini group)
+		var dead := (int(m.get("status", 0)) & 0x01) != 0
+		var nl := r.get_node("N") as Label
+		nl.text = ("*%s*" if dead else "%s") % String(m.get("name", "")).to_upper()
+		nl.add_theme_color_override("font_color", UiArt.RED if dead else UiArt.CREAM)
 		(r.get_node("Hp") as Control).size.x = 60.0 * clampf(float(m.get("hp", 0.0)), 0.0, 1.0)
 	var want := Vector2(150, 14.0 + maxf(1, rows.size()) * 12.0)
 	if absf(w.size.y - want.y) > 0.5:
