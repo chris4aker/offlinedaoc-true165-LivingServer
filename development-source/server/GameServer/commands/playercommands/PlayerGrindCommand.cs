@@ -116,11 +116,35 @@ namespace DOL.GS.Commands
         {
             if (member.IsCrowdControlled)
                 return true;
-            if (member is not GameBot bot || bot.CharacterClass == null || !IsSongUpkeepClass((eCharacterClass)bot.CharacterClass.ID))
+            if (!KeepsSongsUp(member))
                 return NeedsRecovery(member) || member.IsCasting;
             return !ReadyWithSongUpkeep(member.Health, member.MaxHealth, member.Mana, member.MaxMana, member.Endurance, member.MaxEndurance) ||
-                member.IsCasting && member.castingComponent?.SpellHandler?.Spell?.IsPulsing != true && !BotSongTwistPolicy.HasMobileSongCast(bot);
+                member.IsCasting && member.castingComponent?.SpellHandler?.Spell?.IsPulsing != true && !BotSongTwistPolicy.HasMobileSongCast(member);
         }
+
+        /// <summary>A chanter or singer (Paladin, Warden, Bard, Minstrel, Skald), a companion or the player.</summary>
+        public static bool KeepsSongsUp(GameLiving member)
+        {
+            int classId = member switch
+            {
+                GameBot bot => bot.CharacterClass?.ID ?? 0,
+                GamePlayer player => player.CharacterClass?.ID ?? 0,
+                _ => 0,
+            };
+            return classId != 0 && IsSongUpkeepClass((eCharacterClass)classId);
+        }
+
+        /// <summary>
+        /// Whether /grind sits this member down between pulls (owner 2026-11-09: "he should wait til he is below a certain
+        /// threshold before needing to sit"). A chanter's or singer's own chant costs power every pulse, so "below full"
+        /// sat a Paladin down, he refilled in a second, stood up, and his chant drained him below full again - up and down
+        /// without end, and every power-draining chant or aura was unusable in /grind. Chanters and singers sit only below
+        /// the pull floor (75% power or endurance) or when hurt; seated, they still rest to full (sitting easily outpaces a
+        /// chant's drain). Everyone else sits whenever they are below full, as before.
+        /// </summary>
+        public static bool NeedsModeRest(GameLiving member) => KeepsSongsUp(member)
+            ? !ReadyWithSongUpkeep(member.Health, member.MaxHealth, member.Mana, member.MaxMana, member.Endurance, member.MaxEndurance)
+            : NeedsRecovery(member);
 
         // Who pulls (owner 2026-11-08): a tank that can pull from range first (the monster ends up on the tank), then a
         // ranged damage dealer (an archer with ammunition, a caster with a ranged spell), then a tank that walks up, makes
@@ -287,7 +311,7 @@ namespace DOL.GS.Commands
                 foreach (GameLiving member in members)
                 {
                     if (AtCamp(session, member) && !member.IsCasting && !member.IsMoving &&
-                        !member.IsCrowdControlled && NeedsRecovery(member) &&
+                        !member.IsCrowdControlled && NeedsModeRest(member) &&
                         (member is not GameBot helper || !helper.IsTemporaryCompanionRestLocked) &&
                         (member is not GameBot restingBot || !BotRestRecovery.BlocksRest(restingBot)) &&
                         (member is GameBot || !member.IsSitting))
