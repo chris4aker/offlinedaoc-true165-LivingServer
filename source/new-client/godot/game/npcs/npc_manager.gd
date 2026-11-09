@@ -835,14 +835,17 @@ func clear_target() -> void:
 	PlayerData.set_target({})
 
 
-## Tab-style: the nearest enemy (realm 0, targetable) in front of the player within range.
+## Tab-style: the nearest enemy (targetable, not of your realm) within range: a monster, or a character of another
+## realm (tester 0.5: the key never picked the other realms' people - it looked at realm 0 only). Another realm's
+## peaceful NPC is no enemy.
 func nearest_enemy(max_range := 60.0) -> Npc:
 	var best: Npc = null
 	var best_d := max_range
 	for i in active:
 		var n: Npc = active[i]
-		if int(n.spawn.realm) != 0 or (int(n.spawn.flags) & Npc.FLAG_CANTTARGET) or n == target or n.state.stealthed \
-				or not n.state.alive:
+		var realm := int(n.spawn.realm)
+		if n.is_friendly() or (realm != 0 and int(n.spawn.flags) & Npc.FLAG_PEACE) \
+				or (int(n.spawn.flags) & Npc.FLAG_CANTTARGET) or n == target or n.state.stealthed or not n.state.alive:
 			continue
 		var d := n.global_position.distance_to(player.global_position)
 		if d < best_d:
