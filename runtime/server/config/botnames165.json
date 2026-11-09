@@ -1,0 +1,253 @@
+{
+  "version": 1,
+  "help": [
+    "Bot name tables for True 1.65 Mode (one style per race). Edit while the server runs: it reloads this file within a minute.",
+    "Lists are words separated by spaces. In 'mids' a dash (-) means 'nothing'.",
+    "A name is: start + mid + end (template A); races with long=true also get start + mid + bridge + end (template B).",
+    "Variants (optional per race): double (Thor-Thorr), c2k (Cael-Kael), i2y (Kaelin-Kaelyn), ix (Vex-Vexix), az, son, mac, o.",
+    "Weights set how often each kind is picked. Changing a list restarts that list's counter; names already used are skipped.",
+    "Every name also passes invalidnames.txt, the quality filter and 'botOnlyBlocked' (famous fictional names, bots only).",
+    "Names already worn by players, bots or one-word NPCs are never given out."
+  ],
+  "minLength": 4,
+  "maxLength": 12,
+  "weights": {
+    "a": 50,
+    "b": 25,
+    "variantA": 15,
+    "variantB": 7,
+    "compound": 3
+  },
+  "botOnlyBlocked": "legolas gandalf aragorn frodo drizzt arthas elessar gimli sauron bilbo thrall jaina gollum smeagol saruman galadriel elrond arwen boromir faramir samwise radagast thranduil eowyn theoden denethor isildur elendil morgoth balrog nazgul shelob smaug thorin dwalin bombur glorfindel celeborn luthien feanor fingolfin illidan tyrande malfurion sylvanas varian anduin kelthuzad kaelthas guldan garrosh voljin cairne rexxar medivh khadgar deathwing alexstrasza geralt yennefer triss daenerys targaryen lannister tyrion cersei sansa joffrey khaleesi dumbledore voldemort hermione hagrid skywalker vader obiwan kenobi chewbacca elminster raistlin caramon tasslehoff kvothe kratos ganondorf zelda sephiroth cloudstrife pikachu",
+  "bridges": {
+    "Albion": "al en is or an ir el ar",
+    "Midgard": "ar en ild un ul ey ol ir ald or",
+    "Hibernia": "ae el in or an ea ir ol ar en"
+  },
+  "compounds": {
+    "Albion": {
+      "first": "Ash Black Bright Grey Iron Night Raven Red Silver Stone Storm Swift Thorn White Wolf Oak Gold Dawn Hawk Lion",
+      "second": "blade heart shield brand bane hand helm ward mantle song crest fall vale wood"
+    },
+    "Midgard": {
+      "first": "Frost Iron Storm Wolf Bear Rune Grim Stone Snow Ice Thunder Raven Ash Bone Fjord Elk Skull Troll",
+      "second": "beard fang hammer shield axe mane fist hide claw born helm brow tooth ward"
+    },
+    "Hibernia": {
+      "first": "Moon Star Oak Thorn Mist Dew Fern Silver Glen Hazel Briar Rowan Sun Shadow Night Green Sea Wind",
+      "second": "song leaf whisper shade glade blade wind heart walker dancer brook vale weaver bloom"
+    }
+  },
+  "races": {
+    "Briton": {
+      "realm": "Albion",
+      "long": true,
+      "variants": "double c2k i2y",
+      "mids": "- a e en er i o el ar is or an",
+      "male": {
+        "starts": "Ald Ash Bal Bed Ber Bor Brad Cad Ced Col Cuth Dun Ed Eld Gar Gaw Gil God Gor Hal Har Hug Lan Leof Mal Mor Nor Os Per Ran Ren Rod Rol Stan Thed Tris Wil Wulf Wyn Hen",
+        "ends": "bert ric win mund ward frey wald helm red wyn ston mer ard an on ulf ley ford gar mond wine dric bald"
+      },
+      "female": {
+        "starts": "Ada Ael Al Bea Bren Cat Ed Ela Em Eve Gis Gwen Hil Isa Jo Lina Mara Mil Ros Ser Thea Ys Wyn Mae Eli Ro Ag Mer Eda Gun",
+        "ends": "bel beth lyn wen ette ine ora elle ith anne da wyn ild gith swith ina ria ica isse en ys ane eda frith"
+      }
+    },
+    "Avalonian": {
+      "realm": "Albion",
+      "long": true,
+      "variants": "double c2k i2y",
+      "mids": "- a e i el en ar il ae",
+      "male": {
+        "starts": "Ael Ala Cel Eld Ell Fal Il Ith Lor Myr Ner Quel Sel Sil Tal Thal Val Vel Ys Lyr Aer Cal Del Mel Ser Ere Aed Bel Cor Ear Fen Gal Hal Kel Myl Ori Pel Ral Tir Vor",
+        "ends": "ion ias ar an or ius orn en is ael iel aran dor rion thas mir lin vas ian eth orin ys anor"
+      },
+      "female": {
+        "starts": "Ae Ala Cel Ely Fae Ila Ise Ith Lia Lyr Mae Mir Nae Rhia Sela Sil Tia Vae Ysa Ela Ara Lys Ori Elu Aer Bel Cae Dae Eir Gwy Lir Nyl Ria Shae Yl",
+        "ends": "ra ria wen ys iel ia elle ane ith ine wyn ara ena lia sa thea dra nia lyn eth enna ira ise"
+      }
+    },
+    "Highlander": {
+      "realm": "Albion",
+      "long": true,
+      "variants": "double c2k i2y mac",
+      "mids": "- a e i o ar ai",
+      "male": {
+        "starts": "Al Ang Arch Cal Dug Dun Fin Fer Gil Gord Ham Iain Kenn Mal Mur Niall Rua Tav Ew Lach Ross Seum Tor Bren Crag Bal Craig Dom Gav Ken Lor Mag Neil Rob Sorl Tam",
+        "ends": "ach an as dair ish ie ock gus aidh in rick um al mond lan dor ald gan en ain ard ean or"
+      },
+      "female": {
+        "starts": "Ail Brid Cait Ele Eil Fion Isla Kirs Mair Mor Ros Shon Sior Una Lil Ey Gra Kenn Fla Mhai Ais Cat Fen Kat Mai Rhon Shei Sor",
+        "ends": "a ag ie in ina ona ead tie aid sa ra ella eth rin nag ach an la"
+      }
+    },
+    "Saracen": {
+      "realm": "Albion",
+      "long": true,
+      "variants": "double c2k i2y ix az",
+      "mids": "- a i u ri si li hi mi ra za ki ha",
+      "male": {
+        "starts": "Ab Ad Ak Al Am As Ba Da Dar Fa Fai Ha Has Ja Jam Ka Kar Kha Ma Mal Na Nas Ra Ras Sa Sal Ta Tar Ya Za Zar Sha Qa",
+        "ends": "d f l m n r ar ir an im id ud un al ab ad eem iz ik ash oud"
+      },
+      "female": {
+        "starts": "Ai Al Am As Da Fa Ha Ja Ka La Ma Na Ra Sa Sha Ya Za Zu Lei Nur Sab",
+        "ends": "ra na ma la ya ira ina ima ia ara isa ah ifa ila esh"
+      }
+    },
+    "Inconnu": {
+      "realm": "Albion",
+      "long": true,
+      "variants": "double c2k i2y ix",
+      "mids": "- ae ou yr e u i ul",
+      "male": {
+        "starts": "Ae Ith Kael Mor Nyr Ossu Sae Vel Xan Zhe Ul Esh Thul Var Nok Ira Shae Ym Kor Uth Zan Ves Ash Ezr Hael Kesh Lor Mael Ny Orr Rhu Sur Tez Yth",
+        "ends": "eth ix oth ul yss ane iel ath os ur uun ek is or az esh ith ash in ael om"
+      },
+      "female": {
+        "starts": "Ae Esh Ith Iyra Kae Lys Nae Nyr Sae Shae Vae Xie Ym Ysa Zhe Ula Ora Vey Ash Ezr Hael Lor Mael Ny Rhu Sur Tez Yth",
+        "ends": "eth yss ane iel a ia ys ith esse ae ora una in ash ira el"
+      }
+    },
+    "Norseman": {
+      "realm": "Midgard",
+      "long": true,
+      "variants": "double c2k i2y son",
+      "mids": "- a e i un ge ar en ild ul o",
+      "male": {
+        "starts": "Arn Bjorn Dag Egil Eirik Finn Gorm Hald Ivar Knut Rag Sig Tor Ulf Al Bal Bor Brand Erl Frey Gun Hak Har Hrolf Ing Jarl Ket Leif Od Orm Rol Sten Svein Thor Vig Ulv Ask Geir Grim Hal Ein Folk Gud Hall Hjal Ragn Sver Tryg Asm Bard Dyr Eyv Gest Hauk Hrafn Kol Mag Njal Olaf Stein Torv Vem Sol Dan Hogn Ska Ott Rurik Ulfar Eld",
+        "ends": "ar bjorn brand grim mund rik sten ulf vald var geir leif ald ir in un gar ketil mar ri e i dan nar olf vard stein fast mod bard thor finn orm kell ur heim"
+      },
+      "female": {
+        "starts": "Astr Bry Dag Eir Fre Gud Hild Ing Kara Liv Rag Sig Siv Yr Al As Berg Dis Gerd Gro Gun Hel Jor Rand Run Sol Svan Tor Thy Ulf Vig Aud Bera Eyd Hall Ingi Jo Kat Mal Ragn Sun Tove Alf Ase Borg Gyd Hrefn Ylv Asl Eld Ottil",
+        "ends": "a dis frid gerd hild run rid veig borg ny ra laug unn fa eid lind ja rida ve dur gunn bjorg thora rune ey vor hilde"
+      }
+    },
+    "Dwarf": {
+      "realm": "Midgard",
+      "long": true,
+      "variants": "double c2k i2y son",
+      "mids": "- a i o u ar un",
+      "male": {
+        "starts": "Bal Bof Brok Dur Dval Fal Gim Grim Gro Kar Kral Mor Nor Thor Thr Tor Bran Brom Dag Drum Hur Kel Rog Thrain Ulf Bar Gar Kor Bor Dor Ad Bom Dain Fund Glo Gun Har Hel Ing Kil Lod Nal Oin Ral Skor Thur Ul Vim Bif Dvor Grun Hald",
+        "ends": "in ak ur rik grim dur bek nar din li ok ar ik gar nir rum di umli ain kin bur grun dain mir thor helm dan vir ric fin rek gor"
+      },
+      "female": {
+        "starts": "Bra Dis Dur Gru Hel Kar Mor Nor Thor Thy Bry Dag Hild Ing Gro Ruma Tor Sif Ulf Ad Ag Ber Brun Drun Fen Gun Hal Kel Mag Ond Run Sig Tov Ulv Vel Grun",
+        "ends": "a da dis ra na ga hild run is ka la dra ina unn grid ny ve lin brun dur gun"
+      }
+    },
+    "Kobold": {
+      "realm": "Midgard",
+      "long": false,
+      "variants": "double c2k i2y ix",
+      "mids": "- i a o ix le ik ob",
+      "male": {
+        "starts": "Pik Nib Zik Tik Grub Snik Wik Fiz Kip Zub Nok Bip Dob Gix Jik Lik Mik Nix Pog Rik Skib Tob Wob Yip Zog Fip Bix Dib Fen Gib Jib Kib Lop Mop Nap Pib Quik Rib Sib Tink Wix Yob Zap Zim Bop Fob",
+        "ends": "le ik ix ok ub y wick nik bit nob zik pip kin rik ble zle bo kit bin dle fix nap pik sy tle wig zap bop"
+      },
+      "female": {
+        "starts": "Pip Nib Zi Ti Fi Ki Mi Bi Wi Yi Li Ni Sni Dib Kit Tib Zib Fiz Mip Bix Dix Fen Gib Jin Lin Min Nix Pix Quin Rin Sib Tix Wix",
+        "ends": "la ka bi xi zi pa ni ki wa ny bit lix sa bix dy fi lin mi pi rix sy ta tin"
+      }
+    },
+    "Troll": {
+      "realm": "Midgard",
+      "long": true,
+      "variants": "double c2k i2y ix",
+      "mids": "- a o u ga ro un",
+      "male": {
+        "starts": "Brug Drog Gor Grak Gruk Hrug Krag Mog Ruk Torg Urg Thrak Grom Durg Kruk Murg Brok Skag Ug Zug Vorg Hrok Gnar Borg Bard Darg Frug Gorr Harg Jorg Karg Lurg Morg Narg Ogg Rag Snag Tug Urk Varg Yorg Drak",
+        "ends": "ak ok ug um gar rok nar ash og uk ar rum grol ond orr dak ul bag dor gorm grun kar mog rug tar thak urk"
+      },
+      "female": {
+        "starts": "Gra Hra Mog Ruk Ung Ura Zug Ska Bra Dra Gru Hul Kra Tha Vra Gor Hag Kar Mor Nar Orga Rag Sag Tur Uga Vur Bor",
+        "ends": "a ka ga ra da uka gra ul ah ola uk ash dra rga una oga na ha ya ma"
+      }
+    },
+    "Valkyn": {
+      "realm": "Midgard",
+      "long": true,
+      "variants": "double c2k i2y ix az",
+      "mids": "- a e i y ar en",
+      "male": {
+        "starts": "Vex Kael Skar Vrak Fen Rask Zyr Kyr Sly Vor Ryk Thex Var Ska Dax Krev Syr Vyr Nax Jax Rhek Zev Tyr Ax Brax Drex Fex Hex Jyr Kex Lyr Myx Nyr Ryx Sax Tex Vax Xer Zak Kryx Skyr",
+        "ends": "ix ak ar yn eth is os ek ax ir un vyr rak ul yx az yr esh ith ex ox us yk aen rix"
+      },
+      "female": {
+        "starts": "Vex Kae Skae Ryn Syl Vae Zyr Kyr Nyx Vyr Sha Ysa Rha Lyx Thae Fyr Ax Kyx Lys Myr Nyr Rae Sae Sky Tyx Vyx Xae Yra",
+        "ends": "a ra ix yn eth is ys ae ia ya ira yx yr esh ith ex ana yla"
+      }
+    },
+    "Celt": {
+      "realm": "Hibernia",
+      "long": true,
+      "variants": "double c2k i2y o",
+      "mids": "- a e el in ri o ea ai",
+      "male": {
+        "starts": "Aed Bran Cael Ciar Con Dair Eog Ferg Lorc Nial Ois Rian Tad Ard Bres Cath Colm Corm Cuan Diar Donn Eamh Fion Lug Mael Mur Odh Ruad Sean Tor Ult Brea Dub Fear Cian Ail Bair Brod Cair Cass Coll Daith Dec Dor Eam Fin Gar Iar Kier Lach Liam Main Mor Nes Oil Ron Ross Sorch Tadh Tiern Ul",
+        "ends": "an dan gan gus lan nan ren ric ron van ach in al ain ac oc mac nat ghal tan cha ar dha bhan dach lach mhar nal ran tach vin ny ey dhan"
+      },
+      "female": {
+        "starts": "Aine Bria Cao Deir Eil Fia Mae Muir Nia Orla Rois Sao Una Aif Blath Brig Cait Dear Eith Grai Mor Neas Sadb Siob Treas Ais Eab Fion Ide Lia Niamh Orl Ail Ban Ceit Dar Emer Fen Gor Iseal Lass Mair Nual Ri Sile Tal Tuil Ur Bron Aoif Bean Clod Eabh Ean Gobn Mai Nae Ois Sorch",
+        "ends": "a bhe dra la lin na ra rin se wen ne nait ann een ia ith mhe sa bhinn dha lle nagh reen ty lith gh ach an oife"
+      }
+    },
+    "Lurikeen": {
+      "realm": "Hibernia",
+      "long": true,
+      "variants": "double c2k i2y ix",
+      "mids": "- a i o e ib il",
+      "male": {
+        "starts": "Pip Fip Lir Tib Wim Nim Dob Kip Tam Quil Fen Bim Dil Gim Jib Lin Mip Nob Pim Rip Sim Tip Wil Fin Pog Bip Cob Fib Gil Hob Jim Kib Lop Mib Pib Quin Ric Tob Wib Zib",
+        "ends": "kin le y wick pin ny ie ip in an o ble kins ly bo s by dle kie lo nie pi py ry ty wy"
+      },
+      "female": {
+        "starts": "Pip Lil Tib Wim Nim Kit Tam Fae Bel Dil Mi Ni Pi Ti Bri Fi Li Wren Pen Bip Cob Dot Fib Gil Hob Kib Lop Mib Pib Rib",
+        "ends": "ly pie ie na la sy bie ny pa wen ka lin bi dy ki li mi ni py ri sa ti"
+      }
+    },
+    "Elf": {
+      "realm": "Hibernia",
+      "long": true,
+      "variants": "double c2k i2y",
+      "mids": "- a e i el en ar il ae",
+      "male": {
+        "starts": "Ael Cael Ith Lae Mir Nae Sil Tae Ys Fyn Aer Cal Eld Fae Gal Hal Il Lor Mel Ner Quel Sel Thal Vae Ela Rae Ar Bel Dae Eir Fen Gael Ia Kel Lir Nyl Orl Phae Ral Shae Tir Yl Ves Ciar Ear Ilm Nim Sae",
+        "ends": "ion iel ar ir wyn as ael thas ra ia en or ian dir ros mir lan dil vas ith aen eth orin ys il anor ias"
+      },
+      "female": {
+        "starts": "Ae Ael Cae Ela Fae Ila Ith Lae Lia Mae Mira Nae Rae Sae Sil Tae Ysa Ely Ari Elu Nim Syl Aer Bel Dae Eir Fen Gwy Ia Lir Lyr Nyl Orl Phae Shae Tir Yl",
+        "ends": "ra ria wen ys iel ia elle ane ith ine wyn ara ena lia sa thea nia ael lyn eth enna ira ari aen ien"
+      }
+    },
+    "Firbolg": {
+      "realm": "Hibernia",
+      "long": true,
+      "variants": "double c2k i2y",
+      "mids": "- a o u ai ua or",
+      "male": {
+        "starts": "Bal Dorm Gorm Mog Odh Rua Tor Ulb Brann Bod Cron Dub Fod Garb Lom Mor Ogh Rof Tuat Bron Dag Grud Hul Ard Bain Brog Carr Dorr Ead Fern Gall Groth Lorg Mael Nuad Orr Ronn Tadg Torm Ull Varr Brug Dun Fion Gorr Lug Mug Rud",
+        "ends": "ach an oc og ur um dagh ar or ain ran mor ul bh nach rok aun bran garr loch nan tor ugh as en ig"
+      },
+      "female": {
+        "starts": "Ban Bod Dorm Fod Gorm Morr Muad Odh Rua Una Bren Clo Dub Glas Mor Lom Ross Aen Bair Corr Dar Ead Gael Hen Lor Morn Nuad Orl Sad Teag Brig Fion Lug Mur Rud",
+        "ends": "a ach ag ann na ra la ua ea in en ain aith alla ena ora uin ya e ig as"
+      }
+    },
+    "Sylvan": {
+      "realm": "Hibernia",
+      "long": true,
+      "variants": "double c2k i2y",
+      "mids": "- a e o i en",
+      "male": {
+        "starts": "Ash Bir Fern Hol Mos Ros Thorn Wil Yew Oak Elm Bram Briar Hazel Ivy Lich Reed Rowan Sedge Teas Wyl Aldr Lind Cedr Dew Fir Gorse Heath Juni Laur Lyn Pine Sage Sorr Tamr Vetch Wort Alm Bryn Fenn Gale Lark Mors Sorb",
+        "ends": "leaf bark root ia wyn el wood vine bough thorn moss ling an ar wen brook dell holt stem burr wort mire lin row stalk"
+      },
+      "female": {
+        "starts": "Ash Bir Fern Hol Ivy Mos Ros Wil Yew Elm Bram Briar Hazel Lily Reed Rowan Sedge Lind Myrt Clove Dew Fir Heath Juni Laur Lila Mall Sage Sorr Tans Vio Wren Alm Bryn Fenn Lark Mors Sorb Wisp",
+        "ends": "leaf ia wyn el bloom vine wen ra ela petal fern dew dell rose lea lin sprig"
+      }
+    }
+  }
+}
