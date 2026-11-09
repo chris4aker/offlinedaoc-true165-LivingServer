@@ -26,6 +26,7 @@ namespace DOL.GS
             public bool Shot, Active;
             public GameLiving UnreachableTarget;
             public int UnreachableTries;
+            public int Steps;   // steps closer taken from the planned firing point (StepCloser)
             // A player-led /pull (True 1.65 Mode): the tank brings the monster back to this player.
             public GamePlayer ReturnTo;
         }
@@ -88,6 +89,14 @@ namespace DOL.GS
         public static bool HasRangedPull(GameBot bot) => bot?.CharacterClass != null &&
             !SavageBotCombatPolicy.MustMeleePull((eCharacterClass)bot.CharacterClass.ID) &&
             (PullSpell(bot) != null || BotRangedCombat.CanUse(bot, bot.Inventory?.GetItem(eInventorySlot.DistanceWeapon)));
+
+        /// <summary>How far this puller reaches without moving: its bow or crossbow, else its longest pull spell; 0 = melee.</summary>
+        public static int RangedPullReach(GameBot bot)
+        {
+            if (!HasRangedPull(bot)) return 0;
+            int bow = HasUsableDistanceWeapon(bot) ? BotRangedCombat.EstimatedRange(bot) : 0;
+            return Math.Max(bow, PullSpell(bot)?.Range ?? 0);
+        }
 
         public static bool OwnsRangedPosition(GameNPC npc) => npc is GameBot bot && bot.Group != null &&
             States.TryGetValue(bot.Group, out State state) && state.Active && state.Shooter == bot;
@@ -205,6 +214,7 @@ namespace DOL.GS
                 state.Target = target;
                 state.Anchor = origin;
                 state.FiringPoint = point;
+                state.Steps = 0;
                 state.Spell = spell;
                 state.PreviousWeapon = previous;
                 state.Shot = false;
@@ -291,11 +301,21 @@ namespace DOL.GS
                 bot.StopMovingOnPath();
                 bot.StopMoving();
                 if (state.Shot || bot.IsCrowdControlled) return true;
+                if (state.Spell == null && bot.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+                    bot.SwitchWeapon(eActiveWeaponSlot.Distance);
+                bot.TargetObject = state.Target;   // (a bow's range counts the height difference to this target)
                 int range = state.Spell?.Range ?? bot.attackComponent.AttackRange;
                 if (!bot.IsWithinRadius(state.Target, range - 50) ||
                     !PathfindingProvider.Instance.HasLineOfSight(bot.CurrentZone, new(bot.X, bot.Y, bot.Z),
-                        new(state.Target.X, state.Target.Y, state.Target.Z), PathfindingProvider.Instance.DefaultFilters)) return true;
-                bot.TargetObject = state.Target;
+                        new(state.Target.X, state.Target.Y, state.Target.Z), PathfindingProvider.Instance.DefaultFilters))
+                {
+                    // The firing point was planned from the weapon's flat range: up a slope (height costs archery range)
+                    // or with the line of fire blocked there, the shooter stood until the pull timed out. It steps closer
+                    // instead, and gives the pull up when there is nowhere left to shoot from.
+                    if (!StepCloser(state, bot))
+                        Finish(state, false);
+                    return true;
+                }
                 if (state.Spell != null)
                 {
                     if (bot.Mana >= bot.PowerCost(state.Spell) && bot.GetSkillDisabledDuration(state.Spell) == 0)
@@ -305,6 +325,22 @@ namespace DOL.GS
                     bot.StartAttack(state.Target);
                 return true;
             }
+        }
+
+        /// <summary>A firing point 200 units nearer the target, within the pull's allowed advance; false when none is left.</summary>
+        private static bool StepCloser(State state, GameBot bot)
+        {
+            if (++state.Steps > 6) return false;
+            IPathfindingMgr nav = PathfindingProvider.Instance;
+            Vector3 here = new(bot.X, bot.Y, bot.Z), enemy = new(state.Target.X, state.Target.Y, state.Target.Z);
+            float distance = Vector3.Distance(here, enemy);
+            if (distance < 300 || nav?.IsAvailable != true || bot.CurrentZone == null) return false;
+            if (!AutonomousNavigationSurface.TryFloor(nav, bot.CurrentZone, Vector3.Lerp(here, enemy, 200f / distance), out Vector3 point))
+                return false;
+            float limit = state.ReturnTo != null ? PlayerLedMaximumAdvance : MaximumFiringAdvance;
+            if (Vector3.Distance(state.Anchor, point) > limit) return false;
+            state.FiringPoint = point;
+            return true;
         }
 
         public static void OnAttack(GameLiving actor, AttackData attack)
@@ -415,6 +451,7 @@ namespace DOL.GS
             state.Target = target;
             state.Anchor = new(player.X, player.Y, player.Z);
             state.FiringPoint = firingPoint;
+            state.Steps = 0;
             state.Spell = spell;
             state.PreviousWeapon = tank.ActiveWeaponSlot;
             state.Shot = tagged;

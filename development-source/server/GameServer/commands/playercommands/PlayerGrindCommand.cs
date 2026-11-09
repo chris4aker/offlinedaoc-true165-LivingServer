@@ -17,6 +17,14 @@ namespace DOL.GS.Commands
     public static class PlayerCompanionGrind
     {
         public const int PullRadius = 1000;
+        public const int MaxPullRadius = 2000;
+
+        /// <summary>
+        /// How far /grind looks for its next monster (owner 2026-11-09: "the target selection range for /grind is too
+        /// short" - a crossbow reaches 1,200 and pull spells 1,500, but only monsters within 1,000 were picked): the
+        /// puller's own reach less a step, never under 1,000 (a melee puller walks up as before), at most 2,000.
+        /// </summary>
+        public static int SearchRadius(int pullerReach) => Math.Clamp(pullerReach - 100, PullRadius, MaxPullRadius);
         public const int RegroupRadius = 350;
         public const int ContactTimeout = 35_000;
         // The legacy native client can close an otherwise healthy localhost
@@ -370,7 +378,7 @@ namespace DOL.GS.Commands
             if (puller.CurrentZone == null || !nav.HasNavmesh(puller.CurrentZone)) return null;
             // Local search only, at most four corridor checks per five seconds,
             // and only for explicitly active human grind sessions.
-            foreach (GameNPC npc in player.GetNPCsInRadius(PullRadius).Where(npc =>
+            foreach (GameNPC npc in player.GetNPCsInRadius((ushort)SearchRadius(AutonomousDefensivePull.RangedPullReach(puller))).Where(npc =>
                 PlayerMobNavigator.IsExperienceMonster(npc) && npc.IsAlive && npc.ObjectState == GameObject.eObjectState.Active &&
                 !npc.InCombat && !npc.IsAttacking && npc.CurrentZone == puller.CurrentZone &&
                 !session.FailedTargets.ContainsKey(npc) &&
