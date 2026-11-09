@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -2456,6 +2457,94 @@ namespace DOL.GS.Quests
 
 
 		/// <summary>
+		/// How many of its item a hand-in step asks for. The quest hands one out on each earlier step that names the item
+		/// in StepItemTemplates (five kill steps for five bear claws), back to the last step that took the same item; a
+		/// delivery step hands its own item out as it begins. A delivery's item on an earlier step was handed out and
+		/// taken by that step, so it does not count. Never less than 1.
+		/// </summary>
+		/// <param name="step">The hand-in step, 1-based.</param>
+		public static int CollectCountNeeded(IReadOnlyList<eStepType> stepTypes, IReadOnlyList<string> stepItems, IReadOnlyList<string> collectItems, int step)
+		{
+			if (step < 1 || step > collectItems.Count || string.IsNullOrWhiteSpace(collectItems[step - 1]))
+				return 1;
+
+			static string Id(string template) => (template ?? string.Empty).Split(';')[0].Trim();
+			static bool IsDelivery(eStepType type) => type is eStepType.Deliver or eStepType.DeliverFinish;
+
+			string want = Id(collectItems[step - 1]);
+			int count = 0;
+
+			if (step <= stepTypes.Count && IsDelivery(stepTypes[step - 1]) && step <= stepItems.Count &&
+				string.Equals(Id(stepItems[step - 1]), want, StringComparison.OrdinalIgnoreCase))
+				count++;
+
+			for (int j = step - 2; j >= 0; j--)
+			{
+				if (j < collectItems.Count && string.Equals(Id(collectItems[j]), want, StringComparison.OrdinalIgnoreCase))
+					break;
+
+				if (j < stepItems.Count && j < stepTypes.Count && !IsDelivery(stepTypes[j]) &&
+					string.Equals(Id(stepItems[j]), want, StringComparison.OrdinalIgnoreCase))
+					count++;
+			}
+
+			return Math.Max(1, count);
+		}
+
+		/// <summary>
+		/// The other backpack items of the same template as the one handed in.
+		/// </summary>
+		private static List<DbInventoryItem> OtherCopies(GamePlayer player, DbInventoryItem item)
+		{
+			List<DbInventoryItem> copies = new List<DbInventoryItem>();
+
+			lock (player.Inventory.Lock)
+			{
+				foreach (DbInventoryItem other in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				{
+					if (other != null && other != item && string.Equals(other.Id_nb, item.Id_nb, StringComparison.OrdinalIgnoreCase))
+						copies.Add(other);
+				}
+			}
+
+			return copies;
+		}
+
+		/// <summary>
+		/// Takes <paramref name="count"/> more of a hand-in's item from the copies found before the step advanced.
+		/// </summary>
+		private static void RemoveCopies(GameObject target, GamePlayer player, List<DbInventoryItem> copies, int count)
+		{
+			if (copies == null)
+				return;
+
+			foreach (DbInventoryItem copy in copies)
+			{
+				if (count <= 0)
+					break;
+
+				int stack = Math.Max(1, copy.Count);
+
+				if (stack <= count)
+				{
+					RemoveItem(target, player, copy, false);
+					count -= stack;
+				}
+				else
+				{
+					lock (player.Inventory.Lock)
+					{
+						if (player.Inventory.RemoveCountFromStack(copy, count))
+							InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, copy.Template, count);
+					}
+
+					count = 0;
+				}
+			}
+		}
+
+
+		/// <summary>
 		/// A player doing this quest has given an item to something.  All active quests check to see if they need to respond to this.
 		/// </summary>
 		/// <param name="player"></param>
@@ -2476,6 +2565,25 @@ namespace DOL.GS.Quests
 					item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
 					ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
 				{
+					// A step that asks for several of an item ("Return to Aegan with all five bear claws") takes all of
+					// them: the quest handed one out on each earlier step. Handing in one of five finished the quest and
+					// left four behind (tester 0.5). A step that asks for one is as before.
+					int needed = CollectCountNeeded(m_stepTypes, m_stepItemTemplates, m_collectItems, Step);
+					List<DbInventoryItem> others = null;
+
+					if (needed > 1)
+					{
+						others = OtherCopies(player, item);
+						int have = Math.Max(1, item.Count) + others.Sum(o => Math.Max(1, o.Count));
+
+						if (have < needed)
+						{
+							TryTurnTo(obj, player);
+							player.Out.SendMessage($"{obj.GetName(0, true)} needs all {needed} of them. You have {have} ({item.Name}) in your backpack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							return;
+						}
+					}
+
 					switch (StepType)
 					{
 						case eStepType.Deliver:
@@ -2499,6 +2607,7 @@ namespace DOL.GS.Quests
 								if (AdvanceQuestStep(obj))
 								{
 									RemoveItem(obj, player, item, true);
+									RemoveCopies(obj, player, others, needed - Math.Max(1, item.Count));
 								}
 							}
 							break;
@@ -2509,6 +2618,7 @@ namespace DOL.GS.Quests
 								if (FinishQuest(obj, true))
 								{
 									RemoveItem(obj, player, item, true);
+									RemoveCopies(obj, player, others, needed - Math.Max(1, item.Count));
 								}
 							}
 							break;
