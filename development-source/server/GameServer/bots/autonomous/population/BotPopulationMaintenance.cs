@@ -134,6 +134,8 @@ namespace DOL.GS
                     BotArchive archive = BotArchiveStore.Current;
                     if (archive == null)
                         return;
+                    // the hired companions first: none may be sorted as a gamebot (if this fails, nothing is touched)
+                    HiredCompanions165.EnsureLoaded();
                     Run(archive, new HashSet<long>(onlineAtLastStop ?? Array.Empty<long>()), HiredCompanions165.ForgetOrphan);
                     BotArchiveStore.MarkReady(true);
                     PopulationLog.Info(Log, $"BOT_POPULATION ready: saved={archive.SavedCount}");

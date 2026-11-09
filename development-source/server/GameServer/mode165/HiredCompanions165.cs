@@ -58,13 +58,32 @@ namespace DOL.GS
         /// confirm in testing): 20 s, 60 s, 2 g, 6 g, 15 g, 30 g.</summary>
         public static readonly long[] CostCopper = [0, 2_000, 6_000, 20_000, 60_000, 150_000, 300_000];
 
+        private static readonly object LoadLock = new();
+        private static bool _loaded;
+
+        /// <summary>
+        /// The hired companions from the database, once. Also called by the population system's start-up work before it
+        /// sorts the bots, so a companion is never taken for a gamebot whichever start handler runs first (an updated
+        /// world: every character's companions stay theirs). Throws when the table can't be read.
+        /// </summary>
+        public static void EnsureLoaded()
+        {
+            lock (LoadLock)
+            {
+                if (_loaded)
+                    return;
+                foreach (OfflineHiredCompanionRecord r in DOLDB<OfflineHiredCompanionRecord>.SelectAllObjects())
+                    Hired[r.BotId] = r;
+                _loaded = true;
+            }
+        }
+
         [GameServerStartedEvent]
         public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
         {
             try
             {
-                foreach (OfflineHiredCompanionRecord r in DOLDB<OfflineHiredCompanionRecord>.SelectAllObjects())
-                    Hired[r.BotId] = r;
+                EnsureLoaded();
             }
             catch (Exception ex)
             {
