@@ -2172,6 +2172,7 @@ namespace DOL.GS
                 Group?.UpdateGroupWindow();
                 AutonomousBotStatusPersistence.Queue(this, true);
                 LogCompanionSkills($"level {Level}");
+                AutonomousBotLifecycle.NoteLevelChanged(this);
             }
             else
             {
@@ -3511,7 +3512,8 @@ namespace DOL.GS
                         PersistentRecord.LastUpdateUtc = DateTime.UtcNow.ToString("O");
                         PersistentRecord.Dirty = true;
                         MarkAutonomousStateDirty();
-                        AutonomousBotStatusPersistence.Queue(this);
+                        // Saved like a logout, so no reload starts from an older copy before this save is written.
+                        AutonomousBotStatusPersistence.QueueLogout(this);
                     }
                     log.Warn($"AUTONOMOUS_TRANSFER_REQUEUE bot={Name} id={DatabaseID} " +
                              $"target_region={regionID} moved={moved}");
@@ -3540,8 +3542,8 @@ namespace DOL.GS
             AutonomousPetSupport.CancelPendingCharm(this);
             AutonomousPetSupport.ReleaseFieldTurrets(this);
             CompleteStableMasterRoute();
-            if (IsAutonomousWorldBot && !IsIntentionalWorldMove)
-                SaveAutonomousState(true);
+            // The save happens once, in RemoveFromWorld (base.Delete calls it); a bot already out of the world saved
+            // when it left (Phase 0: deleting used to write the bot up to three times, synchronously).
             if (Owner != null)
             {
                 GameEventMgr.RemoveHandler(Owner, GamePlayerEvent.Quit, new DOLEventHandler(OnOwnerQuit));
@@ -3559,8 +3561,9 @@ namespace DOL.GS
             bool intentionalWorldMove = IsIntentionalWorldMove;
             if (!intentionalWorldMove)
                 TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK)?.DropFromCarrier(this, "bot-removed");
-            if (IsAutonomousWorldBot && !intentionalWorldMove)
-                SaveAutonomousState(true);
+            // Take the bot's last position and stats into its record while it is still in the world.
+            if (IsAutonomousWorldBot && !intentionalWorldMove && ObjectState == eObjectState.Active)
+                PrepareAutonomousStateSnapshot();
             // A charm cast can have created its tagged candidate before the
             // ownership effect installs ControlledBrain. World removal must
             // clean that pending body even during this short handshake.
@@ -3583,8 +3586,18 @@ namespace DOL.GS
                     PersistentRecord.Activity = "Offline";
                     PersistentRecord.LastUpdateUtc = DateTime.UtcNow.ToString("O");
                     PersistentRecord.Dirty = true;
-                    GameServer.Database.SaveObject(PersistentRecord);
+                    // One save per logout: queued at the front of the save lane (record and inventory together).
+                    // Shutdown and hired companions keep a single synchronous save (their owner may summon them again
+                    // at once, and nothing flushes after the world closes).
+                    if (AutonomousBotLifecycle.SaveSynchronouslyOnRemoval(this))
+                    {
+                        AutonomousBotStatusPersistence.Forget(DatabaseID);
+                        SaveAutonomousState(true);
+                    }
+                    else
+                        AutonomousBotStatusPersistence.QueueLogout(this);
                 }
+                AutonomousBotLifecycle.NoteRemovedFromWorld(this);
             }
 
             return true;
@@ -4049,7 +4062,8 @@ namespace DOL.GS
             record.Endurance = Math.Max(0, Endurance);
             // IsAlive is false for anything out of the world, so a hired companion saved after it was parked (logout,
             // dismiss) came back DEAD at the next login (True 1.65 Mode test, 2026-10-30). Out of the world, health decides.
-            record.IsAlive = ObjectState != eObjectState.Active && HiredCompanions165.IsHired(this) ? Health > 0 : IsAlive;
+            // The same holds for a gamebot whose logout save is written after it left the world.
+            record.IsAlive = ObjectState != eObjectState.Active ? Health > 0 : IsAlive;
             record.IsOnline = ObjectState == eObjectState.Active;
             record.SerializedSpecs = string.Join(';', GetSpecList().Where(spec => spec.Trainable).Select(spec => $"{spec.KeyName}|{spec.Level}"));
             record.SerializedAbilities = $"trained-level|{_lastAutonomousTrainedLevel}|realm-points|{AutonomousBotRealmAbilities.TrainedPoints(this)}" +

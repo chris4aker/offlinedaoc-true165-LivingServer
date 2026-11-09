@@ -121,6 +121,8 @@ namespace DOL.GS
             item.RealmExchangeListedUtc = string.Empty;
             item.Dirty = true;
             GameServer.Database.SaveObject(item);
+            // offline write: a login in flight must reload this bot's items
+            AutonomousBotEconomy.BumpOfflineRevision(botId);
             return true;
         }
     }

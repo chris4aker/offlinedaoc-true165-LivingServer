@@ -61,6 +61,29 @@ namespace DOL.GS
             item != null && (item.SlotPosition == (int)eInventorySlot.Cloak ||
                              item.SlotPosition == (int)eInventorySlot.LeftHandWeapon && item.Object_Type == (int)eObjectType.Shield);
 
+        /// <summary>The guild id of a gamebot, online or archived (memory only), or null.</summary>
+        public static string GuildIdOf(long botId) => Members.TryGetValue(botId, out var record) ? record.GuildID : null;
+
+        private static readonly ConcurrentDictionary<string, (long WindowStart, int Count)> LoginNotices = new();
+
+        /// <summary>
+        /// A gamebot guildmate came online (the population lifecycle's LoggedIn): its guild's players see "Guild member X
+        /// has logged in!" like a player's login, if they have guild logins on (/gc loginmsg). At most 20 a minute per guild,
+        /// so a horn that logs many guildmates in does not flood the chat.
+        /// </summary>
+        public static void AnnounceLogin(GameBot bot)
+        {
+            if (bot == null || !bot.IsAutonomousWorldBot || HiredCompanions165.IsHired(bot)) return;
+            Guild guild = GuildOf(bot.DatabaseID);
+            if (guild == null || guild.GetListOfOnlineMembers().Count == 0) return;
+            long now = GameLoop.GameLoopTime;
+            var (start, count) = LoginNotices.GetValueOrDefault(guild.GuildID);
+            if (now - start >= 60_000) (start, count) = (now, 0);
+            if (count >= 20) return;
+            LoginNotices[guild.GuildID] = (start, count + 1);
+            guild.NotifyBotMemberLogin(bot.Name);
+        }
+
         public static IEnumerable<long> MembersOf(Guild guild) =>
             guild == null ? [] : Members.Values.Where(m => m.GuildID == guild.GuildID).Select(m => m.BotId).ToArray();
 
@@ -95,6 +118,13 @@ namespace DOL.GS
             {
                 OfflineWorldBotRecord bot = DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("BotId").IsEqualTo(record.BotId));
                 Guild guild = GuildMgr.GetGuildByGuildID(record.GuildID);
+                // An archived bot (no warm row) keeps its guild and shows offline (population plan 3.8).
+                if (bot == null && guild != null && BotArchiveStore.IsSaved(record.BotId))
+                {
+                    Members[record.BotId] = record;
+                    GuildMgr.AddBotToGuildMemberViews(guild, ViewFor(record, null, null));
+                    continue;
+                }
                 if (bot == null || bot.IsRetired || guild == null || (int)guild.Realm != bot.Realm)
                 {
                     stale.Add(record);
@@ -220,14 +250,17 @@ namespace DOL.GS
             return true;
         }
 
-        /// <summary>Removes every member whose bot is no longer on the roster (launcher deletion or retirement).</summary>
-        public static int Reconcile(IReadOnlyCollection<long> rosterBotIds)
+        /// <summary>Removes every member whose bot is no longer on the roster (launcher deletion or retirement). An archived
+        /// (logged-out, saved) bot is not on the warm roster but stays a member.</summary>
+        public static int Reconcile(IReadOnlyCollection<long> rosterBotIds) => Reconcile(rosterBotIds, BotArchiveStore.IsSaved);
+
+        public static int Reconcile(IReadOnlyCollection<long> rosterBotIds, Func<long, bool> isArchived)
         {
             if (rosterBotIds == null || Members.IsEmpty) return 0;
             var keep = rosterBotIds as ISet<long> ?? new HashSet<long>(rosterBotIds);
             int removed = 0;
             foreach (long botId in Members.Keys.ToArray())
-                if (!keep.Contains(botId) && Remove(botId, null))
+                if (!keep.Contains(botId) && isArchived?.Invoke(botId) != true && Remove(botId, null))
                     removed++;
             return removed;
         }

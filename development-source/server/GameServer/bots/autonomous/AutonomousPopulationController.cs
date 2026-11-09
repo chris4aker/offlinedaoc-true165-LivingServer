@@ -24,6 +24,7 @@ public static class AutonomousPopulationController
 {
     public const string TeleportToBotCommandType = "TeleportToBot";
     public const int MaximumSpawnEnqueuePerPoll = 16;
+    public const int MaximumCommandsInFlight = 64;
     private const float MaximumStartupGroundDelta = 96f;
     private static readonly Logger Log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
     private static readonly ConcurrentDictionary<long, byte> PendingSpawns = new();
@@ -62,6 +63,9 @@ public static class AutonomousPopulationController
             lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
                 GameServer.Database.SaveObject(previouslyOnline.Cast<DataObject>());
         }
+        // The population lifecycle: archive, crash recovery and the one-time migration run in the background first;
+        // the scheduler acts only once that is done (AutonomousBotLifecycle.IsReady).
+        AutonomousBotLifecycle.Start(previouslyOnline.Where(record => !record.IsRetired).Select(record => record.BotId));
         RefreshControlPlane(force: true);
         _nextCommandPollUtc = DateTime.MinValue;
         _nextOrphanRepairUtc = DateTime.MinValue;
@@ -75,6 +79,8 @@ public static class AutonomousPopulationController
         Interlocked.Increment(ref _loginGeneration);
         _timer?.Dispose();
         _timer = null;
+        // From here a bot leaving the world saves at once (nothing flushes after the world closes).
+        AutonomousBotLifecycle.Stop();
         // Persist the coalesced launcher/status batch here. Inventories are
         // event-driven and included only when loot, equipment, buying, selling,
         // or training actually changed them; there is no shutdown-wide rewrite.
@@ -102,6 +108,13 @@ public static class AutonomousPopulationController
                 QueueOwnerCommands(repairOrphans);
             }
 
+            // The population scheduler owns logins when it is on; this poll then only runs owner commands.
+            if (_cachedSchedulerEnabled)
+            {
+                _populationSatisfied = true;
+                return;
+            }
+
             OfflineWorldBotRecord[] roster = _cachedRoster;
             int desired = AutonomousPopulationRamp.DesiredActiveCount(_cachedEnabled, roster.Length, _cachedRampMinutes, nowUtc - _startedUtc);
             int missing = desired - AutonomousBotRegistry.RosterCount - PendingSpawns.Count;   // (hired companions are not on the roster)
@@ -117,7 +130,8 @@ public static class AutonomousPopulationController
             }
 
             List<OfflineWorldBotRecord> available = roster
-                .Where(record => !record.IsOnline && !AutonomousBotRegistry.Contains(record.BotId) && !PendingSpawns.ContainsKey(record.BotId))
+                .Where(record => !record.IsOnline && !AutonomousBotRegistry.Contains(record.BotId) && !PendingSpawns.ContainsKey(record.BotId) &&
+                                 !AutonomousBotStatusPersistence.IsLogoutPending(record.BotId))
                 .ToList();
 
             // Ten thousand actors require about eleven scheduled logins per
@@ -145,16 +159,18 @@ public static class AutonomousPopulationController
                     // Fetch the exact real inventory on this existing background
                     // poller. Applying slots/bonuses and actor creation still belong
                     // to the game loop; it must never spin waiting for SQLite here.
+                    // A fresh primary-key read (record revision + items); the game loop re-checks the revision under the
+                    // Exchange and economy locks, so gold or items a bot got while offline are never overwritten.
                     int generation = Volatile.Read(ref _loginGeneration);
-                    string ownerId = AutonomousBotEconomy.GetOwnerId(next.BotId);
-                    var inventory = new BotInventory(ownerId);
-                    var items = inventory.SelectPersonalItems(ownerId);
-                    if (generation != Volatile.Read(ref _loginGeneration) || _timer == null)
+                    AutonomousBotLifecycle.PreparedLogin prepared = AutonomousBotLifecycle.PrepareLogin(next.BotId, scheduled: false);
+                    if (prepared == null || generation != Volatile.Read(ref _loginGeneration) || _timer == null)
                     {
                         PendingSpawns.TryRemove(next.BotId, out _);
+                        if (prepared == null)
+                            continue;
                         return;
                     }
-                    NpcService.Instance.Post(SpawnOnGameLoop, new PreparedSpawn(next.BotId, items, generation));
+                    NpcService.Instance.Post(SpawnOnGameLoop, new PreparedSpawn(prepared, generation));
                 }
                 catch
                 {
@@ -173,73 +189,18 @@ public static class AutonomousPopulationController
         }
     }
 
-    private sealed record PreparedSpawn(long BotId, System.Collections.IList Inventory, int Generation);
+    private sealed record PreparedSpawn(AutonomousBotLifecycle.PreparedLogin Login, int Generation);
 
     private static void SpawnOnGameLoop(PreparedSpawn prepared)
     {
-        long botId = prepared.BotId;
+        long botId = prepared.Login.BotId;
         try
         {
             if (prepared.Generation != Volatile.Read(ref _loginGeneration) || _timer == null) return;
-            OfflineWorldBotRecord record = _cachedRoster.FirstOrDefault(candidate => candidate.BotId == botId);
-            if (record == null || record.IsRetired || record.IsOnline || AutonomousBotRegistry.Contains(botId))
+            OfflineWorldBotRecord cached = _cachedRoster.FirstOrDefault(candidate => candidate.BotId == botId);
+            if (cached == null || cached.IsRetired || cached.IsOnline || AutonomousBotRegistry.Contains(botId))
                 return;
-
-            // True 1.65 Mode: a new bot starts as the base class of the class it rolled (BaseClassBots165).
-            if (IsFreshUnplacedLevelOneRecord(record) && BaseClassBots165.PrepareFresh(record))
-                GameServer.Database.SaveObject(record);
-            GameBot bot = new(record, prepared.Inventory);
-            if (IsFreshUnplacedLevelOneRecord(record))
-            {
-                if (!TryPlaceFreshBotAtAuthoritativeStart(bot, record))
-                    PlaceAtCapitalFallback(bot, record);
-            }
-            else if (record.RegionId == 0)
-            {
-                // Preserve legacy handling for existing records with no usable
-                // stored position. Recovery and bind paths intentionally remain
-                // capital-based and are not part of new-character placement.
-                PlaceAtCapitalFallback(bot, record);
-            }
-
-            // GameNPC keeps a separate interpolated movement position. Before
-            // AddToWorld it still contains the constructor default (0,0,0),
-            // even after the authoritative saved/start coordinates were set.
-            // Synchronize it before validation so a valid Classic/SI start is
-            // not mistaken for an invalid origin and replaced by a capital.
-            bot.SynchronizePositionForLoginValidation();
-            AutonomousStuckWatchdog.RepairInvalidLoginPosition(bot);
-            if (string.IsNullOrWhiteSpace(record.LastSavedUtc) && record.Experience == 0)
-            {
-                bot.Health = bot.MaxHealth;
-                bot.Mana = bot.MaxMana;
-                bot.Endurance = bot.MaxEndurance;
-            }
-
-            if (!bot.AddToWorld())
-            {
-                // Logged (owner 2026-11-01: one bot stayed offline 13 minutes after the others and nothing said why).
-                Log.Warn($"AUTONOMOUS_LOGIN_FAILED bot=\"{record.Name}\" id={botId} level={record.Level} region={bot.CurrentRegionID} " +
-                         $"x={bot.X} y={bot.Y} z={bot.Z} saved={record.RegionId}:{record.X},{record.Y},{record.Z} alive={bot.IsAlive}");
-                record.IsOnline = false;
-                record.Activity = "Login attempt failed; waiting to retry";
-                record.LastUpdateUtc = DateTime.UtcNow.ToString("O");
-                record.Dirty = true;
-                AutonomousBotStatusPersistence.Queue(bot);
-                return;
-            }
-
-            record.IsOnline = true;
-            record.Activity = "Choosing first live goal";
-            record.CurrentGoal = "Find a reachable level-appropriate XP camp";
-            record.ObjectiveProgress = "Entered world through staggered login queue";
-            bot.MarkAutonomousStateDirty();
-            AutonomousBotStatusPersistence.QueueLogin(bot);
-            Log.Info($"Autonomous character {record.Name} entered the live world from the staggered queue.");
-        }
-        catch (Exception exception)
-        {
-            Log.Error($"Could not load autonomous bot {botId}", exception);
+            AutonomousBotLifecycle.SpawnOnGameLoop(prepared.Login);
         }
         finally
         {
@@ -252,7 +213,7 @@ public static class AutonomousPopulationController
         record != null && record.Level == 1 && record.Experience == 0 && record.RealmPoints == 0 &&
         record.RegionId == 0 && string.IsNullOrWhiteSpace(record.LastSavedUtc);
 
-    private static void PlaceAtCapitalFallback(GameBot bot, OfflineWorldBotRecord record)
+    internal static void PlaceAtCapitalFallback(GameBot bot, OfflineWorldBotRecord record)
     {
         AutonomousStuckWatchdog.CapitalLocation capital = AutonomousStuckWatchdog.SafeCapitalFor((eRealm)record.Realm);
         bot.CurrentRegionID = capital.RegionId;
@@ -266,7 +227,7 @@ public static class AutonomousPopulationController
     /// data, after validating the live map and navmesh. Existing records never
     /// enter this path, so watchdog recovery stays capital-only.
     /// </summary>
-    private static bool TryPlaceFreshBotAtAuthoritativeStart(GameBot bot, OfflineWorldBotRecord record)
+    internal static bool TryPlaceFreshBotAtAuthoritativeStart(GameBot bot, OfflineWorldBotRecord record)
     {
         StartupLocation[] candidates = StartupLocations
             .GetClassicSiLocationsForAutonomous((eRealm)record.Realm, record.RaceId, record.ClassId)
@@ -335,17 +296,32 @@ public static class AutonomousPopulationController
         // longer holds the shared write lock that game-loop transactions wait on.
         _cachedEnabled = ReadBool("population_enabled", false);
         _cachedRampMinutes = ReadInt("startup_ramp_minutes", 15);
+        _cachedSchedulerEnabled = ReadBool(PopulationSchedulerProperties.EnabledKey, PopulationSchedulerProperties.POPULATION_SCHEDULER_ENABLED);
+        if (_cachedSchedulerEnabled)
+        {
+            // No full-roster read on a timer: the scheduler works from the archive's indexed counts and candidates.
+            _cachedRoster = Array.Empty<OfflineWorldBotRecord>();
+            return;
+        }
         _cachedRoster = DOLDB<OfflineWorldBotRecord>
             .SelectObjects(DB.Column("IsRetired").IsEqualTo(false))
             .Where(record => !HiredCompanions165.IsHired(record.BotId))   // True 1.65 Mode: their owners bring them
             .OrderBy(record => record.BotId)
             .ToArray();
-        // A gamebot taken off the roster (launcher removal, retirement, test-roster rollback) leaves its guild.
+        // A gamebot taken off the roster (launcher removal, retirement, test-roster rollback) leaves its guild; archived
+        // bots stay members (AutonomousBotGuilds.Reconcile checks the archive).
         long[] rosterIds = _cachedRoster.Select(record => record.BotId).ToArray();
         NpcService.Instance.Post<long[]>(ids => AutonomousBotGuilds.Reconcile(ids), rosterIds);
     }
 
     private static volatile bool _populationSatisfied;
+    private static volatile bool _cachedSchedulerEnabled;
+
+    /// <summary>The population_enabled master switch (re-read every 10-30 s).</summary>
+    public static bool PopulationEnabled => _cachedEnabled;
+
+    /// <summary>population_scheduler_enabled as last read (true: the scheduler owns logins and logouts).</summary>
+    public static bool SchedulerEnabled => _cachedSchedulerEnabled;
 
     private static void QueueOwnerCommands(bool repairOrphans)
     {
@@ -389,9 +365,13 @@ public static class AutonomousPopulationController
             }
         }
 
-        foreach (OfflineBotCommandRecord command in DOLDB<OfflineBotCommandRecord>
-                     .SelectObjects(DB.Column("State").IsEqualTo("Pending"))
-                     .OrderBy(command => command.CommandId))
+        // Bounded: a delete-all queues one command per bot, and retirements finish in the background 16 a second, so
+        // only a window of commands is in flight at a time and each poll reads at most one small page.
+        int room = MaximumCommandsInFlight - PendingCommands.Count;
+        IEnumerable<OfflineBotCommandRecord> page = room <= 0 ? Array.Empty<OfflineBotCommandRecord>() : DOLDB<OfflineBotCommandRecord>
+            .SelectObjects(DB.Column("State").IsEqualTo("Pending").OrderBy(DB.Column("CommandId"), false, room + PendingCommands.Count))
+            .OrderBy(command => command.CommandId);
+        foreach (OfflineBotCommandRecord command in page)
         {
             if (!PendingCommands.TryAdd(command.CommandId, 0))
                 continue;
@@ -408,6 +388,7 @@ public static class AutonomousPopulationController
     private static void ProcessOwnerCommandOnGameLoop(long commandId)
     {
         OfflineBotCommandRecord command = null;
+        bool keepPending = false;
         try
         {
             command = DOLDB<OfflineBotCommandRecord>.SelectObject(DB.Column("CommandId").IsEqualTo(commandId));
@@ -417,11 +398,20 @@ public static class AutonomousPopulationController
             command.State = "Processing";
             command.Dirty = true;
             GameServer.Database.SaveObject(command);
+            bool retire = string.Equals(command.CommandType, RetireCommandType, StringComparison.OrdinalIgnoreCase) ||
+                          string.Equals(command.CommandType, "Delete", StringComparison.OrdinalIgnoreCase);
             if (string.Equals(command.CommandType, TeleportToBotCommandType, StringComparison.OrdinalIgnoreCase))
             {
                 TeleportOwnerToBot(command);
             }
-            else if (string.Equals(command.CommandType, "Delete", StringComparison.OrdinalIgnoreCase))
+            else if (retire && BotArchiveStore.Current != null)
+            {
+                // The leak-free pipeline (plan 3.4), finished in the background; the command completes when it is done.
+                RetireFromLauncher(command);
+                keepPending = true;
+                return;
+            }
+            else if (retire)
             {
                 DeleteBot(command.BotId);
             }
@@ -450,7 +440,9 @@ public static class AutonomousPopulationController
         }
         finally
         {
-            PendingCommands.TryRemove(commandId, out _);
+            // A retirement in flight keeps its command id until the worker reports back.
+            if (!keepPending)
+                PendingCommands.TryRemove(commandId, out _);
         }
     }
 
@@ -478,8 +470,61 @@ public static class AutonomousPopulationController
         Log.Info($"Launcher teleported account {command.RequestedByAccount} to autonomous character {command.BotId} ({bot.Name}).");
     }
 
+    /// <summary>The launcher's delete (one bot or all): a 'Retire' command (older launchers send 'Delete').</summary>
+    public const string RetireCommandType = "Retire";
+
+    /// <summary>
+    /// A launcher delete: the bot leaves the world here on the game loop (one queued logout save), then the retire
+    /// worker deletes everything it owns once that save is written, and marks the command Completed or Failed.
+    /// </summary>
+    private static void RetireFromLauncher(OfflineBotCommandRecord command)
+    {
+        long botId = command.BotId;
+        long commandId = command.CommandId;
+        if (HiredCompanions165.IsHired(botId))
+            throw new InvalidOperationException("A hired companion is released by its player at the innkeeper, not deleted from the launcher.");
+        if (AutonomousBotRegistry.TryGet(botId, out GameBot liveBot))
+            liveBot.Delete();
+        BotArchiveStore.EnqueueRetire(botId, allowHired: false, commandId, (done, error) =>
+        {
+            try
+            {
+                OfflineBotCommandRecord row = DOLDB<OfflineBotCommandRecord>.SelectObject(DB.Column("CommandId").IsEqualTo(commandId));
+                if (row != null)
+                {
+                    row.State = done ? "Completed" : "Failed";
+                    row.CompletedUtc = DateTime.UtcNow.ToString("O");
+                    row.Error = done ? string.Empty : error ?? "Retirement failed";
+                    row.Dirty = true;
+                    lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
+                        GameServer.Database.SaveObject(row);
+                }
+                if (done)
+                    Log.Warn($"Owner permanently deleted autonomous character {botId} (retired through the population pipeline).");
+            }
+            catch (Exception exception)
+            {
+                Log.Error($"Could not complete owner command {commandId}", exception);
+            }
+            finally
+            {
+                PendingCommands.TryRemove(commandId, out _);
+            }
+        });
+    }
+
     /// <summary>True 1.65 Mode: a hired companion released for good is deleted like a launcher removal.</summary>
-    internal static void DeleteHiredCompanion(long botId) => DeleteBot(botId);
+    internal static void DeleteHiredCompanion(long botId)
+    {
+        if (BotArchiveStore.Current == null)
+        {
+            DeleteBot(botId);
+            return;
+        }
+        if (AutonomousBotRegistry.TryGet(botId, out GameBot liveBot))
+            liveBot.Delete();
+        BotArchiveStore.EnqueueRetire(botId, allowHired: true, 0, null);
+    }
 
     private static void DeleteBot(long botId)
     {
@@ -495,6 +540,20 @@ public static class AutonomousPopulationController
         {
             if (RealmExchangeBroker.IsExchangeOwnerLot(item.OwnerLot))
                 MarketCache.RemoveItem(item);
+        }
+        // Fallback path (no archive): relist / listing-hours rows and unique templates go with the items.
+        foreach (DbInventoryItem item in items)
+        {
+            if (!string.IsNullOrEmpty(item.ObjectId))
+            {
+                if (GameServer.Database.FindObjectByKey<OfflineTrue165RelistRecord>(item.ObjectId) is { } relist)
+                    GameServer.Database.DeleteObject(relist);
+                if (GameServer.Database.FindObjectByKey<OfflineTrue165ListingHours>(item.ObjectId) is { } hours)
+                    GameServer.Database.DeleteObject(hours);
+            }
+            if (!string.IsNullOrEmpty(item.UTemplate_Id) &&
+                GameServer.Database.FindObjectByKey<DbItemUnique>(item.UTemplate_Id) is { } unique)
+                GameServer.Database.DeleteObject(unique);
         }
         if (items.Length > 0)
         {

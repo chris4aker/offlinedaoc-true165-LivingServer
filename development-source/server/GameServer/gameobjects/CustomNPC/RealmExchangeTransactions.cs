@@ -40,7 +40,13 @@ public sealed partial class RealmExchangeBroker
             if (_bot != null)
             {
                 _bot.MoneyCopper = _originalMoney + _price;
+                // A login in flight reloads a bot paid while offline; a bot whose logout save waits saves again.
+                _bot.InventoryRevision++;
                 _bot.Dirty = true;
+                if (!AutonomousBotRegistry.Contains(_bot.BotId) &&
+                    AutonomousBotStatusPersistence.TryGetLoggingOut(_bot.BotId, out GameBot leaving) &&
+                    ReferenceEquals(leaving.PersistentRecord, _bot))
+                    AutonomousBotStatusPersistence.QueueLogout(leaving);
             }
             else
             {

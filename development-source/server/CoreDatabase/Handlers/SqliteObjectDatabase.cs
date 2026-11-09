@@ -333,6 +333,9 @@ namespace DOL.Database.Handlers
         /// Check if Table Indexes Need Alteration
         /// </summary>
         /// <param name="table">DataTableHandler to Implement</param>
+        /// <summary>Name prefix of indexes the table check never drops (see <see cref="CheckTableIndexAlteration"/>).</summary>
+        public const string CustomIndexPrefix = "KEEP_";
+
         protected void CheckTableIndexAlteration(DataTableHandler table)
         {
             // Query Existing Indexes
@@ -344,7 +347,13 @@ namespace DOL.Database.Handlers
                                   reader =>
                                   {
                                     while (reader.Read())
+                                    {
+                                        // Indexes named KEEP_* are made by server code (unique NOCASE names, partial
+                                        // indexes) that the attributes cannot describe: leave them alone.
+                                        if (reader.GetString(0).StartsWith(CustomIndexPrefix, StringComparison.OrdinalIgnoreCase))
+                                            continue;
                                         currentIndexes.Add(new Tuple<string, string>(reader.GetString(0), reader.GetString(1)));
+                                    }
                                   });
             }
             catch (Exception e)

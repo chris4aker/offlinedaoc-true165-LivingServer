@@ -107,6 +107,13 @@ namespace DOL.GS
 
         public static void SaveRecord(OfflineHiredCompanionRecord hired) => Save(hired);
 
+        /// <summary>The population migration deleted this hire row: its owner character no longer exists.</summary>
+        internal static void ForgetOrphan(long botId)
+        {
+            Hired.TryRemove(botId, out _);
+            Live.TryRemove(botId, out _);
+        }
+
         /// <summary>A hired companion's bag: 10 slots, no weight limit (owner 2026-10-30), for what the player gives it
         /// to use (arrows, poisons, potions) or to carry. The first 10 backpack slots of the bot's own inventory.</summary>
         public const int BagSlots = 10;
@@ -152,9 +159,15 @@ namespace DOL.GS
             if (Hire165.NameProblem(name) is { } badName)
                 return badName;
             name = char.ToUpperInvariant(name[0]) + name[1..];
+            // claim the name in offline_bot_names (atomic), so no player or bot can take it from now on
+            if (!BotNameService.TryClaimBotName(name, 0))
+                return $"The name {name} is taken.";
             long cost = CostCopper[Math.Min(roster.Count, CostCopper.Length - 1)];
             if (cost > 0 && !player.RemoveMoney(cost))
+            {
+                BotNameService.ReleaseBotName(name);
                 return $"You need {Money.GetString(cost)} to hire another companion.";
+            }
 
             string now = DateTime.UtcNow.ToString("O");
             ICharacterClass cls = ScriptMgr.FindCharacterClass((int)d.Class);
@@ -178,6 +191,7 @@ namespace DOL.GS
                 LastUpdateUtc = now,
             };
             GameServer.Database.AddObject(record);
+            BotNameService.SetBotId(name, record.BotId);
             int row = Enumerable.Range(0, Hire165.SlotLevels.Length).First(r => roster.All(h => h.Row != r));
             var hired = new OfflineHiredCompanionRecord
             {
@@ -310,6 +324,7 @@ namespace DOL.GS
                     Hired.TryRemove(hired.BotId, out _);
                     GameServer.Database.DeleteObject(hired);
                     AutonomousPopulationController.DeleteHiredCompanion(hired.BotId);
+                    BotNameService.ReleaseBotName(name);   // the name cools down for 30 days
                     p.Out.SendMessage($"{name} has left your service.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     Hire165.Refresh(p);
                 });

@@ -79,7 +79,7 @@ namespace DOL.GS;
 
         lock (typeof(AutonomousBotEconomy))
         {
-            bool isLive = AutonomousBotRegistry.TryGet(botId, out GameBot live) && live?.PersistentRecord != null;
+            bool isLive = TryGetLiveOrLeaving(botId, out GameBot live);
             OfflineWorldBotRecord bot = isLive ? live.PersistentRecord : Find(botId);
             if (bot == null || bot.MoneyCopper < copper)
                 return false;
@@ -87,13 +87,7 @@ namespace DOL.GS;
             bot.MoneyCopper -= copper;
             bot.LastUpdateUtc = DateTime.UtcNow.ToString("O");
             bot.Dirty = true;
-            if (isLive)
-                AutonomousBotStatusPersistence.Queue(live);
-            else
-            {
-                lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
-                    GameServer.Database.SaveObject(bot);
-            }
+            SaveMoneyChange(bot, isLive ? live : null);
             return true;
         }
     }
@@ -105,7 +99,7 @@ namespace DOL.GS;
 
         lock (typeof(AutonomousBotEconomy))
         {
-            bool isLive = AutonomousBotRegistry.TryGet(botId, out GameBot live) && live?.PersistentRecord != null;
+            bool isLive = TryGetLiveOrLeaving(botId, out GameBot live);
             OfflineWorldBotRecord bot = isLive ? live.PersistentRecord : Find(botId);
             if (bot == null || bot.MoneyCopper > long.MaxValue - copper)
                 return false;
@@ -113,14 +107,58 @@ namespace DOL.GS;
             bot.MoneyCopper += copper;
             bot.LastUpdateUtc = DateTime.UtcNow.ToString("O");
             bot.Dirty = true;
-            if (isLive)
-                AutonomousBotStatusPersistence.Queue(live);
-            else
-            {
-                lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
-                    GameServer.Database.SaveObject(bot);
-            }
+            SaveMoneyChange(bot, isLive ? live : null);
             return true;
+        }
+    }
+
+    /// <summary>
+    /// A live bot, or one whose logout save is still waiting: its in-memory record is the newest copy, so money changes go
+    /// there (an offline write to the stored row would be overwritten by that pending save).
+    /// </summary>
+    internal static bool TryGetLiveOrLeaving(long botId, out GameBot bot)
+    {
+        if (AutonomousBotRegistry.TryGet(botId, out bot) && bot?.PersistentRecord != null)
+            return true;
+        return AutonomousBotStatusPersistence.TryGetLoggingOut(botId, out bot) && bot?.PersistentRecord != null;
+    }
+
+    /// <summary>Saves a money change: queued for a live or leaving bot, written now (with a revision bump) for an offline one.</summary>
+    private static void SaveMoneyChange(OfflineWorldBotRecord record, GameBot live)
+    {
+        if (live != null)
+        {
+            if (live.ObjectState != GameObject.eObjectState.Active)
+                record.InventoryRevision++;
+            AutonomousBotStatusPersistence.Queue(live);
+            return;
+        }
+        // The login path compares this revision under the economy lock and reloads a bot written to while offline.
+        record.InventoryRevision++;
+        lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
+            GameServer.Database.SaveObject(record);
+    }
+
+    /// <summary>An offline bot's items changed (a listing came back to its backpack): bump its revision so a login in
+    /// flight reloads them.</summary>
+    public static void BumpOfflineRevision(long botId)
+    {
+        lock (typeof(AutonomousBotEconomy))
+        {
+            if (TryGetLiveOrLeaving(botId, out GameBot live))
+            {
+                live.PersistentRecord.InventoryRevision++;
+                live.PersistentRecord.Dirty = true;
+                AutonomousBotStatusPersistence.Queue(live);
+                return;
+            }
+            OfflineWorldBotRecord record = Find(botId);
+            if (record == null)
+                return;
+            record.InventoryRevision++;
+            record.Dirty = true;
+            lock (AutonomousBotStatusPersistence.DatabaseWriteLock)
+                GameServer.Database.SaveObject(record);
         }
     }
 
@@ -1467,9 +1505,7 @@ namespace DOL.GS;
         DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("BotId").IsEqualTo(botId));
 
     internal static OfflineWorldBotRecord FindLiveOrStored(long botId) =>
-        AutonomousBotRegistry.TryGet(botId, out GameBot live) && live?.PersistentRecord != null
-            ? live.PersistentRecord
-            : Find(botId);
+        TryGetLiveOrLeaving(botId, out GameBot live) ? live.PersistentRecord : Find(botId);
 }
 
 [DataTable(TableName = "offline_world_bots")]

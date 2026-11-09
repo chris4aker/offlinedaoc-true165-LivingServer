@@ -32,10 +32,19 @@ public static class AutonomousBotStatusPersistence
     private static readonly Queue<long> PendingPriorityOrder = new();
     private static readonly HashSet<long> PendingInventory = new();
     private static readonly Queue<long> PendingInventoryOrder = new();
+    // Logout saves (record + inventory in one lock hold), ahead of everything else. The sequence number lets a money or
+    // item change that arrives while the save is in flight queue it again instead of being lost.
+    private static readonly Dictionary<long, GameBot> LogoutBots = new();
+    private static readonly Dictionary<long, int> LogoutSequence = new();
+    private static readonly Queue<long> LogoutOrder = new();
+    private static readonly HashSet<long> InLogoutOrder = new();
     private static readonly Timer FlushTimer = new(_ => Flush(), null, FlushIntervalMs, FlushIntervalMs);
     private static int _flushing;
 
     public static object DatabaseWriteLock { get; } = new();
+
+    /// <summary>Raised on the flush thread after a bot's logout save is written (and no newer change waits).</summary>
+    public static event Action<GameBot> LogoutSaved;
 
     public static void Queue(GameBot bot, bool includeInventory = false)
     {
@@ -43,6 +52,14 @@ public static class AutonomousBotStatusPersistence
         {
             lock (PendingGate)
             {
+                // A bot that left the world saves through its logout entry only.
+                if (LogoutBots.TryGetValue(bot.DatabaseID, out GameBot leaving) && ReferenceEquals(leaving, bot))
+                {
+                    QueueLogoutLocked(bot);
+                    return;
+                }
+                if (IsStaleInstance(bot))
+                    return;
                 if (InPendingOrder.Add(bot.DatabaseID))
                     PendingOrder.Enqueue(bot.DatabaseID);
                 Pending[bot.DatabaseID] = bot;
@@ -50,6 +67,54 @@ public static class AutonomousBotStatusPersistence
                     PendingInventoryOrder.Enqueue(bot.DatabaseID);
             }
         }
+    }
+
+    /// <summary>An old copy of a bot that logged in again as a new instance: its late saves would overwrite newer progress.</summary>
+    private static bool IsStaleInstance(GameBot bot) =>
+        bot.ObjectState != GameObject.eObjectState.Active &&
+        AutonomousBotRegistry.TryGet(bot.DatabaseID, out GameBot current) && current != null && !ReferenceEquals(current, bot);
+
+    /// <summary>
+    /// The one save of a bot that left the world: record and inventory together, at the front of the queue. Any routine
+    /// entry for it is dropped so an older snapshot can never be written after it.
+    /// </summary>
+    public static void QueueLogout(GameBot bot)
+    {
+        if (bot?.IsAutonomousWorldBot != true || bot.DatabaseID <= 0 || bot.PersistentRecord == null)
+            return;
+        lock (PendingGate)
+            QueueLogoutLocked(bot);
+    }
+
+    private static void QueueLogoutLocked(GameBot bot)
+    {
+        long botId = bot.DatabaseID;
+        LogoutBots[botId] = bot;
+        LogoutSequence[botId] = LogoutSequence.TryGetValue(botId, out int sequence) ? sequence + 1 : 1;
+        if (InLogoutOrder.Add(botId))
+            LogoutOrder.Enqueue(botId);
+        Pending.Remove(botId);
+        PendingPriority.Remove(botId);
+        PendingInventory.Remove(botId);
+    }
+
+    /// <summary>A logout save for this bot is still waiting: it must not log in again until the save is written.</summary>
+    public static bool IsLogoutPending(long botId)
+    {
+        lock (PendingGate)
+            return LogoutBots.ContainsKey(botId);
+    }
+
+    /// <summary>The bot whose logout save is waiting (its record is the newest copy of its money).</summary>
+    public static bool TryGetLoggingOut(long botId, out GameBot bot)
+    {
+        lock (PendingGate)
+            return LogoutBots.TryGetValue(botId, out bot);
+    }
+
+    public static int PendingLogoutSaves
+    {
+        get { lock (PendingGate) return LogoutBots.Count; }
     }
 
     /// <summary>A bot deleted for good leaves the save queue (2026-10-30: a released companion's record was gone, its
@@ -61,6 +126,8 @@ public static class AutonomousBotStatusPersistence
             Pending.Remove(botId);
             PendingPriority.Remove(botId);
             PendingInventory.Remove(botId);
+            LogoutBots.Remove(botId);
+            LogoutSequence.Remove(botId);
         }
     }
 
@@ -75,6 +142,13 @@ public static class AutonomousBotStatusPersistence
             return;
         lock (PendingGate)
         {
+            if (LogoutBots.TryGetValue(bot.DatabaseID, out GameBot leaving) && ReferenceEquals(leaving, bot))
+            {
+                QueueLogoutLocked(bot);
+                return;
+            }
+            if (IsStaleInstance(bot))
+                return;
             if (InPendingOrder.Add(bot.DatabaseID))
                 PendingOrder.Enqueue(bot.DatabaseID);
             Pending[bot.DatabaseID] = bot;
@@ -85,7 +159,7 @@ public static class AutonomousBotStatusPersistence
 
     private static int PendingCount
     {
-        get { lock (PendingGate) return Pending.Count; }
+        get { lock (PendingGate) return Pending.Count + LogoutBots.Count; }
     }
 
     /// <summary>
@@ -138,10 +212,21 @@ public static class AutonomousBotStatusPersistence
         var drained = new Dictionary<long, GameBot>(WriteBatchSize);
         var inventoryIds = new HashSet<long>();
         var priorityIds = new HashSet<long>();
+        var logoutSequences = new Dictionary<long, int>();
         try
         {
             lock (PendingGate)
             {
+                while (drained.Count < MaximumNonRoutinePerBatch && LogoutOrder.Count > 0)
+                {
+                    long botId = LogoutOrder.Dequeue();
+                    InLogoutOrder.Remove(botId);
+                    if (!LogoutBots.TryGetValue(botId, out GameBot leaving))
+                        continue;
+                    drained[botId] = leaving;
+                    inventoryIds.Add(botId);
+                    logoutSequences[botId] = LogoutSequence.GetValueOrDefault(botId);
+                }
                 DrainInventory(drained, inventoryIds, MaximumNonRoutinePerBatch);
                 DrainPriority(drained, inventoryIds, priorityIds, MaximumNonRoutinePerBatch);
 
@@ -170,6 +255,10 @@ public static class AutonomousBotStatusPersistence
                 .Select(bot => (bot, bot.PrepareAutonomousStateSnapshot()))
                 .Where(entry => entry.Item2 != null)
                 .ToArray();
+            // A leaving bot that can't be saved this way (record never stored) must not stay "logout pending" forever.
+            foreach (long botId in logoutSequences.Keys)
+                if (!snapshots.Any(entry => entry.Bot.DatabaseID == botId))
+                    Forget(botId);
             if (snapshots.Length == 0)
                 return 0;
 
@@ -196,6 +285,13 @@ public static class AutonomousBotStatusPersistence
                         if (DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("BotId").IsEqualTo(bot.DatabaseID)) == null)
                         {
                             Log.Warn($"AUTONOMOUS_STATUS_SAVE_DROPPED bot=\"{bot.Name}\" id={bot.DatabaseID}: its record no longer exists");
+                            if (logoutSequences.ContainsKey(bot.DatabaseID))
+                                Forget(bot.DatabaseID);
+                            continue;
+                        }
+                        if (logoutSequences.ContainsKey(bot.DatabaseID))
+                        {
+                            RequeueLogout(bot.DatabaseID);
                             continue;
                         }
                         Queue(bot, inventoryIds.Contains(bot.DatabaseID));
@@ -206,7 +302,11 @@ public static class AutonomousBotStatusPersistence
                 }
 
                 foreach ((GameBot bot, _) in batch)
+                {
                     bot.MarkAutonomousStateSaved();
+                    if (logoutSequences.TryGetValue(bot.DatabaseID, out int sequence))
+                        CompleteLogout(bot, sequence);
+                }
                 savedCount += batch.Length;
             }
 
@@ -216,12 +316,49 @@ public static class AutonomousBotStatusPersistence
         {
             foreach ((long botId, GameBot bot) in drained)
             {
+                if (logoutSequences.ContainsKey(botId))
+                {
+                    RequeueLogout(botId);
+                    continue;
+                }
                 Queue(bot, inventoryIds.Contains(botId));
                 if (priorityIds.Contains(botId))
                     QueueGroupMetadata(bot);
             }
             Log.Error("Autonomous status batch persistence failed", exception);
             return 0;
+        }
+    }
+
+    private static void RequeueLogout(long botId)
+    {
+        lock (PendingGate)
+            if (LogoutBots.ContainsKey(botId) && InLogoutOrder.Add(botId))
+                LogoutOrder.Enqueue(botId);
+    }
+
+    /// <summary>The logout save is written: forget the bot unless a newer change queued it again meanwhile.</summary>
+    private static void CompleteLogout(GameBot bot, int savedSequence)
+    {
+        long botId = bot.DatabaseID;
+        lock (PendingGate)
+        {
+            if (!LogoutBots.TryGetValue(botId, out GameBot leaving) || !ReferenceEquals(leaving, bot) ||
+                LogoutSequence.GetValueOrDefault(botId) != savedSequence)
+                return;
+            LogoutBots.Remove(botId);
+            LogoutSequence.Remove(botId);
+            Pending.Remove(botId);
+            PendingPriority.Remove(botId);
+            PendingInventory.Remove(botId);
+        }
+        try
+        {
+            LogoutSaved?.Invoke(bot);
+        }
+        catch (Exception exception)
+        {
+            Log.Warn($"AUTONOMOUS_LOGOUT_SAVED handler failed for {botId}: {exception.Message}");
         }
     }
 

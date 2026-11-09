@@ -1466,6 +1466,10 @@ namespace DOL.AI.Brain
                 return;
             }
 
+            // Population lifecycle: a gamebot logging out walks home and sits before it leaves (AutonomousBotLifecycle).
+            if (BotBody?.IsAutonomousWorldBot == true && AutonomousBotLifecycle.DriveLogout(BotBody))
+                return;
+
             // owner 2026-11-06: a hired companion with charming on and no pet charms the monster its player selects, before
             // anyone starts on it (Charm165; hired companions only, gamebots unchanged)
             if (Charm165.TryPreFightCharm(BotBody))
