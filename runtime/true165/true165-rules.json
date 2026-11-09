@@ -408,6 +408,12 @@
     "key": "Door_ID",
     "where": "InternalID IN (212006403,212006404,212006405,212006406)",
     "reason": "True 1.65 period 1.64 navmesh: Dun Da Behnn: door rows of the later client's 'New Frontier Keep' model (HfrontKeep2.nif), which has posterns; the 1.64 keep model (HfrontKeep.nif) has exactly two door groups (01/02)"
+   },
+   {
+    "table": "Mob",
+    "key": "Mob_ID",
+    "where": "Mob_ID IN ('43fcae3c-16ac-57f5-bba2-b949e1386fd8', '650595cd-5057-5d41-8e48-638729fb74a1') AND PackageID = 'ClassicQuest'",
+    "reason": "True 1.65 quest twins (owner 2026-11-09): quest copies of kill targets that stood beside period spawns of the same name (Cyfwlch Difwych, ellyll villager); the period ones count for the quest"
    }
   ]
  },
