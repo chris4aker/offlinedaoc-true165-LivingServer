@@ -124,6 +124,27 @@ hold). Its changelog has the history of everything this version inherits.
   still breaks it.
 - Movement: while you sit, the mouse and the turn keys turn the camera, not your character.
 - Groups: a dead group member shows as *NAME* in red in the mini group window until raised.
+- Quests: a step that asks for several of one item (five bear claws for Learn the Hunt, three goblin heads for
+  Price of Courage) needs and takes all of them. It took one and left the rest in your pack (22 quests). The NPC
+  says how many it still needs.
+- Quests: no more twins. Ten quest NPCs stood beside a monster of the same name (two Fressens side by side; Aessa,
+  Chief Gaeth, Macnol, Terje, Tradande, a dverge smith, an elder tidal sheerie, Cyfwlch Difwych, an ellyll
+  villager): each pair is one character now.
+- Quests: a kill step's monster appears again where the quest's own peaceful NPC of the same name stands, or a
+  guard of your realm (Aricoer, Gwulin, Ciar, Borwyr the Cursed, Gokstad, the traitor Guardsman, Fressen). The NPC
+  standing there counted as the monster, so it never came.
+- Loot: every item a monster drops can be sold. 104 had no merchant value (the merchant "isn't interested"): each
+  has its period value where one is known, else an estimate from the level of the monsters that drop it or from
+  what similar drops sell for. The Darkness Falls seals and the Ancient crafting ingredients get a small fixed
+  value.
+- Gamebots never sell their Darkness Falls seals for coin: they spend them at the seal merchants, as before.
+- RvR: killing an enemy of another realm pays experience as well as realm points, as in 1.65 (battleground kills
+  paid realm points only). It follows the player-kill rule: the victim's worth by your share of the damage, at most
+  125% of what your own level is worth, nothing for a victim killed in the last five minutes. Gamebots earn it too.
+- Battlegrounds: Abermenai's ground has its close-up detail. It drew the flat far-view ground; it shares Caledonia's.
+- Combat: while you are stunned, mesmerized or rooted, holding a movement key no longer plays the running or
+  backpedal animation on the spot, and a stunned or mesmerized character does not jump.
+- Interface: the Target Enemy key picks characters of the other realms too. It only looked at monsters.
 
 ## 0.4.1 (2026-11-07)
 
