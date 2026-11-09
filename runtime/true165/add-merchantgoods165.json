@@ -1156,38 +1156,6 @@
    "LastTimeRowUpdated": "2026-10-31 00:00:00"
   },
   {
-   "MerchantItem_ID": "p165goods-6326d1cf-744d-475b-aa4f-5ccc9c664b09-0-24",
-   "ItemListID": "6326d1cf-744d-475b-aa4f-5ccc9c664b09",
-   "ItemTemplateID": "p165_item_1353",
-   "PageNumber": 0,
-   "SlotPosition": 24,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165goods-6326d1cf-744d-475b-aa4f-5ccc9c664b09-0-25",
-   "ItemListID": "6326d1cf-744d-475b-aa4f-5ccc9c664b09",
-   "ItemTemplateID": "p165_item_1216",
-   "PageNumber": 0,
-   "SlotPosition": 25,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165goods-6326d1cf-744d-475b-aa4f-5ccc9c664b09-0-26",
-   "ItemListID": "6326d1cf-744d-475b-aa4f-5ccc9c664b09",
-   "ItemTemplateID": "p165_item_1354",
-   "PageNumber": 0,
-   "SlotPosition": 26,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
-   "MerchantItem_ID": "p165goods-6326d1cf-744d-475b-aa4f-5ccc9c664b09-0-27",
-   "ItemListID": "6326d1cf-744d-475b-aa4f-5ccc9c664b09",
-   "ItemTemplateID": "p165_item_3504",
-   "PageNumber": 0,
-   "SlotPosition": 27,
-   "LastTimeRowUpdated": "2026-10-31 00:00:00"
-  },
-  {
    "MerchantItem_ID": "p165goods-d08c8326-c722-4da6-90c8-6ca5584ad413-0-17",
    "ItemListID": "d08c8326-c722-4da6-90c8-6ca5584ad413",
    "ItemTemplateID": "p165_item_6934",
