@@ -373,7 +373,17 @@ namespace DOL.GS
             // of the Deft "can't be given away"); trading with anyone else keeps its normal rules.
             // what it can't wear goes into its bag (arrows, poisons, potions...); "bag" puts a wearable piece there too
             if (!AutonomousBotEconomy.CanWear(bot, item, out eInventorySlot slot))
-                return PutInBag(player, bot, bagSlot);
+            {
+                // a weapon, shield or armour piece it can't use: said, not just bagged (tester 0.3: "won't equip")
+                bool gear = item.Item_Type is >= (int)eInventorySlot.MinEquipable and <= (int)eInventorySlot.MaxEquipable;
+                string bagged = PutInBag(player, bot, bagSlot);
+                if (gear && bagged == null)
+                {
+                    StatsLog.Info($"COMPANION_EQUIP_REFUSED bot={bot.Name} cls={bot.CharacterClass?.ID} lvl={bot.Level} item={item.Id_nb} type={item.Object_Type} size={item.Type_Damage} realm={item.Realm} shield={bot.GetAbilityLevel(Abilities.Shield)}");
+                    player.Out.SendMessage($"{bot.Name} can't use {item.Name}, so it went into {bot.Name}'s bag.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+                return bagged;
+            }
             // the slot the player dropped it on, when it can go there (a dual wielder's second weapon, a ring's hand);
             // otherwise the slot it belongs in (owner 2026-11-01: "not the slot I told it to")
             if (AutonomousBotEconomy.FitsChosenSlot(bot, item, wantedSlot))
@@ -401,6 +411,12 @@ namespace DOL.GS
             }
             Saved(player, bot, item, worn);
             ReadyWeapons(bot, slot);
+            // a shield worn but not in use: why (a companion trained in two-handed weapons keeps them, owner 2026-11-07)
+            if (item.Object_Type == (int)eObjectType.Shield && bot.ActiveWeaponSlot != eActiveWeaponSlot.Standard)
+                player.Out.SendMessage(BotWeaponStats.CanUseMelee(bot, bot.Inventory.GetItem(eInventorySlot.RightHandWeapon))
+                    ? $"{bot.Name} wears {item.Name} but keeps fighting with its two-handed weapon, the one it is trained in more."
+                    : $"{bot.Name} wears {item.Name}, but needs a one-handed weapon to fight with a shield.",
+                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return null;
         }
 
