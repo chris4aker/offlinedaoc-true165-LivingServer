@@ -102,6 +102,7 @@ namespace DOL.GS
 			if(!IsAllowedToCombine(player, itemToCombine, materials)) return false;
 
 			ApplyMagicalEffect(player, itemToCombine, materials);
+			SendItemChanged(player, itemToCombine, materials.Partner);
 
 			return true;
 		}
@@ -116,7 +117,25 @@ namespace DOL.GS
 			if (!IsAllowedToCombine(player, item, set))
 				return CombineOutcome.Refused;
 			ApplyMagicalEffect(player, item, set);
+			SendItemChanged(player, item, null);
 			return set.Outcome;
+		}
+
+		/// <summary>
+		/// The item's new bonuses / proc / charges: its owner's bag slot is sent again, so the hover text shows them
+		/// at once (only the used gems' slots were sent, and the item kept its old delve until it was moved or worn).
+		/// </summary>
+		private static void SendItemChanged(GamePlayer player, DbInventoryItem item, GamePlayer partner)
+		{
+			if (item == null)
+				return;
+			foreach (GamePlayer owner in new[] { player, partner })
+			{
+				if (owner?.Inventory == null || owner.Inventory.GetItem((eInventorySlot)item.SlotPosition) != item)
+					continue;
+				owner.Out.SendInventorySlotsUpdate(new[] { (eInventorySlot)item.SlotPosition });
+				return;
+			}
 		}
 
 		#endregion
