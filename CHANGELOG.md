@@ -99,6 +99,10 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: in /grind, a Paladin, Warden, Bard, Minstrel or Skald sits down to rest only below 75% power or
   endurance (or when hurt): its own chant drained it a little below full, so it sat down, stood up again a second
   later and recast its chant over and over.
+- Companions: /grind looks for monsters as far as the puller can shoot - its crossbow, bow or pull spell, less a
+  step (Tankman's crossbow: 1,100) - instead of only 1,000 around you, and a puller that can't shoot from the spot
+  it walked to (a monster up a slope, or the line of fire blocked) steps closer instead of standing until the pull
+  times out.
 - Companions can't join your guild: they always wear your guild's name and emblem while they are with you (a /gc
   invite made a companion join and greet, then leave).
 - Companions: a shield your companion wears but doesn't fight with says why - a companion trained in two-handed
