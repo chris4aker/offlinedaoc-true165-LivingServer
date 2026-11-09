@@ -739,5 +739,17 @@ namespace DOL.UnitTests
         private static T InvokeBroker<T>(string method, params object[] arguments) => (T)typeof(RealmExchangeBroker)
             .GetMethod(method, BindingFlags.Static | BindingFlags.NonPublic)
             .Invoke(null, arguments);
+
+        // Owner 2026-11-09: the Darkness Falls seals got a merchant value so players can sell them; gamebots still
+        // spend theirs at the seal merchants and never sell them for coin.
+        [Test]
+        public void GamebotsNeverVendorDarknessFallsSeals()
+        {
+            Assert.That(AutonomousBotEconomy.IsSealCurrency("DiamondSeal"), Is.True);
+            Assert.That(AutonomousBotEconomy.IsSealCurrency("emeraldseal"), Is.True);
+            Assert.That(AutonomousBotEconomy.IsSealCurrency("SapphireSeal"), Is.True);
+            Assert.That(AutonomousBotEconomy.IsSealCurrency("cleansed_diamond_seal"), Is.False);
+            Assert.That(AutonomousBotEconomy.IsSealCurrency(null), Is.False);
+        }
     }
 }

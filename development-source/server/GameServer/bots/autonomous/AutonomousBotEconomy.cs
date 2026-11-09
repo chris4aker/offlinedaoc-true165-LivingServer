@@ -952,6 +952,12 @@ namespace DOL.GS;
             return false;
         }
 
+        /// <summary>The three Darkness Falls seals (the MoneyKey of the seal merchants there).</summary>
+        public static bool IsSealCurrency(string itemId) =>
+            string.Equals(itemId, "EmeraldSeal", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(itemId, "SapphireSeal", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(itemId, "DiamondSeal", StringComparison.OrdinalIgnoreCase);
+
         private static bool IsProtectedFromVendor(GameBot bot, DbInventoryItem item, bool trainedCrafter,
             bool canList, HashSet<DbInventoryItem> operationalLoadout)
         {
@@ -962,6 +968,10 @@ namespace DOL.GS;
             // them straight back on the next pulse, ~350,000 times in 31 h, until they were broke; archers then fought in
             // melee with their training dirk): ammunition for the bow or crossbow it carries, an assassin's poisons.
             if (IsOwnSupply(bot, item))
+                return true;
+            // Darkness Falls seals are what the seal merchants there are paid in (TryBuySealItem): never coin at a
+            // merchant (owner 2026-11-09, when the seals got a merchant value)
+            if (IsSealCurrency(item.Id_nb))
                 return true;
             if (TryGetEquipmentUpgrade(bot, item, out _))
                 return true;
