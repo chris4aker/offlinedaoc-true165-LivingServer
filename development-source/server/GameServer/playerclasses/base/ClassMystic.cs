@@ -30,7 +30,7 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 280;
 			m_baseHP = 560;
-			m_manaStat = eStat.INT;
+			m_manaStat = eStat.PIE;   // Mystic paths (Runemaster, Spiritmaster, Bonedancer) cast from Piety, as in the period (owner 2026-11-09)
 		}
 
 		public override string GetTitle(GamePlayer player, int level)
