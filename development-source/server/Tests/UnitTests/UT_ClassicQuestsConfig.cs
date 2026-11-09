@@ -60,4 +60,19 @@ public class UT_ClassicQuestsConfig
     {
         Assert.That(new ClassicQuests.CustomStep().Radius, Is.EqualTo(600));
     }
+
+    // Owner 2026-11-09: a fight spawn is skipped only when a monster of that name the player can fight already stands
+    // there. The quest's own peaceful NPC (Fressen, Aricoer, Ciar) or a guard of the player's realm is not that monster.
+    [Test]
+    public void OnlyAnNpcThePlayerCanFightStandsInForAFightSpawn()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(ClassicQuests.CountsAsFight(0, eRealm.None, eRealm.Midgard), Is.True, "a hostile monster");
+            Assert.That(ClassicQuests.CountsAsFight(GameNPC.eFlags.GHOST, eRealm.None, eRealm.Albion), Is.True, "a hostile ghost");
+            Assert.That(ClassicQuests.CountsAsFight(GameNPC.eFlags.PEACE, eRealm.Midgard, eRealm.Midgard), Is.False, "the quest's peaceful NPC");
+            Assert.That(ClassicQuests.CountsAsFight(GameNPC.eFlags.PEACE | GameNPC.eFlags.GHOST, eRealm.None, eRealm.Albion), Is.False, "a peaceful ghost");
+            Assert.That(ClassicQuests.CountsAsFight(0, eRealm.Albion, eRealm.Albion), Is.False, "a guard of the player's realm");
+        });
+    }
 }

@@ -934,18 +934,26 @@ namespace DOL.GS.Quests
         /// on top of the permanent one. A fight spawn is skipped when a monster of that name is already alive near its
         /// point: one this player's other quest spawned, or a permanent one (the step counts kills by name, so that one
         /// does). 37 steps spawn a monster that also stands there permanently.
+        /// Only one the player can fight counts (owner 2026-11-09): a peaceful NPC of that name, or one of the player's
+        /// realm, is the quest's talking NPC or a friendly guard - it stood on the point and kept the monster the step
+        /// needs from ever appearing (Aricoer, Gwulin, Ciar, Borwyr the Cursed, Gokstad, the traitor Guardsman, Fressen).
         /// </summary>
         private static bool AlreadyThere(GamePlayer player, EventSpawn spawn)
         {
             if (spawn.Peaceful || string.IsNullOrWhiteSpace(spawn.Name)) return false;
             bool Same(GameNPC n) => n?.IsAlive == true && n.ObjectState == GameObject.eObjectState.Active &&
-                                    string.Equals(n.Name, spawn.Name, StringComparison.OrdinalIgnoreCase);
+                                    string.Equals(n.Name, spawn.Name, StringComparison.OrdinalIgnoreCase) &&
+                                    CountsAsFight(n.Flags, n.Realm, player.Realm);
             if (EventSpawns.Any(e => e.Key.Item1 == player && e.Value.Any(Same))) return true;
             ushort region = spawn.Region > 0 ? spawn.Region : player.CurrentRegionID;
             ushort radius = (ushort)Math.Clamp(Math.Max(spawn.TriggerRadius, 1500), 1500, ushort.MaxValue);
             return WorldMgr.GetNPCsCloseToSpot(region, spawn.X, spawn.Y, spawn.Z, radius)
                 .Any(n => Same(n) && n.TempProperties.GetProperty<string>(EventSpawnProperty) == null);
         }
+
+        /// <summary>A standing NPC that can be the fight a kill step asks for: not peaceful and not of the player's realm.</summary>
+        public static bool CountsAsFight(GameNPC.eFlags flags, eRealm npcRealm, eRealm playerRealm) =>
+            (flags & GameNPC.eFlags.PEACE) == 0 && npcRealm != playerRealm;
 
         private static void TrySpawnEvent(GamePlayer player, int quest, int step, EventSpawn spawn)
         {
