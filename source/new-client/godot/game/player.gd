@@ -87,6 +87,8 @@ var no_turn := false                   # the server's MaxSpeed "no turning" flag
 var snare_mult := 1.0                  # snares: the run speed's share left
 var shade := false                       # a Necromancer with a servant up (Pets)
 var riding := false                     # on a stable horse (HorseRoutes moves you; jump gets you off)
+var _ride_since := -1                    # when this ride began (msec), -1 not riding
+var _jump_held := false                  # the jump key was down last frame (a dismount needs a fresh press)
 var ride_clip := "ride_horse"          # the rider's pose: ride_horse, or a flight's ride_griffon / _amphitere / _dragonfly
 var stealth_mult := 1.0                 # hidden: Abilities.toggle_stealth's speed share
 var encumbrance := 1.0                  # PlayerData.encumbrance_mult (refreshed when the inventory changes)
@@ -307,6 +309,8 @@ func morph(info: Dictionary) -> void:
 	var path := String(info.get("gltf", ""))
 	if path == "" or _model == null:
 		_apply_model_yaw()
+		if _model:
+			refresh_gear()                                     # back in your figure: its weapons again
 		return
 	# the glTF with its skin, as the NPC views load it (the packed .scn has its textures taken out - drawn untextured,
 	# your shade was a plain solid figure)
@@ -337,6 +341,10 @@ func morph(info: Dictionary) -> void:
 	set_meta("fx_skel", sk[0] if sk.size() > 0 else null)  # (the form's own: its hands, or none - the chest then)
 	_apply_model_yaw()
 	_play("idle")
+	# a berserker's Vendo form holds the weapons on its own hand / belt / back bones (tester 0.3: "berserk removes
+	# weapon graphics" - they stayed on the hidden figure); a shade or other form shows none
+	if String(info.get("figure", "")) == "vendo_man":
+		refresh_gear()
 
 
 ## The client's clamp clips play once (jump, land, death, swings, flinch, parry, evade); the rest loop.
@@ -827,10 +835,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			cam_pitch = clampf(cam_pitch - dy * 0.004, -1.35, 0.6)
 		else:
 			cam_pitch = clampf(cam_pitch - dy * 0.004, -CAM_PITCH, CAM_PITCH)
-		if (rmb or (mouse_look and not lmb)) and not no_turn:
+		if (rmb or (mouse_look and not lmb)) and not no_turn and not sitting:
 			char_yaw = cam_yaw                          # steering: the character follows the camera
 			_cam_offset = 0.0
-		elif lmb and not camera_follow:
+		elif (lmb or sitting) and not camera_follow:    # (seated: the camera orbits, the body stays - tester 0.3)
 			_cam_offset = wrapf(cam_yaw - char_yaw, -PI, PI)   # (the 1.64 camera: the panned angle stays)
 	elif event is InputEventMouseButton:
 		if event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
@@ -842,7 +850,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif not (rmb or lmb) and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED and not mouse_look:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 				get_viewport().warp_mouse(_cursor_at)
-			if event.pressed and event.button_index == MOUSE_BUTTON_RIGHT and not no_turn:
+			if event.pressed and event.button_index == MOUSE_BUTTON_RIGHT and not no_turn and not sitting:
 				char_yaw = cam_yaw                      # right-click snaps the character to the camera heading
 				_cam_offset = 0.0
 		elif event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN] and _over_window():
@@ -932,8 +940,15 @@ func _physics_step(delta: float) -> void:
 		cam_pitch = clampf(cam_pitch + look * LOOK_RATE * delta, -CAM_PITCH, CAM_PITCH)
 	if riding:                                        # the horse carries you; the camera still orbits
 		velocity = Vector3.ZERO
-		if input_enabled and _act("jump"):
+		# a fresh Jump press, not in the first 1.5 s of the ride (tester 0.3: the horse "randomly dismounts" - a key held
+		# through mounting, or any frame the key read as down, sent a dismount)
+		var jump := input_enabled and _act("jump")
+		if _ride_since < 0:
+			_ride_since = Time.get_ticks_msec()
+			_jump_held = true
+		if jump and not _jump_held and Time.get_ticks_msec() - _ride_since > 1500:
 			PlayerData.dismount_requested.emit()          # PlayerDismountRequestHandler
+		_jump_held = jump
 		var clip := ride_clip if _anim and _anim.has_animation(ride_clip) else "ride_horse"
 		if _anim and _anim.has_animation(clip) and _anim.current_animation != clip:
 			_anim.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
@@ -942,6 +957,7 @@ func _physics_step(delta: float) -> void:
 		_pivot.rotation = Vector3(cam_pitch, cam_yaw, 0.0)
 		_arm.spring_length = lerpf(_arm.spring_length, _cam_target(), minf(1.0, delta * 10.0))
 		return
+	_ride_since = -1
 	if dead:
 		autorun = false
 	var classic := movement_mode == "classic"
@@ -952,7 +968,11 @@ func _physics_step(delta: float) -> void:
 	var left := _act("turn_left")
 	var right := _act("turn_right")
 	if track_mode != "":
-		var manual := fwd or back or _act("strafe_left") or _act("strafe_right") or (track_mode != "face" and (left or right))
+		# /stick breaks on forward / back (and the turn keys); strafing keeps it, circling the target as in the period
+		# (tester 0.3: "stick breaks when strafing"). /follow and /face still break on any move.
+		var strafing := _act("strafe_left") or _act("strafe_right") or (rmb and not classic and (left or right))
+		var turning := (left or right) and not (rmb and not classic)
+		var manual := fwd or back or (turning and track_mode != "face") or (strafing and track_mode != "stick")
 		var gone: bool = track_target == null or not is_instance_valid(track_target) or not track_target.is_inside_tree() 				or (track_target.has_method("is_alive") and not track_target.is_alive())
 		var far: bool = track_target != null and is_instance_valid(track_target) and track_mode == "stick" 				and global_position.distance_to(track_target.global_position) > STICK_BREAK_M
 		if manual or gone or far or dead:
@@ -978,7 +998,7 @@ func _physics_step(delta: float) -> void:
 		_fly(delta, ahead, strafe, turn)
 		return
 
-	var pan := _act("pan_camera")
+	var pan := _act("pan_camera") or (sitting and turn != 0.0)   # seated: the turn keys turn the camera, not you
 	if pan:                                           # Pan Camera held: the turn keys turn the camera around you
 		cam_yaw += turn * TURN_RATE * delta
 		turn = 0.0
