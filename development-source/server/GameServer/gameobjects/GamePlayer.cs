@@ -7797,6 +7797,10 @@ namespace DOL.GS
             GameObject steed = Steed;
             if (!Steed.RiderDismount(forced, this) && !forced)
                 return false;
+            // a stable horse left early by the server (route end, teleport, death): logged with its caller, so a
+            // "the horse dismounted me" report can be told from the client's own Jump request (PLAYER_TAXI_DISMOUNT_REQUEST)
+            if (forced && steed is GameTaxi)
+                log.Info($"PLAYER_TAXI_DISMOUNT_FORCED player={Name} horse={steed.ObjectID} position={X},{Y},{Z} caller={new System.Diagnostics.StackTrace(1, false).GetFrame(0)?.GetMethod()?.Name}");
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {

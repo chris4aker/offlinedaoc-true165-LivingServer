@@ -417,7 +417,11 @@ namespace DOL.GS
             UnsetFlag(MovementState.OnPath);
 
             if (Owner is (GameTaxi or GameTaxiBoat) and not GameBotTaxi)
+            {
+                if (Owner.Riders != null && Array.Exists(Owner.Riders, r => r != null))
+                    log.Info($"PLAYER_TAXI_ROUTE_END horse={Owner.ObjectID} point={CurrentPathPoint?.X},{CurrentPathPoint?.Y} next={(CurrentPathPoint?.Next != null)}");
                 Owner.RemoveFromWorld();
+            }
 
             // We don't reset CurrentPathPoint here to allow the path to be resumed. This must be done manually if needed (on NPC death for example).
         }
