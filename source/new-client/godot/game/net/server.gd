@@ -659,6 +659,7 @@ func zone_ready() -> void:
 		client.call("PlayerInit")
 		client.call("GameOpen")
 		Loot.tell_server()                                # (autoloot is the server's per session: told at every entry)
+		BotView.tell_grind_server()                       # (/grind's Options switch, the same way)
 	playing = true
 	var lines := _backlog
 	_backlog = []

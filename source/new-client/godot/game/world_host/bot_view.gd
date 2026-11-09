@@ -41,6 +41,27 @@ var pending := 0.0                           # time gathered since its last tick
 
 
 ## Options > INTERFACE > BOTS: "names_gamebots", "names_companions", "map_dots" (all on by default).
+## /grind (stationary automatic pulls with your companions): a quality of life option, not in 1.65, OFF by default
+## (owner 2026-11-08). The server keeps it per session: told at every world entry and on a change, quietly.
+static func grind_enabled() -> bool:
+	var cfg := ConfigFile.new()
+	cfg.load(UiArt.settings_path)
+	return bool(cfg.get_value("bots", "grind", false))
+
+
+static func set_grind(on: bool) -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(UiArt.settings_path)
+	cfg.set_value("bots", "grind", on)
+	cfg.save(UiArt.settings_path)
+	tell_grind_server()
+
+
+static func tell_grind_server() -> void:
+	if Server.active:
+		Server.command("/grind option %s quiet" % ("on" if grind_enabled() else "off"))
+
+
 static func option(key: String) -> bool:
 	var now := Time.get_ticks_msec() / 1000.0
 	if now - _opts_at > 1.0:
