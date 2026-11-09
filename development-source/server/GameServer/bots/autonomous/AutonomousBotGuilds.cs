@@ -114,8 +114,15 @@ namespace DOL.GS
             Members.Clear();
             var records = DOLDB<OfflineWorldBotGuildRecord>.SelectAllObjects();
             var stale = new List<OfflineWorldBotGuildRecord>();
+            // memberships a hired companion got before companions were refused: dropped quietly
+            var hired = new HashSet<long>(DOLDB<OfflineHiredCompanionRecord>.SelectAllObjects().Select(h => h.BotId));
             foreach (OfflineWorldBotGuildRecord record in records)
             {
+                if (hired.Contains(record.BotId))
+                {
+                    stale.Add(record);
+                    continue;
+                }
                 OfflineWorldBotRecord bot = DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("BotId").IsEqualTo(record.BotId));
                 Guild guild = GuildMgr.GetGuildByGuildID(record.GuildID);
                 // An archived bot (no warm row) keeps its guild and shows offline (population plan 3.8).
@@ -188,8 +195,10 @@ namespace DOL.GS
             Guild guild = inviter?.Guild;
             if (guild == null) return "You are not in a guild.";
             if (bot == null || !bot.IsAlive) return "That character cannot be invited.";
-            if (!bot.IsAutonomousWorldBot)
-                return $"{bot.Name} is a temporary companion and cannot join a guild; companions already wear your guild's name and emblem while they are with you.";
+            // hired companions are never members, only gamebots (owner 2026-11-09); a companion counts as a world bot,
+            // so it used to join, greet and then be dropped by the next guild check
+            if (!bot.IsAutonomousWorldBot || HiredCompanions165.IsHired(bot))
+                return $"{bot.Name} is your companion, and companions are always in your guild.";
             if (bot.Realm != guild.Realm) return "You can only invite characters of your own realm.";
             if (Members.TryGetValue(bot.DatabaseID, out var record))
                 return record.GuildID == guild.GuildID ? $"{bot.Name} is already in your guild." : $"{bot.Name} is already in a guild.";
