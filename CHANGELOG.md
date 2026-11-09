@@ -72,6 +72,51 @@ hold). Its changelog has the history of everything this version inherits.
     their realm's spellcrafter and alchemist bots, within those bots' skill; the crafter pays the materials and a fee.
 - Dropping an item on one of your companions in the world no longer equips it unless its companion window is open
   (boots dragged onto a companion by accident swapped out its own).
+- Online world: each realm has a gamebot population goal, set in the launcher - type a number in a realm's box and
+  press Enter; it is kept until you change it, and works while the server runs. A new game starts at 500 / 500 / 500;
+  an updated game starts at the gamebots it already has, and keeps every one of them (and every character's
+  companions, which the population system never touches). Gamebots
+  log in and out over time like players (veterans, regulars, casual players and newcomers, and some who quit and come
+  back weeks later), every level range stays filled, and new level 1s keep arriving (bots always start at level 1).
+  Up to 1,000,000 gamebots are saved; past that, random batches retire for good, with their Realm Exchange listings
+  (level 50s are protected). At most two logins and two logouts a second, a bot finishes what it is doing before it
+  logs out, and everything runs live - nothing needs a restart. Offline gamebots keep their gold and items.
+- Online world: gamebot names come in 15 styles by race, about 3.3 million in all; a retired bot's name is free again
+  after 30 days, and players can't take a gamebot's name. The hire window suggests names from the same generator (it
+  offered only six names per realm).
+- Online world: the Horn of Rallying is also answered by saved level 50 gamebots who aren't online - the raid sets
+  off at 300 answers, or 3 minutes after 200 - and the horn then has a 30-minute cooldown.
+- Online world: when a gamebot guildmate logs in, your guild sees "Guild member X has logged in!", as for a player
+  (with guild login messages on).
+- Launcher: a number box per realm for its population goal and a World Population tab; the bot list shows the
+  gamebots online now (a search finds saved ones too); the live counts go back to 0 when the server stops; the
+  "+ Lv.1" button is gone.
+- Companions: /grind is back, as an option (Options > Grinding, off by default; not in 1.65 - a quality of life
+  option). Your companions pull for you while you stay put: a tank that can pull from range first, then an archer
+  or caster, then the tank walks up; every pull is brought back to the group, and the next one waits until everyone
+  has rested. /grind (name) makes that companion the puller; /grind status says what it is waiting for; /grind stop
+  or moving ends it.
+- Companions can't join your guild: they always wear your guild's name and emblem while they are with you (a /gc
+  invite made a companion join and greet, then leave).
+- Companions: a shield your companion wears but doesn't fight with says why - a companion trained in two-handed
+  weapons keeps fighting with its two-hander, and without a one-handed weapon it can't use a shield; a weapon or
+  armour piece it can't use says so as it goes into its bag (both were silent).
+- Classes: a Mystic's casting stat is Piety, as for all its paths (Runemaster, Spiritmaster, Bonedancer); it was
+  Intelligence.
+- Combat: a Berserker shows its weapons in its Berserk form (they vanished until the next weapon switch).
+- Crafting: an item's hover text shows its new spellcraft bonuses, proc or charges right after the combine (it kept
+  the old text until the item was moved or worn).
+- Horses: on a stable horse only a fresh press of Jump gets you off, and not in the first moment of the ride (a key
+  held while mounting could drop you from the horse).
+- Interface: the character sheet shows the names of your class's main stats in gold - an advanced class's primary,
+  secondary and tertiary stats and its casting stat, a starting class's from its paths - and hovering a stat says
+  what it gives your class.
+- Interface: picking an item up and putting it back in the same slot no longer equips it (or takes it off); only a
+  quick double-click in place does.
+- Movement: /stick holds while you strafe, so you can circle your target as in the period; moving forward or back
+  still breaks it.
+- Movement: while you sit, the mouse and the turn keys turn the camera, not your character.
+- Groups: a dead group member shows as *NAME* in red in the mini group window until raised.
 
 ## 0.4.1 (2026-11-07)
 
