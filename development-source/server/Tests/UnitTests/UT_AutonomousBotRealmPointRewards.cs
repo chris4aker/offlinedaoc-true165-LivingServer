@@ -132,4 +132,45 @@ public class UT_AutonomousBotRealmPointRewards
         Assert.That(AutonomousBotRealmPointRewards.IsEligibleVictim(companion), Is.False);
         Assert.That(AutonomousBotRealmPointRewards.IsEligibleVictim(pet), Is.False);
     }
+
+    // Experience for an enemy-realm kill (owner 2026-11-09): the player-kill rule - the victim's value split among the
+    // contributing group members, capped at 125% of the awarder's own level's value, times the damage share.
+    [Test]
+    public void ExperienceRewardFollowsThePlayerKillRule()
+    {
+        // alone, all the damage, same level: the whole value
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 1.0), Is.EqualTo(4000));
+        // a far higher victim: capped at 125% of what the awarder's own level is worth
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(40000, 4000, 125, 1, 1.0), Is.EqualTo(5000));
+        // two of a group did three quarters of the damage: each gets half the value times the group's share
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 2, 0.75), Is.EqualTo(1500));
+        // no damage, no experience; a share over 100% counts as 100%
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 0.0), Is.EqualTo(0));
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 1.5), Is.EqualTo(4000));
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(0, 4000, 125, 1, 1.0), Is.EqualTo(0));
+        Assert.That(AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 0, 1.0), Is.EqualTo(0));
+    }
+
+    [Test]
+    public void OneKillNeverPaysMoreExperienceThanTheVictimIsWorth()
+    {
+        // three separate enemies shared the kill 50 / 30 / 20
+        long paid = AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 0.5) +
+                    AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 0.3) +
+                    AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 1, 0.2);
+        Assert.That(paid, Is.LessThanOrEqualTo(4000));
+        // a group of four that did everything: four quarter shares
+        Assert.That(4 * AutonomousBotRealmPointRewards.CalculateExperienceReward(4000, 4000, 125, 4, 1.0), Is.EqualTo(4000));
+    }
+
+    [TestCase(1)]
+    [TestCase(24)]
+    [TestCase(50)]
+    public void GamebotIsWorthAPlayersExperience(int level)
+    {
+        // GamePlayer.ExperienceValue: four times a monster of its level
+        Assert.That(AutonomousBotRealmPointRewards.GetPlayerEquivalentExperienceValue(level),
+            Is.EqualTo(GameServer.ServerRules.GetExperienceForLiving(level) * 4));
+        Assert.That(AutonomousBotRealmPointRewards.GetPlayerEquivalentExperienceValue(level), Is.GreaterThan(0));
+    }
 }

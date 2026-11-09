@@ -2256,7 +2256,7 @@ namespace DOL.GS.ServerRules
         public const double PeriodCampBonusNormal = 0.30;
         public const double PeriodCampBonusSpecial = 0.50;
 
-        private static long CalculateOutpostExperienceBonus(GamePlayer playerToAward, long baseXpReward)
+        internal static long CalculateOutpostExperienceBonus(GamePlayer playerToAward, long baseXpReward)
         {
             //outpost XP
             //1.54 http://www.camelotherald.com/more/567.shtml

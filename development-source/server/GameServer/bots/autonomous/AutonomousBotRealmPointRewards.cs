@@ -54,6 +54,38 @@ public static class AutonomousBotRealmPointRewards
         return Math.Max(0, realmPoints);
     }
 
+    /// <summary>What a gamebot is worth in experience to the realm that kills it: a player's value (GamePlayer.ExperienceValue,
+    /// four times a monster of its level).</summary>
+    public static long GetPlayerEquivalentExperienceValue(int level) =>
+        GameServer.ServerRules.GetExperienceForLiving(level) * 4;
+
+    /// <summary>
+    /// The experience base for one enemy kill before the damage share, by the player-kill rule
+    /// (AbstractServerRules.AwardPlayerOnPlayerKill): the victim's value split among the awarder's contributing
+    /// group members, capped at XP_PVP_Cap_Percent of what the awarder's own level is worth.
+    /// </summary>
+    public static long CappedExperienceBase(long victimExperienceValue, long awarderExperienceValue, int capPercent, int participantCount)
+    {
+        if (victimExperienceValue <= 0 || awarderExperienceValue <= 0 || participantCount <= 0 || capPercent <= 0)
+            return 0;
+        return Math.Min(victimExperienceValue / participantCount, awarderExperienceValue * capPercent / 100);
+    }
+
+    /// <summary>
+    /// Experience for an enemy-realm kill (owner 2026-11-09: battleground kills paid realm points but never experience;
+    /// in 1.65 an enemy kill paid both - Prima Shrouded Isles on duels: "There are no Realm Points or Experience points
+    /// awarded", the exception). The capped base times the awarder's share of the damage, so one kill never pays out
+    /// more than the victim is worth however many fought it.
+    /// </summary>
+    public static long CalculateExperienceReward(long victimExperienceValue, long awarderExperienceValue, int capPercent,
+        int participantCount, double damagePercent)
+    {
+        if (damagePercent <= 0)
+            return 0;
+        long baseExperience = CappedExperienceBase(victimExperienceValue, awarderExperienceValue, capPercent, participantCount);
+        return Math.Max(0, (long)(baseExperience * Math.Min(1.0, damagePercent)));
+    }
+
     private static readonly DOL.Logging.Logger RvrLog = DOL.Logging.LoggerManager.Create(typeof(AutonomousBotRealmPointRewards));
 
     /// <summary>
@@ -110,8 +142,9 @@ public static class AutonomousBotRealmPointRewards
             return;
 
         int victimRealmPointValue = GetPlayerEquivalentRealmPointValue(killedBot.Level, killedBot.RealmLevel);
+        long victimExperienceValue = GetPlayerEquivalentExperienceValue(killedBot.Level);
         if (isWorthRealmPoints)
-            PayGamebots(killedBot, victimRealmPointValue, killedBot.RealmLevel, hostileContributors, totalDamage);
+            PayGamebots(killedBot, victimRealmPointValue, killedBot.RealmLevel, hostileContributors, totalDamage, victimExperienceValue);
 
         Dictionary<GamePlayer, EntityCountTotalDamagePair> playerContributions = new();
         Dictionary<Group, EntityCountTotalDamagePair> groupContributions = new();
@@ -163,10 +196,22 @@ public static class AutonomousBotRealmPointRewards
 
                     if (realmPointsEarned > 0)
                         player.GainRealmPoints(realmPointsEarned, true);
+
+                    // experience too, by the player-kill rule (with its outpost bonus)
+                    long experienceBase = CappedExperienceBase(victimExperienceValue, player.ExperienceValue,
+                        Properties.XP_PVP_CAP_PERCENT, contributorCount);
+                    long experience = (long)(experienceBase * damagePercent);
+                    if (experience > 0)
+                        experience += ServerRules.AbstractServerRules.CalculateOutpostExperienceBonus(player, experienceBase);
+                    if (experience > 0)
+                        player.GainExperience(eXPSource.Player, experience);
                 }
                 else
                 {
-                    player.Out.SendMessage($"{AutonomousNameMask.NameFor(player, killedBot, 0, true)} has been killed recently and is worth no realm points!",
+                    string victimName = AutonomousNameMask.NameFor(player, killedBot, 0, true);
+                    player.Out.SendMessage($"{victimName} has been killed recently and is worth no realm points!",
+                        eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"{victimName} has been killed recently and is worth no experience!",
                         eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
 
@@ -180,10 +225,11 @@ public static class AutonomousBotRealmPointRewards
     /// <summary>
     /// Gamebots earn realm points for PvP kills like players: a share of the victim's value by
     /// their part of the damage, with the same group bonus. Only persistent gamebots of a hostile
-    /// realm within reward range (pets resolve to their bot).
+    /// realm within reward range (pets resolve to their bot). They earn experience for the kill by the same shares
+    /// (victimExperienceValue; 0 pays none), by the player-kill rule.
     /// </summary>
     public static void PayGamebots(GameLiving victim, int victimRealmPointValue, int victimRealmLevel,
-        IReadOnlyDictionary<GameLiving, double> hostileContributors, double totalDamage)
+        IReadOnlyDictionary<GameLiving, double> hostileContributors, double totalDamage, long victimExperienceValue = 0)
     {
         if (victim == null || victimRealmPointValue <= 0 || totalDamage <= 0) return;
         // True 1.65 Mode (owner 2026-10-30): a hired companion earns realm points from its group's kills like a group
@@ -206,6 +252,9 @@ public static class AutonomousBotRealmPointRewards
                 GetPlayerEquivalentRealmPointValue(bot.Level, bot.RealmLevel), bot.RealmLevel,
                 groupCount, groupCount, Math.Min(1.0, groupDamage / totalDamage), true);
             if (points > 0) bot.GainRealmPoints(points, true);
+            long experience = CalculateExperienceReward(victimExperienceValue, GetPlayerEquivalentExperienceValue(bot.Level),
+                Properties.XP_PVP_CAP_PERCENT, groupCount, groupDamage / totalDamage);
+            if (experience > 0) bot.GainExperience(eXPSource.Player, experience);
         }
     }
 
@@ -223,7 +272,10 @@ public static class AutonomousBotRealmPointRewards
             if (credited == null || credited.Realm == eRealm.None || credited.Realm == killedPlayer.Realm) continue;
             hostile[credited] = hostile.GetValueOrDefault(credited) + pair.Value;
         }
-        PayGamebots(killedPlayer, killedPlayer.RealmPointsValue, killedPlayer.RealmLevel, hostile, hostile.Sum(pair => pair.Value));
+        // experience under the player rule's own repeat-kill window (AwardPlayerOnPlayerKill.isWorthAnything)
+        bool worthExperience = killedPlayer.DeathTime + Properties.RP_WORTH_SECONDS <= killedPlayer.PlayedTime;
+        PayGamebots(killedPlayer, killedPlayer.RealmPointsValue, killedPlayer.RealmLevel, hostile, hostile.Sum(pair => pair.Value),
+            worthExperience ? killedPlayer.ExperienceValue : 0);
     }
 
     /// <summary>Realm level for a realm point total, from the player table (RR1L0 = 0 ... RR5L3 = 43).</summary>
