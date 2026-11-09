@@ -5,14 +5,44 @@ The newest version is first.
 Offline DAoC True 1.65 grew out of [Offline DAoC](https://github.com/shadowofze/OfflineDAoC) (0.3 to 0.37c, now on
 hold). Its changelog has the history of everything this version inherits.
 
-## Coming in 0.5
+## Coming in the next update
+
+Nothing yet.
+
+## 0.5 (2026-11-09)
+
+An update to v0.1, v0.2, v0.3, v0.4 and v0.4.1: the downloader updates an installed game of any of them in place (about
+2.8 GB instead of the full 36 GB), and keeps your account, characters, companions, bots and settings. The first
+START SERVER after the update brings your world up to date. New players get the complete game, as before.
+
+### The online world
+
+- Online world: each realm has a gamebot population goal, set in the launcher - type a number in a realm's box and
+  press Enter; it is kept until you change it, and works while the server runs. A new game starts at 500 / 500 / 500;
+  an updated game starts at the gamebots it already has, and keeps every one of them (and every character's
+  companions, which the population system never touches). Gamebots
+  log in and out over time like players (veterans, regulars, casual players and newcomers, and some who quit and come
+  back weeks later), every level range stays filled, and new level 1s keep arriving (bots always start at level 1).
+  Up to 1,000,000 gamebots are saved; past that, random batches retire for good, with their Realm Exchange listings
+  (level 50s are protected). At most two logins and two logouts a second, a bot finishes what it is doing before it
+  logs out, and everything runs live - nothing needs a restart. Offline gamebots keep their gold and items.
+- Online world: gamebot names come in 15 styles by race, about 3.3 million in all; a retired bot's name is free again
+  after 30 days, and players can't take a gamebot's name. The hire window suggests names from the same generator (it
+  offered only six names per realm).
+- Online world: the Horn of Rallying is also answered by saved level 50 gamebots who aren't online - the raid sets
+  off at 300 answers, or 3 minutes after 200 - and the horn then has a 30-minute cooldown.
+- Online world: when a gamebot guildmate logs in, your guild sees "Guild member X has logged in!", as for a player
+  (with guild login messages on).
+- Launcher: a number box per realm for its population goal and a World Population tab; the bot list shows the
+  gamebots online now (a search finds saved ones too); the live counts go back to 0 when the server stops; the
+  "+ Lv.1" button is gone.
+
+### Gamebots and companions
 
 - Necromancer bots play their servant like a Deathsight player: with the monster held by the servant or the group
   there is no snare and at most one debuff, then the power drain (its power goes to the group through the power
   gift), else their hardest-hitting spell. Before, they snared and debuffed most of a fight and picked damage spells
   at random, so a level 1 Tormenting Cackle could win over Soul Evacuation.
-- The innkeeper / healer companion list: dismissing a companion no longer hides the one listed below it
-  until your next hire (dismissing the third of four made the fourth vanish from the list).
 - Deathsight Necromancer bots play as power batteries: the servant stays back and casts, and melees only once a
   monster hits it; power gifts to the group finish instead of being cut off (no more sit-stand-cast loop), down to
   30% of their own power in a fight; the armour debuff only when a groupmate melees, the snare only on a runner.
@@ -31,7 +61,6 @@ hold). Its changelog has the history of everything this version inherits.
   a few minutes; camps are never blocked).
 - Bots no longer get stuck on the high ledge east of Brynhild, at a Camelot Hills / Salisbury border crossing or on a
   Camelot rooftop; lost escape spots on the Lough Derg ridge are back.
-- The Castle Sauvage keep sentinel by the west wall faces the teleporter.
 - Necromancer bots, round two: power gifts to the group go off (the servant was being called back mid-cast, turning
   between the Necromancer and the healer); no more standing idle at full power in a fight (a command aimed at a monster
   that had died blocked the servant); a held-back servant stays within casting range of the fight. Out of power a
@@ -40,12 +69,49 @@ hold). Its changelog has the history of everything this version inherits.
 - Melee healers (Shamans, Friars, Wardens and others) no longer turn back and forth between the monster and the
   groupmate before a heal: they wait out their own swing, cast once, and turn back to the fight once. Their pets
   too: a Necromancer's servant giving power to a healer keeps facing its monster.
-- Spell glows on monsters whose skeleton lacks the bone the spell names now sit on the nearest bone instead of
-  the ground: a necroservant's and an abomination's cast sparkles are over their hands again, not at their feet.
 - Companion AI options: under "Debuff before nuking" each debuff the companion knows has its own row - Automatic,
   Use or Skip - so you can pick which debuffs it casts before nuking (any number, just one, or none); the rows are
   greyed out while it is set to Never. Hovering a spell in the AI options (a debuff, a pet, a song) shows its
   tooltip as that companion casts it, and the options page scrolls when the list is long.
+- Dropping an item on one of your companions in the world no longer equips it unless its companion window is open
+  (boots dragged onto a companion by accident swapped out its own).
+- Companions: /grind is back, as an option (Options > Grinding, off by default; not in 1.65 - a quality of life
+  option). Your companions pull for you while you stay put: a tank that can pull from range first, then an archer
+  or caster, then the tank walks up; every pull is brought back to the group, and the next one waits until everyone
+  has rested. /grind (name) makes that companion the puller; /grind status says what it is waiting for; /grind stop
+  or moving ends it.
+- Companions: in /grind, a Paladin, Warden, Bard, Minstrel or Skald sits down to rest only below 75% power or
+  endurance (or when hurt): its own chant drained it a little below full, so it sat down, stood up again a second
+  later and recast its chant over and over.
+- Companions: /grind looks for monsters as far as the puller can shoot - its crossbow, bow or pull spell, less a
+  step (Tankman's crossbow: 1,100) - instead of only 1,000 around you, and a puller that can't shoot from the spot
+  it walked to (a monster up a slope, or the line of fire blocked) steps closer instead of standing until the pull
+  times out.
+- Companions can't join your guild: they always wear your guild's name and emblem while they are with you (a /gc
+  invite made a companion join and greet, then leave).
+- Companions: a shield your companion wears but doesn't fight with says why - a companion trained in two-handed
+  weapons keeps fighting with its two-hander, and without a one-handed weapon it can't use a shield; a weapon or
+  armour piece it can't use says so as it goes into its bag (both were silent).
+- Gamebots never sell their Darkness Falls seals for coin: they spend them at the seal merchants, as before.
+
+### Combat, monsters and classes
+
+- Classes: a Mystic's casting stat is Piety, as for all its paths (Runemaster, Spiritmaster, Bonedancer); it was
+  Intelligence.
+- Combat: a Berserker shows its weapons in its Berserk form (they vanished until the next weapon switch).
+- Combat: while you are stunned, mesmerized or rooted, holding a movement key no longer plays the running or
+  backpedal animation on the spot, and a stunned or mesmerized character does not jump.
+
+### RvR, keeps and battlegrounds
+
+- The Castle Sauvage keep sentinel by the west wall faces the teleporter.
+- RvR: killing an enemy of another realm pays experience as well as realm points, as in 1.65 (battleground kills
+  paid realm points only). It follows the player-kill rule: the victim's worth by your share of the damage, at most
+  125% of what your own level is worth, nothing for a victim killed in the last five minutes. Gamebots earn it too.
+- Battlegrounds: Abermenai's ground has its close-up detail. It drew the flat far-view ground; it shares Caledonia's.
+
+### World, items and crafting
+
 - Crafting: a CRAFT ALL button next to MAKE makes the chosen recipe again and again until you can't afford the
   materials or your backpack is full (it also stops if an item is interrupted). Not in 1.65, so it is a quality of
   life option, off by default: turn it on in Options > Crafting; while off the button is greyed out.
@@ -70,60 +136,20 @@ hold). Its changelog has the history of everything this version inherits.
     gems explode and kill you - the item is kept - so overcharging needs a tick box).
   - Crafter gamebots keep their own simplified crafting, and now get their crafted gear and weapons enchanted by
     their realm's spellcrafter and alchemist bots, within those bots' skill; the crafter pays the materials and a fee.
-- Dropping an item on one of your companions in the world no longer equips it unless its companion window is open
-  (boots dragged onto a companion by accident swapped out its own).
-- Online world: each realm has a gamebot population goal, set in the launcher - type a number in a realm's box and
-  press Enter; it is kept until you change it, and works while the server runs. A new game starts at 500 / 500 / 500;
-  an updated game starts at the gamebots it already has, and keeps every one of them (and every character's
-  companions, which the population system never touches). Gamebots
-  log in and out over time like players (veterans, regulars, casual players and newcomers, and some who quit and come
-  back weeks later), every level range stays filled, and new level 1s keep arriving (bots always start at level 1).
-  Up to 1,000,000 gamebots are saved; past that, random batches retire for good, with their Realm Exchange listings
-  (level 50s are protected). At most two logins and two logouts a second, a bot finishes what it is doing before it
-  logs out, and everything runs live - nothing needs a restart. Offline gamebots keep their gold and items.
-- Online world: gamebot names come in 15 styles by race, about 3.3 million in all; a retired bot's name is free again
-  after 30 days, and players can't take a gamebot's name. The hire window suggests names from the same generator (it
-  offered only six names per realm).
-- Online world: the Horn of Rallying is also answered by saved level 50 gamebots who aren't online - the raid sets
-  off at 300 answers, or 3 minutes after 200 - and the horn then has a 30-minute cooldown.
-- Online world: when a gamebot guildmate logs in, your guild sees "Guild member X has logged in!", as for a player
-  (with guild login messages on).
-- Launcher: a number box per realm for its population goal and a World Population tab; the bot list shows the
-  gamebots online now (a search finds saved ones too); the live counts go back to 0 when the server stops; the
-  "+ Lv.1" button is gone.
-- Companions: /grind is back, as an option (Options > Grinding, off by default; not in 1.65 - a quality of life
-  option). Your companions pull for you while you stay put: a tank that can pull from range first, then an archer
-  or caster, then the tank walks up; every pull is brought back to the group, and the next one waits until everyone
-  has rested. /grind (name) makes that companion the puller; /grind status says what it is waiting for; /grind stop
-  or moving ends it.
-- Companions: in /grind, a Paladin, Warden, Bard, Minstrel or Skald sits down to rest only below 75% power or
-  endurance (or when hurt): its own chant drained it a little below full, so it sat down, stood up again a second
-  later and recast its chant over and over.
-- Companions: /grind looks for monsters as far as the puller can shoot - its crossbow, bow or pull spell, less a
-  step (Tankman's crossbow: 1,100) - instead of only 1,000 around you, and a puller that can't shoot from the spot
-  it walked to (a monster up a slope, or the line of fire blocked) steps closer instead of standing until the pull
-  times out.
-- Companions can't join your guild: they always wear your guild's name and emblem while they are with you (a /gc
-  invite made a companion join and greet, then leave).
-- Companions: a shield your companion wears but doesn't fight with says why - a companion trained in two-handed
-  weapons keeps fighting with its two-hander, and without a one-handed weapon it can't use a shield; a weapon or
-  armour piece it can't use says so as it goes into its bag (both were silent).
-- Classes: a Mystic's casting stat is Piety, as for all its paths (Runemaster, Spiritmaster, Bonedancer); it was
-  Intelligence.
-- Combat: a Berserker shows its weapons in its Berserk form (they vanished until the next weapon switch).
 - Crafting: an item's hover text shows its new spellcraft bonuses, proc or charges right after the combine (it kept
   the old text until the item was moved or worn).
 - Horses: on a stable horse only a fresh press of Jump gets you off, and not in the first moment of the ride (a key
   held while mounting could drop you from the horse).
-- Interface: the character sheet shows the names of your class's main stats in gold - an advanced class's primary,
-  secondary and tertiary stats and its casting stat, a starting class's from its paths - and hovering a stat says
-  what it gives your class.
-- Interface: picking an item up and putting it back in the same slot no longer equips it (or takes it off); only a
-  quick double-click in place does.
-- Movement: /stick holds while you strafe, so you can circle your target as in the period; moving forward or back
-  still breaks it.
-- Movement: while you sit, the mouse and the turn keys turn the camera, not your character.
-- Groups: a dead group member shows as *NAME* in red in the mini group window until raised.
+- Loot: every item a monster drops can be sold. 104 had no merchant value (the merchant "isn't interested"): each
+  has its period value where one is known, else an estimate from the level of the monsters that drop it or from
+  what similar drops sell for. The Darkness Falls seals and the Ancient crafting ingredients get a small fixed
+  value.
+- Merchants: Daracha, the bow merchant in Tir Urphost, no longer sells four Svartalf jewellery pieces. They are
+  Midgard drops from the arachites of Spindelhalla; a period site page listed them under her goods, and she sold
+  them for nothing.
+
+### Quests
+
 - Quests: a step that asks for several of one item (five bear claws for Learn the Hunt, three goblin heads for
   Price of Courage) needs and takes all of them. It took one and left the rest in your pack (22 quests). The NPC
   says how many it still needs.
@@ -136,20 +162,22 @@ hold). Its changelog has the history of everything this version inherits.
   step (Aricoer, Borwyr the Cursed, Ciar, Cleddyf Difwych, Fressen, Gokstad, Gwulin, the Rat-catcher, the traitor
   Guardsmen). Since 0.3 the peaceful one standing there was taken for it, so the fight never came and the quest
   stopped at that step.
-- Loot: every item a monster drops can be sold. 104 had no merchant value (the merchant "isn't interested"): each
-  has its period value where one is known, else an estimate from the level of the monsters that drop it or from
-  what similar drops sell for. The Darkness Falls seals and the Ancient crafting ingredients get a small fixed
-  value.
-- Gamebots never sell their Darkness Falls seals for coin: they spend them at the seal merchants, as before.
-- Merchants: Daracha, the bow merchant in Tir Urphost, no longer sells four Svartalf jewellery pieces. They are
-  Midgard drops from the arachites of Spindelhalla; a period site page listed them under her goods, and she sold
-  them for nothing.
-- RvR: killing an enemy of another realm pays experience as well as realm points, as in 1.65 (battleground kills
-  paid realm points only). It follows the player-kill rule: the victim's worth by your share of the damage, at most
-  125% of what your own level is worth, nothing for a victim killed in the last five minutes. Gamebots earn it too.
-- Battlegrounds: Abermenai's ground has its close-up detail. It drew the flat far-view ground; it shares Caledonia's.
-- Combat: while you are stunned, mesmerized or rooted, holding a movement key no longer plays the running or
-  backpedal animation on the spot, and a stunned or mesmerized character does not jump.
+
+### The new client
+
+- The innkeeper / healer companion list: dismissing a companion no longer hides the one listed below it
+  until your next hire (dismissing the third of four made the fourth vanish from the list).
+- Spell glows on monsters whose skeleton lacks the bone the spell names now sit on the nearest bone instead of
+  the ground: a necroservant's and an abomination's cast sparkles are over their hands again, not at their feet.
+- Interface: the character sheet shows the names of your class's main stats in gold - an advanced class's primary,
+  secondary and tertiary stats and its casting stat, a starting class's from its paths - and hovering a stat says
+  what it gives your class.
+- Interface: picking an item up and putting it back in the same slot no longer equips it (or takes it off); only a
+  quick double-click in place does.
+- Movement: /stick holds while you strafe, so you can circle your target as in the period; moving forward or back
+  still breaks it.
+- Movement: while you sit, the mouse and the turn keys turn the camera, not your character.
+- Groups: a dead group member shows as *NAME* in red in the mini group window until raised.
 - Interface: the Target Enemy key picks characters of the other realms too. It only looked at monsters.
 
 ## 0.4.1 (2026-11-07)
