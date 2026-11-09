@@ -96,6 +96,9 @@ hold). Its changelog has the history of everything this version inherits.
   or caster, then the tank walks up; every pull is brought back to the group, and the next one waits until everyone
   has rested. /grind (name) makes that companion the puller; /grind status says what it is waiting for; /grind stop
   or moving ends it.
+- Companions: in /grind, a Paladin, Warden, Bard, Minstrel or Skald sits down to rest only below 75% power or
+  endurance (or when hurt): its own chant drained it a little below full, so it sat down, stood up again a second
+  later and recast its chant over and over.
 - Companions can't join your guild: they always wear your guild's name and emblem while they are with you (a /gc
   invite made a companion join and greet, then leave).
 - Companions: a shield your companion wears but doesn't fight with says why - a companion trained in two-handed
