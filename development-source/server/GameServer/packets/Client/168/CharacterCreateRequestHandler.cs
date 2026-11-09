@@ -544,8 +544,20 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return true;
             }
 
+            // Claim the name first (offline_bot_names): no bot, companion or player may wear it already.
+            if (!BotNameService.TryClaimPlayerName(ch.Name))
+            {
+                log.Warn($"Character creation refused: the name {ch.Name} is taken (account {account.Name})");
+                return false;
+            }
+
             // Save the character in the database
-            GameServer.Database.AddObject(ch);
+            if (!GameServer.Database.AddObject(ch))
+            {
+                BotNameService.ReleasePlayerName(ch.Name);
+                log.Warn($"Character creation failed: {ch.Name} could not be saved (account {account.Name})");
+                return false;
+            }
 
             // Fire the character creation event
             // This is Where Most Creation Script should take over to update any data they would like !
@@ -940,6 +952,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             GameServer.Database.AddObject(backupCharacter);
             GameServer.Database.DeleteObject(character);
+            BotNameService.ReleasePlayerName(character.Name);   // the name cools down (a player may take it again)
 
             // Do we really have to do this?
             client.Account.Characters = null;

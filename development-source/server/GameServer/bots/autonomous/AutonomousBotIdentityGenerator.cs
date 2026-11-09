@@ -69,42 +69,6 @@ namespace DOL.GS
                 ],
             };
 
-        private static readonly IReadOnlyDictionary<(eRealm Realm, eGender Gender), (string[] Starts, string[] Middles, string[] Ends)> NameParts =
-            new Dictionary<(eRealm, eGender), (string[], string[], string[])>
-            {
-                [(eRealm.Albion, eGender.Male)] =
-                    (["Ald", "Ber", "Ced", "Ed", "Gar", "God", "Har", "Leof", "Os", "Ran", "Ren", "Thed", "Wil"],
-                     ["", "a", "e", "en", "er", "i", "o"],
-                     ["bert", "ric", "win", "mund", "ward", "frey", "ren", "well", "red", "helm"]),
-                [(eRealm.Albion, eGender.Female)] =
-                    (["Ada", "Ael", "Ela", "Eve", "Gis", "Isa", "Lina", "Mara", "Ros", "Ser", "Thea", "Ys"],
-                     ["", "a", "e", "el", "en", "i", "o"],
-                     ["bel", "beth", "lyn", "wen", "ette", "ine", "ora", "elle", "ith", "anne"]),
-                [(eRealm.Midgard, eGender.Male)] =
-                    (["Arn", "Bjorn", "Dag", "Egil", "Eirik", "Finn", "Gorm", "Hald", "Ivar", "Knut", "Rag", "Sig", "Tor", "Ulf"],
-                     ["", "a", "e", "ge", "i", "un"],
-                     ["ar", "bjorn", "brand", "grim", "mund", "rik", "sten", "ulf", "vald", "var"]),
-                [(eRealm.Midgard, eGender.Female)] =
-                    (["Astr", "Bry", "Dag", "Eir", "Fre", "Gud", "Hild", "Ing", "Kara", "Liv", "Rag", "Sig", "Siv", "Yr"],
-                     ["", "a", "e", "i", "un"],
-                     ["a", "dis", "frid", "gerd", "hild", "run", "rid", "veig", "borg", "ny"]),
-                [(eRealm.Hibernia, eGender.Male)] =
-                    (["Aed", "Bran", "Cael", "Ciar", "Con", "Dair", "Eog", "Ferg", "Lorc", "Nial", "Ois", "Rian", "Tad"],
-                     ["", "a", "e", "el", "in", "o"],
-                     ["an", "dan", "gan", "gus", "lan", "nan", "ren", "ric", "ron", "van"]),
-                [(eRealm.Hibernia, eGender.Female)] =
-                    (["Aine", "Bria", "Cao", "Deir", "Eil", "Fia", "Mae", "Muir", "Nia", "Orla", "Rois", "Sao", "Una"],
-                     ["", "a", "e", "el", "in", "ri"],
-                     ["a", "bhe", "dra", "la", "lin", "na", "ra", "rin", "se", "wen"]),
-            };
-
-        private static readonly IReadOnlyDictionary<eRealm, string[]> NameBridges = new Dictionary<eRealm, string[]>
-        {
-            [eRealm.Albion] = ["", "al", "en", "is", "or"],
-            [eRealm.Midgard] = ["", "ar", "en", "ild", "un"],
-            [eRealm.Hibernia] = ["", "ae", "el", "in", "or"],
-        };
-
         public static Identity Generate(eRealm realm, eGender gender, ISet<string> reservedNames = null, Random random = null)
         {
             if (!Choices.TryGetValue(realm, out ClassChoice[] realmChoices))
@@ -115,7 +79,7 @@ namespace DOL.GS
             random ??= Random.Shared;
             ClassChoice classChoice = realmChoices[random.Next(realmChoices.Length)];
             eRace race = classChoice.Races[random.Next(classChoice.Races.Length)];
-            string name = GenerateUniqueName(realm, gender, reservedNames, random);
+            string name = GenerateUniqueName(realm, race, gender, reservedNames, random);
             return new Identity(name, realm, gender, classChoice.CharacterClass, race);
         }
 
@@ -137,11 +101,27 @@ namespace DOL.GS
             random ??= Random.Shared;
             eRace race = choice.Races[random.Next(choice.Races.Length)];
             return new Identity(
-                GenerateUniqueName(realm, gender, reservedNames, random),
+                GenerateUniqueName(realm, race, gender, reservedNames, random),
                 realm,
                 gender,
                 characterClass,
                 race);
+        }
+
+        /// <summary>A new world bot: era class and race, and a fresh unique name claimed in offline_bot_names
+        /// (BotNameService). False when the name table is not ready or busy; try again later. Call off the game loop.</summary>
+        public static bool TryGenerateClaimed(eRealm realm, eGender gender, long botId, out Identity identity, Random random = null)
+        {
+            identity = null;
+            if (!Choices.TryGetValue(realm, out ClassChoice[] realmChoices) || gender is not eGender.Male and not eGender.Female)
+                return false;
+            random ??= Random.Shared;
+            ClassChoice classChoice = realmChoices[random.Next(realmChoices.Length)];
+            eRace race = classChoice.Races[random.Next(classChoice.Races.Length)];
+            if (!BotNameService.TryClaimNewBotName(realm, race, gender, botId, out string name))
+                return false;
+            identity = new Identity(name, realm, gender, classChoice.CharacterClass, race);
+            return true;
         }
 
         public static IReadOnlyCollection<eCharacterClass> GetEraClasses(eRealm realm) =>
@@ -153,42 +133,29 @@ namespace DOL.GS
             Choices.Values.SelectMany(value => value)
                 .FirstOrDefault(choice => choice.CharacterClass == characterClass)?.Races ?? Array.Empty<eRace>();
 
-        private static string GenerateUniqueName(eRealm realm, eGender gender, ISet<string> reservedNames, Random random)
+        // Names come from the race-styled generator (BotNameService, botnames165.json). They are not claimed here:
+        // callers that keep a bot for good claim its name through BotNameService. Without a reserved set, names already
+        // worn by a player or bot are skipped (the /tg helpers).
+        private static string GenerateUniqueName(eRealm realm, eRace race, eGender gender, ISet<string> reservedNames, Random random)
         {
-            var parts = NameParts[(realm, gender)];
-            string[] bridges = NameBridges[realm];
-            for (int attempt = 0; attempt < 1024; attempt++)
+            BotNameGenerator generator = BotNameService.Generator
+                ?? throw new InvalidOperationException("The bot name tables are missing.");
+            bool Used(string candidate) => reservedNames != null ? reservedNames.Contains(candidate) : BotNameService.IsNameTaken(candidate);
+            string name = generator.RandomName(race, gender, random, Used, attempts: reservedNames != null ? 2048 : 40);
+            if (name == null)
             {
-                string candidate = parts.Starts[random.Next(parts.Starts.Length)] +
-                                   parts.Middles[random.Next(parts.Middles.Length)] +
-                                   bridges[random.Next(bridges.Length)] +
-                                   parts.Ends[random.Next(parts.Ends.Length)];
-                candidate = Normalize(candidate);
-                if (reservedNames == null || reservedNames.Add(candidate))
-                    return candidate;
+                // this race is crowded in the reserved set: any other race of the realm
+                foreach (eRace other in BotNameGenerator.StyleRaces.Where(r => r != race && BotNameGenerator.RealmOf(r) == realm))
+                {
+                    name = generator.RandomName(other, gender, random, Used);
+                    if (name != null)
+                        break;
+                }
             }
-
-            // High population rosters must not fail merely because random rolls
-            // repeatedly hit occupied names. Exhaust the themed pool deterministically.
-            foreach (string start in parts.Starts)
-            foreach (string middle in parts.Middles)
-            foreach (string bridge in bridges)
-            foreach (string end in parts.Ends)
-            {
-                string candidate = Normalize(start + middle + bridge + end);
-                if (reservedNames == null || reservedNames.Add(candidate))
-                    return candidate;
-            }
-
-            throw new InvalidOperationException($"Unable to produce another unique {GlobalConstants.RealmToName(realm)} {gender} bot name.");
-        }
-
-        private static string Normalize(string name)
-        {
-            string collapsed = name.Replace("aa", "a", StringComparison.OrdinalIgnoreCase)
-                .Replace("ee", "e", StringComparison.OrdinalIgnoreCase)
-                .Replace("ii", "i", StringComparison.OrdinalIgnoreCase);
-            return char.ToUpperInvariant(collapsed[0]) + collapsed[1..].ToLowerInvariant();
+            if (name == null)
+                throw new InvalidOperationException($"Unable to produce another unique {GlobalConstants.RealmToName(realm)} {gender} bot name.");
+            reservedNames?.Add(name);
+            return name;
         }
     }
 }

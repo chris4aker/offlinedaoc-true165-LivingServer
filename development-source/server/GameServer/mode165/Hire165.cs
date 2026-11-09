@@ -177,8 +177,10 @@ namespace DOL.GS
             if (name.Length < 3 || name.Length > 20 || !name.All(c => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z'))
                 return "A name is one word of 3 to 20 letters (A-Z), like a player's.";
             string proper = char.ToUpperInvariant(name[0]) + name[1..];
-            if (DOLDB<OfflineWorldBotRecord>.SelectObject(DB.Column("Name").IsEqualTo(proper)) != null ||
-                DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(proper)) != null)
+            if (GameServer.Instance?.PlayerManager?.InvalidNames[proper] == true)
+                return $"The name {proper} is not allowed.";
+            // the name table (offline_bot_names): any player, bot or companion, live or archived
+            if (BotNameService.IsNameTaken(proper))
                 return $"The name {proper} is taken.";
             return null;
         }
@@ -203,7 +205,7 @@ namespace DOL.GS
             FixClass(player.Realm, s.Design);
             FixLook(s.Design);
             if (string.IsNullOrEmpty(s.Design.Name))
-                s.Design.Name = RandomName(player.Realm, s.Design.Gender);
+                s.Design.Name = RandomName(player.Realm, s.Design.Race, s.Design.Gender);
             int used = HiredCompanions165.RosterOf(player).Count;
             Send(player, 1, [s.Mode, (byte)used, (byte)HiredCompanions165.OpenSlots(player.Level), (byte)HiredCompanions165.NextSlotLevel(player.Level)]);
             s.LastCommand = GameLoop.GameLoopTime;
@@ -280,7 +282,7 @@ namespace DOL.GS
                 case "gender":
                     d.Gender = d.Gender == eGender.Male ? eGender.Female : eGender.Male;
                     FixClass(player.Realm, d);
-                    d.Name = RandomName(player.Realm, d.Gender);   // names match the companion's sex
+                    d.Name = RandomName(player.Realm, d.Race, d.Gender);   // names match the companion's sex
                     break;
                 case "look+": case "look-": case "face+": case "face-":
                     d.Face = Step(d.Face, LookCount(d), verb.EndsWith('+'));
@@ -297,7 +299,7 @@ namespace DOL.GS
                 case "name":
                     string name = args.Length > 2 ? string.Join(' ', args.Skip(2)).Trim() : string.Empty;
                     if (name.Length == 0)
-                        d.Name = RandomName(player.Realm, d.Gender);   // plain "name": a random one
+                        d.Name = RandomName(player.Realm, d.Race, d.Gender);   // plain "name": a random one
                     else if (NameProblem(name) is { } bad)
                         s.Problem = bad;
                     else
@@ -311,7 +313,7 @@ namespace DOL.GS
                         : HiredCompanions165.Hire(player, d) ?? string.Empty;
                     if (s.Problem.Length == 0)
                     {
-                        d.Name = RandomName(player.Realm, d.Gender);   // ready for the next one
+                        d.Name = RandomName(player.Realm, d.Race, d.Gender);   // ready for the next one
                         s.Preview?.Delete();                            // hired: the figure goes
                         s.Preview = null;
                         FixLook(d);
@@ -367,8 +369,10 @@ namespace DOL.GS
                 d.Class = classes.FirstOrDefault();
         }
 
-        private static string RandomName(eRealm realm, eGender gender) =>
-            Names.TryGetValue((realm, gender), out string[] list) ? list[Util.Random(list.Length - 1)] : "Companion";
+        // A race-styled name nobody wears (BotNameService); the short list only if the tables are unreadable.
+        private static string RandomName(eRealm realm, eRace race, eGender gender) =>
+            BotNameService.SuggestName(realm, race, gender)
+            ?? (Names.TryGetValue((realm, gender), out string[] list) ? list[Util.Random(list.Length - 1)] : "Companion");
 
         // ---- what the window shows
 

@@ -20,6 +20,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				result = 0x02;
 			else if (GameServer.Instance.PlayerManager.InvalidNames[name])
 				result = 0x01;
+			// a bot or hired companion (live or archived) already wears it (True online world names)
+			else if (BotNameService.IsNameTaken(name))
+				result = 0x02;
 
 			client.Out.SendDupNameCheckReply(name, result);
 		}
