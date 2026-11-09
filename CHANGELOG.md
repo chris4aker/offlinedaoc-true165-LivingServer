@@ -127,17 +127,23 @@ hold). Its changelog has the history of everything this version inherits.
 - Quests: a step that asks for several of one item (five bear claws for Learn the Hunt, three goblin heads for
   Price of Courage) needs and takes all of them. It took one and left the rest in your pack (22 quests). The NPC
   says how many it still needs.
-- Quests: no more twins. Ten quest NPCs stood beside a monster of the same name (two Fressens side by side; Aessa,
-  Chief Gaeth, Macnol, Terje, Tradande, a dverge smith, an elder tidal sheerie, Cyfwlch Difwych, an ellyll
-  villager): each pair is one character now.
-- Quests: a kill step's monster appears again where the quest's own peaceful NPC of the same name stands, or a
-  guard of your realm (Aricoer, Gwulin, Ciar, Borwyr the Cursed, Gokstad, the traitor Guardsman, Fressen). The NPC
-  standing there counted as the monster, so it never came.
+- Quests: no more twins. In ten places a quest's character stood beside a monster of the same name (two Fressens
+  side by side; Aessa, Chief Gaeth, Macnol, Terje, Tradande, a dverge smith, an elder tidal sheerie, Cyfwlch
+  Difwych, an ellyll villager). Each pair is one character now.
+- Quests: Aessa, Macnol and Tradande are one neutral monster each. They talk for their quests and never attack
+  first, and you can still kill them for their drops. Gamebots leave them alone.
+- Quests: in nine quests a character turns on you, and its hostile version appears again when you reach the kill
+  step (Aricoer, Borwyr the Cursed, Ciar, Cleddyf Difwych, Fressen, Gokstad, Gwulin, the Rat-catcher, the traitor
+  Guardsmen). Since 0.3 the peaceful one standing there was taken for it, so the fight never came and the quest
+  stopped at that step.
 - Loot: every item a monster drops can be sold. 104 had no merchant value (the merchant "isn't interested"): each
   has its period value where one is known, else an estimate from the level of the monsters that drop it or from
   what similar drops sell for. The Darkness Falls seals and the Ancient crafting ingredients get a small fixed
   value.
 - Gamebots never sell their Darkness Falls seals for coin: they spend them at the seal merchants, as before.
+- Merchants: Daracha, the bow merchant in Tir Urphost, no longer sells four Svartalf jewellery pieces. They are
+  Midgard drops from the arachites of Spindelhalla; a period site page listed them under her goods, and she sold
+  them for nothing.
 - RvR: killing an enemy of another realm pays experience as well as realm points, as in 1.65 (battleground kills
   paid realm points only). It follows the player-kill rule: the victim's worth by your share of the damage, at most
   125% of what your own level is worth, nothing for a victim killed in the last five minutes. Gamebots earn it too.
