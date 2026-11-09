@@ -1037,6 +1037,10 @@ func _physics_step(delta: float) -> void:
 			* _wounded_mult()
 	if cc != "":
 		wish = Vector3.ZERO                             # stunned / mesmerized / rooted: no moving
+	# held in place (stunned, mesmerized, rooted, too heavy: the server's MaxSpeed 0, or a spell offline): the movement
+	# keys move nothing, so they play no run / backpedal clip and lean no body either (tester 0.5: a stunned or mesmerized
+	# character ran on the spot), and a stunned / mesmerized figure does not jump
+	var held := wish.is_zero_approx() and not local.is_zero_approx()
 
 	if not climbing and not swimming and ahead > 0.0 and cc == "" and _climb_ahead():
 		climbing = true
@@ -1069,7 +1073,7 @@ func _physics_step(delta: float) -> void:
 	elif grounded:
 		velocity.x = wish.x
 		velocity.z = wish.z
-		velocity.y = JUMP_VELOCITY if _act("jump") else 0.0
+		velocity.y = JUMP_VELOCITY if _act("jump") and not no_turn and cc != "stun" and cc != "mez" else 0.0
 	else:
 		# airborne: keep the take-off momentum, a little steering
 		velocity.x = lerpf(velocity.x, wish.x, AIR_CONTROL * delta * 10.0)
@@ -1086,7 +1090,7 @@ func _physics_step(delta: float) -> void:
 	if zone and not zone.city and global_position.y < _ground_h(global_position.x, global_position.z, global_position.y) - 2.0:
 		global_position.y = _ground_h(global_position.x, global_position.z) + 0.5   # fell through: recover
 
-	_animate(ahead, strafe, speed, delta)
+	_animate(0.0 if held else ahead, 0.0 if held else strafe, speed, delta)
 	_ease_step(delta)
 	_pivot.rotation = Vector3(cam_pitch, cam_yaw, 0.0)
 	_arm.spring_length = lerpf(_arm.spring_length, _cam_target(), minf(1.0, delta * 10.0))
