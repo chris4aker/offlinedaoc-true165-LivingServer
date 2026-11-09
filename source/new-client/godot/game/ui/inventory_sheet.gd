@@ -147,6 +147,7 @@ static func _preview(slot: int, from: Control) -> Control:
 ## as the quickbar's replaced spell) - Godot ends a forced drag at the next left PRESS, dropping it on what is under
 ## the pointer. Call from _gui_input; true when the event was the pick-up click.
 static var held_at := 0                     # when the last click picked an item up (its double-click, below)
+static var held_pos := Vector2.ZERO         # where the mouse was then
 
 
 static func click_hold(c: Control, event: InputEvent, slot: int) -> bool:
@@ -168,15 +169,20 @@ static func _hold(c: Control, slot: int) -> void:
 			or PlayerData.entry(slot).is_empty():
 		return
 	held_at = Time.get_ticks_msec()
+	held_pos = c.get_viewport().get_mouse_position()
 	if "_dragged_slot" in c:
 		c.set("_dragged_slot", slot)                    # (a click on the world drops it there, as a drag)
 	c.force_drag(_data(slot), _preview(slot, c))
 
 
 ## A held item put down on the slot it came from: the second click of a double-click (the click picked it up, the
-## forced drag's drop took the second press) - true then, so the slot does its double-click; later just put back.
+## forced drag's drop took the second press) - true then, so the slot does its double-click; otherwise just put back.
+## Only a quick second click with the mouse still in place counts (tester 0.3: picking an item up and putting it back
+## in its own slot equipped it - a half-second window caught a deliberate put-back).
 static func double_clicked() -> bool:
-	return Time.get_ticks_msec() - held_at < 500
+	var tree := Engine.get_main_loop() as SceneTree
+	var still: bool = tree == null or tree.root.get_mouse_position().distance_to(held_pos) <= 4.0
+	return Time.get_ticks_msec() - held_at < 300 and still
 
 
 ## Whether the mouse is over the interface (an item let go there stays in it, not on the world): any control under it
