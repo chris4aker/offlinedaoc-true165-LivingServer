@@ -3,7 +3,7 @@ extends Control
 ## crafts and trains and estimates cost to that skill goal ... an eta until the goal is reached for each tradeskill ...
 ## auto adjust whenever overall estimated cost goes up or down with a baseline cost based on average luck"; "the gold
 ## cost still applies and the time it takes still applies"). A quality of life option, not in 1.65: greyed out unless
-## Options > Crafting > CRAFTING ASSISTANT is on.
+## Settings > Interface > Crafting > CRAFTING ASSISTANT is on.
 ## Pick the skill to raise (the window's trade or a secondary skill its recipes train) and a goal; ESTIMATE asks the
 ## server for the expected crafts, time and gold; START runs it on the server (anywhere, no tools) - it keeps going with
 ## this window closed, and reopening shows the live run (op 40). Nothing is decided here: every button is a
@@ -18,7 +18,7 @@ const STEP := 10                                     # the goal's - / + step
 const SECONDARY := [7, 8, 6, 14, 10, 9]
 const MATERIALS := {"leather square": 7, "cloth square": 8, "heavy thread": 8, "metal bars": 6, "wooden boards": 14}
 const EXTRA := {4: [10], 13: [9]}                    # Alchemy needs Herbcraft, Spellcraft Gemcutting
-const OFF_NOTE := "Turn on in Options > Crafting (a quality of life option, not in 1.65)"
+const OFF_NOTE := "Turn on in Settings > Interface > Crafting > CRAFTING ASSISTANT (a quality of life option, not in 1.65)"
 const TIME_NOTE := "Every craft takes the normal 1.65 time and costs real gold. Works anywhere, no tools needed, and keeps going with this window closed."
 
 var window: Control = null

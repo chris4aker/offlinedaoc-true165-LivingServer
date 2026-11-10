@@ -8,7 +8,7 @@ extends ClassicWindow
 ## its difficulty for your skill (the server's con: grey, green, blue, yellow, orange, red, purple); the chosen recipe's
 ## ingredients with what your backpack holds; MAKE asks the server to make it (0xED) - asked again while it is being
 ## made, the server stops it. Open with /craft or a trade in the skills sheet's TRADESKILLS list.
-## CRAFT ALL (owner 2026-11-08, a quality-of-life option, not in 1.65 - off by default, Options > Crafting): makes the
+## CRAFT ALL (owner 2026-11-08, a quality-of-life option, not in 1.65 - off by default, Settings > Interface > Crafting): makes the
 ## chosen recipe again each time one finishes, until the materials run out or the backpack is full.
 ## Overhaul (owner 2026-11-08: "its not clear what the difference is between clothworking and tailoring and which
 ## required number of skill level each recipe requires", "something can show craftable in red but say i dont have
@@ -307,7 +307,7 @@ func build() -> void:
 	_assist_btn = UiArt.button("ASSISTANT", Vector2(80, 18), 10)
 	_assist_btn.position = Vector2(W * 0.5 + 46, H - 30)
 	_assist_btn.tooltip_text = "The crafting assistant: set a skill goal, see the cost and time, let it craft " \
-			+ "(a quality of life option, not in 1.65 - Options > Crafting)"
+			+ "(a quality of life option, not in 1.65 - Settings > Interface > Crafting > CRAFTING ASSISTANT)"
 	_assist_btn.pressed.connect(func(): show_assistant(not _assist_on))
 	add_child(_assist_btn)
 	# the enchant helper (owner 2026-11-08: "add an enchant button ... dont give anything out for free just streamline
@@ -1188,7 +1188,7 @@ func _update_make() -> void:
 	_craft_all.text = "STOP ALL" if not _all.is_empty() else "CRAFT ALL"
 	_craft_all.disabled = not on or (_all.is_empty() and (selected.is_empty() or _making >= 0))
 	_craft_all.tooltip_text = ("Make it again and again until the materials run out or the backpack is full" if on
-			else "Turn it on in Options > Crafting (a quality of life option, not in 1.65)")
+			else "Turn it on in Settings > Interface > Crafting > CRAFT ALL BUTTON (a quality of life option, not in 1.65)")
 	if assist_running():                                 # (the server takes a MAKE then as "stop the run")
 		for b in [_make, _craft_all]:
 			b.disabled = true

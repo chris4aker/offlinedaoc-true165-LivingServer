@@ -1,6 +1,6 @@
 extends RefCounted
 ## The crafting assistant's messages (owner 2026-11-08: "set a skill goal and it automatically crafts and trains and
-## estimates cost to that skill goal"; a quality of life option, not in 1.65 - off by default, Options > Crafting).
+## estimates cost to that skill goal"; a quality of life option, not in 1.65 - off by default, Settings > Interface > Crafting).
 ## The server runs it and plans it; this only reads its 'H' messages and sends its /craftassist commands:
 ##   op 40 status (a run: after every craft), op 41 an estimate, op 42 the recipes' prices (several packets, K = 0 ends)
 ##   op 43 / 44 the enchant helper (an item's enchant options / an enchant's status; see below)
