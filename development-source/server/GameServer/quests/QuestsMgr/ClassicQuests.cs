@@ -955,6 +955,14 @@ namespace DOL.GS.Quests
         public static bool CountsAsFight(GameNPC.eFlags flags, eRealm npcRealm, eRealm playerRealm) =>
             (flags & GameNPC.eFlags.PEACE) == 0 && npcRealm != playerRealm;
 
+        /// <summary>The model of a standing NPC with this name in the region (0: none has one).</summary>
+        private static ushort BodiedModel(string name, ushort region) =>
+            string.IsNullOrEmpty(name) ? (ushort)0 :
+            WorldMgr.GetNPCsByNameFromRegion(name, region, eRealm.None).Select(n => n.Model).FirstOrDefault(IsBodied);
+
+        /// <summary>Model 0 is drawn as nothing in the client.</summary>
+        public static bool IsBodied(ushort model) => model != 0;
+
         private static void TrySpawnEvent(GamePlayer player, int quest, int step, EventSpawn spawn)
         {
             var key = (player, quest, step);
@@ -973,6 +981,18 @@ namespace DOL.GS.Quests
                 npc.Name = spawn.Name;
                 if (spawn.Level > 0) npc.Level = spawn.Level;
                 if (spawn.Model > 0) npc.Model = spawn.Model;
+                // Never a monster with no body (owner 2026-11-10: Anklebiter came with model 0, drawn as nothing, and
+                // attacked unseen): borrow the look of a standing NPC of that name, otherwise don't spawn it.
+                if (npc.Model == 0)
+                {
+                    ushort look = BodiedModel(spawn.Name, spawn.Region);
+                    if (look == 0)
+                    {
+                        Log.Warn($"CLASSIC_QUEST_SPAWN_NO_MODEL quest={quest} step={step} name=\"{spawn.Name}\": not spawned (give it a Model or TemplateId)");
+                        return;
+                    }
+                    npc.Model = look;
+                }
                 npc.Realm = spawn.Peaceful ? player.Realm : eRealm.None;
                 // A short way off on walkable ground, then they come at the player (owner 2026-10-07: spawning on top
                 // of the player looked wrong). A summoned NPC stands at its point, beside the NPC that summons it.
