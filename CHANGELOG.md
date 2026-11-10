@@ -17,6 +17,14 @@ hold). Its changelog has the history of everything this version inherits.
 - Settings: the messages that tell you to switch on a quality of life option point to where it is. `/grind` said
   Options > Bots > GRIND; it is Settings > Interface > Grinding > GRIND. The crafting assistant's greyed-out page and
   the CRAFT ALL and ASSISTANT buttons said Options > Crafting; they are in Settings > Interface > Crafting.
+- Monsters: they bring their friends again on every new pull. After one pull that brought friends, every monster
+  came alone for as long as you kept pulling within two minutes of the last (a break such as a level-up seemed to
+  "reset" it). Now a pull brings no friends only while the monsters of the last pull that did are still fighting you.
+- Gamebots: the Bot Goals Setting applies even if you never saved it. With no saved setting, almost every gamebot
+  went solo, so the 40% Group PvE you saw in the launcher gave about one group per realm.
+- Quests: seven quest monsters had no body and attacked unseen: Anklebiter, the Neophyte Spirit, Fasius Previlus,
+  Dash, Cadoc, Spicket and Gashir. Each now looks like its kind, and the server never spawns a quest monster with no
+  body.
 
 ## 0.5 (2026-11-09)
 
