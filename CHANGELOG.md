@@ -14,6 +14,9 @@ hold). Its changelog has the history of everything this version inherits.
 - Monsters: a monster that hides or comes back while you are near it changes for you too. A hidden one kept its name
   floating over nothing (Snarls, who stays hidden until the lupine snarlers beside him are dead), and one that came
   back could stay nameless and impossible to target. The day and night spawns work the same way.
+- Settings: the messages that tell you to switch on a quality of life option point to where it is. `/grind` said
+  Options > Bots > GRIND; it is Settings > Interface > Grinding > GRIND. The crafting assistant's greyed-out page and
+  the CRAFT ALL and ASSISTANT buttons said Options > Crafting; they are in Settings > Interface > Crafting.
 
 ## 0.5 (2026-11-09)
 
