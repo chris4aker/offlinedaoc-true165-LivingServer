@@ -25,6 +25,17 @@ hold). Its changelog has the history of everything this version inherits.
 - Quests: seven quest monsters had no body and attacked unseen: Anklebiter, the Neophyte Spirit, Fasius Previlus,
   Dash, Cadoc, Spicket and Gashir. Each now looks like its kind, and the server never spawns a quest monster with no
   body.
+- Quests: Rinda's Lost Keys takes back her iron keychain and then her key. Talking to her finished the quest and both
+  items stayed in your backpack.
+- Quests: dragging an item onto an NPC targets it too, so its answer and the words you can click in it go to that NPC.
+  After dropping the chains on the Thrall Keeper in Brutal Chains with something else targeted, the reward words did
+  nothing.
+- Crafting: recipes that showed a "?" icon in the tradeskill window show their item, such as Midgard's bronze long
+  sword (134 recipes).
+- Midgard: the inn adventurers walk around the house and the walled yard on the road into Huginfell instead of through
+  them.
+- Companions: the Amnesia option says what it does: it interrupts enemy casters in RvR, and sends monsters attacking
+  the companion back to its own pet if it has one.
 
 ## 0.5 (2026-11-09)
 
