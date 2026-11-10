@@ -975,6 +975,11 @@ func _on_item_dropped(slot: int, screen_pos: Vector2) -> void:
 		return
 	if Server.active:                                       # the server: onto an NPC = give it (slot 1000 + its id), else
 		var count := int(PlayerData.entry(slot).get("count", 1))   # onto the ground (slot 1) - PlayerMoveItem
+		if n and npcs.target != n:
+			# the NPC given to becomes your target, so its answer (the popup window, whose [keywords] are whispered to
+			# your target) goes back to it (owner 2026-11-10: Brutal Chains' reward words did nothing after the chains
+			# were dropped on the Thrall Keeper with something else targeted)
+			npcs.select(n)
 		Server.client.call("MoveItem", slot, 1000 + int(n.spawn.get("oid", 0)) if n else 1, count)
 		return
 	if n == null:
