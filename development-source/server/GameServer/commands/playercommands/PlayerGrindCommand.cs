@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
             (bot.IsTemporaryGroupHelper && !bot.IsAutonomousWorldBot && bot.Owner == player ||
              HiredCompanions165.IsHired(bot) && bot.CompanionPlayer == player);
 
-        // True 1.65 Mode: /grind is a quality of life option, off by default (the client's Options > Bots > GRIND sends
+        // True 1.65 Mode: /grind is a quality of life option, off by default (the client's Settings > Interface > Grinding > GRIND sends
         // "/grind option on|off quiet" at every world entry and on a change; owner 2026-11-08).
         private static readonly ConcurrentDictionary<GamePlayer, bool> Enabled = new();
         public static bool IsEnabled(GamePlayer player) => !Classic165Mode.IsOn || player != null && Enabled.ContainsKey(player);
@@ -200,7 +200,7 @@ namespace DOL.GS.Commands
         public static bool TryStart(GamePlayer player, string pullerName, out string message)
         {
             if (!IsEnabled(player))
-            { message = "/grind is off. Turn it on in Options > Bots > GRIND (a quality of life option, not in 1.65)."; return false; }
+            { message = "/grind is off. Turn it on in Settings > Interface > Grinding > GRIND (a quality of life option, not in 1.65)."; return false; }
             if (player?.Client?.ClientState != GameClient.eClientState.Playing || !player.IsAlive)
             { message = "You must be alive and in the world to use /grind."; return false; }
             if (IsActive(player))
@@ -427,7 +427,7 @@ namespace DOL.GS.Commands
 
         public static string StatusText(GamePlayer player)
         {
-            if (!IsEnabled(player)) return "/grind is off (Options > Bots > GRIND).";
+            if (!IsEnabled(player)) return "/grind is off (Settings > Interface > Grinding > GRIND).";
             if (!Sessions.TryGetValue(player, out Session session))
                 return "Grind mode is not active. /grind starts it; /grind (name) makes that companion the puller.";
             return $"Grind mode: {session.Detail}. Puller: {session.PullerName ?? "chosen each pull"}.";
