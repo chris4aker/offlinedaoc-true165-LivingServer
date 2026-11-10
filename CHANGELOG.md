@@ -5,9 +5,15 @@ The newest version is first.
 Offline DAoC True 1.65 grew out of [Offline DAoC](https://github.com/shadowofze/OfflineDAoC) (0.3 to 0.37c, now on
 hold). Its changelog has the history of everything this version inherits.
 
-## Coming in the next update
+## Coming in 0.6
 
-Nothing yet.
+- Guilds: `/gc who` lists your guild's online gamebot members too, after the players. They were only in the guild
+  window.
+- Guilds: gamebots you invite pay your guild's dues on the coin they loot, like player members, until you remove
+  them from the guild. Hired companions are not guild members and pay nothing.
+- Monsters: a monster that hides or comes back while you are near it changes for you too. A hidden one kept its name
+  floating over nothing (Snarls, who stays hidden until the lupine snarlers beside him are dead), and one that came
+  back could stay nameless and impossible to target. The day and night spawns work the same way.
 
 ## 0.5 (2026-11-09)
 
