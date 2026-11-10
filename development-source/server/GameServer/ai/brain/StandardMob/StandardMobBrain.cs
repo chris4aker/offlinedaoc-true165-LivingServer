@@ -282,6 +282,8 @@ namespace DOL.AI.Brain
         public virtual bool HasAggro => !AggroList.IsEmpty;
         /// <summary>Entries on the aggro list (diagnostics).</summary>
         public int AggroCount => AggroList.Count;
+        /// <summary>Whether the living is on the aggro list (an add can be on it at 0 aggro; BafFriends).</summary>
+        public bool HasAggroOn(GameLiving living) => living != null && AggroList.ContainsKey(living);
 
         /// <summary>
         /// Add aggro table of this brain to that of another living.
@@ -825,7 +827,7 @@ namespace DOL.AI.Brain
             List<GameNPC> brainsInRadius = GetFriendlyAndAvailableNpcsInRadiusOrderedByDistance(bafRadius, maxAdds);
             int addCount = brainsInRadius.Count;
             if (addCount > 0)
-                BafFriends.MarkBafFight(playerPuller);
+                BafFriends.MarkBafFight(playerPuller, Body, brainsInRadius);
             BafAddCount = addCount;
 
             foreach (GameNPC npc in brainsInRadius)

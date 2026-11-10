@@ -125,7 +125,7 @@ namespace DOL.GS.Tests
         {
             Assert.That(() => BafFriends.InBafFight(null), Throws.Nothing);
             Assert.That(BafFriends.InBafFight(null), Is.False);
-            Assert.That(() => BafFriends.MarkBafFight(null), Throws.Nothing);
+            Assert.That(() => BafFriends.MarkBafFight(null, null, null), Throws.Nothing);
         }
 
         /// <summary>
