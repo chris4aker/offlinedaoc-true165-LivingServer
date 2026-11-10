@@ -49610,6 +49610,10 @@
   {
    "sql": "UPDATE NpcTemplate SET AggroLevel = 0 WHERE TemplateId IN (60157597, 60163538, 60167202) AND AggroLevel <> 0",
    "reason": "True 1.65 quest twins (owner 2026-11-09, \"one neutral monster\"): Aessa, Macnol, Tradande never attack first (the period bestiary lists them as quest characters with no aggro range); each template is theirs alone"
+  },
+  {
+   "sql": "UPDATE DataQuest SET StepType = '0|0|10|11', StepText = 'Search for a hobgoblin snake-finder around Haggerfel and see if it has Rinda''s keys.|Slay the black mauler cub that ate Rinda''s key.|Give the iron keychain to Rinda in Haggerfel.|Give Rinda her key.', SourceText = 'Thank you! Thank you! I know there are some hobgoblins around that like to play jokes on people, viscious and mean ones. Why don''t you check there while I check the merchant huts again?|||', AdvanceText = '|||', TargetText = '|||', TargetName = 'hobgoblin snake-finder;100|black mauler cub;100|Dwarven Guard Rinda;100|Dwarven Guard Rinda;100', StepItemTemplates = 'cq_iron_keychain|cq_rinda_s_key||', CollectItemTemplate = '||cq_iron_keychain|cq_rinda_s_key', RewardMoney = '0|0|0|400', RewardXP = '0|0|0|40' WHERE ID = 20097",
+   "reason": "True 1.65 Rinda's keys (owner 2026-11-10): the last step took nothing (right-click finished it); now the iron keychain is handed in, then the key finishes the quest - same text, reward and finish line"
   }
  ]
 }
