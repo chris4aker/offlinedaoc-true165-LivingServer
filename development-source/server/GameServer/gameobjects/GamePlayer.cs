@@ -1870,6 +1870,9 @@ namespace DOL.GS
         /// Property that saves experience lost on last death
         /// </summary>
         public const string DEATH_EXP_LOSS_PROPERTY = "death_exp_loss";
+
+        /// <summary>Set by /stuck just before it kills the player: that death costs no experience (owner 2026-11-10).</summary>
+        public const string StuckCommandDeathProperty = "OfflineDAoC.StuckDeath";
         /// <summary>
         /// Property that saves condition lost on last death
         /// </summary>
@@ -6038,7 +6041,17 @@ namespace DOL.GS
                 }
                 else
                 {
-                    if (Level >= Properties.PVE_EXP_LOSS_LEVEL)
+                    // /stuck (owner 2026-11-10, player issue #30): the player chose to die where they stood to release to
+                    // their bind or a city - this death alone costs no experience and does not count toward the next
+                    // death's penalty; everything else is a normal PvE death
+                    bool stuckDeath = TempProperties.GetProperty<bool>(StuckCommandDeathProperty);
+                    TempProperties.RemoveProperty(StuckCommandDeathProperty);
+                    if (stuckDeath)
+                    {
+                        m_deathtype = eDeathType.PvE;
+                        Out.SendMessage("You lose no experience for this death.", eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+                    }
+                    else if (Level >= Properties.PVE_EXP_LOSS_LEVEL)
                     {
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.LoseExperience"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                         // if this is the first death in level, you lose only half the penalty

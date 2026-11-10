@@ -404,6 +404,7 @@ NORMAL PLAYER COMMANDS
 /hood
   Toggles the hood on and off when wearing a hooded cloak.
   /hood
+  /hood <companion name> - your hired companion's hood (remembered)
   Handler: DOL.GS.Commands.HoodCommandHandler
 
 /horn
@@ -844,7 +845,7 @@ NORMAL PLAYER COMMANDS
   Handler: DOL.GS.Commands.EmoteCommandHandler
 
 /stuck
-  Move the player to the last recorded safe position
+  Stuck? Die where you stand (after a confirmation) to release to your bind stone or a city, with no experience loss
   /stuck
   Handler: DOL.GS.Commands.StuckCommandHandler
 
