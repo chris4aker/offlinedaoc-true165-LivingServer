@@ -260,6 +260,7 @@ namespace DOL.GS
                     Heading = player.Heading,
                 };
                 bot.SetLookModel((ushort)hired.LookModel);
+                bot.IsCloakHoodUp = CompanionOptions165.HoodUp(hired);   // as the player left it with /hood (owner 2026-11-10)
                 bot.Size = GameBot.SizeForHeight(hired.Height);   // its chosen height, as a player of that height (owner 2026-10-31)
                 bot.SynchronizePositionForLoginValidation();
                 // a revive (its body had faded) brings it back whole, like a raise of a body still lying there

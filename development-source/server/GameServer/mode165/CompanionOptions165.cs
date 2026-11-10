@@ -185,6 +185,16 @@ namespace DOL.GS
             return map;
         }
 
+        /// <summary>Whether the companion wears its cloak's hood up (/hood name; owner 2026-11-10: remembered).</summary>
+        public static bool HoodUp(OfflineHiredCompanionRecord hired) =>
+            Read(hired).TryGetValue("hood", out string value) && value == "1";
+
+        public static void SetHoodUp(OfflineHiredCompanionRecord hired, bool up)
+        {
+            if (hired != null)
+                Set(hired, "hood", up ? "1" : null);
+        }
+
         private static string Get(GameBot bot, string key) =>
             HiredCompanions165.HiredRecord(bot) is { } hired && Read(hired).TryGetValue(key, out string value) ? value : null;
 
