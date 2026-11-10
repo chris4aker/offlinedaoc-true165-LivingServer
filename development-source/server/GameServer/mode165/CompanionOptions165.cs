@@ -71,7 +71,7 @@ namespace DOL.GS
                 bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Friar),
             new(KindLifeTransfer, "lifetransfer", "Life transfer", ["Automatic (groupmate under 35%)", "Off"],
                 bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.LifeTransfer) == true),
-            new(KindAmnesia, "amnesia", "Amnesia", ["Automatic (give monsters back to my pet)", "Off"],
+            new(KindAmnesia, "amnesia", "Amnesia", ["Automatic (interrupt enemy casters in RvR; send monsters on me back to my own pet, if I have one)", "Off"],
                 bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.Amnesia) == true),
             // Performers (Prima: a Bard's group role is to prevent downtime - the endurance song in battle, mez every add,
             // heal the Druid; a Minstrel plays a "passive game" of songs and shouts or an "active game" in melee; period
