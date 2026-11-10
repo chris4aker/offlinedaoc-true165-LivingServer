@@ -23,7 +23,9 @@ public static class AutonomousBotGoalPolicy
             DOL.Logging.LoggerManager.Create(typeof(AutonomousBotGoalPolicy)).Warn($"BOT_GOALS_OVERRIDE using {overridePath} instead of {BotGoalSettings.FileName}");
         }
         Settings = BotGoalSettings.Load(path); // Reject corruption rather than silently ignoring 0% exclusions.
-        IsConfigured = File.Exists(path);
+        // No saved file means the defaults the launcher shows (owner 2026-11-10: with no bot-goals.json every task change
+        // fell back to solo, so the shown 40% Group PvE gave about 5% group bots and almost no groups).
+        IsConfigured = true;
     }
 
     public static eAutonomousObjectiveKind Choose(int level, Random random = null, bool excludeGroup = false,

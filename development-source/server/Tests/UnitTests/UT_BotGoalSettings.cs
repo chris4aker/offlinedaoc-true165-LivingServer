@@ -130,10 +130,12 @@ public class UT_BotGoalSettings
     }
 
     [Test]
-    public void PortableRoundTripAndMissingFileLegacyBehavior()
+    public void PortableRoundTripAndMissingFileUsesTheDefaults()
     {
+        // owner 2026-11-10: no saved file = the defaults the launcher shows, applied at every task change
         AutonomousBotGoalPolicy.Initialize(_directory);
-        Assert.That(AutonomousBotGoalPolicy.IsConfigured, Is.False);
+        Assert.That(AutonomousBotGoalPolicy.IsConfigured, Is.True);
+        Assert.That(AutonomousBotGoalPolicy.Settings, Is.EqualTo(BotGoalSettings.Defaults));
         Apply(new(0, 0, 100));
         Assert.That(BotGoalSettings.Load(PathName).Level50, Is.EqualTo(new BotGoalWeights(0, 0, 100)));
         Assert.That(File.ReadAllText(PathName), Does.Not.Contain(_directory));
