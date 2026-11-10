@@ -510,15 +510,7 @@ func _add_npc(d: Dictionary) -> void:
 	# sword of an abomination released before it)
 	if f & 0x02 == 0:
 		data.equipment.erase("srv%d" % oid)
-	# the packet's flags -> the database's eFlags (what Npc / NamePlates read)
-	var flags := 0
-	if f & 0x01: flags |= 0x01                                  # ghost
-	if f2 & 0x04: flags |= 0x02                                 # stealthed
-	if f2 & 0x02: flags |= 0x04                                 # don't show the name
-	if f2 & 0x01: flags |= 0x08                                 # can't target
-	if f & 0x10: flags |= 0x10                                  # peace
-	if f & 0x20: flags |= 0x20                                  # flying
-	if f & 0x04: flags |= 0x40                                  # torch
+	var flags := _packet_flags(f, f2)
 	var p := scene_pos(float(d.x), float(d.y), float(d.z))
 	var spawn := {"id": "srv%d" % oid, "oid": oid, "name": String(d.name), "guild": String(d.guild),
 			"realm": f >> 6, "flags": flags, "level": int(d.level) & 0x7F, "size": int(d.size), "model": str(int(d.model)),
@@ -649,6 +641,19 @@ func _visual_effect(d: Dictionary) -> void:
 signal quest_marks_changed
 
 
+## The NPCCreate packet's flags as the database's eFlags (what Npc / NamePlates read).
+func _packet_flags(f: int, f2: int) -> int:
+	var flags := 0
+	if f & 0x01: flags |= 0x01                                  # ghost
+	if f2 & 0x04: flags |= 0x02                                 # stealthed
+	if f2 & 0x02: flags |= 0x04                                 # don't show the name
+	if f2 & 0x01: flags |= 0x08                                 # can't target
+	if f & 0x10: flags |= 0x10                                  # peace
+	if f & 0x20: flags |= 0x20                                  # flying
+	if f & 0x04: flags |= 0x40                                  # torch
+	return flags
+
+
 func _update_npc(st: NpcState, d: Dictionary) -> void:
 	var f := int(d.flags)
 	var renamed := String(st.spawn.name) != String(d.name) or String(st.spawn.get("guild", "")) != String(d.guild)
@@ -658,6 +663,23 @@ func _update_npc(st: NpcState, d: Dictionary) -> void:
 	st.spawn["level"] = int(d.level) & 0x7F
 	st.level = int(d.level) & 0x7F
 	st.spawn["quest"] = _quest_indicator(d)
+	# its flags change while you watch it (GameNPC.Flags sends it again): a monster that hides until its helpers die
+	# or sleeps by day gets "no name / can't be targeted / peaceful" and loses them again. They were read only when it
+	# first appeared, so a hidden one kept its name and could be targeted (tester 0.5: "NPC invisible - Snarls": the
+	# name over nothing), and one that came back stayed nameless and untargetable. The stealth bit is stealth_look's.
+	var was := int(st.spawn.get("flags", 0))
+	var now := (_packet_flags(f, int(d.get("flags2", 0))) & ~0x02) | (was & 0x02)
+	if now != was:
+		st.spawn["flags"] = now
+		if st.view and is_instance_valid(st.view):
+			if now & Npc.FLAG_CANTTARGET and st.view == target:
+				clear_target()
+			if (now ^ was) & (Npc.FLAG_GHOST | Npc.FLAG_CANTTARGET):   # its look and its click shape are built once:
+				if st.view == target:                                 # drawn again, as for a new model
+					target = null
+				active.erase(st.index)
+				st.view.queue_free()
+				st.view = null
 	# a gamebot stealthing / coming out: the server sends it again with its STEALTH flag (GameNPC.Flags) to everyone
 	# who can still see it - those who can't detect it get it removed instead
 	st.stealth_look = (int(d.get("flags2", 0)) & 0x04) != 0
