@@ -58,6 +58,12 @@ REALM_NAME = {"alb": "albion", "mid": "midgard", "hib": "hibernia"}
 # near edge of the Marsh Town bridge; the layout path waded the marsh past it): keep the path from this index (counted
 # from its town end) and finish at this point
 ROUTE_END = {"alb": (16, (471060, 630310, 1696))}
+# where the road cuts through a building (owner 2026-11-10: the Midgard adventurers walked straight through a house on
+# the way into Huginfell, loc 53415 47151, and the corner of a walled yard after it): the last road point kept before
+# it, the points walked around it instead (open ground on the 1.65 navmesh, zone102.nav), the first road point kept
+# after it (road points are matched by the nearest, yard first)
+ROUTE_DETOURS = {"mid": [((708552, 784760), [(708716, 784176, 4672)], (709272, 784040)),
+                         ((709416, 783896), [(709718, 783785, 4672), (709806, 783662, 4672)], (709848, 783464))]}
 # the inns' travelers (owner 2026-10-30): three ambience townsfolk per realm wandering the inn's rooms, downstairs and
 # upstairs (Traveler165 picks its spots on the navmesh); looks borrowed from realm townsfolk
 TRAVELER_LOOKS = {"alb": ["Timmo", "Calya", "Keenar Woedin"],
@@ -298,7 +304,14 @@ def main():
             keep_from, end = ROUTE_END[realm]
             town_pts = [end] + town_pts[keep_from:]
         road_pts = list(reversed(town_pts))       # yard first
-        yard_pt = (yard["world"]["x"], yard["world"]["y"], yard["z"])
+        for before, around, after in ROUTE_DETOURS.get(realm, []):
+            def nearest(xy):
+                return min(range(len(road_pts)), key=lambda k: math.hypot(road_pts[k][0] - xy[0], road_pts[k][1] - xy[1]))
+            a, b = nearest(before), nearest(after)
+            if not a < b:
+                sys.exit(f"route detour out of order: {realm} {before} {after}")
+            road_pts = road_pts[:a + 1] + list(around) + road_pts[b:]
+        yard_pt =(yard["world"]["x"], yard["world"]["y"], yard["z"])
         for i, look in enumerate(ADVENTURER_LOOKS[realm]):
             src = con.execute("SELECT * FROM Mob WHERE Name=? AND Realm=? LIMIT 1", (look, {"alb": 1, "mid": 2, "hib": 3}[realm])).fetchone()
             if src is None:
