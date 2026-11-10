@@ -166,6 +166,10 @@ namespace DOL.GS.Commands
 		/// <param name="client"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
+		/// <summary>One /gc who line, as the player lines read: "3) Name &lt;Rank&gt; the Level 12 Skald in Vale of Mularn".</summary>
+		public static string GuildWhoLine(int index, string name, string rank, int level, string className, string zone) =>
+			$"{index}) {name} <{rank}> the Level {level} {className ?? "Unknown"} in {zone ?? "(null)"}";
+
 		public void OnCommand(GameClient client, string[] args)
 		{
 			if (IsSpammingCommand(client.Player, "gc", 500))
@@ -1546,6 +1550,12 @@ namespace DOL.GS.Commands
 											client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 										}
 									}
+									foreach (GameBot bot in AutonomousBotGuilds.OnlineMembers(guild))
+									{
+										ind++;
+										client.Out.SendMessage(GuildWhoLine(ind, bot.Name, guild.Name, bot.Level, bot.CharacterClass?.Name, bot.CurrentZone?.Description),
+											eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+									}
 								}
 								return;
 							}
@@ -1578,8 +1588,22 @@ namespace DOL.GS.Commands
 									client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							}
 						}
-						if (ind > WhoCommandHandler.MAX_LIST_SIZE && ind < onlineGuildMembers.Count)
-							client.Out.SendMessage(string.Format(WhoCommandHandler.MESSAGE_LIST_TRUNCATED, onlineGuildMembers.Count), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+						// Gamebot guildmates (AutonomousBotGuilds): an invited gamebot is in the guild list and the social
+						// window, but /gc who only walked the guild's players, so it never showed one (tester 0.5).
+						List<GameBot> onlineBotMembers = AutonomousBotGuilds.OnlineMembers(client.Player.Guild).OrderBy(bot => bot.Name).ToList();
+						string botRank = client.Player.Guild.GetRankByID(AutonomousBotGuilds.MemberRank)?.Title;
+						foreach (GameBot bot in onlineBotMembers)
+						{
+							if (startInd + ind > startInd + WhoCommandHandler.MAX_LIST_SIZE)
+								break;
+							ind++;
+							if (ind >= startInd)
+								client.Out.SendMessage(GuildWhoLine(ind, bot.Name, botRank ?? AutonomousBotGuilds.MemberRank.ToString(), bot.Level,
+									bot.CharacterClass?.Name, bot.CurrentZone?.Description), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+						}
+						int onlineTotal = onlineGuildMembers.Count + onlineBotMembers.Count;
+						if (ind > WhoCommandHandler.MAX_LIST_SIZE && ind < onlineTotal)
+							client.Out.SendMessage(string.Format(WhoCommandHandler.MESSAGE_LIST_TRUNCATED, onlineTotal), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 						else client.Out.SendMessage("total member online:        " + ind.ToString(), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
 						break;
