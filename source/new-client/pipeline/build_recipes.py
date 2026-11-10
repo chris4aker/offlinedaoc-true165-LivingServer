@@ -154,10 +154,29 @@ def main():
         name = named(base, code)
         ing = [[ing_name.get(n.lower(), n), c] for n, c in tdl_ingredients(r)]
         hit = [v for v in by_name.get(name.lower(), []) if v['realm'] in (0, realm)] or by_name.get(name.lower(), [])
+        model = hit[0]['model'] if hit else 0
+        if not model:
+            # the 1.64 name is not an item name ("bronze long sword" is the item "bronze longsword"; owner 2026-11-10:
+            # its icon was a "?" in the craft window): the server's recipe of the same id, when it makes that product
+            c = crafted.get(rid)
+            it = items.get(c[0]) if c else None
+            if it and it['model'] and it['realm'] in (0, realm) and \
+                    base_of(it['name']).lower().replace(' ', '') == base.lower().replace(' ', ''):
+                model = it['model']
         out165[str(realm)][str(trade)].append({
             'id': rid, 'name': name, 'base': base, 'group': labels.get((realm, trade, cat), ''), 'category': cat,
-            'level': int(r[9] or 0), 'skill': int(r[10] or 0), 'model': hit[0]['model'] if hit else 0,
+            'level': int(r[9] or 0), 'skill': int(r[10] or 0), 'model': model,
             'ingredients': ing})
+    # still no model: the look of the other material tiers of the same product (a realm's tiers share one model)
+    for trades in out165.values():
+        for lst in trades.values():
+            looks = collections.defaultdict(collections.Counter)
+            for e in lst:
+                if e['model']:
+                    looks[e['base'].lower()][e['model']] += 1
+            for e in lst:
+                if not e['model'] and looks.get(e['base'].lower()):
+                    e['model'] = looks[e['base'].lower()].most_common(1)[0][0]
 
     # --- normal: the server's own tables, grouped like the 1.64 file where an id names the same product
     outn = collections.defaultdict(lambda: collections.defaultdict(list))
