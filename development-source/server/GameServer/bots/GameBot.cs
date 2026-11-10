@@ -1978,8 +1978,9 @@ namespace DOL.GS
         public TryPickUpResult TryAutoPickUpMoney(GameMoney money)
         {
             money.AssertLockAcquisition();
+            // (its guild's dues come off first, as for a player member: AutonomousBotGuilds.CreditLootedCoin)
             if (!IsAutonomousWorldBot || IsTemporaryGroupHelper || DatabaseID <= 0 ||
-                !AutonomousBotEconomy.AddMoney(DatabaseID, money.Value))
+                !AutonomousBotGuilds.CreditLootedCoin(DatabaseID, money.Value))
                 return TryPickUpResult.DoesNotWant;
 
             money.RemoveFromWorld();

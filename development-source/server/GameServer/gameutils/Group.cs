@@ -572,7 +572,7 @@ namespace DOL.GS
             {
                 long share = quotient + (index < remainder ? 1 : 0);
                 if (share > 0)
-                    AutonomousBotEconomy.AddMoney(eligible[index].DatabaseID, share);
+                    AutonomousBotGuilds.CreditLootedCoin(eligible[index].DatabaseID, share);   // (less its guild's dues)
             }
             _ = money.RemoveFromWorld();
             return TryPickUpResult.Success;

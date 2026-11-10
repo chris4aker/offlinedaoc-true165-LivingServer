@@ -64,6 +64,36 @@ namespace DOL.GS
         /// <summary>The guild id of a gamebot, online or archived (memory only), or null.</summary>
         public static string GuildIdOf(long botId) => Members.TryGetValue(botId, out var record) ? record.GuildID : null;
 
+        /// <summary>The part of looted coin a guild takes as dues: its percent of it, as GamePlayer.ApplyGuildDues.</summary>
+        public static long DuesOf(long money, bool duesOn, long percent) =>
+            !duesOn || money <= 0 || percent <= 0 ? 0 : money * Math.Min(percent, 100) / 100;
+
+        /// <summary>
+        /// Owner 2026-11-09 (0.6): an invited gamebot pays its guild's dues like a player member, until it is removed from
+        /// the guild - on the coin it loots, which is where a player pays them (a tester's guild bank stayed at 0 with a
+        /// guild full of gamebots). Credits looted coin to the gamebot with the guild's part put in the guild bank; a
+        /// gamebot in no guild, or a guild with dues off, keeps it all. False when the bot's own ledger refused the coin
+        /// (nothing was taken then).
+        /// </summary>
+        public static bool CreditLootedCoin(long botId, long money)
+        {
+            if (money <= 0) return false;
+            Guild guild = GuildOf(botId);
+            long dues = guild == null ? 0 : DuesOf(money, guild.IsGuildDuesOn(), guild.GetGuildDuesPercent());
+            long kept = money - dues;
+            if (kept > 0 && !AutonomousBotEconomy.AddMoney(botId, kept))
+                return false;
+            if (dues > 0)
+            {
+                bool banked;
+                lock (guild)   // many guild gamebots loot at once, and the bank is read, added to and written back
+                    banked = guild.AddToBank(dues, false);
+                if (!banked)
+                    AutonomousBotEconomy.AddMoney(botId, dues);   // the bank did not take them (it is full): the bot keeps them
+            }
+            return true;
+        }
+
         private static readonly ConcurrentDictionary<string, (long WindowStart, int Count)> LoginNotices = new();
 
         /// <summary>
