@@ -78,5 +78,43 @@ namespace DOL.GS
             }
             return nearest == null ? null : new Point3D(nearest.X, nearest.Y, nearest.Z);
         }
+
+        /// <summary>
+        /// A release point on a bindstone moved a short way off it onto walkable ground (owner 2026-11-10: gamebots stood up
+        /// on top of Huginfell's bindstone after a release - its collision is a client object, not in the navmesh). Tries a
+        /// ring around the stone at <paramref name="radius"/>, then a wider one; keeps the point when none is free.
+        /// </summary>
+        public static Point3D BesideBindstone(ushort region, Point3D release, int seed, float clearance = 120f, float radius = 190f)
+        {
+            if (release == null || !IsNearBindstone(region, release.X, release.Y, release.Z, clearance))
+                return release;
+            Region reg = WorldMgr.GetRegion(region);
+            Zone zone = reg?.GetZone(release.X, release.Y);
+            IPathfindingMgr nav = PathfindingProvider.Instance;
+            if (zone == null || nav == null || !nav.IsAvailable || !nav.HasNavmesh(zone))
+                return release;
+            foreach (float ring in new[] { radius, radius + 90f })
+                foreach (Vector2 p in RingPoints(release.X, release.Y, ring, 8, seed))
+                {
+                    Vector3? ground = nav.GetClosestPoint(zone, new Vector3(p.X, p.Y, release.Z), 48, 48, 160, nav.DefaultFilters);
+                    if (!ground.HasValue || IsNearBindstone(region, ground.Value.X, ground.Value.Y, ground.Value.Z, clearance) ||
+                        !AutonomousRendezvousNavigation.HasLocalExit(nav, zone, ground.Value))
+                        continue;
+                    return new Point3D((int)System.Math.Round(ground.Value.X), (int)System.Math.Round(ground.Value.Y),
+                        (int)System.Math.Round(ground.Value.Z));
+                }
+            return release;
+        }
+
+        /// <summary>Pure rule: <paramref name="count"/> points evenly round a circle, starting at an angle picked by the seed.</summary>
+        public static IEnumerable<Vector2> RingPoints(float x, float y, float radius, int count, int seed)
+        {
+            double start = (seed & 0x7fffffff) % 360 * System.Math.PI / 180;
+            for (int k = 0; k < count; k++)
+            {
+                double angle = start + k * 2 * System.Math.PI / count;
+                yield return new Vector2(x + (float)(System.Math.Cos(angle) * radius), y + (float)(System.Math.Sin(angle) * radius));
+            }
+        }
     }
 }
