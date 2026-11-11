@@ -288,7 +288,9 @@ func _dropdown() -> OptionButton:
 ## blocks, click one to open it - the realm and its Shrouded Isles: "is there not a shrouded isles equivalent too for each
 ## realm?"), then its capital city, then its classic and Shrouded Isles open world zones in alphabetical order. No
 ## dungeons, no other realms. Inside a dungeon: that dungeon's maps only.
-const REALM_REGIONS := {1: [1, 51], 2: [100, 151], 3: [200, 181]}
+## (+ the player housing regions 2 / 102 / 202, zones.dat phousing=1 - GitHub #31: Caerwent, Erikstaad, Meath ... are
+## open world zones of their realm's list too)
+const REALM_REGIONS := {1: [1, 51, 2], 2: [100, 151, 102], 3: [200, 181, 202]}
 const CAPITALS := {1: 26, 2: 120, 3: 209}
 const REALM_MAPS := {1: [[1, "ALBION"], [51, "AVALON (SHROUDED ISLES)"]],
 		2: [[100, "MIDGARD"], [151, "AEGIR (SHROUDED ISLES)"]],
@@ -665,10 +667,30 @@ class MapView extends Control:
 		draw_string_outline(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.9))
 		draw_string(font, base, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1.0, 0.85, 0.35))
 
+	## A zone the client never had a map of (GitHub #32, owner: "make it more clear that there is no map for this zone
+	## intentionally instead of just black" - Dodens Gruva 246, Marfach Caverns 247): a centred note on the dark field.
+	func _draw_no_map() -> void:
+		var f := UiArt.font(true)
+		var fs := maxi(9, int(size.x / 24.0))
+		var fs2 := maxi(7, int(fs * 0.72))
+		var l1 := "There is no map of this area."
+		var l2 := "(The original game had no map for it.)"
+		var w1 := f.get_string_size(l1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var w2 := f.get_string_size(l2, HORIZONTAL_ALIGNMENT_LEFT, -1, fs2).x
+		var y := size.y * 0.5
+		var p1 := Vector2((size.x - w1) * 0.5, y - 2.0)
+		var p2 := Vector2((size.x - w2) * 0.5, y + fs2 + 4.0)
+		draw_string_outline(f, p1, l1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color(0, 0, 0, 0.9))
+		draw_string(f, p1, l1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, UiArt.GOLD_HI)
+		draw_string_outline(f, p2, l2, HORIZONTAL_ALIGNMENT_LEFT, -1, fs2, 2, Color(0, 0, 0, 0.9))
+		draw_string(f, p2, l2, HORIZONTAL_ALIGNMENT_LEFT, -1, fs2, UiArt.CREAM)
+
 	func _draw() -> void:
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0))
 		if texture:
 			draw_texture_rect(texture, Rect2(Vector2.ZERO, size), false)
+		elif not window.shown.is_empty():
+			_draw_no_map()
 		var w := window
 		if String(w.shown.get("kind", "")) == "region" and _hover >= 0:
 			var sq := w.region_square(int(w.shown.id), _hover)
