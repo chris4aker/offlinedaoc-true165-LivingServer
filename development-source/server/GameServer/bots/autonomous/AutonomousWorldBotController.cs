@@ -5598,6 +5598,9 @@ namespace DOL.GS
                     new(current.X, current.Y), new(destination.X, destination.Y));
             }
             _routeStallReplans++;
+            // owner 2026-11-11 (item 20): the first stall at a near miss teaches the spot and walks the zone roads there
+            if (_routeStallReplans == 1 && TryNearMissRoadRecovery(bot, current, failureStatus, failedDestination))
+                return true;
             // A PathTo order aimed at a short recovery corner can report a
             // partial path even while the actor still has a complete native
             // corridor to the real camp goal. Do not make the failed corner
@@ -5677,6 +5680,46 @@ namespace DOL.GS
         }
 
         private float _routeRecoveryArrivalRadius = 70;
+
+        /// <summary>
+        /// Owner 2026-11-11 (item 20): a path that stopped within 256 of its target in the bot's own zone (Detour's nearest
+        /// point on other ground: the cliff edge at 548762,495343 above Black Mtns. South's crossing into Camelot Hills) is
+        /// remembered, so every later walk to that target asks the zone road graph; this bot walks the road there now when
+        /// the graph has one. True when that walk was ordered.
+        /// </summary>
+        private bool TryNearMissRoadRecovery(GameBot bot, Vector3 current, PathfindingStatus failureStatus, Vector3 failedDestination)
+        {
+            Zone zone = bot.CurrentZone;
+            if (zone == null || !AutonomousNearMissDeadEnds.IsNearMissStall(failureStatus, current, failedDestination,
+                    bot.CurrentRegion?.GetZone((int)failedDestination.X, (int)failedDestination.Y) == zone))
+                return false;
+            long now = GameLoop.GameLoopTime;
+            if (AutonomousNearMissDeadEnds.Remember(zone.ID, failedDestination, now))
+                Log.Info($"AUTONOMOUS_NEAR_MISS_DEAD_END bot={bot.Name} id={bot.DatabaseID} region={bot.CurrentRegionID} " +
+                         $"zone={zone.ID} position={(int)current.X},{(int)current.Y},{(int)current.Z} " +
+                         $"target={(int)failedDestination.X},{(int)failedDestination.Y},{(int)failedDestination.Z} " +
+                         $"gap={Vector3.Distance(current, failedDestination):0} - later walks there take the zone roads");
+            if (!PathfindingProvider.Instance.IsAvailable ||
+                !AutonomousZoneRoads.TryRoute(PathfindingProvider.Instance, zone, current, failedDestination, out Vector3[] via, 0f))
+                return false;
+            Log.Info($"AUTONOMOUS_NEAR_MISS_ROAD_RECOVERY bot={bot.Name} id={bot.DatabaseID} region={bot.CurrentRegionID} " +
+                     $"position={(int)current.X},{(int)current.Y},{(int)current.Z} " +
+                     $"target={(int)failedDestination.X},{(int)failedDestination.Y},{(int)failedDestination.Z} anchors={via.Length}");
+            bot.StopMoving();
+            bot.ForcePathReplot();
+            _routeRecoveryWaypoint = failedDestination;
+            _routeRecoveryArrivalRadius = 48;
+            _nextMoveOrderTick = GameLoop.GameLoopTime + 1_500;
+            _lastRoutePosition = current;
+            _lastRouteProgressTick = GameLoop.GameLoopTime;
+            _pathSegmentOrigin = current;
+            bot.PathTo(failedDestination, bot.MaxSpeed);
+            SetStatus(bot, "Recovering around blocked terrain", GoalText(),
+                "Taking the zone road around a cliff edge before resuming the same route",
+                _camp?.MonsterName ?? string.Empty, _camp?.ZoneName ?? string.Empty);
+            return true;
+        }
+
         private static bool TryFindLocalRecoveryWaypoint(
             GameBot bot,
             Vector3 current,

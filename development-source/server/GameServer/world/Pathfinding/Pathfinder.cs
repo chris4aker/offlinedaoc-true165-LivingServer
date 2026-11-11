@@ -175,16 +175,22 @@ namespace DOL.GS
         /// a long walk that first leads away from the goal) is replaced by the zone road route: the
         /// Detour paths of its proven legs, joined, as far as the node buffer holds (then partial, and
         /// the usual continuation replots from there). Short walks, DF and zones without roads are unchanged.
+        /// A partial path ending within 256 of its target is kept, unless a bot already stalled there
+        /// (<see cref="AutonomousNearMissDeadEnds"/>, owner 2026-11-11: a cliff edge above the target).
         /// </summary>
         public static bool TryRoadPath(IPathfindingMgr nav, Zone zone, Vector3 position, Vector3 target, EDtPolyFlags[] filters,
             PathfindingResult direct, WrappedPathfindingNode[] nodes, int capacity, out PathfindingResult result)
         {
             result = direct;
             if (direct.Status != PathfindingStatus.PartialPathFound || direct.NodeCount < 1 || direct.NodeCount > capacity ||
-                zone.ZoneRegion?.ID == AutonomousDarknessFallsPolicy.RegionId ||
-                Vector3.DistanceSquared(nodes[direct.NodeCount - 1].Position, target) <= 256 * 256)
+                zone.ZoneRegion?.ID == AutonomousDarknessFallsPolicy.RegionId)
                 return false;
-            if (!AutonomousZoneRoads.TryRoute(nav, zone, position, target, out Vector3[] via))
+            bool nearMiss = Vector3.DistanceSquared(nodes[direct.NodeCount - 1].Position, target) <=
+                AutonomousNearMissDeadEnds.NearMissDistance * AutonomousNearMissDeadEnds.NearMissDistance;
+            if (nearMiss && !AutonomousNearMissDeadEnds.IsKnown(zone.ID, target, GameLoop.GameLoopTime))
+                return false;
+            if (!AutonomousZoneRoads.TryRoute(nav, zone, position, target, out Vector3[] via,
+                    nearMiss ? 0f : AutonomousZoneRoads.MinimumDistance))
                 return false;
             WrappedPathfindingNode[] leg = ArrayPool<WrappedPathfindingNode>.Shared.Rent(capacity);
             try
