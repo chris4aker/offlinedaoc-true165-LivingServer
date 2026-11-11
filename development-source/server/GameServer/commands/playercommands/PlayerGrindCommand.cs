@@ -212,6 +212,8 @@ namespace DOL.GS.Commands
         {
             if (!IsEnabled(player))
             { message = "/grind is off. Turn it on in Settings > Interface > Grinding > GRIND (a quality of life option, not in 1.65)."; return false; }
+            if (CompanionEngagementMode.IsPassive(player))
+            { message = "Your companions are passive. Use /aggressive or /defensive before /grind."; return false; }
             if (player?.Client?.ClientState != GameClient.eClientState.Playing || !player.IsAlive)
             { message = "You must be alive and in the world to use /grind."; return false; }
             if (IsActive(player))

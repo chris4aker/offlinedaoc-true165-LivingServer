@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS
 {
@@ -14,6 +15,7 @@ namespace DOL.GS
     public static class PlayerLedPullCoordinator
     {
         public const int ContactTimeoutMilliseconds = 30_000;
+        private static readonly Logger Log = LoggerManager.Create(typeof(PlayerLedPullCoordinator));
         private sealed class GroupState { public Order Pending; }
         private sealed class Order
         {
@@ -44,6 +46,12 @@ namespace DOL.GS
         {
             Group group = player?.Group;
             if (!ValidEnemy(player, target, range)) return "No valid nearby pull target.";
+            // /passive: the companions fight nothing until /aggressive or /defensive (owner 2026-11-11)
+            if (group != null && CompanionEngagementMode.IsPassive(player))
+            {
+                if (Log.IsInfoEnabled) Log.Info($"PULL_REFUSED_PASSIVE player=\"{player.Name}\" target=\"{target.Name}\"");
+                return "Your companions are passive. Use /aggressive or /defensive first.";
+            }
             if (group == null)
             {
                 // Preserve /pull as a direct pet command when playing solo.
@@ -383,6 +391,18 @@ namespace DOL.GS
             target.ObjectState == GameObject.eObjectState.Active && target.CurrentRegionID == player.CurrentRegionID &&
             player.IsWithinRadius(target, range) &&
             GameServer.ServerRules.IsAllowedToAttack(player, target, true);
+
+        /// <summary>
+        /// /passive: the player's open /pull order (and its bring-back) is called off without a message. True when one was.
+        /// </summary>
+        public static bool CancelPending(GamePlayer player)
+        {
+            if (player?.Group == null || !States.TryGetValue(player.Group, out GroupState state)) return false;
+            Order order = Volatile.Read(ref state.Pending);
+            if (order == null || order.Leader != player || Volatile.Read(ref order.Finished) != 0) return false;
+            Cancel(order, false);
+            return true;
+        }
 
         private static void Cancel(Order order, bool inform)
         {

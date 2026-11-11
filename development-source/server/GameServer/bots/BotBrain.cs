@@ -1122,6 +1122,62 @@ namespace DOL.AI.Brain
             }
         }
 
+        private long _nextPassiveLogTick;
+
+        /// <summary>
+        /// /passive (owner 2026-11-11: "for retreating or walking through areas without stopping to fight anything"): a
+        /// player's companion stops attacking and casting (heals too), drops every target and any ordered pull, puts its
+        /// pets (a Bonedancer's minions too) on passive, stands up and follows. False when its player is not passive.
+        /// A Minstrel's charm renewal is not interrupted, so a charmed pet does not turn.
+        /// </summary>
+        public bool HoldCompanionPassive()
+        {
+            GameBot bot = BotBody;
+            GamePlayer leader = CompanionEngagementMode.PassiveLeader(bot);
+            if (leader == null) return false;
+            bool acted = false;
+            if (bot.Group != null) acted |= PlayerLedPullCoordinator.CancelPending(leader);
+            if (_orderedPullTarget != null) { CancelOrderedPull(_orderedPullTarget); _orderedPullTarget = null; acted = true; }
+            if (HasAggro) { ClearAggroList(); acted = true; }
+            if (Body.IsAttacking) { Body.StopAttack(); acted = true; }
+            if (Body.IsCasting && Body.castingComponent?.SpellHandler?.Spell?.SpellType != eSpellType.Charm)
+            {
+                Body.StopCurrentSpellcast();
+                acted = true;
+            }
+            if (Body.TargetObject is GameLiving) Body.TargetObject = null;
+            if (bot.IsRecoveryResting) bot.WakeTemporaryCompanionRest();
+            var visited = new HashSet<IControlledBrain>();
+            foreach (GameNPC pet in BotGroupPetBuffTargets.AttachedTree(Body.ControlledBrain, Body, visited))
+            {
+                if (pet.Brain is not IControlledBrain petBrain) continue;
+                if (petBrain is StandardMobBrain { HasAggro: true } petAggro) { petAggro.ClearAggroList(); acted = true; }
+                if (petBrain is NecromancerPetBrain servant && servant.HasPendingBotCommand)
+                {
+                    servant.ClearSpellQueue();
+                    servant.ClearAttackSpellQueue();
+                    if (pet.IsCasting) pet.StopCurrentSpellcast();
+                    acted = true;
+                }
+                if (petBrain.AggressionState != eAggressionState.Passive)
+                {
+                    petBrain.SetAggressionState(eAggressionState.Passive);   // Disengage + follow the owner
+                    acted = true;
+                }
+                else if (pet.IsAttacking || petBrain is ControlledMobBrain { OrderedAttackTarget: not null })
+                {
+                    petBrain.Disengage();
+                    acted = true;
+                }
+            }
+            if (acted && log.IsInfoEnabled && GameLoop.GameLoopTime >= _nextPassiveLogTick)
+            {
+                _nextPassiveLogTick = GameLoop.GameLoopTime + 10_000;
+                log.Info($"COMPANION_PASSIVE_HOLD bot=\"{bot.Name}\" player=\"{leader.Name}\" region={Body.CurrentRegionID}");
+            }
+            return true;
+        }
+
         private bool TryMaintainTemporaryCompanionRest()
         {
             GameBot bot = BotBody;
@@ -1252,7 +1308,7 @@ namespace DOL.AI.Brain
                 _ambientWanderMovement = false;
                 return;
             }
-            if (!ambientWander && CompanionHealerCombatHold.Holds(BotBody, leader))
+            if (!ambientWander && CompanionHealerCombatHold.Holds(BotBody, leader) && !CompanionEngagementMode.IsPassive(leader))
             {
                 // Stop a formation walk already under way; other movement is left alone.
                 if (Body.IsMoving && CompanionFollowPolicy.HasFormationOrder(BotBody))
@@ -1459,6 +1515,23 @@ namespace DOL.AI.Brain
             // think, not only when the stable master hands over the ride (owner 2026-10-31: companions still ran behind)
             if (TemporaryGroupStableTravel.SyncStowWithLeaderRide(BotBody) || Body.StowedForRide)
                 return;
+
+            // /passive: fight nothing, follow the player (no buffs, heals, songs, rest or pet upkeep; regeneration ticks)
+            if (BotBody?.IsOnStableMasterRoute == false && HoldCompanionPassive())
+            {
+                if (HiredCompanions165.KeepWithOwner(BotBody) || HiredCompanions165.TryRecallToOwner(BotBody) ||
+                    HiredCompanions165.TryUnstick(BotBody) ||
+                    BotBody.IsTemporaryGroupHelper && BotBody.TryReturnTemporaryCompanionToLeader())
+                    return;
+                eFSMStateType? state = FSM.GetCurrentState()?.StateType;
+                if (state == eFSMStateType.PASSIVE)
+                    return;                                     // a GM's /bot hold stays as it is
+                if (state != eFSMStateType.FOLLOW)
+                    FSM.SetCurrentState(eFSMStateType.FOLLOW);   // its Enter walks to the formation spot
+                else
+                    FollowFormation();
+                return;
+            }
 
             AutonomousBotRealmAbilities.UseActives(BotBody);
 

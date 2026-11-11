@@ -25,4 +25,24 @@ namespace DOL.GS.Commands
             DisplayMessage(client, "Companions: AGGRESSIVE (default). They assist your attacks normally again.");
         }
     }
+    /// <summary>
+    /// Owner 2026-11-11: "for retreating or walking through areas without stopping to fight anything". Companions and
+    /// their pets stop fighting, drop every target and follow; /aggressive or /defensive ends it.
+    /// </summary>
+    [CmdAttribute("&passive", ePrivLevel.Player, "Companions and their pets fight nothing and follow you", "/passive")]
+    public class CompanionPassiveCommand : AbstractCommandHandler, ICommandHandler
+    {
+        public void OnCommand(GameClient client, string[] args)
+        {
+            GamePlayer player = client.Player;
+            CompanionEngagementMode.Set(player, CompanionStance.Passive);
+            if (PlayerCompanionGrind.IsActive(player))
+                PlayerCompanionGrind.Stop(player, "companions passive");
+            if (player.Group != null)
+                foreach (GameBot bot in player.Group.GetMembersInTheGroup().OfType<GameBot>())
+                    if (CompanionEngagementMode.PassiveLeader(bot) == player && bot.Brain is BotBrain brain)
+                        brain.HoldCompanionPassive();
+            DisplayMessage(client, "Companions: PASSIVE. Companions and their pets stop fighting, ignore enemies and follow you, even when attacked. Use /aggressive or /defensive to fight again.");
+        }
+    }
 }

@@ -18,7 +18,7 @@ namespace DOL.GS.Commands
                 return;
             }
             DisplayMessage(client, CompanionRaid.Open(client.Player, capacity)
-                ? $"Raid active: {capacity} total including you. Use /spawn to add companions, /defensive or /aggressive for engagement, and /disband to close the raid."
+                ? $"Raid active: {capacity} total including you. Use /spawn to add companions, /aggressive, /defensive or /passive for engagement, and /disband to close the raid."
                 : "You must lead a group containing only your own temporary companions. Remove excess members before switching to /raid 40.");
         }
     }
