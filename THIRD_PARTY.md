@@ -28,6 +28,13 @@ upstream attribution.
   blanket relicense.
 - Fixes ported from community forks of Offline DAoC are credited to their authors under "Fork credits" below.
 
+- Living Server, the talk layer (bot voices, personalities, scenes and debates, storylines, bot memory and the rest
+  listed in docs/LIVING-SERVER.md): carried over from
+  [chris4aker/OfflineDAoC-LivingServer](https://github.com/chris4aker/OfflineDAoC-LivingServer), Beta 1.1.3
+  (GPL-3.0), directed and play-tested by chris4aker and coded with Claude (Anthropic). Its voice lines are new
+  writing for that project. The gamebot membership list in Guild.cs is adapted from
+  [stefanrows/OfflineDAoC](https://github.com/stefanrows/OfflineDAoC) (GPL-3.0).
+
 The original DAoC client, art, sound, maps and other third-party assets are not represented as authored by
 this project. Being noncommercial does not itself change third-party rights. The GPL server license is not a
 license for those assets.

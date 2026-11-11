@@ -34,6 +34,21 @@ namespace DOL.GS.Commands
             if (targetPlayer != null && !GameServer.ServerRules.IsAllowedToUnderstand(client.Player, targetPlayer))
                 targetPlayer = null;
 
+            if (targetPlayer == null && AutonomousBotRegistry.TryGetOnline(targetName, client.Player.Realm, out GameBot bot))
+            {
+                // Bots invite tells ("pst me"); they answer with a /send of their own.
+                ChatUtil.SendSendMessage(client, "Social.SendMessage.Private.YouSendTo", message, bot.Name);
+                AutonomousBotChatCoordinator.OnPlayerTell(client.Player, bot, message);
+                return;
+            }
+
+            // A tell to the realm's gold spammer (AutonomousGoldSpammers) gets more spam back.
+            if (targetPlayer == null && AutonomousGoldSpammers.TryAnswerTell(client.Player, targetName, message))
+            {
+                ChatUtil.SendSendMessage(client, "Social.SendMessage.Private.YouSendTo", message, targetName);
+                return;
+            }
+
             if (targetPlayer == null)
             {
                 // Message: "{0} is not in the game, or is a member of another realm."
@@ -84,6 +99,7 @@ namespace DOL.GS.Commands
                     {
                         // Send the message
                         client.Player.SendPrivateMessage(targetPlayer, message);
+                        AutonomousBeggars.OnPlayerAsked(client.Player, message, "tell");
                     }
 
                     return;

@@ -84,8 +84,12 @@ namespace DOL.GS
                         "Returning after interruption without extending either deadline", string.Empty, _townIdleDestination.Town.Name);
                     return true;
                 }
-                bot.StopMovingOnPath();
-                bot.StopMoving();
+                // Body language (Living Server) may take a step or two around the spot; don't cancel it.
+                if (!AutonomousBotBodyLanguage.Idle(bot, BodySpot.Town, _townIdleDestination.Point))
+                {
+                    bot.StopMovingOnPath();
+                    bot.StopMoving();
+                }
                 if (brain.CheckHeals()) return true;
                 if (AutonomousRestPolicy.IsFullyRecovered(bot.HealthPercent, bot.ManaPercent, bot.EndurancePercent, bot.MaxMana > 0))
                     bot.WakeRecoveryRest();
@@ -182,7 +186,8 @@ namespace DOL.GS
             if (!IsInsideIdleTown(bot, selected))
                 return FinishTownIdle(bot, "Arrival is outside the safe area");
             DateTime arrived = DateTime.UtcNow;
-            TimeSpan? duration = AutonomousTownDowntime.RollWithinBudget(deadline - arrived);
+            TimeSpan? duration = AutonomousBotPersonality.ScaleTownBreak(bot,
+                AutonomousTownDowntime.RollWithinBudget(deadline - arrived), deadline - arrived);
             if (!duration.HasValue)
                 return FinishTownIdle(bot, "Travel left insufficient time for the minimum break");
             _townIdleUntilUtc = arrived.Add(duration.Value);

@@ -3946,6 +3946,7 @@ namespace DOL.GS
             _patrolDestination = null;
             _pendingStableChoice = null;
             bot.PersistentRecord.CurrentCampId = selected.Id;
+            AutonomousBotPersonality.RememberZone(bot, selected.ZoneName);   // Living Server: the bot remembers where it has hunted
             AutonomousCampCompetition.NoteAssigned(selected.Id, sharedGroup ? groupSize : 1);
             // owner 2026-11-10: camps / level1 - one line per widened choice; the goal attempt records which rule chose it
             if (widened)

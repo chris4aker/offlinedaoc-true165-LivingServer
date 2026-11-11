@@ -51,7 +51,11 @@ namespace DOL.GS.Commands
 				}
 
 				client.Player.Group.SendMessageToGroupMembers(client.Player, msg, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
-				BotBanter165.OnPlayerGroupChat(client.Player, msg.Trim()); // a gamebot in the party may answer (owner 2026-11-10)
+				// Living Server: with bot voices on, the world gamebots in the party answer in their own voices (and follow the
+				// thread of what was said); with them off, the banter library answers as before (owner 2026-11-10)
+				AutonomousBotGroupChatter.OnPlayerGroupChat(client.Player, msg.Trim());
+				if (!AutonomousBotVoices.Enabled)
+					BotBanter165.OnPlayerGroupChat(client.Player, msg.Trim());
 			}
 			else
 			{

@@ -2,6 +2,63 @@ namespace DOL.GS;
 
 public static class BotGroupInvite
 {
+    /// <summary>How near a gamebot must be before it offers by itself to group with you (Living Server). True 1.65 lets you
+    /// /invite a world gamebot by name wherever it is; that is unchanged.</summary>
+    public const int InviteByNameRange = 6_000;
+
+    public static bool CloseEnoughToInviteByName(GamePlayer player, GameBot bot) =>
+        player?.CurrentRegion != null && bot?.CurrentRegion == player.CurrentRegion && player.IsWithinRadius(bot, InviteByNameRange);
+
+    /// <summary>The duty that keeps an autonomous gamebot from answering an invitation (None when it is free).</summary>
+    public enum Duty { None, Dead, Siege, Relic, RvrEvent, RealmRaid, StableRoute, Helper, Begging }
+
+    /// <summary>
+    /// The first duty that rules out an invitation, in a fixed order. Pure, so the rules are tested without a world.
+    /// Audit 2026-10-17: /invite by name reaches autonomous gamebots within 6,000 units, and taking one from its
+    /// autonomous group mid-siege, mid-raid or carrying a relic broke the job it was on.
+    /// </summary>
+    public static Duty DutyOf(bool alive, bool siege, bool relic, bool rvrEvent, bool realmRaid, bool stableRoute, bool helper) =>
+        !alive ? Duty.Dead :
+        siege ? Duty.Siege :
+        relic ? Duty.Relic :
+        rvrEvent ? Duty.RvrEvent :
+        realmRaid ? Duty.RealmRaid :
+        stableRoute ? Duty.StableRoute :
+        helper ? Duty.Helper :
+        Duty.None;
+
+    /// <summary>What the player is told when an autonomous gamebot is on duty (null when it is free).</summary>
+    public static string BusyMessage(string name, Duty duty) => duty switch
+    {
+        Duty.Dead => $"{name} is dead and can't join you right now.",
+        Duty.Siege => $"{name} is busy with a siege right now.",
+        Duty.Relic => $"{name} is carrying a relic right now.",
+        Duty.RvrEvent => $"{name} is marching with a realm force right now.",
+        Duty.RealmRaid => $"{name} is committed to a realm raid right now.",
+        Duty.StableRoute => $"{name} is riding a stable master route right now.",
+        Duty.Helper => $"{name} is already helping another player.",
+        Duty.Begging => $"{name} won't leave their corner.",
+        _ => null,
+    };
+
+    /// <summary>The duty of an autonomous gamebot. Companion bots are never on duty here.</summary>
+    public static Duty DutyOf(GameBot bot)
+    {
+        if (bot?.IsWorldGamebot != true)
+            return Duty.None;
+        // The force tag is never cleared when an event ends, so it counts only while its event is still running.
+        string force = bot.TempProperties.GetProperty<string>("RvrEventForce");
+        Duty duty = DutyOf(bot.IsAlive,
+            BotSiegeRuntime.Assigned(bot) || BotSiegeRuntime.HoldingPosition(bot),
+            bot.TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK) != null,
+            !string.IsNullOrEmpty(force) && AutonomousRvrEventLayer.IsEventForce(force, GameLoop.GameLoopTime),
+            AutonomousRealmRaid.IsReserved(bot),
+            bot.IsOnStableMasterRoute,
+            bot.IsTemporaryGroupHelper);
+        // A beggar (bot_living_beggars) never groups.
+        return duty == Duty.None && AutonomousBeggars.Is(bot) ? Duty.Begging : duty;
+    }
+
     /// <summary>True 1.65 Mode: how many levels above the inviting player a gamebot may be.</summary>
     public const int MaxGamebotLevelsAbove = 5;
 
@@ -34,12 +91,25 @@ public static class BotGroupInvite
             return false;
         }
 
+        Duty duty = DutyOf(bot);
+        string busy = BusyMessage(bot.Name, duty);
+        if (busy != null)
+        {
+            ChatUtil.SendSystemMessage(player, busy);
+            // 1.1.3: the bot answers too, as a player would (RC5 on the owner's PC: a friend on a raid gave no word).
+            if (bot.IsWorldGamebot)
+                AutonomousLivingServer.OnInviteDeclined(player, bot, duty, false);
+            return false;
+        }
+
         if (bot.Group != null)
         {
             bool autonomousGroup = bot.PlayerGroupLeader == null;
             if (!autonomousGroup)
             {
                 ChatUtil.SendSystemMessage(player, $"{bot.Name} is already following another player-led group.");
+                if (bot.IsWorldGamebot && bot.PlayerGroupLeader != player)
+                    AutonomousLivingServer.OnInviteDeclined(player, bot, Duty.None, true);
                 return false;
             }
 
@@ -55,10 +125,19 @@ public static class BotGroupInvite
         }
 
         if (!player.Group.AddMember(bot) || !bot.EnterPlayerLedGroup(player))
+        {
+            // 1.1.3: this failure was silent; the player hears of it and the log says so (BOT_INVITE_RESULT).
+            ChatUtil.SendSystemMessage(player, $"{bot.Name} could not join your group.");
+            if (bot.IsWorldGamebot)
+                AutonomousLivingServer.LogInviteResult(player, bot, "failed reason=add_member");
             return false;
+        }
 
         bot.PathTo(player, bot.MaxSpeed);
         ChatUtil.SendSystemMessage(player, $"{bot.Name} joins your group and starts moving to you.");
+        if (bot.IsWorldGamebot)
+            AutonomousLivingServer.LogInviteResult(player, bot, "grouped");
+        AutonomousBotGroupChatter.OnJoinedPlayerGroup(bot);
         return true;
     }
 }

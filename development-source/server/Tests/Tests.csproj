@@ -56,4 +56,9 @@
         <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\..\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
     </Target>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+    <ItemGroup>
+      <!-- Living Server, the talking update audit: 320 realistic player lines with what a sensible reply would be (UT_TalkingAudit). -->
+      <EmbeddedResource Include="UnitTests\Data\chat_audit_player_lines.json" />
+      <EmbeddedResource Include="UnitTests\Data\chat_audit_holdout_lines.json" />
+    </ItemGroup>
 </Project>

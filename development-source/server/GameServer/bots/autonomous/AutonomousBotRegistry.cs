@@ -84,6 +84,24 @@ public static class AutonomousBotRegistry
         return bots;
     }
 
+    private static volatile CachedSnapshot _worldSnapshot = new(-1, []);
+
+    /// <summary>
+    /// Living Server port: the world's gamebots only, without the players' hired companions (which are registered here
+    /// too). The talk layer speaks for these and never for a companion. Cached like <see cref="Snapshot"/>.
+    /// </summary>
+    public static GameBot[] WorldSnapshot()
+    {
+        GameBot[] all = Snapshot();
+        CachedSnapshot source = _snapshot;
+        CachedSnapshot cached = _worldSnapshot;
+        if (cached.Tick == source.Tick && cached.Tick > 0)
+            return cached.Bots;
+        GameBot[] world = Array.Exists(all, HiredCompanions165.IsHired) ? Array.FindAll(all, bot => !HiredCompanions165.IsHired(bot)) : all;
+        _worldSnapshot = new(source.Tick, world);
+        return world;
+    }
+
     public static IReadOnlyDictionary<eRealm, int> CountByRealm() => Active.Values
         .Where(bot => bot?.ObjectState == GameObject.eObjectState.Active)
         .GroupBy(bot => bot.Realm)
@@ -113,6 +131,16 @@ public static class AutonomousBotRegistry
         return bot != null;
     }
 
+    /// <summary>An online autonomous gamebot of the realm, by its exact name: /send, /invite and /target reach
+    /// bots as they reach players (in-game check 2026-10-17: "pst me" lines, but "/send Haralhelm" answered
+    /// "not in the game"). Companion bots and temporary helpers are not included.</summary>
+    public static bool TryGetOnline(string name, eRealm realm, out GameBot bot)
+    {
+        bot = TryGetByName(name, out GameBot found) && found.Realm == realm && found.IsWorldGamebot &&
+              !found.IsTemporaryGroupHelper ? found : null;
+        return bot != null;
+    }
+
     public static void Register(GameBot bot)
     {
         if (bot?.IsAutonomousWorldBot == true && bot.DatabaseID > 0)
@@ -124,6 +152,7 @@ public static class AutonomousBotRegistry
 
     public static void Unregister(GameBot bot)
     {
+        AutonomousBeggars.Forget(bot);
         if (bot?.DatabaseID > 0)
         {
             AutonomousGoalDiagnostics.End(bot, GoalAttemptEnd.Logout, "Bot left the active world; not a goal failure");

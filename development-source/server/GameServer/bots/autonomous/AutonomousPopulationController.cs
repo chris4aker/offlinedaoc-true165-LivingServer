@@ -39,6 +39,8 @@ public static class AutonomousPopulationController
     // in run 22's allocation trace); a retired bot's history only gains a pending delete, which the command poll runs.
     private static readonly HashSet<long> OrphanChecked = new();
     private static volatile OfflineWorldBotRecord[] _cachedRoster = Array.Empty<OfflineWorldBotRecord>();
+    /// <summary>The roster as last read (Living Server port: the bot-run guilds reconcile against it).</summary>
+    internal static OfflineWorldBotRecord[] CachedRoster => _cachedRoster;
     private static bool _cachedEnabled;
     private static int _cachedRampMinutes = 15;
     private static int _polling;

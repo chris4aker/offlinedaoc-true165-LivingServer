@@ -58,6 +58,18 @@ namespace DOL.GS
         public static byte SizeForHeight(int height) => height switch { 1 => 48, 3 => 52, _ => 50 };
 
         public bool IsTemporaryGroupHelper { get; private set; }
+        /// <summary>
+        /// Living Server port: Epic Special Forces (level-50 gamebots handed the endgame kit for one raid) are not carried
+        /// over to True 1.65, where gamebots follow the player rules and earn their armour. Always false; kept so the
+        /// ported talk layer reads as it does in Living Server.
+        /// </summary>
+        public bool IsEpicSpecialForce => false;
+        /// <summary>
+        /// Living Server port: a gamebot of the world's population, the only kind the talk layer speaks for. In True 1.65
+        /// a hired companion is a persistent bot too (IsAutonomousWorldBot), but it is the player's own and speaks as a
+        /// companion (CompanionChat165), so it is never one of these (AGENTS.md rule 9: tell bot types apart).
+        /// </summary>
+        public bool IsWorldGamebot => IsAutonomousWorldBot && !HiredCompanions165.IsHired(this);
 
         /// <summary>
         /// A player's own companion: a /spawn helper, or a True 1.65 Mode hired companion (a persistent bot, but its
@@ -290,6 +302,23 @@ namespace DOL.GS
         }
 
         public override int MaxMana => GetModified(eProperty.MaxMana);
+
+        /// <summary>A player drags coin onto the bot: only a beggar takes it, into its own saved purse (Living Server).</summary>
+        public override bool ReceiveMoney(GameLiving source, long money) =>
+            AutonomousBeggars.TryReceiveMoney(this, source as GamePlayer, money) || base.ReceiveMoney(source, money);
+
+        /// <summary>A world gamebot's /say (Living Server): a roleplayer speaks in thee and thou, and the line is recorded in
+        /// the chat transcript (CHAT_LINE) when a player is near enough to hear it. Hired companions speak unchanged.</summary>
+        public override bool Say(string str)
+        {
+            if (!IsWorldGamebot)
+                return base.Say(str);
+            str = AutonomousRoleplayers.Voice(this, str);
+            bool said = base.Say(str);
+            if (said && AutonomousLivingServer.PlayerHears(this))
+                BotChatTranscript.Bot("say", Name, Realm, str);
+            return said;
+        }
 
         public override int MaxConcentration => GetModified(eProperty.MaxConcentration);
         public override int Concentration => MaxConcentration - (effectListComponent?.UsedConcentration ?? 0);
@@ -667,6 +696,9 @@ namespace DOL.GS
             get => _guild;
             set => _guild = value;
         }
+
+        /// <summary>The bot's rank in its guild (set by <see cref="Guild.AddBotMember"/>), or null.</summary>
+        public DbGuildRank GuildRank { get; set; }
 
         #endregion
 
@@ -1186,6 +1218,8 @@ namespace DOL.GS
         {
             SetSeatedForClients(false);
             AutonomousPetSupport.CancelPendingCharm(this);
+            // Living Server: how many were on it, read before the death clears the tracker, for how the death is told
+            int livingServerAttackers = IsWorldGamebot ? AutonomousDeathDiagnostics.Attackers(this) : 0;
             _deathTick = GameLoop.GameLoopTime;
             LastDeathTick165 = _deathTick;
             _deathRegionId = CurrentRegionID;
@@ -1219,6 +1253,13 @@ namespace DOL.GS
             LogDeathPosition();
             if (IsAutonomousWorldBot)
                 AutonomousBotStatusPersistence.Queue(this);
+            if (IsWorldGamebot)
+            {
+                // Living Server: its guild, its own voice and the bots that know it react to the death
+                AutonomousBotGuildSocial.OnBotDeath(this);
+                AutonomousBotVoices.OnBotDeath(this, killer, livingServerAttackers);
+                AutonomousLivingServer.OnBotDied(this, killer);
+            }
             StartDeathRecoveryTimer();
             // its player's companion roster shows it DEAD now, not only after a revive (2026-11-01 live test: the row
             // stayed "WITH YOU" until the companion was raised; the roster was re-sent only on summon / recall / revive)
@@ -1342,7 +1383,8 @@ namespace DOL.GS
             if (groupDisposition == AutonomousBotGroupCoordinator.PveCorpseDisposition.HoldForResurrection)
                 return 3000;
             // A siege attacker also waits for any healer of its army nearby (AutonomousSiegeResurrection), not only its party's.
-            bool resurrectionPossible = HasViableResurrector() ||
+            // Living Server: a real player of the realm who can rez, nearby but not grouped, also earns the long wait.
+            bool resurrectionPossible = HasViableResurrector() || IsWorldGamebot && AutonomousLivingServer.HasNearbyPlayerRezzer(this) ||
                 IsAutonomousWorldBot && AutonomousSiegeResurrection.IsSiegeAttacker(this) &&
                 AutonomousSiegeResurrection.HasArmyResurrectorNear(this);
             // A siege attacker's release is a long walk back from its realm's muster (run 18, 2026-10-17: Dun Dagda,
@@ -1483,6 +1525,8 @@ namespace DOL.GS
                 release = new Point3D(capital.X, capital.Y, capital.Z);
             }
             release ??= _deathLocation;
+            // Living Server: the releasing gamebot tells its group in its own words; the return line below is then left out
+            bool toldGroup = IsWorldGamebot && AutonomousLivingServer.OnBotReleasing(this);
             // beside a bindstone, never on it (owner 2026-11-10: bots stood up on top of Huginfell's stone)
             release = BotReleaseBindPoints.BesideBindstone(releaseRegion, release, unchecked((int)DatabaseID ^ Environment.TickCount));
             // Transfer the corpse first: a failed MoveTo must not revive the bot
@@ -1499,8 +1543,8 @@ namespace DOL.GS
             Brain?.FSM?.SetCurrentState(eFSMStateType.FOLLOW);
             Brain?.Start();
             ShowStandingToViewers();
-            if (returnToParty)
-                Say(ReturnDialogue("release"));
+            if (returnToParty && !toldGroup)
+                SayReturn("release");
 
             if (PersistentRecord != null)
             {
@@ -1581,6 +1625,8 @@ namespace DOL.GS
             AfterRevive165(released: false);
             Brain?.FSM?.SetCurrentState(eFSMStateType.FOLLOW);
             Brain?.Start();
+            if (IsWorldGamebot && AutonomousLivingServer.OnBotResurrected(this, caster))
+                return;
             Say(Random.Shared.Next(3) switch
             {
                 0 => $"My thanks, {caster?.Name ?? "friend"}. I am ready to continue.",
@@ -1670,7 +1716,7 @@ namespace DOL.GS
                 IsReturningAfterRelease = false;
                 _stableReturnPlan = null;
                 CompleteStableMasterRoute();
-                Say(ReturnDialogue("arrive"));
+                SayReturn("arrive");
                 Brain?.FSM?.SetCurrentState(eFSMStateType.FOLLOW);
                 return false;
             }
@@ -1683,7 +1729,7 @@ namespace DOL.GS
                 if (!TryCompleteStableMasterRouteAfterArrival())
                     return true;
                 _stableReturnPlan = null;
-                Say(ReturnDialogue("dismount"));
+                SayReturn("dismount");
             }
 
             _stableReturnPlan ??= FindFasterStableRoute(destination);
@@ -1717,7 +1763,7 @@ namespace DOL.GS
                     return true;
                 }
                 _stableReturnPlan = null;
-                Say(ReturnDialogue("mount"));
+                SayReturn("mount");
                 return true;
             }
 
@@ -1752,8 +1798,63 @@ namespace DOL.GS
             if (GameLoop.GameLoopTime < _nextReturnRoleplayTick || IsCasting || InCombat)
                 return;
             _nextReturnRoleplayTick = GameLoop.GameLoopTime + Util.Random(60_000, 120_000);
-            Say(ReturnDialogue(stage));
+            SayReturn(stage);
         }
+
+        /// <summary>
+        /// A line about the way back after a release. A hired companion says it as before. A world gamebot in a player's
+        /// group says it like a player, to its own group only (Living Server 1.1.3: at Camelot's bind about 25 "released,
+        /// running back" lines in 45 s went to /say, from bots of other groups, to everyone standing there).
+        /// </summary>
+        private void SayReturn(string stage)
+        {
+            if (!IsWorldGamebot)
+            {
+                Say(ReturnDialogue(stage));
+                return;
+            }
+            string text = GamebotReturnLine(stage, Random.Shared, StableRouteDestination, CurrentZone?.Description);
+            if (string.IsNullOrWhiteSpace(text) || ReturnLineChannel(Group != null, AutonomousLivingServer.GroupHasPlayer(Group)) == null)
+                return;
+            text = AutonomousRoleplayers.Voice(this, text);
+            Group.SendMessageToGroupMembers(this, text, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
+            BotChatTranscript.Bot("group", Name, Realm, text);
+        }
+
+        /// <summary>Where a gamebot's line about the way back goes: its own group, and only when a player is in it. Pure.</summary>
+        public static string ReturnLineChannel(bool inGroup, bool groupHasPlayer) => inGroup && groupHasPlayer ? "group" : null;
+
+        /// <summary>What an autonomous gamebot says on its way back to the player's group (Living Server). Pure.</summary>
+        public static string GamebotReturnLine(string stage, Random random, string stableDestination, string zone) => stage switch
+        {
+            "release" => random.Next(3) switch
+            {
+                0 => "released, running back",
+                1 => "at bind, omw back",
+                _ => "no rez, released. coming back to you",
+            },
+            "stable" => "grabbing a horse, faster",
+            "mount" => string.IsNullOrEmpty(stableDestination) ? "on a horse, be there soon" : $"horse to {stableDestination}, be there soon",
+            "dismount" => "off the horse, almost there",
+            "arrive_walk" => random.Next(3) switch
+            {
+                0 => "here",
+                1 => "made it, ready",
+                _ => "ok here, whats the plan",
+            },
+            "arrive" => random.Next(3) switch
+            {
+                0 => "back",
+                1 => "here, ready",
+                _ => "made it, whats next",
+            },
+            _ => random.Next(3) switch
+            {
+                0 => "still omw",
+                1 => "taking the long way round some mobs, almost there",
+                _ => string.IsNullOrEmpty(zone) ? "omw back" : $"in {zone}, omw back",
+            },
+        };
 
         private string ReturnDialogue(string stage) => stage switch
         {
@@ -2081,9 +2182,19 @@ namespace DOL.GS
             if (!IsAutonomousWorldBot || amount <= 0)
                 return;
             AutonomousRealmPoints += amount;
+            int previousRealmLevel = RealmLevel;
             RealmLevel = Math.Max(RealmLevel, AutonomousBotRealmPointRewards.RealmLevelFor(AutonomousRealmPoints));
             AutonomousStuckWatchdog.MarkProgress(this, eAutonomousProgressKind.RealmPoints);
             MarkAutonomousStateDirty();
+            if (RealmLevel != previousRealmLevel && IsWorldGamebot)
+                AutonomousLivingServer.OnBotRealmLevel(this, previousRealmLevel);   // Living Server: grats and server firsts
+        }
+
+        public override void EnemyKilled(GameLiving enemy)
+        {
+            base.EnemyKilled(enemy);
+            if (IsWorldGamebot)
+                AutonomousLivingServer.OnBotKilled(this, enemy);   // Living Server: nemeses, deeds and named kills
         }
 
         public override void GainRealmPoints(long amount) => GainRealmPoints(amount, true);
@@ -2181,6 +2292,13 @@ namespace DOL.GS
                 Group?.UpdateGroupWindow();
                 AutonomousBotStatusPersistence.Queue(this, true);
                 LogCompanionSkills($"level {Level}");
+                if (IsWorldGamebot)
+                {
+                    // Living Server: the ding in its own voice, its guild's grats, and the bots that know it
+                    AutonomousBotGuildSocial.OnBotLevelUp(this);
+                    AutonomousBotVoices.OnBotLevelUp(this);
+                    AutonomousLivingServer.OnLevelUp(this, Level);
+                }
                 AutonomousBotLifecycle.NoteLevelChanged(this);
             }
             else
@@ -3193,6 +3311,9 @@ namespace DOL.GS
         /// into its 10-slot bag when it can't wear it.</summary>
         public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
+            // Living Server: a player drags an item onto a beggar gamebot, which takes it into its own saved pack
+            if (AutonomousBeggars.TryReceiveItem(this, source as GamePlayer, item))
+                return true;
             if (source is GamePlayer player && item != null && HiredCompanions165.IsHired(this) &&
                 HiredCompanions165.RosterOf(player).Any(h => h.BotId == DatabaseID) &&
                 item.SlotPosition is >= (int)eInventorySlot.FirstBackpack and <= (int)eInventorySlot.LastBackpack)
