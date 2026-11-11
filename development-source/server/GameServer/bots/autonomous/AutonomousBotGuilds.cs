@@ -256,7 +256,7 @@ namespace DOL.GS
             new ECSGameTimer(bot, _ =>
             {
                 if (GuildOf(bot.DatabaseID) == guild && bot.IsAlive)
-                    SpeakInGuild(bot, guild, Pick(JoinLines));
+                    SpeakInGuild(bot, guild, BotBanter165.TryLine(bot, "guild_join", "guild") ?? Pick(JoinLines));
                 return 0;
             }, 2_500);
             return true;
@@ -400,8 +400,10 @@ namespace DOL.GS
                 if (talkers.Length == 0) continue;
                 LastGuildChat[guildId] = now;
                 GameBot starter = talkers[Random.Shared.Next(talkers.Length)];
-                SpeakInGuild(starter, guild, Pick(GuildOpeners));
-                ScheduleReplies(guild, starter, null, Random.Shared.Next(0, 3));
+                // banter165 guild lines when one fits, else today's (owner 2026-11-10)
+                string opener = BotBanter165.TryOpening(starter, null, "guild", out BotBanter165.Topic topic) ?? Pick(GuildOpeners);
+                SpeakInGuild(starter, guild, opener);
+                ScheduleReplies(guild, starter, null, Random.Shared.Next(0, 3), topic: topic);
             }
         }
 
@@ -417,20 +419,24 @@ namespace DOL.GS
             GameBot named = talkers.FirstOrDefault(bot => AutonomousBotChatCoordinator.ContainsMention(message, bot.Name));
             if (named != null)
             {
-                ScheduleReply(named, guild, AutonomousBotChatCoordinator.GenerateFactionReply(message), 1_400);
+                ScheduleReply(named, guild, BotBanter165.TryPlayerReply(named, player, message, "guild", true) ??
+                                            AutonomousBotChatCoordinator.GenerateFactionReply(message), 1_400);
                 return;
             }
-            ScheduleReplies(guild, null, message, AutonomousBotChatCoordinator.RollResponseCount(Math.Min(2, talkers.Length)));
+            ScheduleReplies(guild, null, message, AutonomousBotChatCoordinator.RollResponseCount(Math.Min(2, talkers.Length)), player);
         }
 
-        private static void ScheduleReplies(Guild guild, GameBot starter, string incoming, int count)
+        private static void ScheduleReplies(Guild guild, GameBot starter, string incoming, int count, GamePlayer player = null,
+            BotBanter165.Topic topic = null)
         {
             GameBot[] talkers = OnlineMembers(guild).Where(bot => bot != starter && CanTalk(bot))
                 .OrderBy(_ => Random.Shared.Next()).Take(count).ToArray();
             var used = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             for (int index = 0; index < talkers.Length; index++)
             {
-                string reply = incoming != null ? AutonomousBotChatCoordinator.GenerateFactionReply(incoming) : Pick(GuildReplies);
+                string reply = incoming != null
+                    ? BotBanter165.TryPlayerReply(talkers[index], player, incoming, "guild", false) ?? AutonomousBotChatCoordinator.GenerateFactionReply(incoming)
+                    : BotBanter165.TryReply(talkers[index], topic, "guild") ?? Pick(GuildReplies);
                 if (!used.Add(reply)) continue;
                 ScheduleReply(talkers[index], guild, reply, 1_800 + index * 2_000 + Random.Shared.Next(1_200));
             }
