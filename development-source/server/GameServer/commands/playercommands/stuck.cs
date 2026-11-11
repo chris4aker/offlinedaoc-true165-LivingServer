@@ -5,7 +5,7 @@ namespace DOL.GS.Commands
     /// <summary>
     /// /stuck (owner 2026-11-10, player issue #30): asks "are you sure" in the game's own dialog, then the character dies
     /// where it stands, so it can release to its bind stone or a city. A free teleport would be too convenient; this
-    /// death alone costs no experience (GamePlayer.StuckCommandDeathProperty) - every other death keeps its penalty.
+    /// death alone costs no experience, Constitution or resurrection sickness (StuckDeath165) - every other death keeps its penalties.
     /// Not in combat, so it can never be used to dodge a death that is coming anyway.
     /// </summary>
     [CmdAttribute("&stuck",
@@ -14,8 +14,10 @@ namespace DOL.GS.Commands
         "/stuck")]
     public class StuckCommandHandler : AbstractCommandHandler, ICommandHandler
     {
+        private static readonly DOL.Logging.Logger log = DOL.Logging.LoggerManager.Create(typeof(StuckCommandHandler));
+
         public const string Question = "Are you sure? You will die where you stand so you can release to your bind stone or a city. " +
-                                       "This death costs no experience.";
+                                       "This death costs no experience, Constitution or resurrection sickness.";
 
         public void OnCommand(GameClient client, string[] args)
         {
@@ -49,16 +51,14 @@ namespace DOL.GS.Commands
                 player.Out.SendMessage(refusal, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            player.TempProperties.SetProperty(GamePlayer.StuckCommandDeathProperty, true);
-            try
-            {
-                player.TakeDamage(null, eDamageType.Natural, player.MaxHealth + player.Health, 0);
-            }
-            finally
-            {
-                // only this death: the flag never outlives it, whichever way the death was counted
+            // The death is processed a tick later (GameLiving.Die only queues it), so the stamp stays until that death
+            // reads it (StuckDeath165); every death removes it, and it only counts within 2 s with no killer.
+            player.TempProperties.SetProperty(GamePlayer.StuckCommandDeathProperty, GameLoop.GameLoopTime);
+            log.Info($"STUCK_COMMAND player={player.Name} level={player.Level} xp={player.Experience} deathCount={player.DeathCount} region={player.CurrentRegionID} x={player.X} y={player.Y}");
+            player.TakeDamage(null, eDamageType.Natural, player.MaxHealth + player.Health, 0);
+            // no death started (flying, immune...): nothing may be left for a later death
+            if (player.IsAlive)
                 player.TempProperties.RemoveProperty(GamePlayer.StuckCommandDeathProperty);
-            }
         }
     }
 }

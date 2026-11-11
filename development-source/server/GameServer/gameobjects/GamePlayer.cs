@@ -1835,6 +1835,12 @@ namespace DOL.GS
             {
                 applyRezSick = false;
             }
+            // /stuck (owner 2026-11-10): coming back from the death /stuck asked for brings no resurrection sickness
+            if (TempProperties.GetProperty<bool>(StuckDeathMarkerProperty))
+            {
+                applyRezSick = false;
+                TempProperties.RemoveProperty(StuckDeathMarkerProperty);
+            }
 
             if (player.IsUnderwater && player.CanBreathUnderWater == false)
                 player.UpdateWaterBreathState(eWaterBreath.Holding);
@@ -1871,8 +1877,11 @@ namespace DOL.GS
         /// </summary>
         public const string DEATH_EXP_LOSS_PROPERTY = "death_exp_loss";
 
-        /// <summary>Set by /stuck just before it kills the player: that death costs no experience (owner 2026-11-10).</summary>
+        /// <summary>The GameLoop time /stuck stamped just before it killed the player (StuckDeath165; owner 2026-11-10).</summary>
         public const string StuckCommandDeathProperty = "OfflineDAoC.StuckDeath";
+
+        /// <summary>The last death was the /stuck one: the revive after it brings no resurrection sickness.</summary>
+        public const string StuckDeathMarkerProperty = "OfflineDAoC.StuckDeathMarker";
         /// <summary>
         /// Property that saves condition lost on last death
         /// </summary>
@@ -5827,6 +5836,16 @@ namespace DOL.GS
 
             CharacterClass.Die(killer);
 
+            // /stuck (owner 2026-11-10): the death /stuck asked for is processed here a tick after the command, so the
+            // stamp is read and removed by EVERY death, whatever kind it turns out to be - it can never spare a later one
+            long stuckStamp = TempProperties.GetProperty<long>(StuckCommandDeathProperty);
+            TempProperties.RemoveProperty(StuckCommandDeathProperty);
+            bool stuckDeath = StuckDeath165.IsStuckDeath(stuckStamp, GameLoop.GameLoopTime, killer == null);
+            if (stuckDeath)
+                TempProperties.SetProperty(StuckDeathMarkerProperty, true);
+            else
+                TempProperties.RemoveProperty(StuckDeathMarkerProperty);
+
             bool killingBlowByEnemyRealm = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
 
             TargetObject = null;
@@ -6042,14 +6061,15 @@ namespace DOL.GS
                 else
                 {
                     // /stuck (owner 2026-11-10, player issue #30): the player chose to die where they stood to release to
-                    // their bind or a city - this death alone costs no experience and does not count toward the next
-                    // death's penalty; everything else is a normal PvE death
-                    bool stuckDeath = TempProperties.GetProperty<bool>(StuckCommandDeathProperty);
-                    TempProperties.RemoveProperty(StuckCommandDeathProperty);
+                    // their bind or a city - this death alone costs no experience, no Constitution and no resurrection
+                    // sickness and does not count toward the next death's penalty; every other death is paid in full
                     if (stuckDeath)
                     {
                         m_deathtype = eDeathType.PvE;
+                        TempProperties.RemoveProperty(DEATH_EXP_LOSS_PROPERTY);           // nothing left over for the release
+                        TempProperties.RemoveProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
                         Out.SendMessage("You lose no experience for this death.", eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+                        log.Info($"STUCK_DEATH player={Name} level={Level} xp={Experience} deathCount={DeathCount} region={CurrentRegionID} x={X} y={Y}");
                     }
                     else if (Level >= Properties.PVE_EXP_LOSS_LEVEL)
                     {
@@ -6074,7 +6094,7 @@ namespace DOL.GS
                         TempProperties.SetProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
-                    if (Level >= Properties.PVE_CON_LOSS_LEVEL)
+                    if (!stuckDeath && Level >= Properties.PVE_CON_LOSS_LEVEL)
                     {
                         int conLoss = DeathCount;
                         if (conLoss > 3)
