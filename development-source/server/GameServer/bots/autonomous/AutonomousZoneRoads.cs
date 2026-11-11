@@ -212,6 +212,25 @@ public static class AutonomousZoneRoads
         return near.Count == 0 ? null : roads.Areas[near[0]];
     }
 
+    /// <summary>
+    /// owner 2026-11-10: the area ids of the road anchors within the given distance of the point, nearest first (height
+    /// counts double, as in <see cref="AreaAt"/>); empty without road data. Data lookups only.
+    /// </summary>
+    public static List<(float Distance, int Area)> AreasNear(Zone zone, Vector3 point, float within)
+    {
+        var result = new List<(float Distance, int Area)>();
+        if (zone == null || !Data.Value.TryGetValue(zone.ID, out ZoneRoads roads)) return result;
+        foreach (int anchor in Nearby(roads, point))
+        {
+            Vector3 position = roads.Anchors[anchor];
+            float dz = (position.Z - point.Z) * 2;
+            float distance = MathF.Sqrt(Vector2.DistanceSquared(new(position.X, position.Y), new(point.X, point.Y)) + dz * dz);
+            if (distance > within) break;
+            result.Add((distance, roads.Areas[anchor]));
+        }
+        return result;
+    }
+
     /// <summary>Anchors in the point's cell and the eight around it, nearest first (height counts double).</summary>
     private static List<int> Nearby(ZoneRoads roads, Vector3 point)
     {

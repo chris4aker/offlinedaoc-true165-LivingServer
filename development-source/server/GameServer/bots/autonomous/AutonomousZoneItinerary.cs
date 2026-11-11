@@ -165,20 +165,22 @@ namespace DOL.GS
                 // A failed step is a run of corridor proofs (1-3 s on long borders); the same start
                 // spot, zone pair, goal area and allowed zones fail the same way for a while.
                 step = default;
+                if (_stepDepth == 1) LastStepWasReversed = false;
                 if (region == null || from == null || to == null) return false;
-                int allowedMask = 0;
-                if (allowed != null)
-                    foreach (Zone zone in region.Zones) allowedMask = allowedMask * 31 + (allowed(zone) ? zone.ID : 0);
-                var key = (region.ID, from.ID, to.ID, (int)start.X >> 9, (int)start.Y >> 9, (int)start.Z >> 8,
-                    (int)goal.X >> 11, (int)goal.Y >> 11, allowedMask);
+                var key = StepKey(region, from, to, start, goal, allowed, out int? targetArea);
                 long now = GameLoop.GameLoopTime;
-                if (FailedSteps.TryGetValue(key, out long until) && now < until) return false;
+                if (FailedSteps.TryGetValue(key, out long until) && now < until)
+                {
+                    if (_stepDepth == 1)
+                        LastStepWasReversed = ReversedSteps.TryGetValue(key, out long reversedUntil) && now < reversedUntil;
+                    return false;
+                }
                 if (SolvedSteps.TryGetValue(key, out var solved) && now < solved.Until)
                 {
                     step = solved.Step;
                     return true;
                 }
-                if (TryNextStepCore(region, from, to, start, goal, nav, out step, allowed))
+                if (TryNextStepCore(region, from, to, start, goal, nav, out step, allowed, targetArea))
                 {
                     if (SolvedSteps.Count > 50_000) SolvedSteps.Clear();
                     SolvedSteps[key] = (step, now + SolvedStepMemoryMilliseconds);
@@ -197,6 +199,42 @@ namespace DOL.GS
 
         [ThreadStatic] private static int _stepDepth;
 
+        /// <summary>
+        /// owner 2026-11-10 (review): true when this thread's last outer <see cref="TryNextStep"/> failed only because the
+        /// seam reversal guard dropped that crossing (<see cref="ForgetStep"/>). Read right after the call.
+        /// </summary>
+        [ThreadStatic] public static bool LastStepWasReversed;
+
+        private static (ushort, ushort, ushort, int, int, int, int, int, int, int) StepKey(Region region, Zone from, Zone to,
+            Vector3 start, Vector3 goal, Func<Zone, bool> allowed, out int? targetArea)
+        {
+            int allowedMask = 0;
+            if (allowed != null)
+                foreach (Zone zone in region.Zones) allowedMask = allowedMask * 31 + (allowed(zone) ? zone.ID : 0);
+            // owner 2026-11-10: the goal's own ground (when known for sure) picks the crossings, so it is part of
+            // the key: two goals in one 2,048 cell on different ground must not share a step. Memoized per goal, so a
+            // remembered step pays one lock-free lookup for it (review).
+            targetArea = AutonomousSeamChains.ConfidentTargetArea(region.ID, to, goal);
+            return (region.ID, from.ID, to.ID, (int)start.X >> 9, (int)start.Y >> 9, (int)start.Z >> 8,
+                (int)goal.X >> 11, (int)goal.Y >> 11, allowedMask, targetArea ?? -1);
+        }
+
+        /// <summary>
+        /// owner 2026-11-10 (review): a crossing the seam reversal guard caught leaves the shared step memory and counts as
+        /// failed for <see cref="FailedStepMemoryMilliseconds"/>, so other bots planning the same key are not handed it.
+        /// </summary>
+        public static void ForgetStep(Region region, Zone from, Zone to, Vector3 start, Vector3 goal, Func<Zone, bool> allowed = null)
+        {
+            if (region == null || from == null || to == null || from == to) return;
+            var key = StepKey(region, from, to, start, goal, allowed, out _);
+            SolvedSteps.TryRemove(key, out _);
+            long until = GameLoop.GameLoopTime + FailedStepMemoryMilliseconds;
+            if (FailedSteps.Count > 50_000) FailedSteps.Clear();
+            FailedSteps[key] = until;
+            if (ReversedSteps.Count > 50_000) ReversedSteps.Clear();
+            ReversedSteps[key] = until;
+        }
+
         public static long RememberedSteps => SolvedSteps.Count + FailedSteps.Count;
 
         public const long FailedStepMemoryMilliseconds = 90_000;
@@ -204,13 +242,16 @@ namespace DOL.GS
         // toward one place, and each re-ran the same corridor proofs (zone steps were the main cost of
         // 113 of 138 AI turns over 300 ms in run 10).
         public const long SolvedStepMemoryMilliseconds = 120_000;
-        private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort, ushort, ushort, int, int, int, int, int, int),
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort, ushort, ushort, int, int, int, int, int, int, int),
             (AutonomousZoneBoundaryRouting.Step Step, long Until)> SolvedSteps = new();
-        private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort, ushort, ushort, int, int, int, int, int, int), long>
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort, ushort, ushort, int, int, int, int, int, int, int), long>
             FailedSteps = new();
+        // The failed entries written by ForgetStep (seam reversal), so a member can tell them from a plain no-seam failure.
+        private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort, ushort, ushort, int, int, int, int, int, int, int), long>
+            ReversedSteps = new();
 
         private static bool TryNextStepCore(Region region, Zone from, Zone to, Vector3 start, Vector3 goal,
-            IPathfindingMgr nav, out AutonomousZoneBoundaryRouting.Step step, Func<Zone, bool> allowed)
+            IPathfindingMgr nav, out AutonomousZoneBoundaryRouting.Step step, Func<Zone, bool> allowed, int? targetArea)
         {
             step = default;
             if (region == null || from == null || to == null || from == to || !nav.HasNavmesh(from)) return false;
@@ -233,7 +274,7 @@ namespace DOL.GS
             Vector3 raw = start;
             AutonomousNavigationSurface.TryFloor(nav, from, start, out start);
             Topology topology = Topologies.GetValue(region, key => new Topology(key.Zones));
-            if (TryNextStep(topology, from, to, start, goal, nav, out step, allowed)) return true;
+            if (TryNextStep(topology, from, to, start, goal, nav, out step, allowed, targetArea)) return true;
             // Lough Gur's direct eastern seam reaches a Sheeroe cliff pocket; the main ground joins through the west end
             // of Bog of Cullen's northern border. The seam-area route above finds that crossing and goes straight there.
             // It used to be forced through a road point far south in Bog of Cullen first: the Cuuldurach raid walked
@@ -262,25 +303,53 @@ namespace DOL.GS
             try
             {
                 AutonomousNavigationSurface.TryFloor(nav, from, start, out start);
-                return TryNextStep(new Topology(zones, regionId), from, to, start, goal, nav, out step, allowed);
+                int? targetArea = AutonomousSeamChains.ConfidentTargetArea(regionId, to, goal);
+                trace?.Add($"target area {(targetArea?.ToString() ?? "none")}");
+                return TryNextStep(new Topology(zones, regionId), from, to, start, goal, nav, out step, allowed, targetArea);
             }
             finally { _probeTrace = null; }
         }
 
+        /// <summary>owner 2026-11-10: the goal's ground, and how many crossings it ruled out during one plan.</summary>
+        private sealed class TargetFilter
+        {
+            public readonly int Area;
+            public int Excluded;
+            public TargetFilter(int area) => Area = area;
+        }
+
         private static bool TryNextStep(Topology topology, Zone from, Zone to, Vector3 start, Vector3 goal, IPathfindingMgr nav,
-            out AutonomousZoneBoundaryRouting.Step step, Func<Zone, bool> allowed)
+            out AutonomousZoneBoundaryRouting.Step step, Func<Zone, bool> allowed, int? targetArea = null)
+        {
+            TargetFilter target = targetArea is int area && topology.Seams ? new(area) : null;
+            bool solved = TryPasses(topology, from, to, start, goal, nav, out step, allowed, target);
+            if (target == null || target.Excluded == 0) return solved;
+            if (solved)
+            {
+                AutonomousSeamChains.NoteFiltered(target.Excluded);
+                return true;
+            }
+            // owner 2026-11-10: a wrong guess of the goal's ground must never break a plan that works today. The filter
+            // dropped crossings and nothing else worked: plan once more exactly as before (no filter). Never an identical pass.
+            solved = TryPasses(topology, from, to, start, goal, nav, out step, allowed, null);
+            AutonomousSeamChains.NoteFallback(topology.RegionId, from.ID, to.ID, target.Area, solved);
+            return solved;
+        }
+
+        private static bool TryPasses(Topology topology, Zone from, Zone to, Vector3 start, Vector3 goal, IPathfindingMgr nav,
+            out AutonomousZoneBoundaryRouting.Step step, Func<Zone, bool> allowed, TargetFilter target)
         {
             // A zone chain over borders where real ground meets (seam file) comes first; the full
             // border graph remains the fallback, so a border missing from the file never strands a bot.
             // A first border that failed in the seam pass for the same zone chain fails the same way
             // in the full pass (same start, goal, crossings and chain): it is skipped there.
             var failed = new HashSet<string>();
-            if (topology.SeamEdges != null && TryRoutes(topology, from, to, start, goal, nav, allowed, true, failed, out step)) return true;
-            return TryRoutes(topology, from, to, start, goal, nav, allowed, false, failed, out step);
+            if (topology.SeamEdges != null && TryRoutes(topology, from, to, start, goal, nav, allowed, true, failed, target, out step)) return true;
+            return TryRoutes(topology, from, to, start, goal, nav, allowed, false, failed, target, out step);
         }
 
         private static bool TryRoutes(Topology topology, Zone from, Zone to, Vector3 start, Vector3 goal, IPathfindingMgr nav,
-            Func<Zone, bool> allowed, bool seamsOnly, HashSet<string> failed, out AutonomousZoneBoundaryRouting.Step step)
+            Func<Zone, bool> allowed, bool seamsOnly, HashSet<string> failed, TargetFilter target, out AutonomousZoneBoundaryRouting.Step step)
         {
             step = default;
             // First the zone chain over connected ground (seam file area ids; the bot's and the goal's
@@ -302,7 +371,7 @@ namespace DOL.GS
                 else if (grounded.Length >= 2 && grounded.Length <= 32 && TryGetSharedEdge(from, grounded[1], out Edge first))
                 {
                     string chain = string.Join(">", grounded.Select(z => z.ID));
-                    if (nav.HasNavmesh(first.To) && TryEdgeStep(topology, first, grounded, start, goal, nav, out step)) return true;
+                    if (nav.HasNavmesh(first.To) && TryEdgeStep(topology, first, grounded, start, goal, nav, target, out step)) return true;
                     failed.Add(chain);
                 }
             }
@@ -316,7 +385,7 @@ namespace DOL.GS
                 if (route.Length < 2 || route.Length > 32) break;
                 TryGetSharedEdge(from, route[1], out Edge edge);
                 string chain = string.Join(">", route.Select(z => z.ID));
-                if (!failed.Contains(chain) && nav.HasNavmesh(edge.To) && TryEdgeStep(topology, edge, route, start, goal, nav, out step)) return true;
+                if (!failed.Contains(chain) && nav.HasNavmesh(edge.To) && TryEdgeStep(topology, edge, route, start, goal, nav, target, out step)) return true;
                 excluded.Add(edge);
                 failed.Add(chain);
             }
@@ -324,14 +393,14 @@ namespace DOL.GS
             {
                 _probeTrace?.Add($"deferred loop [{string.Join(">", deferredLoop.Select(z => z.ID))}]");
                 string chain = string.Join(">", deferredLoop.Select(z => z.ID));
-                if (nav.HasNavmesh(loopEdge.To) && TryEdgeStep(topology, loopEdge, deferredLoop, start, goal, nav, out step)) return true;
+                if (nav.HasNavmesh(loopEdge.To) && TryEdgeStep(topology, loopEdge, deferredLoop, start, goal, nav, target, out step)) return true;
                 failed.Add(chain);
             }
             return false;
         }
 
         private static bool TryEdgeStep(Topology topology, Edge edge, Zone[] route, Vector3 start, Vector3 goal,
-            IPathfindingMgr nav, out AutonomousZoneBoundaryRouting.Step step)
+            IPathfindingMgr nav, TargetFilter target, out AutonomousZoneBoundaryRouting.Step step)
         {
             step = default;
             // Prefer the direct intersection when it is legal. Unlike the old
@@ -353,6 +422,29 @@ namespace DOL.GS
             // chain (seam file area ids; several separate real networks share some borders).
             SeamStep[][] areas = SeamAreas(topology, edge, nav);
             List<AutonomousZoneBoundaryRouting.Step> fallbackSeams = null;
+            // owner 2026-11-10: with the goal's ground known for sure, drop crossings whose ground cannot reach it, but
+            // only when at least one crossing of this border is proven to reach it (otherwise nothing changes).
+            Dictionary<int, bool?> reachesTarget = null;
+            bool requireTarget = false;
+            if (target != null && areas != null)
+            {
+                reachesTarget = new Dictionary<int, bool?>();
+                foreach (SeamStep[] group in areas)
+                    foreach (SeamStep s in group)
+                        if (!reachesTarget.ContainsKey(s.OutsideArea))
+                            reachesTarget[s.OutsideArea] = ChainReachesArea(topology, route, s.OutsideArea, target.Area);
+                requireTarget = AutonomousSeamChains.RequireTarget(reachesTarget.Values);
+                if (requireTarget) _probeTrace?.Add($" edge {edge.From.ID}>{edge.To.ID} target area {target.Area}");
+            }
+            bool OffTarget(int outsideArea)
+            {
+                if (!requireTarget) return false;
+                if (!reachesTarget.TryGetValue(outsideArea, out bool? reach))
+                    reachesTarget[outsideArea] = reach = ChainReachesArea(topology, route, outsideArea, target.Area);
+                if (reach != false) return false;
+                target.Excluded++;
+                return true;
+            }
             if (areas != null)
             {
                 // At most two per near-side area, best area first: crossings of one area share the
@@ -368,6 +460,7 @@ namespace DOL.GS
                     SeamStep? best = null, next = null; float bestScore = float.MaxValue, nextScore = float.MaxValue;
                     foreach (SeamStep s in group)
                     {
+                        if (OffTarget(s.OutsideArea)) continue;
                         if (!(reaches.TryGetValue(s.OutsideArea, out bool known) ? known
                                 : reaches[s.OutsideArea] = ChainContinues(topology, route, s.OutsideArea))) continue;
                         float score = Vector3.DistanceSquared(start, s.Step.Inside) + Vector3.DistanceSquared(s.Step.Outside, goal);
@@ -402,7 +495,7 @@ namespace DOL.GS
                                 : reaches[group[0].OutsideArea] = ChainContinues(topology, route, group[0].OutsideArea))) continue;
                         if (!reachesMain.TryGetValue(group[0].OutsideArea, out bool? main))
                             reachesMain[group[0].OutsideArea] = main = ChainReachesMain(topology, route, group[0].OutsideArea);
-                        if (main == false) continue;
+                        if (main == false || OffTarget(group[0].OutsideArea)) continue;
                         SeamStep? best = null, next = null; float bestScore = float.MaxValue, nextScore = float.MaxValue;
                         foreach (SeamStep s in group)
                         {
@@ -439,6 +532,11 @@ namespace DOL.GS
                 if (area == NoSeamArea || area is int known && !Contains(edge.To, goal) && !ChainContinues(topology, route, known))
                 {
                     _probeTrace?.Add($"  {edge.From.ID}>{edge.To.ID} sample {candidate.Outside} not on continuing ground");
+                    continue;
+                }
+                if (area is int sampled && OffTarget(sampled))
+                {
+                    _probeTrace?.Add($"  {edge.From.ID}>{edge.To.ID} sample {candidate.Outside} not on the goal's ground");
                     continue;
                 }
                 // Only crossings the seam file lists (proven real ground) may use the zone road graph.
@@ -543,16 +641,15 @@ namespace DOL.GS
             if (outsideArea < 0 || route.Length < 2) return null;
             int? main = AutonomousZoneSeams.MainArea(topology.RegionId, route[^1].ID);
             if (main == null) return null;
-            var areas = new HashSet<int> { outsideArea };
-            for (int i = 1; i + 1 < route.Length; i++)
-            {
-                AutonomousZoneSeams.Crossing[] next = AutonomousZoneSeams.For(topology.RegionId, route[i].ID, route[i + 1].ID);
-                if (next == null || next.Any(c => c.InsideArea < 0)) return null;
-                var reached = new HashSet<int>(next.Where(c => areas.Contains(c.InsideArea)).Select(c => c.OutsideArea));
-                if (reached.Count == 0) return false;
-                areas = reached;
-            }
-            return areas.Contains(main.Value);
+            return ChainReachesArea(topology, route, outsideArea, main.Value);
+        }
+
+        /// <summary>owner 2026-11-10: whether the ground past a crossing reaches the given area of the route's last zone.</summary>
+        private static bool? ChainReachesArea(Topology topology, Zone[] route, int outsideArea, int targetArea)
+        {
+            ushort region = topology.RegionId;
+            return AutonomousSeamChains.ChainReachesArea((from, to) => AutonomousZoneSeams.For(region, from, to),
+                Array.ConvertAll(route, zone => zone.ID), outsideArea, targetArea);
         }
 
         private const int NoSeamArea = int.MinValue;
