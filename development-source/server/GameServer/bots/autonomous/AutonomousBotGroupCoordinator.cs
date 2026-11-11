@@ -2636,7 +2636,13 @@ public static partial class AutonomousBotGroupCoordinator
                  member.IsCasting && member.castingComponent.SpellHandler is { } raising && raising.Target == deadBot &&
                  raising.Spell.SpellType == eSpellType.Resurrect) &&
                 member.IsWithinRadius(deadBot, member.castingComponent.CalculateSpellRange(raise)));
-            long waitMilliseconds = potentialResurrection ? BotGroupSupport.ResurrectionReleaseWait(restingForIt) : 20_000;
+            // item 17 (2026-11-11): ... and every corpse of the party gets it while a resurrector walks to one of them or
+            // sits for power / raises another one (the dead used to time out one by one while the healer was busy)
+            bool raiseUnderWay = restingForIt || CorpseWalkUnderWay(session, GameLoop.GameLoopTime) ||
+                rescuers.Any(member => member.IsAlive && member.ResurrectionSpell != null &&
+                    (BotGroupSupport.IsRestingForResurrection(member, null, GameLoop.GameLoopTime) ||
+                     member.IsCasting && member.castingComponent.SpellHandler?.Spell?.SpellType == eSpellType.Resurrect));
+            long waitMilliseconds = potentialResurrection ? BotGroupSupport.ResurrectionReleaseWait(raiseUnderWay) : 20_000;
             if (GameLoop.GameLoopTime - wait.SinceTick < waitMilliseconds)
                 return PveCorpseDisposition.HoldForResurrection;
             long deadline = wait.SinceTick + waitMilliseconds;
@@ -2650,6 +2656,7 @@ public static partial class AutonomousBotGroupCoordinator
                 ? BotPartyRoles.GroupRoleLabel(role) : "unknown";
             Log.Warn($"AUTONOMOUS_GROUP_RESURRECTION_TIMEOUT group={session.Id} bot=\"{deadBot.Name}\" " +
                      $"role=\"{roleName}\" combatClearSeconds={waitMilliseconds / 1000} action=release-and-rejoin " +
+                     $"phase=\"{session.PhaseBeforeCasualty}\" regrouping={session.Recovery.IsRegrouping} " +
                      $"corpse={deadBot.CurrentRegionID}:{deadBot.X},{deadBot.Y},{deadBot.Z} " +
                      $"resurrectors=\"{string.Join(";", members.Where(m => m.ResurrectionSpell != null).Select(m =>
                          $"{m.Name}:alive={m.IsAlive}:region={m.CurrentRegionID}:distance={m.GetDistanceTo(deadBot)}:mana={m.ManaPercent}:casting={m.IsCasting}:interrupted={m.IsBeingInterruptedByOther}"))}\"");

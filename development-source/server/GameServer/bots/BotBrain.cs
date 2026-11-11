@@ -6850,7 +6850,10 @@ namespace DOL.AI.Brain
                                  member.CurrentRegionID == Body.CurrentRegionID)
                 // Raise nearby casualties, but do not abandon recovery to chase
                 // a distant corpse back into the failed pull/dungeon room.
-                .Where(member => !regrouping || BotBody.IsWithinRadius(member, range))
+                // ... unless the party grants this resurrector a safe walk to it (item 17, 2026-11-11: 153 of 235
+                // overnight timeouts were regrouping parties whose healers stood 2,800 units from the corpse)
+                .Where(member => BotBody.IsWithinRadius(member, range) ||
+                                 AutonomousBotGroupCoordinator.MayWalkToCorpse(BotBody, member, regrouping))
                 // A player's companion raises only corpses near its player, and gives up on one it cannot reach (owner
                 // 2026-11-05: a hired cleric kept walking out of its leash to a dead invited gamebot until it faded).
                 .Where(member => !LeavesPlayerToSupport(member) && !_supportReach.IsSkipped(member, GameLoop.GameLoopTime))
