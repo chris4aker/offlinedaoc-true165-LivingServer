@@ -25,6 +25,15 @@ namespace DOL.GS
         public static bool KeepsForExchange(bool canList, bool exchangeUnreachable, bool backpackNearlyFull) =>
             canList && !(exchangeUnreachable && backpackNearlyFull);
 
+        /// <summary>Owner 2026-11-10: real checks in a row at the broker (one every 3-7 s) that found nothing to list or buy
+        /// before the bot gives the exchange up for <see cref="ExchangeUnreachableMilliseconds"/>.</summary>
+        public const int FruitlessExchangeChecksBeforeGivingUp = 3;
+
+        /// <summary>Pure rule (owner 2026-11-10): the exchange step ends after
+        /// <see cref="FruitlessExchangeChecksBeforeGivingUp"/> fruitless checks in a row, never while a listing waits.</summary>
+        public static bool GivesUpOnExchange(int fruitlessChecks, bool listingPending) =>
+            !listingPending && fruitlessChecks >= FruitlessExchangeChecksBeforeGivingUp;
+
         public static void MarkExchangeUnreachable(long botId, long now)
         {
             if (botId <= 0)
