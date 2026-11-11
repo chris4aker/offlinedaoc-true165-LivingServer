@@ -42,6 +42,30 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: `/hood <companion name>` puts a hired companion's hood up or down, like `/hood` does for you, and it
   stays that way when the companion comes back.
 - Gamebots: after a release they stand up beside their bindstone instead of on top of it (Huginfell).
+- Gamebots: groups travelling together no longer keep turning to face a party member; buffs wait until the group
+  stops. Pets no longer get buffs that do nothing for them, such as power or endurance regeneration (GitHub issue
+  #28), and healers stop stacking heals over time and put one on the tank as the fight starts.
+- Gamebots: they buy and use dyes and enamels in town. Richer bots dye more often and pick dearer colours. Cloaks and
+  shields that show a guild emblem are never dyed.
+- Gamebots: a new banter library of more than 3,000 lines for realm, guild, local and party chat - hunting, groups,
+  raids, Horn of Rallying rallies, RvR, battlegrounds, deaths, level-ups, trading and crafting - and replies when
+  you talk to them.
+- Gamebot groups: the puller gets its turn at camp again (groups used to stand still until a 15-minute watchdog
+  sent them home), healers and tanks are more likely to join groups, Hibernian Bards can fill a group's healer
+  slot, and meetups happen at a town everyone can reach before the group walks to its camp.
+- Gamebots: fewer deaths on the road and at dangerous camps (route-blocking packs counted properly, known death
+  spots avoided along the real path, solo Hibernians under 15 no longer ride to the Parthanan Farm stop), level 1
+  bots stop picking fights they can't win, crowded camps send bots to a nearby one, and Albion bots no longer walk
+  back and forth between two zones.
+- Gamebots: fixes for bots dropping out of the world, lost inventory items, bots stuck recovering after a death for
+  hours, healers too low on power to resurrect, and bots idling at the Realm Exchange.
+- Launcher: Player XP rate and Gamebot XP rate are back in the Options tab (1x to 10x, 1x by default).
+- Name colours: Settings > Interface > NAME COLOURS, or `/colornames` and `/oldnamecolors`, turns on the 1.54 client's
+  coloured names: monsters by con, NPCs cyan, enemies red, guild dark green, group light orange, other players light
+  blue, the dead brown and your target white. Gamebots and companions show as players.
+- Monsters: their walk and run cycles play in full; they were cut short when the models were converted (wolves
+  such as the lupine snarler, zombies and the necromancer's servant, bears, boars, cats, spiders, giants and more).
+- Horses: your character stays in the saddle on stablemaster routes when the horse goes up or down hills.
 
 ## 0.5 (2026-11-09)
 

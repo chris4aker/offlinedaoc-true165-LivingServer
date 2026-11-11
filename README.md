@@ -104,7 +104,7 @@ is the result: the world database and the content files built from it.
 | **Rules** | OpenDAoC's freeshard ruleset, plus many custom additions | Patch 1.65 rules only, with no mode toggle |
 | **Client** | The original DAoC client, and a beta new client in 0.37c | The new client only, built in Godot 4 |
 | **Items and loot** | Freeshard items, random "ROG" drops, items with later stats | Period 1.65 items, drops and vendor stock only |
-| **Leveling** | XP rate options, free levels, buff merchants, hasteners | XP fixed at 1x, with no shortcuts |
+| **Leveling** | XP rate options, free levels, buff merchants, hasteners | XP 1x by default (player and gamebot rates in the launcher), with no shortcuts |
 | **Getting around** | Teleporters and `/tele` | Walking, horse routes and the period portals |
 | **Your group** | `/spawn` companion bots on demand | Hired companions that you level, spec and gear |
 | **Bots** | Separate bot rules | The same rules as players |
