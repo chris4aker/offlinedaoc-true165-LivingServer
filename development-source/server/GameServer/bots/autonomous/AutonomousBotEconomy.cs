@@ -212,6 +212,17 @@ namespace DOL.GS;
         if (isPlayerListing && item.SellPrice > fairPrice * 3L)
             return null;
         int playerPreference = isPlayerListing && item.SellPrice <= fairPrice * 1.25 ? 650 : 0;
+        // never a slot its class keeps empty (2026-11-11 audit)
+        if (equipSlot != eInventorySlot.Invalid && KeepsSlotForOtherUse(bot, item, equipSlot))
+            return null;
+        if (equipSlot != eInventorySlot.Invalid && (eObjectType)item.Object_Type == eObjectType.Instrument)
+        {
+            // an instrument is compared with the bot's own of that kind, not with whatever a song left in the slot
+            int gain = InstrumentGain(bot, item, equipSlot);
+            return gain > MinimumEquipmentUpgrade
+                ? new PurchaseCandidate(item, 1_000 + gain + playerPreference, equipSlot, true, isPlayerListing)
+                : null;
+        }
         if (equipSlot != eInventorySlot.Invalid)
         {
             DbInventoryItem equipped = bot.Inventory.GetItem(equipSlot);
@@ -220,7 +231,7 @@ namespace DOL.GS;
                 BotWeaponStats.IsMeleeWeapon((eObjectType)item.Object_Type))
             {
                 double gain = SavageBotWeaponPolicy.UpgradeGain(bot, item, equipSlot);
-                if (gain > 0)
+                if (gain > 0 && !OwnsSpareAsGood(bot, item, equipSlot))
                     return new PurchaseCandidate(item,
                         1_000 + (int)Math.Clamp(Math.Ceiling(gain * 100), 1, int.MaxValue - 1_000),
                         equipSlot, true, isPlayerListing);
@@ -228,8 +239,11 @@ namespace DOL.GS;
             }
             if (equipped == null)
                 improvement += 250;
+            // ... and nothing it already has as good in its bag or vault (checked last: it walks the inventory)
             if (improvement > 8)
-                return new PurchaseCandidate(item, 1_000 + improvement + playerPreference, equipSlot, true, isPlayerListing);
+                return OwnsSpareAsGood(bot, item, equipSlot)
+                    ? null
+                    : new PurchaseCandidate(item, 1_000 + improvement + playerPreference, equipSlot, true, isPlayerListing);
         }
 
         // Stackable world goods are the server's practical crafting-material
@@ -301,7 +315,7 @@ namespace DOL.GS;
                 return false;
 
             equipSlot = ResolveEquipmentSlot(bot, item);
-            if (equipSlot == eInventorySlot.Invalid)
+            if (equipSlot == eInventorySlot.Invalid || KeepsSlotForOtherUse(bot, item, equipSlot))
                 return false;
 
             DbInventoryItem equipped = bot.Inventory.GetItem(equipSlot);
@@ -310,9 +324,99 @@ namespace DOL.GS;
             if (bot.CharacterClass?.ID == (int)eCharacterClass.Savage &&
                 BotWeaponStats.IsMeleeWeapon((eObjectType)item.Object_Type))
                 return SavageBotWeaponPolicy.IsUpgrade(bot, item, equipSlot);
+            if ((eObjectType)item.Object_Type == eObjectType.Instrument)
+                return InstrumentGain(bot, item, equipSlot) > MinimumEquipmentUpgrade;
             int improvement = FitValue(bot, item, equipSlot) - FitValue(bot, equipped, equipSlot);
             return equipped == null || improvement > MinimumEquipmentUpgrade;
         }
+
+        /// <summary>
+        /// A slot the bot's class keeps empty or for one kind of item, whatever an upgrade check says (2026-11-11 audit:
+        /// Gormienbjorn had 7 rowan round shields in his vault). A Savage fights with a two-hander or hand-to-hand weapons:
+        /// GameBot.EnsureSavageWeaponReady moves anything else out of its left hand (all of it for a two-handed build), so
+        /// the shop saw that hand empty and bought the next shield. The left hand of a Savage takes only a hand-to-hand
+        /// weapon of a hand-to-hand build.
+        /// </summary>
+        public static bool KeepsSlotForOtherUse(GameBot bot, DbInventoryItem item, eInventorySlot slot) =>
+            bot?.CharacterClass?.ID == (int)eCharacterClass.Savage && slot == eInventorySlot.LeftHandWeapon &&
+            !(bot.BotSpec?.WeaponOneType == eObjectType.HandToHand && item?.Object_Type == (int)eObjectType.HandToHand);
+
+        /// <summary>
+        /// What an instrument adds over the best one of its kind (drum, lute, flute) the bot already owns, worn, carried or
+        /// in the vault (2026-11-11 audit: Godalred had 15 ironwood flutes). A song puts the instrument it needs in the
+        /// two-hand slot (BotBrain.TryEquipRealInstrument), so the shop compared a merchant's flute with the drum held
+        /// there and bought it again and again. An instrument the bot already owns adds nothing: the song takes it from
+        /// the bag when it is needed, and moving it into a slot would only push out the one another song uses.
+        /// </summary>
+        public static int InstrumentGain(GameBot bot, DbInventoryItem item, eInventorySlot slot)
+        {
+            if (bot?.Inventory == null || item == null || (eObjectType)item.Object_Type != eObjectType.Instrument)
+                return int.MinValue;
+            int best = int.MinValue;
+            foreach (DbInventoryItem owned in bot.Inventory.AllItems)
+            {
+                if (ReferenceEquals(owned, item))
+                    return int.MinValue;
+                if (owned == null || owned.OwnerLot != 0 || owned.Object_Type != (int)eObjectType.Instrument ||
+                    owned.DPS_AF != item.DPS_AF || !IsKept(owned))
+                    continue;
+                best = Math.Max(best, FitValue(bot, owned, slot));
+            }
+            // none of that kind yet: as for an empty slot
+            return best == int.MinValue ? FitValue(bot, item, slot) + 250 : FitValue(bot, item, slot) - best;
+        }
+
+        /// <summary>Worn, carried or in the vault: where the bot's own things are.</summary>
+        private static bool IsKept(DbInventoryItem item) =>
+            item.SlotPosition is >= (int)eInventorySlot.MinEquipable and <= (int)eInventorySlot.MaxEquipable ||
+            item.SlotPosition is >= (int)eInventorySlot.FirstBackpack and <= (int)eInventorySlot.LastBackpack ||
+            item.SlotPosition is >= (int)eInventorySlot.FirstVault and <= (int)eInventorySlot.LastVault;
+
+        /// <summary>
+        /// The bot already has, in its bag or vault, an item it could wear in that slot that the candidate does not beat by
+        /// more than <see cref="MinimumEquipmentUpgrade"/>: the same item again, or one as good. A bot buys only what is
+        /// better than what it owns, not a copy of a spare it keeps (2026-11-11 audit: shields and flutes bought again and
+        /// again while the same ones sat in the vault).
+        /// </summary>
+        public static bool OwnsSpareAsGood(GameBot bot, DbInventoryItem item, eInventorySlot slot)
+        {
+            if (bot?.Inventory == null || item == null || slot == eInventorySlot.Invalid)
+                return false;
+            bool savageWeapon = bot.CharacterClass?.ID == (int)eCharacterClass.Savage &&
+                                BotWeaponStats.IsMeleeWeapon((eObjectType)item.Object_Type);
+            int wanted = FitValue(bot, item, slot);
+            foreach (DbInventoryItem owned in bot.Inventory.AllItems)
+            {
+                if (owned == null || ReferenceEquals(owned, item) || owned.OwnerLot != 0 || owned.Template == null ||
+                    owned.SlotPosition is >= (int)eInventorySlot.MinEquipable and <= (int)eInventorySlot.MaxEquipable ||
+                    !IsKept(owned))
+                    continue;
+                // the same item again: a copy is never better than the one in the bag (a Savage's weapons are rated by
+                // its own policy, so only the copy rule applies to them)
+                if (string.Equals(owned.Id_nb, item.Id_nb, StringComparison.OrdinalIgnoreCase) &&
+                    owned.Quality >= item.Quality && (owned.Condition > 0 || !BotWeaponStats.IsMeleeWeapon((eObjectType)owned.Object_Type)))
+                    return true;
+                if (savageWeapon || owned.Object_Type != item.Object_Type && owned.Item_Type != item.Item_Type)
+                    continue;
+                if (CanWear(bot, owned, out eInventorySlot ownedSlot) && SameSlot(ownedSlot, slot) &&
+                    BotWeaponStats.HasFunctionalMeleeStats(owned) && owned.LevelRequirement <= bot.Level &&
+                    wanted - FitValue(bot, owned, slot) <= MinimumEquipmentUpgrade)
+                    return true;
+            }
+            return false;
+
+            static bool SameSlot(eInventorySlot a, eInventorySlot b) => a == b ||
+                a is eInventorySlot.LeftRing or eInventorySlot.RightRing && b is eInventorySlot.LeftRing or eInventorySlot.RightRing ||
+                a is eInventorySlot.LeftBracer or eInventorySlot.RightBracer && b is eInventorySlot.LeftBracer or eInventorySlot.RightBracer;
+        }
+
+        /// <summary>
+        /// Whether a gamebot should buy this item (merchant, seal merchant, shopping trip): an upgrade where it would wear
+        /// it (<see cref="TryGetEquipmentUpgrade"/>, which also keeps the slots its class leaves empty and compares an
+        /// instrument with its own kind) that is also better than every spare it already owns for that slot.
+        /// </summary>
+        public static bool IsWorthBuying(GameBot bot, DbInventoryItem item, out eInventorySlot equipSlot) =>
+            TryGetEquipmentUpgrade(bot, item, out equipSlot) && !OwnsSpareAsGood(bot, item, equipSlot);
 
         /// <summary>
         /// Value of a point of trained weapon spec, for comparing melee weapons. A player fights with the weapon line he
@@ -1145,7 +1249,7 @@ namespace DOL.GS;
                 .Where(template => AutonomousWorldBotController.ShoppingConsiders(bot, template, coin) &&
                                    AutonomousWorldBotController.ShoppingAllowsWhileArmorMissing(bot, template, coin))
                 .Select(GameInventoryItem.Create)
-                .Where(item => item != null && TryGetEquipmentUpgrade(bot, item, out _))
+                .Where(item => item != null && IsWorthBuying(bot, item, out _))
                 .OrderByDescending(EquipmentValue)
                 .ToArray();
             DbInventoryItem selected = upgrades.FirstOrDefault();
@@ -1218,7 +1322,7 @@ namespace DOL.GS;
             DbInventoryItem item = GameInventoryItem.Create(template);
             if (item == null)
                 continue;
-            if (TryGetEquipmentUpgrade(bot, item, out _))
+            if (IsWorthBuying(bot, item, out _))
             {
                 int value = EquipmentValue(item);
                 if (value > upgradeValue)
@@ -1250,7 +1354,7 @@ namespace DOL.GS;
         foreach (GameDarknessFallsSealsMerchant merchant in OwnSealMerchants(bot, sealId))
             foreach (DbItemTemplate template in merchant.TradeItems?.GetAllItems().Values.OfType<DbItemTemplate>() ?? [])
                 if (template.Price > seals && GameInventoryItem.Create(template) is DbInventoryItem item &&
-                    TryGetEquipmentUpgrade(bot, item, out _))
+                    IsWorthBuying(bot, item, out _))
                     return true;
         return false;
     }

@@ -197,7 +197,7 @@ namespace DOL.GS
             foreach (var c in candidates.OrderByDescending(c => c.QuickGain / (1.0 + c.Minutes / 10.0)).Take(ShoppingCandidatesChecked))
             {
                 DbInventoryItem item = GameInventoryItem.Create(c.Entry.Template);
-                if (item == null || !AutonomousBotEconomy.TryGetEquipmentUpgrade(bot, item, out eInventorySlot slot))
+                if (item == null || !AutonomousBotEconomy.IsWorthBuying(bot, item, out eInventorySlot slot))
                     continue;
                 int gain = AutonomousBotEconomy.FitValue(bot, item, slot) - AutonomousBotEconomy.FitValue(bot, bot.Inventory.GetItem(slot), slot);
                 return new ShoppingPlan(c.Entry.Merchant, c.Entry.Template, c.Entry.Template.Price, gain);
