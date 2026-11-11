@@ -8,6 +8,12 @@ using DOL.Logging;
 
 namespace DOL.GS
 {
+    /// <summary>Why a party ranged pull did or did not start (owner 2026-11-10).</summary>
+    public enum PartyPullStart
+    {
+        Started, Waiting, NotApplicable, ContactFight, NoRangedPull, TooFar, Unreachable, UnreachableReleased
+    }
+
     /// <summary>One bounded, real ranged pull per level-50 PvE party. No new timers or world scans.</summary>
     public static class AutonomousDefensivePull
     {
@@ -158,18 +164,49 @@ namespace DOL.GS
         // True means this party's pull is handled, including a failed approach.
         // Never fall through into a melee charge merely because a ranged pull failed.
         public static bool TryBegin(GameBot shooter, GameLiving target)
-            => TryBeginCore(shooter, target, flyingHandoff: false);
+            => TryBeginCore(shooter, target, flyingHandoff: false, out _);
+
+        /// <summary>
+        /// Same as TryBegin, and also says why (owner 2026-11-10: the party puller's camp turn needs to tell
+        /// "too far, look for a nearer one" from "released after 3 unreachable tries, close in").
+        /// The returned bool is exactly TryBegin's.
+        /// </summary>
+        public static bool TryBegin(GameBot shooter, GameLiving target, out PartyPullStart why)
+            => TryBeginCore(shooter, target, flyingHandoff: false, out why);
+
+        /// <summary>
+        /// Today's rule when no firing point is found (pure): too far for the short proven approach, or
+        /// unreachable until the same target has failed UnreachableTriesBeforeRelease times in a row.
+        /// </summary>
+        public static PartyPullStart ClassifyNoFiringPoint(float distance, int range, int previousTries, bool sameTarget)
+        {
+            if (distance - (range - 100) > MaximumFiringAdvance)
+                return PartyPullStart.TooFar;
+            int tries = sameTarget ? previousTries + 1 : 1;
+            return tries < UnreachableTriesBeforeRelease ? PartyPullStart.Unreachable : PartyPullStart.UnreachableReleased;
+        }
 
         private static bool TryBeginCore(GameBot shooter, GameLiving target, bool flyingHandoff)
+            => TryBeginCore(shooter, target, flyingHandoff, out _);
+
+        private static bool TryBeginCore(GameBot shooter, GameLiving target, bool flyingHandoff, out PartyPullStart why)
         {
+            why = PartyPullStart.Waiting;
             // Suppress only a new scripted pull of this expedition's dragon.
             // Attacked-by-enemy and shared defense paths are unchanged.
             if (AutonomousRealmRaid.IsPendingDragonTarget(shooter,target)) return true;
             if (shooter?.CharacterClass != null &&
                 SavageBotCombatPolicy.MustMeleePull((eCharacterClass)shooter.CharacterClass.ID))
+            {
+                why = PartyPullStart.NoRangedPull;
                 return false;
+            }
             if (shooter?.Group == null ||
-                !flyingHandoff && !AutonomousBotGroupCoordinator.UsesDefensivePullGroup(shooter.Group)) return false;
+                !flyingHandoff && !AutonomousBotGroupCoordinator.UsesDefensivePullGroup(shooter.Group))
+            {
+                why = PartyPullStart.NotApplicable;
+                return false;
+            }
             State state = States.GetOrCreateValue(shooter.Group);
             lock (state)
             {
@@ -179,11 +216,19 @@ namespace DOL.GS
                     target?.IsAlive != true || shooter.CurrentRegion != target.CurrentRegion)
                     return true;
                 // An enemy already in the party is a real defensive fight, not a ranged pull.
-                if (!flyingHandoff && members.Any(member => member.IsWithinRadius(target, ContactRadius))) return false;
+                if (!flyingHandoff && members.Any(member => member.IsWithinRadius(target, ContactRadius)))
+                {
+                    why = PartyPullStart.ContactFight;
+                    return false;
+                }
                 Spell spell = flyingHandoff ? ReadyPullSpell(shooter) : PullSpell(shooter);
                 // A puller with no ranged pull at all (common below level 50) pulls the ordinary way;
                 // reporting "handled" here left such a party standing at its camp for good.
-                if (spell == null && !flyingHandoff && !HasRangedPull(shooter)) return false;
+                if (spell == null && !flyingHandoff && !HasRangedPull(shooter))
+                {
+                    why = PartyPullStart.NoRangedPull;
+                    return false;
+                }
                 state.RetryAfter = GameLoop.GameLoopTime + TimeoutMilliseconds;
                 eActiveWeaponSlot previous = shooter.ActiveWeaponSlot;
                 if (spell == null && flyingHandoff && !HasUsableDistanceWeapon(shooter)) return true;
@@ -196,16 +241,18 @@ namespace DOL.GS
                     // camp check (every 1.5 s) pulls once in range. Holding here stood parties 2,000
                     // units from their camp (1,087 unreachable pulls in run 11's first hour, mostly
                     // low-level parties with short pull ranges).
-                    if (Vector3.Distance(origin, enemy) - (range - 100) > MaximumFiringAdvance)
+                    bool sameTarget = ReferenceEquals(state.UnreachableTarget, target);
+                    why = ClassifyNoFiringPoint(Vector3.Distance(origin, enemy), range, state.UnreachableTries, sameTarget);
+                    if (why == PartyPullStart.TooFar)
                     {
                         state.RetryAfter = 0;
                         return false;
                     }
-                    state.UnreachableTries = ReferenceEquals(state.UnreachableTarget, target) ? state.UnreachableTries + 1 : 1;
+                    state.UnreachableTries = sameTarget ? state.UnreachableTries + 1 : 1;
                     state.UnreachableTarget = target;
                     LoggerManager.Create(typeof(AutonomousDefensivePull)).Info(
                         $"AUTONOMOUS_DEFENSIVE_PULL_UNREACHABLE bot={shooter.Name} target={target.Name} region={shooter.CurrentRegionID} x={shooter.X} y={shooter.Y} z={shooter.Z} tries={state.UnreachableTries}");
-                    return state.UnreachableTries < UnreachableTriesBeforeRelease;
+                    return why == PartyPullStart.Unreachable;
                 }
                 if (spell == null)
                     shooter.SwitchWeapon(eActiveWeaponSlot.Distance);
@@ -222,6 +269,7 @@ namespace DOL.GS
                 state.NextMove = 0;
                 state.ReturnTo = null;
                 state.Active = true;
+                why = PartyPullStart.Started;
                 foreach (GameBot member in members)
                 {
                     member.WakeRecoveryRest();
