@@ -37,8 +37,11 @@ hold). Its changelog has the history of everything this version inherits.
 - Companions: the Amnesia option says what it does: it interrupts enemy casters in RvR, and sends monsters attacking
   the companion back to its own pet if it has one.
 - `/stuck`: asks first, then your character dies where it stands, so you can release to your bind stone or a city
-  (player issue #30). That death costs no experience and doesn't count toward the next death's penalty; every other
-  death keeps its penalty. It can't be used in combat. Before, it sent you to the last safe spot it had recorded.
+  (player issue #30). That death costs no experience, Constitution or resurrection sickness and doesn't count toward
+  the next death's penalty; every other death keeps its penalties. It can't be used in combat. Before, it sent you to
+  the last safe spot it had recorded.
+- Horses: the routes over the Innis Carthaig bridge (Connla to Innis Carthaig, Innis Carthaig to Parthanan Farm, and
+  the Connla to Mulgraighy ticket) ride on the bridge's deck. Your horse dropped into the riverbed under it.
 - Companions: `/hood <companion name>` puts a hired companion's hood up or down, like `/hood` does for you, and it
   stays that way when the companion comes back.
 - Gamebots: after a release they stand up beside their bindstone instead of on top of it (Huginfell).
