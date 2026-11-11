@@ -24,6 +24,30 @@ namespace DOL.GS
         public static int RetryDelayMilliseconds(int noExperienceDeathStreak) =>
             noExperienceDeathStreak < 3 ? 0 : Math.Min(120_000, (noExperienceDeathStreak - 2) * 30_000);
 
+        // owner 2026-11-10: "Recovering after release" had no time limit; 36 bots held it for hours at 0% endurance while the
+        // 15-minute stuck watchdog teleported them to the same capital spot. Sitting from a release to full takes about two
+        // minutes; the hold ends five minutes past the expected recovery (or past its retry pause, when that is longer).
+        public const long ExpectedReleaseRecoveryMilliseconds = 3 * 60_000;
+        public const long ReleaseRecoveryStallGraceMilliseconds = 5 * 60_000;
+
+        public static bool ReleaseRecoveryStalled(long holdStartedTick, long pauseUntilTick, long nowTick) =>
+            holdStartedTick > 0 &&
+            nowTick >= Math.Max(holdStartedTick + ExpectedReleaseRecoveryMilliseconds, pauseUntilTick) +
+                ReleaseRecoveryStallGraceMilliseconds;
+
+        /// <summary>What still holds a released bot ("endurance", "health,power", "sickness", "pause"), for the stall log.</summary>
+        public static string ReleaseRecoveryBlocker(byte healthPercent, byte manaPercent, byte endurancePercent,
+            bool usesPower, bool sick, bool pausing)
+        {
+            List<string> blocking = [];
+            if (healthPercent < 100) blocking.Add("health");
+            if (usesPower && manaPercent < 100) blocking.Add("power");
+            if (endurancePercent < 100) blocking.Add("endurance");
+            if (sick) blocking.Add("sickness");
+            if (pausing) blocking.Add("pause");
+            return blocking.Count == 0 ? "none" : string.Join(",", blocking);
+        }
+
         /// <summary>
         /// The death fallback over widening sets of camps (nearest ring first): the first set whose safest camp is blue or
         /// easier wins; with none anywhere, the nearest set's safest camp (it may be yellow) as before.

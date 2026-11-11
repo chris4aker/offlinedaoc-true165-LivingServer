@@ -6,6 +6,9 @@ namespace DOL.GS
     {
         public StatBuffECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
+        // owner 2026-11-10: what this instance has put on its owner; a replaced instance never adds or removes again
+        private readonly StatBuffBonusLedger _bonus = new();
+
         public override void OnStartEffect()
         {
             base.OnStartEffect();
@@ -16,8 +19,9 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
+            if (_bonus.BeginApply(Effectiveness))
+                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
+                    ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.
@@ -43,10 +47,16 @@ namespace DOL.GS
             if (next == null || next == this || SpellHandler is not PropertyChangingSpell current ||
                 next.SpellHandler is not PropertyChangingSpell following)
                 return;
+            // owner 2026-11-10: only what is really on comes off (a start still queued has put nothing on yet), and the
+            // replaced instance is marked so its late start or its singer's pulse ending it cannot touch the bonus again
+            bool removeOld = _bonus.Supersede(out double oldEffectiveness);
+            bool addNext = next._bonus.BeginApply(next.Effectiveness);
             foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
             {
-                ApplyBonus(Owner, current.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
-                ApplyBonus(Owner, following.BonusCategory1, property, next.SpellHandler.Spell.Value, next.Effectiveness, false);
+                if (removeOld)
+                    ApplyBonus(Owner, current.BonusCategory1, property, SpellHandler.Spell.Value, oldEffectiveness, true);
+                if (addNext)
+                    ApplyBonus(Owner, following.BonusCategory1, property, next.SpellHandler.Spell.Value, next.Effectiveness, false);
             }
             Owner.StartHealthRegeneration();
             Owner.StartEnduranceRegeneration();
@@ -63,8 +73,9 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
-                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
+            if (_bonus.BeginRemove(out double appliedEffectiveness))
+                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
+                    ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, appliedEffectiveness, true);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.
