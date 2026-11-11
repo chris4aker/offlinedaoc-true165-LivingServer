@@ -1368,7 +1368,7 @@ func _process_inner(delta: float) -> void:
 		if _check_exits() or _check_border():
 			return                                         # the scene is changing to the next zone
 		if Server.active:
-			_ride_server_steed()
+			_ride_server_steed(delta)
 			if _server_ready and Server.playing:
 				_send_position(delta)
 				_server_attack_tick()
@@ -1596,6 +1596,7 @@ var _server_steed := 0                         # the object id of the server's s
 
 func _server_mount(steed: int) -> void:
 	_server_steed = steed
+	_ride_drawn_y = INF
 	player.riding = steed != 0
 	if steed == 0:
 		var at := player.global_position
@@ -1608,13 +1609,30 @@ func _server_dismount() -> void:
 
 
 ## On the server's steed: you sit in its saddle and face its way (the server moves it).
-func _ride_server_steed() -> void:
+## The steed's figure draws its height eased (Npc._process_view: a rise or dip over a moment, not at once); a bot
+## rider's figure eases its seat the same way, so it stays in the saddle. You were put at the exact seat height, so on
+## slopes you floated above the drawn horse uphill and sank into it downhill (owner 2026-11-10): the same easing here.
+## Only the steed's root height is eased; the saddle's offset (re-measured from its animated saddle bone every frame)
+## goes on top at once, so the gallop's bob in your seat is neither smaller nor late (owner 2026-11-10).
+var _ride_drawn_y := INF                       # the steed's drawn root height under you (INF: not yet placed)
+
+
+func _ride_server_steed(delta: float) -> void:
 	if _server_steed == 0 or not (npcs is ServerWorld):
 		return
 	var steed: NpcState = (npcs as ServerWorld).by_oid.get(_server_steed)
 	if steed == null:
 		return
-	player.global_position = (npcs as ServerWorld).seat_of(steed)
+	var seat := (npcs as ServerWorld).seat_of(steed)
+	var saddle_y := seat.y - steed.pos.y                # the live saddle height (seat_of only turns it about UP)
+	var root_y := steed.pos.y
+	if _ride_drawn_y != INF:                           # (Npc._process_view's rule; a bigger jump is drawn at once)
+		var dy := root_y - _ride_drawn_y
+		if absf(dy) > 0.002 and absf(dy) < Npc.STEP_DRAW_MAX:
+			root_y = _ride_drawn_y + dy * (1.0 - exp(-Player.STEP_EASE * delta))
+	_ride_drawn_y = root_y
+	seat.y = root_y + saddle_y
+	player.global_position = seat
 	player.char_yaw = steed.yaw + PI                     # the steed model faces +Z, the player faces -Z
 	player._apply_model_yaw()
 
