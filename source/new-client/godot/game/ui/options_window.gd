@@ -29,6 +29,13 @@ var _scroll: ScrollContainer
 var _list: VBoxContainer
 var _capture := []                       # [action id, slot, button] while waiting for a key
 var _status: Label
+var _name_colours: OptionButton          # INTERFACE's NAME COLOURS, kept to follow /colornames (sync_name_colours)
+
+
+## /colornames or /oldnamecolors typed while the INTERFACE page is open: its dropdown follows (owner 2026-11-10 review).
+func sync_name_colours() -> void:
+	if _name_colours and is_instance_valid(_name_colours):
+		_name_colours.select(1 if NamePlates.colored() else 0)   # (select() does not fire item_selected)
 
 
 func build() -> void:
@@ -540,6 +547,11 @@ func _interface() -> void:
 		_save("interface", "alpha", x)
 		ClassicWindow.set_interface_alpha(x, get_tree())))
 	_hint("HOW SOLID ALL THE WINDOWS ARE (THE CHAT BOXES TOO) - LOWER SEES THE WORLD THROUGH THEM; TEXT AND ICONS STAY SOLID. RIGHT-CLICK A WINDOW TO SET THAT WINDOW ALONE.")
+	# the 1.64 client's Game Options "Names: Classic / Colored" (game.dll), also /colornames and /oldnamecolors (owner
+	# 2026-11-10; NamePlates)
+	_name_colours = _choice(["Classic", "Colored"], 1 if NamePlates.colored() else 0, func(i: int): NamePlates.set_colored(i == 1))
+	_row("NAME COLOURS", _name_colours)
+	_hint("CLASSIC (THE DEFAULT): THE NAMES AS ALWAYS. COLORED: THE 1.54 SCHEME (ALSO /COLORNAMES, AND /OLDNAMECOLORS FOR CLASSIC) - MONSTERS IN THEIR CON COLOUR, NPCS CYAN, PLAYERS, GAMEBOTS AND COMPANIONS LIGHT BLUE, YOUR GROUP ORANGE, YOUR GUILD DARK GREEN, ENEMY REALMS RED, THE DEAD BROWN, YOUR TARGET WHITE.")
 	# autoloot back as an option (owner 2026-11-05: "default off"; a quality-of-life addition, not in 1.65)
 	_heading("LOOT")
 	_row("AUTO LOOT", _toggle(Loot.autoloot(), func(on: bool): Loot.set_autoloot(on)))

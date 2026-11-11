@@ -248,6 +248,11 @@ func _client_command(text: String) -> bool:
 			PlayerData.window_toggle.emit("warmap")
 		"hidenames", "shownames":                       # the 1.64 client's own (game.dll &hidenames / &shownames)
 			NamePlates.hidden = cmd == "hidenames"
+		"colorname", "colornames", "oldnamecolors":     # the 1.64 client's own (game.dll &colorname / &oldnamecolors):
+			NamePlates.set_colored(cmd != "oldnamecolors")  # the 1.54 name colours on / off (owner 2026-11-10)
+			var gui := get_parent().get_parent() as GameUI  # an open Options page follows (owner 2026-11-10 review)
+			if gui and gui.options:
+				gui.options.sync_name_colours()
 		"craft" when Server.active and rest == "":       # the tradeskill window (the original's own /craft;
 			PlayerData.window_toggle.emit("craft")         # owner 2026-10-30)
 		"qbar":
