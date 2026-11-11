@@ -16,19 +16,19 @@ RealmAbility.SendCastMessage.PlayerCasts:		{0} casts a spell!
 RealmAbility.SendCastMessage.YouCast:			You cast a {0} Spell!
 
 ## Adrenaline Rush
-AdrenalineRushAbility.AddEffectsInfo.Info1:		
-AdrenalineRushAbility.AddEffectsInfo.Info2:		
-AdrenalineRushAbility.AddEffectsInfo.Info3:		
-AdrenalineRushAbility.AddEffectsInfo.Info4:		
-AdrenalineRushAbility.AddEffectsInfo.Info5:
+AdrenalineRushAbility.AddEffectsInfo.Info1:		Level 1: Duration: 20 seconds
+AdrenalineRushAbility.AddEffectsInfo.Info2:		Level 2: Duration: 20 seconds
+AdrenalineRushAbility.AddEffectsInfo.Info3:		Level 3: Duration: 20 seconds
+AdrenalineRushAbility.AddEffectsInfo.Info4:		Target: Self
+AdrenalineRushAbility.AddEffectsInfo.Info5:	Casting time: instant
 GameLiving.CheckWeaponMagicalEffect.Protected:		Your target is protected against your poison by a magical effect.
 
 ## Bedazzling Aura
-BedazzlingAuraAbility.AddEffectsInfo.Info1:
-BedazzlingAuraAbility.AddEffectsInfo.Info2:
-BedazzlingAuraAbility.AddEffectsInfo.Info3:
-BedazzlingAuraAbility.AddEffectsInfo.Info4:
-BedazzlingAuraAbility.AddEffectsInfo.Info5:
+BedazzlingAuraAbility.AddEffectsInfo.Info1:	Level 1: Value: 10% / Duration: 30 seconds
+BedazzlingAuraAbility.AddEffectsInfo.Info2:	Level 2: Value: 20% / Duration: 30 seconds
+BedazzlingAuraAbility.AddEffectsInfo.Info3:	Level 3: Value: 40% / Duration: 30 seconds
+BedazzlingAuraAbility.AddEffectsInfo.Info4:	Target: Group
+BedazzlingAuraAbility.AddEffectsInfo.Info5:	Casting time: instant
 
 ## Concentration
 ConcentrationAbility.AddEffectsInfo.Info1:	Level 1: Value: 25%
@@ -38,7 +38,7 @@ ConcentrationAbility.AddEffectsInfo.Info4:	Target: Self
 ConcentrationAbility.AddEffectsInfo.Info5:	Casting time: instant
 
 ## Dashing Defense
-DashingDefenseAbility.AddEffectsInfo.Info1:		
+DashingDefenseAbility.AddEffectsInfo.Info1:		Duration: 10 / 30 / 60 seconds (level 1 / 2 / 3)
 DashingDefenseAbility.AddEffectsInfo.Info2:		Target: Self
 DashingDefenseAbility.AddEffectsInfo.Info3:		Casting time: instant
 DashingDefenseAbility.Execute.AlreadyEffect:		You already an effect of that type!
@@ -50,24 +50,24 @@ FirstAidAbility.AddEffectsInfo.Info2:			Level 2: Value: 600HP
 FirstAidAbility.AddEffectsInfo.Info3:			Level 3: Value: 900HP
 FirstAidAbility.AddEffectsInfo.Info4:			Target: Self
 FirstAidAbility.AddEffectsInfo.Info5:			Casting time: instant
-FirstAidAbility.AddEffectsInfo.Info6:			 
+FirstAidAbility.AddEffectsInfo.Info6:			This ability cannot be used in combat.
 FirstAidAbility.Execute.FullyHealed:			You are fully healed.
 FirstAidAbility.Execute.AlreadyFullyHealed:		You are already fully healed.
 FirstAidAbility.Execute.HealYourself:			You heal yourself for {0} hit points.
 
 ## Juggernaut
-JuggernautAbility.AddEffectsInfo.Info1:
-JuggernautAbility.AddEffectsInfo.Info2:
-JuggernautAbility.AddEffectsInfo.Info3:
-JuggernautAbility.AddEffectsInfo.Info4:
-JuggernautAbility.AddEffectsInfo.Info5:
+JuggernautAbility.AddEffectsInfo.Info1:	Level 1: Value: +10 levels / Duration: 1:00 minute
+JuggernautAbility.AddEffectsInfo.Info2:	Level 2: Value: +20 levels / Duration: 1:00 minute
+JuggernautAbility.AddEffectsInfo.Info3:	Level 3: Value: +30 levels / Duration: 1:00 minute
+JuggernautAbility.AddEffectsInfo.Info4:	Target: Controlled pet
+JuggernautAbility.AddEffectsInfo.Info5:	Casting time: instant
 
 ## Mastery of Concentration
-MasteryofConcentrationAbility.AddEffectsInfo.Info1:
-MasteryofConcentrationAbility.AddEffectsInfo.Info2:
-MasteryofConcentrationAbility.AddEffectsInfo.Info3:
-MasteryofConcentrationAbility.AddEffectsInfo.Info4:
-MasteryofConcentrationAbility.AddEffectsInfo.Info5:
+MasteryofConcentrationAbility.AddEffectsInfo.Info1:	Level 1: Duration: 30 seconds
+MasteryofConcentrationAbility.AddEffectsInfo.Info2:	Level 2: Duration: 30 seconds
+MasteryofConcentrationAbility.AddEffectsInfo.Info3:	Level 3: Duration: 30 seconds
+MasteryofConcentrationAbility.AddEffectsInfo.Info4:	Target: Self
+MasteryofConcentrationAbility.AddEffectsInfo.Info5:	Casting time: instant
 
 ## Mystic Crystal Lore
 MysticCrystalLoreAbility.AddEffectsInfo.Info1:	Level 1: Value: 25%
@@ -75,21 +75,21 @@ MysticCrystalLoreAbility.AddEffectsInfo.Info2:	Level 2: Value: 60%
 MysticCrystalLoreAbility.AddEffectsInfo.Info3:	Level 3: Value: 100%
 MysticCrystalLoreAbility.AddEffectsInfo.Info4:	Target: Self
 MysticCrystalLoreAbility.AddEffectsInfo.Info5:	Casting time: instant
-MysticCrystalLoreAbility.AddEffectsInfo.Info6:
+MysticCrystalLoreAbility.AddEffectsInfo.Info6:	This ability cannot be used in combat.
 
 ## Negative Maelstrom
-NegativeMaelstromAbility.AddEffectsInfo.Info1:
-NegativeMaelstromAbility.AddEffectsInfo.Info2:
-NegativeMaelstromAbility.AddEffectsInfo.Info3:
-NegativeMaelstromAbility.AddEffectsInfo.Info4:
-NegativeMaelstromAbility.AddEffectsInfo.Info5:
-NegativeMaelstromAbility.AddEffectsInfo.Info6:
-NegativeMaelstromAbility.AddEffectsInfo.Info7:
-NegativeMaelstromAbility.AddEffectsInfo.Info8:
-NegativeMaelstromAbility.AddEffectsInfo.Info9:
+NegativeMaelstromAbility.AddEffectsInfo.Info1:	Level 1: Duration: 30 seconds
+NegativeMaelstromAbility.AddEffectsInfo.Info2:	Level 2: Duration: 30 seconds
+NegativeMaelstromAbility.AddEffectsInfo.Info3:	Level 3: Duration: 30 seconds
+NegativeMaelstromAbility.AddEffectsInfo.Info4:	Target: Area
+NegativeMaelstromAbility.AddEffectsInfo.Info5:	Range: 1500
+NegativeMaelstromAbility.AddEffectsInfo.Info6:	Frequency: 5 seconds
+NegativeMaelstromAbility.AddEffectsInfo.Info7:	Casting time: 2.0 seconds
+NegativeMaelstromAbility.AddEffectsInfo.Info8:	Radius: 500
+NegativeMaelstromAbility.AddEffectsInfo.Info9:	Damage type: Cold
 
 ## Purge
-PurgeAbility.AddEffectsInfo.Info1:			
+PurgeAbility.AddEffectsInfo.Info1:			Effect: removes all negative effects
 PurgeAbility.AddEffectsInfo.Info2:			Target: Self
 PurgeAbility.AddEffectsInfo.Info3:			Casting time: instant
 PurgeAbility.OnTick.PurgeActivate:			Purge activates in {0} seconds!
@@ -102,9 +102,9 @@ RAPropertyEnhancer.DelveInfo.Info1:		Level {0}: Amount: {1}{2}
 RAStatEnhancer.DelveInfo.Info1:			Level {0}: Amount: {1}
 
 ## Second Wind
-SecondWindAbility.AddEffectsInfo.Info1:			
-SecondWindAbility.AddEffectsInfo.Info4:			
-SecondWindAbility.AddEffectsInfo.Info5:			
+SecondWindAbility.AddEffectsInfo.Info1:			Value: 100% endurance
+SecondWindAbility.AddEffectsInfo.Info4:			Target: Self
+SecondWindAbility.AddEffectsInfo.Info5:			Casting time: instant
 
 ## Selective Blindness
 GameLiving.AttackData.InvisibleToYou:		{0} is invisible to you!
