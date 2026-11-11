@@ -23,6 +23,8 @@ var _rows: Array = []
 var _title: Label
 var _page_label: Label
 var _coins: Array = []
+var _cost: Label                                   # a seal / bounty merchant's price, over the coin boxes (GitHub #37)
+var _cost_bg: ColorRect
 var _buy: Button
 var _sell: Button
 var _appraise: Button
@@ -68,6 +70,20 @@ func build() -> void:
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		add_child(l)
 		_coins.append(l)
+	_cost_bg = ColorRect.new()                         # covers the five coin boxes and their coin pictures
+	_cost_bg.color = Color(0.02, 0.02, 0.02)
+	_cost_bg.position = Vector2(COIN_BOX_X[0] - 6, 390)
+	_cost_bg.size = Vector2(COIN_BOX_X[4] + 33 - COIN_BOX_X[0] + 12, 17)
+	_cost_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_cost_bg.visible = false
+	add_child(_cost_bg)
+	_cost = UiArt.label("", 9, UiArt.GOLD_HI)
+	_cost.position = _cost_bg.position
+	_cost.size = _cost_bg.size
+	_cost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_cost.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_cost.visible = false
+	add_child(_cost)
 	_qty_label = UiArt.label("QTY 1", 8, UiArt.GOLD)
 	_qty_label.position = Vector2(6, 391)
 	_qty_label.size = Vector2(56, 12)
@@ -170,6 +186,7 @@ func open_for(merchant: String, items_list: String) -> void:
 ## runtime ItemDb entry "srvm:<page>:<index>" (its slot on the server is page * 30 + index).
 var server_window := -1
 var server_oid := 0                            # the server merchant's object id (ServerWorld.target_for_trade)
+var server_guild := ""                         # the merchant's title ("Emerald Armor Merchant": which seal it takes)
 
 
 ## The server acts on your target: the merchant whose window this is, targeted again if need be.
@@ -272,11 +289,31 @@ func select_item(id: String) -> void:
 
 func _show_price() -> void:
 	var price := int(ItemDb.item(selected).get("price", 0)) if selected != "" else 0
+	# GitHub #37: a seal merchant (window 2, eMerchantWindowType.Count) or a bounty merchant (window 1) sends the item's
+	# cost in seals / bounty points, not coin - it read as copper ("28" in the copper box). Written out across the
+	# coin boxes instead: "28 EMERALD SEALS", "150 BOUNTY POINTS". Coin merchants are unchanged.
+	var currency := _currency(price)
+	_cost_bg.visible = currency != "" and selected != ""
+	_cost.visible = _cost_bg.visible
+	_cost.text = "%d %s" % [price, currency] if _cost.visible else ""
 	var parts := PlayerData.split_money(price)
 	var keys := ["mithril", "platinum", "gold", "silver", "copper"]
 	for i in 5:
-		_coins[i].text = str(parts[keys[i]]) if selected != "" else ""
+		_coins[i].text = str(parts[keys[i]]) if selected != "" and not _cost.visible else ""
 	_buy.disabled = selected == ""
+
+
+## What a server merchant's prices are counted in ("" = coin).
+func _currency(price: int) -> String:
+	if not Server.active or not selected.begins_with("srvm:"):
+		return ""
+	if server_window == 1:
+		return "BOUNTY POINT" if price == 1 else "BOUNTY POINTS"
+	if server_window == 2:
+		var seal := "SEAL" if price == 1 else "SEALS"
+		var first := server_guild.strip_edges().split(" ")[0].to_upper() if server_guild.strip_edges() != "" else ""
+		return (first + " " + seal) if first in ["EMERALD", "SAPPHIRE", "DIAMOND", "RUBY", "BLOOD"] else seal
+	return ""
 
 
 func buy_selected() -> void:

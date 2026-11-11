@@ -2422,6 +2422,7 @@ func _merchant(d: Dictionary) -> void:
 	# player housing's stores (window 3-11) are bought from by window type (HouseMgr.BuyHousingItem), not from your
 	# target: nothing is targeted again for them (a hookpoint's or house menu's store kept the NPC right-clicked before)
 	viewer.ui.merchant.server_oid = 0 if wt >= 3 and wt <= 11 else last_interact_oid
+	viewer.ui.merchant.server_guild = String(mst.spawn.get("guild", "")) if mst else ""   # names a seal merchant's seal
 	viewer.ui.merchant.open_server(who, _merchant_pages, int(d.window))
 
 
