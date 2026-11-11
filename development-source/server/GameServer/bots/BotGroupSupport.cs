@@ -12,6 +12,57 @@ namespace DOL.GS
             castStarted > 0 && castStarted <= deadline && now >= castStarted &&
             now < castStarted + Math.Clamp((long)castTime + 2000, 2000, 60000);
 
+        // owner 2026-11-10: 42 of 101 resurrection timeouts had a resurrector alive and near but short of power, and the dead
+        // released after 60 s. Out of combat, a resurrector short only of power sits for it, and the corpse it sits for
+        // waits up to 120 s instead. Spell costs are unchanged.
+        public const long ResurrectionReleaseMilliseconds = 60_000;
+        public const long ResurrectionRestReleaseMilliseconds = 120_000;
+        public const long RestingForResurrectionMilliseconds = 15_000;   // outlasts a slow bot think
+
+        /// <summary>The power a resurrection of this corpse takes (the reservation's native cost), at least the spell's own.</summary>
+        public static int ResurrectionPowerCost(int maxMana, int casterLevel, int corpseLevel, int spellPowerCost) =>
+            Math.Max(spellPowerCost,
+                (int)(maxMana * Math.Max(.1f, .5f + (corpseLevel - casterLevel) / (float)Math.Max(1, casterLevel))));
+
+        /// <summary>A resurrector sits for power only when power is the one thing stopping the raise and resting can reach it.</summary>
+        public static bool ShouldRestForResurrection(bool corpseWaitingInRange, bool partyInCombat, bool casting,
+            bool interruptedOrControlled, bool onRecast, int mana, int maxMana, int requiredPower) =>
+            corpseWaitingInRange && !partyInCombat && !casting && !interruptedOrControlled && !onRecast &&
+            mana < requiredPower && requiredPower <= maxMana;
+
+        /// <summary>How long a corpse waits after combat clears for a raise.</summary>
+        public static long ResurrectionReleaseWait(bool resurrectorRestingForIt) =>
+            resurrectorRestingForIt ? ResurrectionRestReleaseMilliseconds : ResurrectionReleaseMilliseconds;
+
+        public static bool IsRestingClaimCurrent(long noteTick, long nowTick) =>
+            noteTick > 0 && nowTick >= noteTick && nowTick - noteTick < RestingForResurrectionMilliseconds;
+
+        private sealed class RestForRaise
+        {
+            public GameLiving Corpse;
+            public long NoteTick;
+        }
+        private static readonly ConditionalWeakTable<GameBot, RestForRaise> RestingForRaise = new();
+
+        /// <summary>Notes that <paramref name="bot"/> sits for the power to raise <paramref name="corpse"/>; refreshed each think.</summary>
+        public static void NoteRestingForResurrection(GameBot bot, GameLiving corpse, long nowTick)
+        {
+            RestForRaise note = RestingForRaise.GetOrCreateValue(bot);
+            note.Corpse = corpse;
+            note.NoteTick = nowTick;
+        }
+
+        public static void ClearRestingForResurrection(GameBot bot)
+        {
+            if (bot != null && RestingForRaise.TryGetValue(bot, out RestForRaise note))
+                note.NoteTick = 0;
+        }
+
+        /// <summary>True while <paramref name="bot"/> sits for a raise (of <paramref name="corpse"/>, or of anyone when null).</summary>
+        public static bool IsRestingForResurrection(GameBot bot, GameLiving corpse, long nowTick) =>
+            bot != null && RestingForRaise.TryGetValue(bot, out RestForRaise note) &&
+            IsRestingClaimCurrent(note.NoteTick, nowTick) && (corpse == null || note.Corpse == corpse);
+
         public static bool HasCorpseLineOfSight(GameBot caster, GameLiving corpse) =>
             caster.CurrentZone?.IsDungeon != true ||
             !PathfindingProvider.Instance.IsAvailable || !PathfindingProvider.Instance.HasNavmesh(caster.CurrentZone) ||
@@ -86,7 +137,7 @@ namespace DOL.GS
             {
                 if (!HasCorpseLineOfSight(bot, corpse)) continue;
                 if (corpse.TempProperties.GetProperty<GameLiving>("RESURRECT_CASTER") != null) continue;
-                int cost = (int)(bot.MaxMana * Math.Max(.1f, .5f + (corpse.Level - bot.Level) / (float)Math.Max(1, (int)bot.Level)));
+                int cost = ResurrectionPowerCost(bot.MaxMana, bot.Level, corpse.Level, 0);
                 if (bot.Mana < cost) continue;
                 if (state.Resurrection.TryReserve(bot, corpse, GameLoop.GameLoopTime, spell.CastTime,
                     true, combat, combat ? budget + 1 : healers, false, bot.CanCastHealSpells)) return corpse;
@@ -109,7 +160,7 @@ namespace DOL.GS
             if (UnderAttack(bot)) return "under attack";
             if (!HasCorpseLineOfSight(bot, corpse)) return "no line of sight to the corpse";
             if (corpse.TempProperties.GetProperty<GameLiving>("RESURRECT_CASTER") != null) return "another resurrection is already pending on the corpse";
-            int cost = (int)(bot.MaxMana * Math.Max(.1f, .5f + (corpse.Level - bot.Level) / (float)Math.Max(1, (int)bot.Level)));
+            int cost = ResurrectionPowerCost(bot.MaxMana, bot.Level, corpse.Level, 0);
             if (bot.Mana < cost) return $"not enough power for the reservation ({bot.Mana}/{cost} of {bot.MaxMana})";
             return "the shared reservation refused (another resurrector holds it, or healers are needed for combat)";
         }

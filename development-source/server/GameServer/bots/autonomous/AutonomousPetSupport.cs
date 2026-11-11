@@ -614,12 +614,14 @@ public static class AutonomousPetSupport
             }
 
             bool petFight = combatTarget?.IsAlive == true && (owner.InCombat || pet.InCombat);
+            // Owner 2026-11-10: routine pet buffs wait while the owner's autonomous party walks (BotTravelCastHold)
+            bool travelHold = !petFight && owner is GameBot { Brain: BotBrain travelBrain } && travelBrain.HoldsUpkeepForGroupTravel();
             (Spell Spell, SpellLine Line) buff = default;
             for (int i = 0; i < spells.Count; i++)
             {
                 var entry = spells[i];
                 if (buff.Spell != null && entry.Spell.Level <= buff.Spell.Level) continue;
-                if (entry.Spell.IsBuff && entry.Spell.Target == eSpellTarget.PET &&
+                if (!travelHold && entry.Spell.IsBuff && entry.Spell.Target == eSpellTarget.PET &&
                     !IsCovenantPetHot(characterClass, petOwnerSpec, entry.Spell) &&
                     !CompanionFollowPolicy.DeferBuff(owner, entry.Spell) &&
                     ShouldMaintainRoutinePetBuff(entry.Spell, petFight, owner) &&

@@ -115,8 +115,11 @@ namespace DOL.GS
         /// </summary>
         public static bool DeferBuff(GameBot bot, Spell spell)
         {
-            if (bot?.IsAutonomousWorldBot != true || bot.IsPlayerLedGroup || bot.Group == null || bot.InCombat || spell == null ||
-                bot.Group.LivingLeader is not GameBot leader || !leader.IsAlive || !leader.IsMoving || leader.InCombat)
+            // owner 2026-11-10: read the group once; it can be cleared on another thread between two reads (NRE in
+            // GameBot.CastSpell removed the bot from the world)
+            Group group = bot?.Group;
+            if (bot?.IsAutonomousWorldBot != true || bot.IsPlayerLedGroup || group == null || bot.InCombat || spell == null ||
+                group.LivingLeader is not GameBot leader || !leader.IsAlive || !leader.IsMoving || leader.InCombat)
                 return false;
             if (leader != bot && !TryGetLive(bot, leader, out _, out _))
                 return false;

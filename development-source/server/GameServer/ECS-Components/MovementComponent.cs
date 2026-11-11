@@ -13,9 +13,24 @@ namespace DOL.GS
         private int _turningDisabledCount;
 
         public GameLiving Owner { get; }
-        public short CurrentSpeed { get; set; }
+        private short _currentSpeed;
+        public short CurrentSpeed
+        {
+            get => _currentSpeed;
+            set
+            {
+                if (value != 0 || _currentSpeed != 0)
+                    LastWalkTick = GameLoop.GameLoopTime;
+                _currentSpeed = value;
+            }
+        }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public long LastMovementTick { get; private set; }
+        /// <summary>
+        /// Owner 2026-11-10: the last tick the owner walked or stopped walking. Unlike LastMovementTick, turning on the
+        /// spot does not count (bot party upkeep settles on this, BotTravelCastHold).
+        /// </summary>
+        public long LastWalkTick { get; private set; }
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
