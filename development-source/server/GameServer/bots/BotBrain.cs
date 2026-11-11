@@ -612,7 +612,16 @@ namespace DOL.AI.Brain
 
         #region Brain Core
 
-        public bool IsHealer;
+        // owner 2026-11-10: true for a healing class, and for a Bard while it holds its current group's Healer slot
+        // (BardGroupHealer165 sets HealerSlotGroup; leaving that group ends the duty by itself; switching
+        // bot_bard_fills_healer_slot off ends it at once in live groups too)
+        private bool _isHealerClass;
+        public Group HealerSlotGroup;
+        public bool IsHealer
+        {
+            get => _isHealerClass || BardGroupHealer165.HoldsHealerSlot(HealerSlotGroup, Body?.Group);
+            set => _isHealerClass = value;
+        }
         public bool AlreadyCheckedHeals;
         private long _nextPriorityTauntTick;
         private long _nextDeployablePetTick;
@@ -1880,6 +1889,7 @@ namespace DOL.AI.Brain
         private string _lastBetweenTaskPurchaseAssignment = string.Empty; // Ordinary vendor purchase throttle only.
 
         private long _nextArrivedServiceWarning;
+        private int _fruitlessExchangeChecks;   // owner 2026-11-10: real exchange checks in a row that did nothing
         internal bool TryUseArrivedAutonomousService(GameNPC service)
         {
             if (service?.ObjectState != GameObject.eObjectState.Active || BotBody == null ||
@@ -1933,6 +1943,7 @@ namespace DOL.AI.Brain
                 _pendingExchangeItem = null;
                 _pendingExchangePrice = 0;
                 _pendingExchangeListTick = 0;
+                _fruitlessExchangeChecks = 0;
                 return false;
             }
 
@@ -1940,7 +1951,10 @@ namespace DOL.AI.Brain
                 .OfType<RealmExchangeBroker>().FirstOrDefault(candidate => candidate.Realm == bot.Realm);
             if (broker == null || broker.Realm != bot.Realm ||
                 !bot.IsWithinRadius(broker, GS.ServerProperties.Properties.WORLD_PICKUP_DISTANCE))
+            {
+                _fruitlessExchangeChecks = 0;
                 return false;
+            }
 
             if (_pendingExchangeItem != null)
             {
@@ -1960,9 +1974,14 @@ namespace DOL.AI.Brain
                     ? $"Listed {item.Name} on the Realm Exchange"
                     : $"Kept {item.Name} after its listing failed",
                     listed ? $"Real item listed for {price} copper" : "The real inventory item was not removed");
-                if (listed)
-                    AutonomousObjectiveAssignments.TryCompleteBetweenTaskServicesIfSatisfied(bot);
                 _nextExchangeCheckTick = now + 3_000 + Random.Shared.Next(4_001);
+                if (listed)
+                {
+                    _fruitlessExchangeChecks = 0;
+                    AutonomousObjectiveAssignments.TryCompleteBetweenTaskServicesIfSatisfied(bot);
+                }
+                else
+                    NoteFruitlessExchangeCheck(bot, now);
                 return listed;
             }
 
@@ -1987,16 +2006,21 @@ namespace DOL.AI.Brain
                     bool listed = AutonomousBotEconomy.TryList(bot, candidate.Item, listingPrice);
                     if (listed)
                     {
+                        _fruitlessExchangeChecks = 0;
                         SetExchangeStatus(bot, $"Listed {candidate.Item.Name} on the Realm Exchange",
                             $"Real item listed for {listingPrice} copper");
                         AutonomousObjectiveAssignments.TryCompleteBetweenTaskServicesIfSatisfied(bot);
                     }
+                    else
+                        NoteFruitlessExchangeCheck(bot, now);
                     return listed;
                 }
 
                 _pendingExchangeItem = candidate.Item;
                 _pendingExchangePrice = listingPrice;
                 _pendingExchangeListTick = now + 7_000 + Random.Shared.Next(4_001);
+                // Owner 2026-11-10 (review): no reset here; only a real listing or purchase resets the count, so a
+                // listing that keeps failing still ends the step (GivesUpOnExchange waits while one is pending).
                 SetExchangeStatus(bot, $"Asking the realm about {candidate.Item.Name}",
                     $"Will list the real item for {listingPrice} copper after the chatter");
                 bot.StopMoving();
@@ -2015,6 +2039,7 @@ namespace DOL.AI.Brain
                         equipped ? $"Bought and equipped {purchase.Item.Name}" : $"Bought {purchase.Item.Name} from the Realm Exchange",
                         $"Paid {paidCopper} copper from real saved coin");
                     AutonomousStuckWatchdog.MarkProgress(bot, eAutonomousProgressKind.Money);
+                    _fruitlessExchangeChecks = 0;
                     AutonomousObjectiveAssignments.TryCompleteBetweenTaskServicesIfSatisfied(bot);
                     _nextExchangeCheckTick = now + 3_000 + Random.Shared.Next(4_001);
                     return true;
@@ -2025,7 +2050,30 @@ namespace DOL.AI.Brain
             // travels here. Do not keep routing to a stale cached service for
             // another five minutes when the actual broker has nothing to do.
             AutonomousBotEconomy.MarkEconomyChanged(bot.DatabaseID);
+            NoteFruitlessExchangeCheck(bot, now);
             return false;
+        }
+
+        // Owner 2026-11-10: a broker that has nothing to list or sell to this bot several real checks in a row ends the
+        // exchange step (48 h log: 1,701 AUTONOMOUS_SERVICE_BLOCKED at Adalyn, bots idle an hour beside it). The economy
+        // then plans without the exchange for a while (a merchant sale, or nothing), and the errands close when done.
+        private void NoteFruitlessExchangeCheck(GameBot bot, long now)
+        {
+            // Owner 2026-11-10 (review): already given up in this window - no new give-up every 3 checks
+            if (AutonomousServiceFallback.IsExchangeUnreachable(bot.DatabaseID, now))
+            {
+                _fruitlessExchangeChecks = 0;
+                return;
+            }
+            if (!AutonomousServiceFallback.GivesUpOnExchange(++_fruitlessExchangeChecks, _pendingExchangeItem != null))
+                return;
+            _fruitlessExchangeChecks = 0;
+            AutonomousServiceFallback.MarkExchangeUnreachable(bot.DatabaseID, now);
+            AutonomousBotEconomy.MarkEconomyChanged(bot.DatabaseID);
+            log.Info($"AUTONOMOUS_EXCHANGE_GAVE_UP bot=\"{bot.Name}\" id={bot.DatabaseID} level={bot.Level} " +
+                     $"checks={AutonomousServiceFallback.FruitlessExchangeChecksBeforeGivingUp} " +
+                     $"next={AutonomousBotEconomy.GetNeededService(bot)?.ToString() ?? "none"}");
+            AutonomousObjectiveAssignments.TryCompleteBetweenTaskServicesIfSatisfied(bot);
         }
 
         /// <summary>
@@ -2086,6 +2134,7 @@ namespace DOL.AI.Brain
             Supplies165.Restock(bot, arrivedMerchant);  // True 1.65 Mode: arrows, bolts or throwing weapons bought when running low
             CrafterBots165.Work(bot);        // True 1.65 Mode: crafter bots craft (siegecrafters build siege kits)
             Supplies165.RestockPoisons(bot); // True 1.65 Mode: poison vials for assassins
+            AutonomousBotDyes.TryDye(bot, arrivedMerchant); // now and then a dye for worn gear, by wealth (owner 2026-11-10)
             ushort interactionRadius = (ushort)Math.Clamp(
                 GS.ServerProperties.Properties.WORLD_PICKUP_DISTANCE, 1, ushort.MaxValue);
             // Capital service areas contain several merchants inside the old
@@ -2244,6 +2293,13 @@ namespace DOL.AI.Brain
                 GameLoop.GameLoopTime < _nextMaintenanceBuffTick ||
                 HasResurrectionDuty())   // a corpse in range is raised before any re-buff (as songs and chants already do)
                 return false;
+            // Owner 2026-11-10: an autonomous party holds its upkeep while it walks - no stop for a cast the formation
+            // refuses, no walk toward an out-of-range member (that turned the bot to the member and back every second)
+            if (HoldsUpkeepForGroupTravel())
+            {
+                _nextMaintenanceBuffTick = GameLoop.GameLoopTime + 1_000;
+                return false;
+            }
 
             bool autonomousPetUpkeep = bot.CharacterClass != null &&
                 AutonomousPetSupport.OwnsPetUpkeep((eCharacterClass)bot.CharacterClass.ID);
@@ -2440,6 +2496,13 @@ namespace DOL.AI.Brain
             if (LivingHasEffect(bot, shield) ||
                 shield.HasRecastDelay && bot.GetSkillDisabledDuration(shield) > 0 ||
                 bot.Mana < bot.PowerCost(shield))
+            {
+                _nextSelfBladeturnTick = now + 1_000;
+                return false;
+            }
+
+            // Owner 2026-11-10: not while its autonomous party walks (the stop ended its formation follow)
+            if (HoldsUpkeepForGroupTravel())
             {
                 _nextSelfBladeturnTick = now + 1_000;
                 return false;
@@ -2979,7 +3042,8 @@ namespace DOL.AI.Brain
                 !LivingHasEffect(target, spell) && !(claims?.IsReserved(target, family, now) ?? false);
             // True 1.65: the tanks first, then melee, healers, casters (period groups buffed the tanks first)
             return Classic165Mode.IsOn
-                ? BotBuffReservations<GameLiving>.ChooseBest(pool, Eligible, target => BuffTargetRank(ClassOf(target)))
+                ? BotBuffReservations<GameLiving>.ChooseBest(pool, Eligible, target =>
+                    BotPetBuffBenefit.IsPetLike(target) ? BotPetBuffBenefit.PetRank : BuffTargetRank(ClassOf(target)))   // pets after players and bots (GitHub #28)
                 : BotBuffReservations<GameLiving>.Choose(pool, Eligible);
         }
 
@@ -3007,9 +3071,11 @@ namespace DOL.AI.Brain
         /// Whether a stat buff does anything for this target's class, so a bot spends its concentration where a player
         /// would (player report 2026-11-01: companions put strength and strength/constitution buffs on mages instead of
         /// the tanks). Strength buffs skip pure casters; acuity buffs go only to classes that cast from a mana stat.
-        /// Pets and every other buff: always.
+        /// Pets: everything but power/endurance regeneration, acuity and fatigue (GitHub #28, BotPetBuffBenefit).
         /// </summary>
-        internal static bool BuffHelps(GameLiving target, Spell spell) => BuffHelps(ClassOf(target), spell, Classic165Mode.IsOn);
+        internal static bool BuffHelps(GameLiving target, Spell spell) => BotPetBuffBenefit.IsPetLike(target)
+            ? BotPetBuffBenefit.Helps(spell)
+            : BuffHelps(ClassOf(target), spell, Classic165Mode.IsOn);
 
         /// <summary>
         /// <see cref="BuffHelps(GameLiving, Spell)"/> by class. True 1.65 also: haste (the attack speed buff) skips pure
@@ -3057,6 +3123,9 @@ namespace DOL.AI.Brain
 
         private GameLiving FindMissingPartyPetBuffTarget(Spell spell)
         {
+            // GitHub #28 (owner 2026-11-10): never a buff a pet gets nothing from
+            if (!BotPetBuffBenefit.Helps(spell))
+                return null;
             GameNPC pet = BotGroupPetBuffTargets.Enumerate(BotBody, spell)
                 .FirstOrDefault(candidate => !LivingHasEffect(candidate, spell));
             // Native group spells fan out from the caster; realm buffs target one pet.
@@ -6040,7 +6109,7 @@ namespace DOL.AI.Brain
         private Spell GroupHealChoice(GameLiving patient, bool burst = true)
         {
             foreach (Spell regen in new[] { BotBody.HealOverTimeInstantGroup, BotBody.HealOverTimeGroup })
-                if (CheckHealSpell(regen) && patient != null && !LivingHasEffect(patient, regen))
+                if (CheckHealSpell(regen) && patient != null && !HotRunningOrComing(patient, regen))
                     return regen;
             if (!burst)
                 return null;
@@ -6370,9 +6439,11 @@ namespace DOL.AI.Brain
             // Cure Mezz/Disease/Poison
             if (spellToCast == null)
             {
-                if (Body.Group != null)
+                // owner 2026-11-10: read the group once; a bot leaving it mid-turn made Body.Group null here (NRE,
+                // NpcService removed the bot from the world)
+                if (Body.Group is Group cureGroup)
                 {
-                    foreach (GameLiving member in Body.Group.GetMembersInTheGroup().OrderBy(member => member == AssistedPlayer ? 0 : 1))
+                    foreach (GameLiving member in cureGroup.GetMembersInTheGroup().OrderBy(member => member == AssistedPlayer ? 0 : 1))
                     {
                         if (member.IsMezzed && member != Body && InSupportReach(member) && CheckHealSpell(BotBody.CureMezz))
                         {
@@ -6388,7 +6459,7 @@ namespace DOL.AI.Brain
                             .OrderByDescending(spell => spell.Level).FirstOrDefault() is Spell cureNearsight &&
                         CheckHealSpell(cureNearsight))
                     {
-                        GameLiving blinded = Body.Group.GetMembersInTheGroup().FirstOrDefault(member => member.IsAlive &&
+                        GameLiving blinded = cureGroup.GetMembersInTheGroup().FirstOrDefault(member => member.IsAlive &&
                             InSupportReach(member) && member.effectListComponent.ContainsEffectForEffectType(eEffect.Nearsight));
                         if (blinded != null)
                         {
@@ -6399,7 +6470,7 @@ namespace DOL.AI.Brain
 
                     if (spellToCast == null && nextCureTime < GameLoop.GameLoopTime)
                     {
-                        foreach (GameLiving member in Body.Group.GetMembersInTheGroup().OrderBy(member => member == AssistedPlayer ? 0 : 1))
+                        foreach (GameLiving member in cureGroup.GetMembersInTheGroup().OrderBy(member => member == AssistedPlayer ? 0 : 1))
                         {
                             if (!InSupportReach(member))
                                 continue;
@@ -6462,9 +6533,9 @@ namespace DOL.AI.Brain
                         _healFightSince == 0 ? 0 : GameLoop.GameLoopTime - _healFightSince);
                     if (Body.Group != null && numNeedHealing >= 2 && GroupHealChoice(spellTarget, burstGroupHeal) is Spell groupHeal)
                         spellToCast = groupHeal;
-                    else if (CheckHealSpell(BotBody.HealOverTime) && !LivingHasEffect(spellTarget, BotBody.HealOverTime))
+                    else if (CheckHealSpell(BotBody.HealOverTime) && !HotRunningOrComing(spellTarget, BotBody.HealOverTime))
                         spellToCast = BotBody.HealOverTime;
-                    else if (CheckHealSpell(BotBody.HealOverTimeInstant) && !LivingHasEffect(spellTarget, BotBody.HealOverTimeInstant))
+                    else if (CheckHealSpell(BotBody.HealOverTimeInstant) && !HotRunningOrComing(spellTarget, BotBody.HealOverTimeInstant))
                         spellToCast = BotBody.HealOverTimeInstant;
                     // True 1.65: the small efficient heal outside emergencies; the big heal is for under 40% (above)
                     else if (!classic165 && BotBody.ManaPercent >= ManaThreshold && CheckHealSpell(BotBody.HealBig)
@@ -6476,6 +6547,33 @@ namespace DOL.AI.Brain
                         spellToCast = BotBody.HealBig;
                     else if (CheckHealSpell(BotBody.HealGroup))
                         spellToCast = BotBody.HealGroup;
+                }
+            }
+
+            // Owner 2026-11-10 (GitHub #28 review): a heal over time on the fighting tank as the sustained damage starts
+            if (spellToCast == null && numNeedHealing == 0 && classic165 && IsHealer && !emergenciesOnly && healAt != 2 &&
+                groupInFight && Body.Group is Group hotGroup && !BotBody.IsCasting)
+            {
+                Spell hot = CheckHealSpell(BotBody.HealOverTimeInstant) ? BotBody.HealOverTimeInstant :
+                    CheckHealSpell(BotBody.HealOverTime) ? BotBody.HealOverTime : null;
+                // Owner 2026-11-10 (review): never a walk or a stop for it - only a tank already in the spell's range and
+                // sight (the dungeon line-of-sight check), and a cast-time one only on a healer standing free
+                if (hot != null && BotHealTriage165.PreHotHealerFree(hot.IsInstantCast, BotBody.IsAttacking, BotBody.IsMoving,
+                        BotBody.FollowTarget != null))
+                {
+                    int hotRange = BotBody.castingComponent.CalculateSpellRange(hot);
+                    // Owner 2026-11-10 (review): the group read once; another thread can clear Body.Group mid-turn
+                    foreach (GameLiving member in hotGroup.GetMembersInTheGroup())
+                        if (member.IsAlive && member.InCombat && member.HealthPercent < BotHealTriage165.PreHotBelowPercent &&
+                            BotHealTriage165.IsTank(member) && InSupportReach(member) && Body.IsWithinRadius(member, hotRange) &&
+                            BotHealTriage165.PreHotTank(true, true, member.HealthPercent, HotRunningOrComing(member, hot),
+                                BotBody.ManaPercent) &&
+                            BotGroupSupport.HasCorpseLineOfSight(BotBody, member))
+                        {
+                            spellToCast = hot;
+                            spellTarget = member;
+                            break;
+                        }
                 }
             }
 
@@ -6608,7 +6706,9 @@ namespace DOL.AI.Brain
             bool corpseWaiting = bot.Group.GetMembersInTheGroup().Any(member => member != bot && !member.IsAlive &&
                 member.ObjectState == GameObject.eObjectState.Active && member.CurrentRegionID == bot.CurrentRegionID &&
                 bot.IsWithinRadius(member, range) && member.TempProperties.GetProperty<GameLiving>("RESURRECT_CASTER") == null);
-            return BotGroupSupport.ResurrectionOutranksUpkeep(true, true, bot.Mana >= bot.PowerCost(resurrection), corpseWaiting);
+            // owner 2026-11-10: sitting for the power to raise also outranks upkeep, so songs and buffs don't spend it
+            return BotGroupSupport.ResurrectionOutranksUpkeep(true, true, bot.Mana >= bot.PowerCost(resurrection) ||
+                BotGroupSupport.IsRestingForResurrection(bot, null, GameLoop.GameLoopTime), corpseWaiting);
         }
 
         // Diagnostic for failed group resurrections (an in-range resurrector stood idle
@@ -6708,7 +6808,7 @@ namespace DOL.AI.Brain
                     ReportResurrectionBlock(resurrection, Body.IsCasting ? "casting another spell" :
                         BotBody.Mana < BotBody.PowerCost(resurrection) ? $"not enough power to cast ({BotBody.Mana}/{BotBody.PowerCost(resurrection)})" :
                         BotBody.IsBeingInterruptedByOther ? "being interrupted" : "resurrection on recast");
-                    return false;
+                    return TryRestForResurrection(resurrection);
                 }
                 GameLiving corpse = BotGroupSupport.ReserveResurrection(BotBody, resurrection);
                 if (corpse != null)
@@ -6726,6 +6826,8 @@ namespace DOL.AI.Brain
                     return false;
                 }
                 ReportResurrectionBlock(resurrection, null);
+                if (TryRestForResurrection(resurrection))
+                    return true;
             }
             if (resurrection == null || Body.Group == null || Body.InCombat || Body.Group.GetMembersInTheGroup().Any(m => m.IsAlive && m.InCombat) || Body.IsCasting || !CheckHealSpell(resurrection))
                 return false;
@@ -6760,6 +6862,47 @@ namespace DOL.AI.Brain
 
             // In-range corpses must obtain the shared reservation above.
             return false;
+        }
+
+        /// <summary>
+        /// Owner 2026-11-10: a gamebot resurrector out of combat whose only problem is power sits until it has the raise's cost
+        /// (42 of 101 resurrection timeouts in 48 h: the healer stood near the corpse, short of power, until the dead released).
+        /// The corpse it sits for waits up to 120 s (AutonomousBotGroupCoordinator.PveCorpseRecovery). Spell costs unchanged.
+        /// </summary>
+        private bool TryRestForResurrection(Spell resurrection)
+        {
+            GameBot bot = BotBody;
+            Group group = bot?.Group; // owner 2026-11-10 (review): read once, another thread can clear it
+            if (resurrection == null || bot?.IsAutonomousWorldBot != true || bot.IsPlayerLedGroup || group == null || !bot.IsAlive)
+            {
+                BotGroupSupport.ClearRestingForResurrection(bot);
+                return false;
+            }
+            int range = bot.castingComponent.CalculateSpellRange(resurrection);
+            GameLiving corpse = group.GetMembersInTheGroup()
+                .Where(member => member != bot && !member.IsAlive && member.ObjectState == GameObject.eObjectState.Active &&
+                                 member.CurrentRegionID == bot.CurrentRegionID && bot.IsWithinRadius(member, range) &&
+                                 member.TempProperties.GetProperty<GameLiving>("RESURRECT_CASTER") == null)
+                .OrderBy(bot.GetDistanceTo)
+                .FirstOrDefault();
+            bool partyCombat = bot.InCombat || group.GetMembersInTheGroup().Any(member => member.IsAlive && member.InCombat);
+            int required = corpse == null ? 0 : BotGroupSupport.ResurrectionPowerCost(bot.MaxMana, bot.Level, corpse.Level,
+                bot.PowerCost(resurrection));
+            bool recast = resurrection.HasRecastDelay && bot.GetSkillDisabledDuration(resurrection) > 0;
+            if (!BotGroupSupport.ShouldRestForResurrection(corpse != null && BotGroupSupport.HasCorpseLineOfSight(bot, corpse),
+                    partyCombat, bot.IsCasting, bot.IsBeingInterruptedByOther || bot.IsCrowdControlled || bot.IsSilenced, recast,
+                    bot.Mana, bot.MaxMana, required) || BotRestRecovery.BlocksRest(bot))
+            {
+                BotGroupSupport.ClearRestingForResurrection(bot);
+                return false;
+            }
+            if (!bot.BeginRecoveryRest())
+            {
+                BotGroupSupport.ClearRestingForResurrection(bot);
+                return false;
+            }
+            BotGroupSupport.NoteRestingForResurrection(bot, corpse, GameLoop.GameLoopTime);
+            return true;
         }
 
         #endregion

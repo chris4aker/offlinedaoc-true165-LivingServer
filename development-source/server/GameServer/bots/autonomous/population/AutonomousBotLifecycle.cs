@@ -354,6 +354,8 @@ namespace DOL.GS
         /// <summary>GameBot.RemoveFromWorld: the bot left the world (any path).</summary>
         internal static void NoteRemovedFromWorld(GameBot bot)
         {
+            if (bot != null)
+                AutonomousBotDyes.Forget(bot.DatabaseID);   // per-bot dye rest leaves with the bot (owner 2026-11-10)
             if (bot == null || HiredCompanions165.IsHired(bot) || bot.IsTemporaryGroupHelper)
                 return;
             BotLogoutReason reason = Logouts.TryRemove(bot.DatabaseID, out LogoutIntent intent) ? intent.Reason
@@ -624,6 +626,8 @@ namespace DOL.GS
                     }
 
                     record.IsOnline = true;
+                    // owner 2026-11-10: errands saved at logout restart their window here (no false between-task timeouts)
+                    AutonomousObjectiveAssignments.RestampBetweenTaskWindowAtLogin(record, DateTime.UtcNow);
                     record.Activity = "Choosing first live goal";
                     record.CurrentGoal = "Find a reachable level-appropriate XP camp";
                     record.ObjectiveProgress = prepared.Scheduled ? "Logged in" : "Entered world through staggered login queue";
@@ -818,6 +822,7 @@ namespace DOL.GS
         {
             AutonomousBotStatusPersistence.Forget(botId);
             AutonomousBotEconomy.ForgetCachedDecision(botId);
+            AutonomousBotDyes.Forget(botId);
             if (!string.IsNullOrWhiteSpace(name))
                 BotNameService.ReleaseBotName(name);
             // The guild list and its social-window entry live on the game loop.

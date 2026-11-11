@@ -64,6 +64,12 @@ public static partial class AutonomousBotGroupCoordinator
         public bool LeaderReadyForAssembly { get; init; }
         public bool GroupCombatActive { get; init; }
         public bool RecoveringBetweenPulls { get; init; }
+        // owner 2026-11-10: task clock for the camp travel budget. Only clock transitions change these,
+        // so the publish cache (record equality) is not churned every second.
+        public long? TaskDeadlineTick { get; init; }
+        public long TaskPausedRemainingMilliseconds { get; init; }
+        public long TaskRemainingMilliseconds(long now) => TaskDeadlineTick.HasValue
+            ? Math.Max(0, TaskDeadlineTick.Value - now) : TaskPausedRemainingMilliseconds;
     }
 
     public sealed class StoredMetadata
@@ -351,11 +357,34 @@ public static partial class AutonomousBotGroupCoordinator
             session.MeetupPlanned = true;
             session.PlannedCamp = camp;
             string where = session.RendezvousName;
+            // owner 2026-11-10: move only to a town every member can reach in time (AutonomousMeetupPlanPolicy),
+            // and size the wait from the farthest member (15-20 min).
+            bool reachCheck = AutonomousMeetupPlanPolicy.ReachableTownEnabled;
+            bool sizeWindow = AutonomousMeetupPlanPolicy.TravelWindowEnabled;
+            var meetupCrossings = new Dictionary<(eRealm Realm, ushort From, ushort To), DbZonePoint>();
+            double[] toCurrent = reachCheck || sizeWindow
+                ? MeetupTravelMinutes(members, session.RendezvousRegion, session.Rendezvous, meetupCrossings) : Array.Empty<double>();
+            double farthestCurrent = AutonomousMeetupPlanPolicy.Farthest(toCurrent);
+            double farthestNew = -1, firstRefusedFarthest = -1;
+            int townsRefused = 0;
+            bool moved = false;
             if (camp != null && WorldMgr.GetRegion(camp.RegionId) is Region campRegion)
             {
                 Vector3 campPoint = new(camp.X, camp.Y, camp.Z);
                 float current = session.RendezvousRegion == camp.RegionId ? Vector3.Distance(session.Rendezvous, campPoint) : float.MaxValue;
-                if (TryChooseTownNear(leader, members, campRegion, campPoint, out Vector3 point, out string name) &&
+                Func<Vector3, bool> reachable = !reachCheck ? null : town =>
+                {
+                    double[] toNew = MeetupTravelMinutes(members, camp.RegionId, town, meetupCrossings);
+                    if (AutonomousMeetupPlanPolicy.ShouldMoveRendezvous(toNew, toCurrent))
+                    {
+                        farthestNew = AutonomousMeetupPlanPolicy.Farthest(toNew);
+                        return true;
+                    }
+                    if (townsRefused++ == 0)
+                        firstRefusedFarthest = AutonomousMeetupPlanPolicy.Farthest(toNew);
+                    return false;
+                };
+                if (TryChooseTownNear(leader, members, campRegion, campPoint, out Vector3 point, out string name, reachable) &&
                     Vector3.Distance(point, campPoint) + 5_000 < current)
                 {
                     Vector3 previous = session.Rendezvous;
@@ -365,7 +394,10 @@ public static partial class AutonomousBotGroupCoordinator
                     session.RendezvousName = name;
                     session.RendezvousRegion = camp.RegionId;
                     if (TryBuildRendezvousSlots(session, members))
+                    {
                         where = name;
+                        moved = true;
+                    }
                     else
                     {
                         session.Rendezvous = previous;
@@ -375,19 +407,41 @@ public static partial class AutonomousBotGroupCoordinator
                     }
                 }
             }
+            if (moved && sizeWindow && farthestNew < 0)
+                farthestNew = AutonomousMeetupPlanPolicy.Farthest(
+                    MeetupTravelMinutes(members, session.RendezvousRegion, session.Rendezvous, meetupCrossings));
+            long windowMs = sizeWindow
+                ? AutonomousMeetupPlanPolicy.MeetupWindowMs(moved ? farthestNew : farthestCurrent)
+                : AutonomousRendezvousAttendance.TimeoutMilliseconds;
             session.Phase = "Meeting up";
             session.LeaderReadyForAssembly = true;
-            RebaseAttendance(session, members);
+            RebaseAttendance(session, members, windowMs: windowMs);
             Log.Info($"AUTONOMOUS_GROUP_MEETUP_PLANNED group={session.Id} town=\"{where}\" region={session.RendezvousRegion} " +
                      $"camp=\"{camp?.MonsterName ?? "none"}\" campRegion={camp?.RegionId ?? 0} " +
-                     $"campDistance={(camp != null && camp.RegionId == session.RendezvousRegion ? (int)Vector3.Distance(session.Rendezvous, new(camp.X, camp.Y, camp.Z)) : -1)}");
+                     $"campDistance={(camp != null && camp.RegionId == session.RendezvousRegion ? (int)Vector3.Distance(session.Rendezvous, new(camp.X, camp.Y, camp.Z)) : -1)} " +
+                     $"moved={(moved ? "true" : "false")} farthestNewMin={(moved ? farthestNew : firstRefusedFarthest):0.0} " +
+                     $"farthestCurrentMin={farthestCurrent:0.0} townsRefused={townsRefused} reachCheck={(reachCheck ? "on" : "off")} " +
+                     $"windowMin={windowMs / 60_000d:0.#}");
             WriteSessionMetadata(session, members);
             return true;
         }
     }
 
+    /// <summary>Per-member travel estimates (minutes) to a point; one crossings cache per target region.</summary>
+    private static double[] MeetupTravelMinutes(GameBot[] members, ushort region, Vector3 point,
+        Dictionary<(eRealm Realm, ushort From, ushort To), DbZonePoint> crossings) =>
+        members.Select(member => AutonomousWorldBotController.EstimateTravelMinutes(member, region,
+            (int)point.X, (int)point.Y, crossings, MeetupPlanningSpeed(member.MaxSpeedBase, member.MaxSpeed))).ToArray();
+
+    /// <summary>
+    /// Owner 2026-11-10 (round-3 review): plan meetups at the member's normal run speed. MaxSpeed is 0 while mezzed or
+    /// stunned and low while snared, which made one member's estimate hundreds of minutes.
+    /// </summary>
+    public static double MeetupPlanningSpeed(int baseSpeed, int currentSpeed) => Math.Max(baseSpeed, currentSpeed);
+
+    // accept (owner 2026-11-10): the nearest-to-camp town that passes it wins; null accepts any town.
     private static bool TryChooseTownNear(GameBot leader, GameBot[] members, Region region, Vector3 camp,
-        out Vector3 point, out string name)
+        out Vector3 point, out string name, Func<Vector3, bool> accept = null)
     {
         point = default;
         name = string.Empty;
@@ -403,6 +457,7 @@ public static partial class AutonomousBotGroupCoordinator
         {
             Zone zone = region.GetZone(npc.X, npc.Y);
             if (!AutonomousRendezvousNavigation.TryChoosePoint(nav, zone, new(npc.X, npc.Y, npc.Z), out Vector3 chosen)) continue;
+            if (accept != null && !accept(chosen)) continue;
             bool tight = zone?.IsDungeon == true;
             bool valid = true;
             foreach (GameBot member in members)
@@ -562,8 +617,9 @@ public static partial class AutonomousBotGroupCoordinator
             // Feed the shared route quarantine too: one group's rejection only lasted for that
             // group, so other groups kept drawing the same unroutable camp (2,574 rejections
             // Oct 3-5, mostly Hibernia Shrouded Isles). Three different reporters bench it.
-            if (AutonomousCampRouteQuarantine.ReportFailure(campId, bot.DatabaseID))
-                Log.Warn($"AUTONOMOUS_CAMP_ROUTE_QUARANTINE camp=\"{campId}\" target=\"{rejected.MonsterName}\" hours={AutonomousCampRouteQuarantine.QuarantineDuration.TotalHours:0} reason=group-camp-rejected");
+            // owner 2026-11-10 (review): a group report benches for the fixed time (no 6 h / 24 h repeats)
+            if (AutonomousCampRouteQuarantine.ReportFailure(campId, bot.DatabaseID, groupReport: true))
+                Log.Warn($"AUTONOMOUS_CAMP_ROUTE_QUARANTINE camp=\"{campId}\" target=\"{rejected.MonsterName}\" hours={AutonomousCampRouteQuarantine.BenchDuration(campId).TotalHours:0} reason=group-camp-rejected");
             session.Camp = null;
             session.DungeonArrivalRegion = 0;
             session.DungeonInteriorStagingPoint = default;
@@ -1060,41 +1116,9 @@ public static partial class AutonomousBotGroupCoordinator
     /// Proactive pulls use 90/80/80 readiness, but an active post-combat
     /// recovery episode still runs to full. Attacked-by-enemy responses are
     /// never gated here.</summary>
-    public static bool CanInitiateNewPull(GameBot bot, bool corridorBlocker = false)
-    {
-        if (bot?.IsAutonomousWorldBot != true || bot.IsTemporaryGroupHelper || bot.IsPlayerLedGroup || bot.Group == null)
-            return true;
-        lock (Sync)
-        {
-            Group group = bot.Group;
-            if (group == null || !Sessions.TryGetValue(group, out Session session))
-                return false;
-            // Waiting expedition parties may defend themselves, but cannot
-            // initiate a fresh pull ahead of the staging/landing order.
-            if (AutonomousRealmRaid.GetTravelView(bot) is { } expedition)
-            {
-                if (expedition.Hold && !(corridorBlocker && expedition.Crossing)) return false;
-                // Only locally present living members take part in puller
-                // selection. A casualty or reinforcement across the world is
-                // not a veto on every surviving party's combat.
-                var expeditionPuller = ChoosePuller(session, BotMembers(group));
-                return bot == expeditionPuller && bot.HealthPercent >= 70;
-            }
-            GameBot[] members = BotMembers(group);
-            GameBot leader = ChooseLeader(session, members);
-            GameBot puller = ChoosePuller(session, members);
-            if (leader == null) return false;
-            bool combatActor = AutonomousRvrStaging.UsesIndependentCombatActors(session.ObjectiveKind) || bot == puller;
-            return !IsAssemblyPhase(session.Phase) && !session.Recovery.IsRegrouping && combatActor &&
-                !session.Recovery.HasCasualty(RecoveryMembers(session, members, false)) &&
-                !session.RecoveringBetweenPulls && MembersReadyForPull(members) &&
-                (session.ObjectiveKind != eAutonomousObjectiveKind.GroupPve ||
-                    HasActivePveComposition(session, members)) &&
-                members.Length >= 2 && members.All(member => !member.IsOnStableMasterRoute &&
-                    member.CurrentRegionID == leader.CurrentRegionID && member.GetDistanceTo(leader) <=
-                        PullCohesionRadius(corridorBlocker, bot.CurrentZone?.IsDungeon == true));
-        }
-    }
+    // Same gates as the named overload in AutonomousBotGroupCoordinator.PartyPull.cs (owner 2026-11-10).
+    public static bool CanInitiateNewPull(GameBot bot, bool corridorBlocker = false) =>
+        CanInitiateNewPull(bot, corridorBlocker, out _);
 
     // A corridor monster can separate followers from their leader by more than
     // the normal 500-unit formation radius. Let the designated tank clear that
@@ -1913,6 +1937,9 @@ public static partial class AutonomousBotGroupCoordinator
             if (!session.RecoveringBetweenPulls)
                 session.CombatObserved = false;
         }
+        // Pull-stall monitor (owner 2026-11-10): log at 6 minutes, end cleanly at 11, before the watchdog teleport.
+        if (!ObservePartyPullStall(session, members, groupCombatActive))
+            return false;
 
         if (session.Phase == "Meeting up" && !(session.ObjectiveKind == eAutonomousObjectiveKind.RvR &&
             AutonomousRvrEventLayer.IsEventForce(session.Id, GameLoop.GameLoopTime)))
@@ -2293,11 +2320,14 @@ public static partial class AutonomousBotGroupCoordinator
         WriteSessionMetadata(session, remaining);
     }
 
-    private static void RebaseAttendance(Session session, GameBot[] members, bool preserveDeadlines = false)
+    private static void RebaseAttendance(Session session, GameBot[] members, bool preserveDeadlines = false,
+        long windowMs = 0)
     {
         long now = GameLoop.GameLoopTime;
         if (preserveDeadlines)
             session.Attendance.RebaseAfterRosterReduction(members.Select(MemberKey), now);
+        else if (windowMs > 0)
+            session.Attendance.RebaseWithWindow(members.Select(MemberKey), now, windowMs);
         else
             session.Attendance.Rebase(members.Select(MemberKey), now);
         foreach (GameBot member in members)
@@ -2596,7 +2626,14 @@ public static partial class AutonomousBotGroupCoordinator
             }
             bool potentialResurrection = rescuers.Any(member =>
                 member.IsAlive && member.ResurrectionSpell != null);
-            long waitMilliseconds = potentialResurrection ? 60_000 : 20_000;
+            // owner 2026-11-10: a resurrector in range sitting for the power to raise this corpse (or already raising it)
+            // earns it up to 120 s instead of 60 s
+            bool restingForIt = rescuers.Any(member => member.IsAlive && member.ResurrectionSpell is { } raise &&
+                (BotGroupSupport.IsRestingForResurrection(member, deadBot, GameLoop.GameLoopTime) ||
+                 member.IsCasting && member.castingComponent.SpellHandler is { } raising && raising.Target == deadBot &&
+                 raising.Spell.SpellType == eSpellType.Resurrect) &&
+                member.IsWithinRadius(deadBot, member.castingComponent.CalculateSpellRange(raise)));
+            long waitMilliseconds = potentialResurrection ? BotGroupSupport.ResurrectionReleaseWait(restingForIt) : 20_000;
             if (GameLoop.GameLoopTime - wait.SinceTick < waitMilliseconds)
                 return PveCorpseDisposition.HoldForResurrection;
             long deadline = wait.SinceTick + waitMilliseconds;
@@ -2750,7 +2787,9 @@ public static partial class AutonomousBotGroupCoordinator
             Puller = puller,
             LeaderReadyForAssembly = session.LeaderReadyForAssembly,
             GroupCombatActive = groupCombatActive,
-            RecoveringBetweenPulls = session.RecoveringBetweenPulls
+            RecoveringBetweenPulls = session.RecoveringBetweenPulls,
+            TaskDeadlineTick = session.TaskClock.DeadlineTick,
+            TaskPausedRemainingMilliseconds = session.TaskClock.PausedRemainingMilliseconds
         };
     }
 
@@ -2831,27 +2870,78 @@ public static partial class AutonomousBotGroupCoordinator
         int maximumSize, out BotPveGroupRole[] template, out int[] owners, bool[] crowdControl = null)
     {
         int mezzer = PreferredCrowdControlCandidate(pool, crowdControl);
-        foreach (BotPveGroupRole[] candidateTemplate in PveRosterTemplates)
+        // owner 2026-11-10 (round-3 review): each size tries every template with the plain rule first; the Bard rule
+        // (bot_bard_fills_healer_slot) only fills a size no healing-class roster can, so rosters that formed before
+        // keep their roles and a Druid or Warden is never moved off the Healer slot for a Bard.
+        int passes = BardGroupHealer165.Enabled ? 2 : 1;
+        for (int start = 0; start < PveRosterTemplates.Length;)
         {
-            if (candidateTemplate.Length < minimumSize || candidateTemplate.Length > maximumSize)
-                continue;
-            template = candidateTemplate;
-            int[] leaderSlots = Enumerable.Range(0, template.Length)
-                .Where(index => BotPartyRoles.CanFill(leader, candidateTemplate[index]))
-                .OrderBy(_ => Random.Shared.Next())
-                .ToArray();
-            int bufferSlot = Array.IndexOf(template, BotPveGroupRole.Buffer);
-            if (bufferSlot >= 0 && mezzer >= 0)
-                foreach (int leaderSlot in leaderSlots)
-                    if (leaderSlot != bufferSlot && TryFillPveTemplate(template, pool, leaderSlot, bufferSlot, mezzer, out owners))
-                        return true;
-            foreach (int leaderSlot in leaderSlots)
-                if (TryFillPveTemplate(template, pool, leaderSlot, -1, -1, out owners))
-                    return true;
+            int size = PveRosterTemplates[start].Length;
+            int end = start;
+            while (end < PveRosterTemplates.Length && PveRosterTemplates[end].Length == size)
+                end++;
+            if (size >= minimumSize && size <= maximumSize)
+                for (int pass = 0; pass < passes; pass++)
+                    for (int index = start; index < end; index++)
+                        if (TryFillPveTemplateAnyLeaderSlot(PveRosterTemplates[index], leader, pool, mezzer, pass == 1,
+                                out owners))
+                        {
+                            template = PveRosterTemplates[index];
+                            return true;
+                        }
+            start = end;
         }
         template = null;
         owners = null;
         return false;
+    }
+
+    private static bool TryFillPveTemplateAnyLeaderSlot(BotPveGroupRole[] template, eCharacterClass leader,
+        eCharacterClass[] pool, int mezzer, bool bardHealer, out int[] owners)
+    {
+        int[] leaderSlots = Enumerable.Range(0, template.Length)
+            .Where(index => FitsPveSlot(leader, template[index], bardHealer))
+            .OrderBy(_ => Random.Shared.Next())
+            .ToArray();
+        int bufferSlot = Array.IndexOf(template, BotPveGroupRole.Buffer);
+        if (bufferSlot >= 0 && mezzer >= 0)
+            foreach (int leaderSlot in leaderSlots)
+                if (leaderSlot != bufferSlot &&
+                    TryFillPveTemplate(template, pool, leader, leaderSlot, bufferSlot, mezzer, bardHealer, out owners))
+                    return true;
+        foreach (int leaderSlot in leaderSlots)
+            if (TryFillPveTemplate(template, pool, leader, leaderSlot, -1, -1, bardHealer, out owners))
+                return true;
+        owners = null;
+        return false;
+    }
+
+    private static bool FitsPveSlot(eCharacterClass characterClass, BotPveGroupRole role, bool bardHealer) =>
+        bardHealer ? BotPartyRoles.CanFillPveSlot(characterClass, role) : BotPartyRoles.CanFill(characterClass, role);
+
+    /// <summary>
+    /// Owner 2026-11-10: a healing class holds a Healer slot before a Bard does. A Bard in a Healer slot swaps with a
+    /// healing class in another slot whenever the Bard can take that slot (the pinned mezzer slot stays put).
+    /// </summary>
+    private static void PreferHealingClassesInHealerSlots(BotPveGroupRole[] template, eCharacterClass[] pool,
+        eCharacterClass leader, int[] owners, int pinnedSlot)
+    {
+        eCharacterClass ClassAt(int owner) => owner < 0 ? leader : pool[owner];
+        for (int healerSlot = 0; healerSlot < template.Length; healerSlot++)
+        {
+            if (template[healerSlot] != BotPveGroupRole.Healer || healerSlot == pinnedSlot ||
+                BotPartyRoles.CanFill(ClassAt(owners[healerSlot]), BotPveGroupRole.Healer))
+                continue;
+            for (int slot = 0; slot < template.Length; slot++)
+            {
+                if (slot == pinnedSlot || template[slot] == BotPveGroupRole.Healer ||
+                    !BotPartyRoles.CanFill(ClassAt(owners[slot]), BotPveGroupRole.Healer) ||
+                    !BotPartyRoles.CanFill(ClassAt(owners[healerSlot]), template[slot]))
+                    continue;
+                (owners[healerSlot], owners[slot]) = (owners[slot], owners[healerSlot]);
+                break;
+            }
+        }
     }
 
     /// <summary>The first pool member that can mesmerize and fill the buffer slot, or -1.</summary>
@@ -2865,8 +2955,8 @@ public static partial class AutonomousBotGroupCoordinator
         return -1;
     }
 
-    private static bool TryFillPveTemplate(BotPveGroupRole[] template, eCharacterClass[] pool, int leaderSlot,
-        int pinnedSlot, int pinnedCandidate, out int[] owners)
+    private static bool TryFillPveTemplate(BotPveGroupRole[] template, eCharacterClass[] pool, eCharacterClass leader,
+        int leaderSlot, int pinnedSlot, int pinnedCandidate, bool bardHealer, out int[] owners)
     {
         owners = Enumerable.Repeat(int.MinValue, template.Length).ToArray();
         owners[leaderSlot] = -1;
@@ -2880,9 +2970,13 @@ public static partial class AutonomousBotGroupCoordinator
             bool[] visited = new bool[template.Length];
             if (pinnedSlot >= 0)
                 visited[pinnedSlot] = true;
-            TryMatchPveSlot(candidate, pool, template, owners, visited, leaderSlot);
+            TryMatchPveSlot(candidate, pool, template, owners, visited, leaderSlot, bardHealer);
         }
-        return owners.All(owner => owner != int.MinValue);
+        if (!owners.All(owner => owner != int.MinValue))
+            return false;
+        if (bardHealer)
+            PreferHealingClassesInHealerSlots(template, pool, leader, owners, pinnedSlot);
+        return true;
     }
 
     /// <summary>The bot knows a single-target mesmerize at its level (crowd control for the party).</summary>
@@ -2913,15 +3007,16 @@ public static partial class AutonomousBotGroupCoordinator
     }
 
     private static bool TryMatchPveSlot(int candidate, eCharacterClass[] pool, BotPveGroupRole[] template,
-        int[] owners, bool[] visited, int reservedLeaderSlot)
+        int[] owners, bool[] visited, int reservedLeaderSlot, bool bardHealer)
     {
         for (int slot = 0; slot < template.Length; slot++)
         {
-            if (slot == reservedLeaderSlot || visited[slot] || !BotPartyRoles.CanFill(pool[candidate], template[slot]))
+            // owner 2026-11-10: the Bard pass (CanFillPveSlot) also lets a Hibernian Bard take a Healer slot
+            if (slot == reservedLeaderSlot || visited[slot] || !FitsPveSlot(pool[candidate], template[slot], bardHealer))
                 continue;
             visited[slot] = true;
             if (owners[slot] == int.MinValue ||
-                TryMatchPveSlot(owners[slot], pool, template, owners, visited, reservedLeaderSlot))
+                TryMatchPveSlot(owners[slot], pool, template, owners, visited, reservedLeaderSlot, bardHealer))
             {
                 owners[slot] = candidate;
                 return true;
@@ -3038,6 +3133,8 @@ public static partial class AutonomousBotGroupCoordinator
         session.PublishedAttendanceRevision = session.Attendance.Revision;
         session.PublishedDeadlineTick = session.TaskClock.DeadlineTick;
         session.PublishedRemaining = session.TaskClock.PausedRemainingMilliseconds;
+        // owner 2026-11-10: a Bard in the Healer slot heals as this group's healer
+        BardGroupHealer165.MarkHealerSlots(session.Id, session.Group, members, session.PveRoles, MemberKey);
         foreach (GameBot member in members)
         {
             if (member.PersistentRecord == null) continue;

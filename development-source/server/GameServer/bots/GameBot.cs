@@ -943,6 +943,8 @@ namespace DOL.GS
                 AutonomousStuckWatchdog.MarkProgress(this, eAutonomousProgressKind.StableTravel);
                 log.Info($"AUTONOMOUS_STABLE_ROUTE_ARRIVE bot=\"{Name}\" id={DatabaseID} level={Level} " +
                          $"realm={GlobalConstants.RealmToName(Realm)} destination=\"{completedDestination}\" position={X},{Y},{Z}");
+                if (IsAlive)
+                    AutonomousStableLandingWatch.Arrived(this, completedDestination);   // owner 2026-11-10: landing death watch
             }
         }
 
@@ -1190,6 +1192,8 @@ namespace DOL.GS
             _deathLocation = new Point3D(X, Y, Z);
             (_lastDeathRvR165, _pendingConLoss165) = DeathPenalty165.OnDeath(this, killer, ref _deathsLevel165, ref _deathsThisLevel165);
             LogDeath165(killer);
+            if (IsAutonomousWorldBot)
+                AutonomousStableLandingWatch.Died(this, killer);   // owner 2026-11-10: landing death watch
             if (Classic165Mode.IsOn && IsAutonomousWorldBot && killer is GameLiving deathSource &&
                 AutonomousRoadHotspots.RecordDeath(CurrentRegionID, X, Y, DatabaseID, Level, deathSource.Level, GameLoop.GameLoopTime,
                     out bool newHotspot) is { } hotspot && newHotspot)
@@ -2102,16 +2106,18 @@ namespace DOL.GS
             if (arguments.AllowMultiply)
             {
                 experienceGained -= baseExperience;
+                // A hired companion earns at the player XP rate, other bots at the gamebot rate (owner 2026-11-10).
+                bool hiredCompanion = HiredCompanions165.IsHired(this);
 
                 if (ServerProperties.Properties.ENABLE_ZONE_BONUSES && CurrentZone != null)
                 {
                     long zoneBonus = baseExperience * CurrentZone.BonusExperience / 100;
                     if (zoneBonus > 0)
-                        experienceGained += ScaleAutonomousExperience(zoneBonus, false);
+                        experienceGained += ScaleBotExperience(zoneBonus, false, hiredCompanion);
                 }
 
-                baseExperience = ScaleAutonomousExperience(baseExperience,
-                    CurrentRegion?.IsRvR == true || CurrentZone?.IsRvR == true);
+                baseExperience = ScaleBotExperience(baseExperience,
+                    CurrentRegion?.IsRvR == true || CurrentZone?.IsRvR == true, hiredCompanion);
 
                 long itemExperienceBonus = GetModified(eProperty.XpPoints);
                 if (itemExperienceBonus != 0)
@@ -2193,9 +2199,14 @@ namespace DOL.GS
 
         private static long ScaleAutonomousExperience(long experience, bool isRvR)
         {
-            double rate = Classic165Mode.BotXpRate;
-            if (isRvR)
-                rate *= ServerProperties.Properties.RvR_XP_RATE;
+            return ScaleBotExperience(experience, isRvR, false);
+        }
+
+        // Launcher XP options (owner 2026-11-10): gamebot rate for autonomous bots, player rate for hired companions.
+        private static long ScaleBotExperience(long experience, bool isRvR, bool hiredCompanion)
+        {
+            double rate = XpRates165.BotMultiplier(hiredCompanion, isRvR, Classic165Mode.PlayerXpRate,
+                Classic165Mode.BotXpRate, ServerProperties.Properties.RvR_XP_RATE);
             return (long)(experience * rate);
         }
 

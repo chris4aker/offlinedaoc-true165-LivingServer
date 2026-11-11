@@ -240,6 +240,8 @@ public static class AutonomousObjectiveAssignments
             foreach (GameBot bot in roster.Where(BetweenTaskServiceExpired))
                 CompleteBetweenTaskServices(bot);
             roster = roster.Where(bot => !IsBetweenPveTasks(bot)).ToArray();
+            // owner 2026-11-10: ten-minute queue counts by role (log only)
+            AutonomousGroupQueueBalance.ReportIfDue(roster, nowTick);
             // Group/warband deadlines belong to the coordinator, not individual
             // members' old allocation timestamps. Snapshot once per allocation pass.
             var groupOwned = roster.Where(bot => bot.Group != null &&
@@ -319,7 +321,8 @@ public static class AutonomousObjectiveAssignments
                     if (useRvr) currentRvr++;
                     DOL.Logging.LoggerManager.Create(typeof(AutonomousObjectiveAssignments)).Warn(
                         $"AUTONOMOUS_GROUP_MATCHMAKING_TIMEOUT bot=\"{bot.Name}\" id={bot.DatabaseID} " +
-                        $"realm={GlobalConstants.RealmToName(bot.Realm)} level={bot.Level} waitedMinutes=20 fallback={fallback}");
+                        $"realm={GlobalConstants.RealmToName(bot.Realm)} level={bot.Level} waitedMinutes=20 fallback={fallback} " +
+                        $"role={AutonomousGroupQueueBalance.RoleLabel(bot)}");
                     Assign(bot, fallback, bucket.Key, ++_epoch);
                     bot.PersistentRecord.CurrentCampId = string.Empty;
                     bot.PersistentRecord.TargetName = string.Empty;
@@ -355,14 +358,18 @@ public static class AutonomousObjectiveAssignments
                     eAutonomousObjectiveKind kind = TakesBattleground(bot,
                         Math.Max(0, target.SoloPve - assignedSolo) + Math.Max(0, target.GroupPve - assignedGroup))
                         ? eAutonomousObjectiveKind.Battleground
-                        : ChoosePveObjective(target, assignedSolo, assignedGroup);
+                        // owner 2026-11-10: healers and tanks lean to Group PvE; damage draws as before
+                        : AutonomousGroupQueueBalance.ChoosePveFor(bot, target, assignedSolo, assignedGroup);
+                    // count the kind Assign really gave (it can replace a disabled goal)
+                    kind = Assign(bot, kind, bucket.Key, _epoch);
                     if (kind == eAutonomousObjectiveKind.Battleground)
                         assignedBattleground++;
                     else if (kind == eAutonomousObjectiveKind.SoloPve)
                         assignedSolo++;
-                    else
+                    else if (kind == eAutonomousObjectiveKind.GroupPve)
                         assignedGroup++;
-                    Assign(bot, kind, bucket.Key, _epoch);
+                    else
+                        assignedRvr++;
                 }
 
                 foreach (GameBot bot in members.Where(bot => !groupOwned.Contains(bot) && !HasActiveRvrTenure(bot.PersistentRecord, utcNow) &&
@@ -378,10 +385,11 @@ public static class AutonomousObjectiveAssignments
                     else if (TakesBattleground(bot, soloNeeded + groupNeeded))
                         kind = eAutonomousObjectiveKind.Battleground;
                     else if (AutonomousBotGoalPolicy.IsConfigured && rvrNeeded + soloNeeded + groupNeeded == 0)
-                        kind = AutonomousBotGoalPolicy.Choose(bot.Level);
+                        kind = AutonomousBotGoalPolicy.ChooseFor(bot);
                     else
-                        kind = ChoosePveObjective(target, assignedSolo, assignedGroup);
+                        kind = AutonomousGroupQueueBalance.ChoosePveFor(bot, target, assignedSolo, assignedGroup);
 
+                    kind = Assign(bot, kind, bucket.Key, _epoch);
                     switch (kind)
                     {
                         case eAutonomousObjectiveKind.SoloPve: assignedSolo++; break;
@@ -389,7 +397,6 @@ public static class AutonomousObjectiveAssignments
                         case eAutonomousObjectiveKind.RvR: assignedRvr++; break;
                         case eAutonomousObjectiveKind.Battleground: assignedBattleground++; break;
                     }
-                    Assign(bot, kind, bucket.Key, _epoch);
                 }
             }
         }
@@ -427,7 +434,7 @@ public static class AutonomousObjectiveAssignments
             bot.PersistentRecord.ObjectiveRvrEligibleUtc = AutonomousBotGoalPolicy.IsConfigured ? string.Empty : PveCompletionRequired;
         if (TryBeginBetweenTaskServices(bot))
             return;
-        Assign(bot, AutonomousBotGoalPolicy.IsConfigured ? AutonomousBotGoalPolicy.Choose(bot.Level) :
+        Assign(bot, AutonomousBotGoalPolicy.IsConfigured ? AutonomousBotGoalPolicy.ChooseFor(bot) :
             bot.Level >= 50 && !leavingRvr ? RollLevelFiftyObjective() : eAutonomousObjectiveKind.SoloPve,
             (bot.Realm, bot.Level >= 50 ? 50 : bot.Level >= 20 ? 20 : 0), GameLoop.GameLoopTime);
         bot.PersistentRecord.CurrentCampId = string.Empty;
@@ -523,7 +530,8 @@ public static class AutonomousObjectiveAssignments
         bot.MarkAutonomousStateDirty();
     }
 
-    private static void Assign(GameBot bot, eAutonomousObjectiveKind kind, (eRealm Realm, int Band) bucket, long epoch, bool forcedRaid = false)
+    // Returns the kind actually given (owner 2026-11-10: the allocator counts that, not the kind it asked for).
+    private static eAutonomousObjectiveKind Assign(GameBot bot, eAutonomousObjectiveKind kind, (eRealm Realm, int Band) bucket, long epoch, bool forcedRaid = false)
     {
         // Recovery and task-boundary callers cannot reintroduce a disabled goal.
         if (AutonomousBotGoalPolicy.IsConfigured && !forcedRaid)
@@ -533,7 +541,7 @@ public static class AutonomousObjectiveAssignments
         string assignment = $"{GlobalConstants.RealmToName(bucket.Realm).ToLowerInvariant()}-{bucket.Band}-{epoch}-{kind}";
         if (string.Equals(record.ObjectiveKind, kind.ToString(), StringComparison.Ordinal) &&
             string.Equals(record.ObjectiveAssignmentId, assignment, StringComparison.Ordinal))
-            return;
+            return kind;
 
         record.ObjectiveKind = kind.ToString();
         record.ObjectiveAssignmentId = assignment;
@@ -570,6 +578,7 @@ public static class AutonomousObjectiveAssignments
             GroupWaits.TryRemove(waitKey, out _);
         bot.MarkAutonomousStateDirty();
         AutonomousBotStatusPersistence.Queue(bot);
+        return kind;
     }
 
     public static bool IsBetweenPveTasks(OfflineWorldBotRecord record) =>
@@ -755,6 +764,20 @@ public static class AutonomousObjectiveAssignments
         return true;
     }
 
+    /// <summary>
+    /// Pure rule (owner 2026-11-10): a between-task errand saved at logout gets a fresh window when the bot logs in. Its
+    /// clock ran on while the bot was offline, so after every restart the one-minute pass ended it at once (48 h log:
+    /// 2,493 of 3,505 AUTONOMOUS_BETWEEN_TASK_TIMEOUT still read "Choosing first live goal"). A real timeout now means
+    /// the errands took the whole window in the live world. True when the record changed.
+    /// </summary>
+    public static bool RestampBetweenTaskWindowAtLogin(OfflineWorldBotRecord record, DateTime utcNow)
+    {
+        if (!IsBetweenPveTasks(record))
+            return false;
+        record.ObjectiveExpiresUtc = utcNow.ToUniversalTime().Add(MaximumBetweenTaskDuration).ToString("O");
+        return true;
+    }
+
     public static bool BetweenTaskServiceExpired(GameBot bot) => IsBetweenPveTasks(bot) &&
         (!DateTime.TryParse(bot.PersistentRecord.ObjectiveExpiresUtc, null,
              System.Globalization.DateTimeStyles.RoundtripKind, out DateTime due) || due.ToUniversalTime() <= DateTime.UtcNow);
@@ -770,7 +793,7 @@ public static class AutonomousObjectiveAssignments
                 $"goal=\"{bot.PersistentRecord.CurrentGoal}\" activity=\"{bot.PersistentRecord.Activity}\" " +
                 $"assignment=\"{bot.PersistentRecord.ObjectiveAssignmentId}\"");
         bool pveRequired = bot.PersistentRecord.ObjectiveRvrEligibleUtc == PveCompletionRequired;
-        Assign(bot, AutonomousBotGoalPolicy.IsConfigured ? AutonomousBotGoalPolicy.Choose(bot.Level) :
+        Assign(bot, AutonomousBotGoalPolicy.IsConfigured ? AutonomousBotGoalPolicy.ChooseFor(bot) :
             bot.Level >= 50 && !pveRequired ? RollLevelFiftyObjective() : eAutonomousObjectiveKind.SoloPve,
             (bot.Realm, bot.Level >= 50 ? 50 : bot.Level >= 20 ? 20 : 0), GameLoop.GameLoopTime);
     }
