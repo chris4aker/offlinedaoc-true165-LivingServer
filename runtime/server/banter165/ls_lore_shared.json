@@ -27,7 +27,7 @@
     {"text": "While three realms fight over keeps, something is digging under all of us. Funny how that goes.", "situation": "idle", "level": [20, 50], "weight": 0.327},
     {"text": "Every realm found tunnels under its own frontier, and every realm swears it found them first.", "situation": "idle", "level": [20, 50], "weight": 0.327},
     {"text": "I followed a tunnel until my torch ran low, and it went further than any map said.", "situation": "idle", "level": [20, 50], "weight": 0.327},
-    {"text": "Wolf, stone or glimmer, which dragon is oldest? Every realm says its own.", "situation": "idle", "level": [30, 50], "weight": 0.327},
+    {"text": "Wolf, stone or glimmer, which dragon is oldest? Every realm says its own.", "situation": "idle", "level": [30, 50], "invites": "ask_choice", "weight": 0.327},
     {"text": "Three realms, three dragons. A wolf, a stone and a glimmer, and every realm thinks theirs is the worst.", "situation": "idle", "level": [30, 50], "weight": 0.327},
     {"text": "Heard the dragons have never met. Probably for the best, one of them would eat the other two.", "situation": "idle", "level": [30, 50], "weight": 0.327},
     {"text": "I think the three dragons are kin, scattered across the realms long before any of us.", "situation": "idle", "level": [30, 50], "weight": 0.327},

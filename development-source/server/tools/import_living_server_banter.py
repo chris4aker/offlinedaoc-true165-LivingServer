@@ -11,7 +11,8 @@ say into it, under the library's own rules (BanterLibrary165.cs, validate_banter
 - every line is given one of the library's situations and its filters (channel, realm, level, classType, only);
 - the text is rewritten from lower-case 2003 chat into the library's voice: full words, capitals, a full stop;
 - a line with "[a|b]" choices is taken once, in the first choice of each, from Living Server's source files;
-- a line about one class or one place is tied to it with "only", so it is said only where it is true;
+- a line about one class or one place is tied to it with "only", so it is said only where it is true; a line about
+  the night is tied to the night; an answer written for a boast, a joke or a question follows only such a line;
 - left out: anything the library's rules refuse, talk about the world outside the game, words the library does not
   use, a place, monster or person that is not in the True 1.65 world, and a line the library already says;
 - held (listed in the ledger, not written): anything that needs a system True 1.65 does not have, lore that Living
@@ -76,10 +77,12 @@ AMBIENT_TOPIC = {
     "shrouded_isles": "idle", "waiting": "idle", "rumor": "idle", "battlegrounds": "battleground",
     "darkness_falls": "idle", "places": "idle", "places_here": "idle",
 }
-HELD_TOPICS = {
-    "holiday": "a calendar (holiday talk)", "latenight": "the time of day", "evening": "the time of day",
-    "daytime": "the time of day", "night": "the time of day",
-}
+HELD_TOPICS = {"holiday": "a calendar (holiday talk)", "evening": "the evening (the library tells day from night only)"}
+TIME_TOPIC = {"latenight": "night", "night": "night", "daytime": "day"}
+NEED_TIME = {"night": "night", "!day": "night", "day": "day"}
+# what an opening line asks for, and the answers written for it ("invites" and "only": { "thread": ... })
+THREADS = {"boast", "joke", "complaint", "ask_opinion", "ask_choice", "ask_anyone", "ask", "ask_know", "ask_next",
+           "ask_whereall", "ask_howareyou"}
 DROP_TOPICS = {"reallife": "talk about the world outside the game", "nolifer": "talk about the world outside the game"}
 GUILD_TOPIC = {"social": "idle", "general": "idle", "crafting": "crafting", "leveling": "hunting", "rvr": "rvr_patrol",
                "raiding": "idle"}
@@ -112,8 +115,8 @@ NEED_LEVEL = {"newbie": (1, 12), "veteran": (40, 50)}
 NEED_IGNORE = {"solo", "outdoors", "!in_capital", "!in_combat", "!in_player_group", "!defending", "!bot_leads", "!can_rez"}
 NEED_HELD = {
     "in_player_group": "talk in the player's own group", "lead_call": "bots that lead a group",
-    "bot_leads": "bots that lead a group", "night": "the time of day", "!day": "the time of day", "evening": "the time of day",
-    "day": "the time of day", "knows_player": "bots that remember the player", "!knows_player": "bots that remember the player",
+    "bot_leads": "bots that lead a group", "evening": "the evening (the library tells day from night only)",
+    "knows_player": "bots that remember the player", "!knows_player": "bots that remember the player",
     "witness": "bots that witness what the player does", "!witness": "bots that witness what the player does",
     "player_nearby": "bots that witness what the player does", "player_leveling": "bots that witness what the player does",
     "xp_high": "how far a bot is into its level", "xp_mid": "how far a bot is into its level",
@@ -579,6 +582,9 @@ def place_line(line, places):
         if topic in DROP_TOPICS:
             return None, ("dropped", DROP_TOPICS[topic])
         situation = AMBIENT_TOPIC.get(topic)
+        if topic in TIME_TOPIC:
+            situation = "idle"
+            f.setdefault("only", {})["time"] = [TIME_TOPIC[topic]]
     elif kind == "guild":
         situation = GUILD_TOPIC.get(topic)
         f["channel"] = "guild"
@@ -629,6 +635,10 @@ def place_line(line, places):
             situation, reply = REPLY_ANSWERS[answers[0]], True
         elif answers and answers[0] in REPLY_TO_PLAYER:
             situation = REPLY_TO_PLAYER[answers[0]]
+        elif answers and any(a in THREADS for a in answers):
+            # an answer to what another speaker's opening line asked for; its situations are those of the openers
+            situation, reply = "idle", True
+            f.setdefault("only", {})["thread"] = sorted(a for a in answers if a in THREADS)
         elif answers:
             return None, ("held", "answers that follow the thread of a conversation")
         else:
@@ -644,8 +654,11 @@ def place_line(line, places):
             return None, ("held", NEED_HELD[need])
         if need.startswith("holiday_"):
             return None, ("held", "a calendar (holiday talk)")
+        if need in NEED_TIME:
+            f.setdefault("only", {})["time"] = [NEED_TIME[need]]
+            continue
         if need.startswith("at:"):
-            zones = places.get(need[3:])
+            zones = places.get(need[3:]) if not need[3:].startswith("_") else None
             if not zones:
                 return None, ("dropped", "a place that is not in the True 1.65 world")
             f.setdefault("only", {})["zone"] = zones
@@ -674,12 +687,24 @@ def place_line(line, places):
         return None, ("dropped", "a class that is not in patch 1.65")
     if classes:
         f.setdefault("only", {})["class"] = classes
-    if line.get("about"):
-        return None, ("held", "lines written about a named place (they need the place they are about)")
+    if line.get("about") and "zone" not in f.get("only", {}):
+        zones = sorted({zone for regex, key in places.get("_named", []) if key in places and regex.search(line["text"]) for zone in places[key]})
+        if not zones:
+            return None, ("dropped", "a place that is not in the True 1.65 world")
+        if "?" in line["text"]:
+            return None, ("dropped", "a question about going to a place (these lines are said in the place itself)")
+        f.setdefault("only", {})["zone"] = zones
+        # said in the place, whatever the speaker is doing there; "idle" is the situation every speaker falls back to
+        if situation not in ("dungeon", "hunting", "travel"):
+            situation = "idle"
     if f.get("channel") == "guild" and (rules.is_reply(situation) or situation == "chat_close"):
         f.pop("channel")
     if reply and not rules.is_kindless(situation):
         f["kind"] = "reply"
+    elif line.get("invites") in THREADS and not rules.is_kindless(situation):
+        f["invites"] = line["invites"]
+    if "thread" in f.get("only", {}) and f.get("kind") != "reply":
+        return None, ("held", "answers that follow the thread of a conversation")
     return [situation], f
 
 
@@ -740,6 +765,8 @@ FILES = {  # file stem -> (description, which placed lines go there)
     "ls_frontier": "Frontier patrols, sieges and battlegrounds from Living Server, rewritten.",
     "ls_trade_craft": "Trading and crafting talk from Living Server, rewritten.",
     "ls_replies": "Answers to a player from Living Server, rewritten.",
+    "ls_threads": "Answers to what another speaker's line asked for (a boast, a joke, a complaint, a question), from Living Server, rewritten.",
+    "ls_places": "Talk about named places from Living Server, rewritten: said in that place, and to a player who asks about it.",
     "ls_lore_albion": "Albion's lore, myths and places as its people tell them, from Living Server, rewritten.",
     "ls_lore_midgard": "Midgard's lore, myths and places as its people tell them, from Living Server, rewritten.",
     "ls_lore_hibernia": "Hibernia's lore, myths and places as its people tell them, from Living Server, rewritten.",
@@ -753,6 +780,10 @@ def file_for(line, situations, f, lore_place=False):
         return "ls_lore_places"
     kind, topic = line["kind"], line.get("topic") or ""
     s = situations[0]
+    if "thread" in f.get("only", {}):
+        return "ls_threads"
+    if line.get("about") and "zone" in f.get("only", {}):
+        return "ls_places"
     if kind == "ambient" and topic == "lore":
         return {"Albion": "ls_lore_albion", "Midgard": "ls_lore_midgard", "Hibernia": "ls_lore_hibernia"}.get(f.get("realm"), "ls_lore_shared")
     if rules.is_reply(s):
@@ -832,6 +863,8 @@ def main():
         zones = [z for z in place.get("zones", []) if z in zone_names]
         if zones:
             places[place["key"]] = zones
+        for alias in place.get("aliases", []):
+            places.setdefault("_named", []).append((re.compile(r"(?<![a-z'])" + re.escape(alias.lower()) + r"(?![a-z])"), place["key"]))
 
     lore_dir = os.path.join(data, "lore")
     lore_entries = []
@@ -881,6 +914,7 @@ def main():
 
     persons = {e["name"] for e in lore_entries if e["_kind"] == "bosses" and re.fullmatch(r"[A-Z][a-z]+", e["name"])}
     voice = Voice(names, full_names, words, library_words, never_names, library_lower, persons)
+    waiting = []
     ledger = collections.defaultdict(collections.Counter)   # group -> outcome -> count
     reasons = collections.defaultdict(collections.Counter)  # (group, "held"|"dropped") -> reason -> count
     out = collections.defaultdict(list)
@@ -893,7 +927,7 @@ def main():
             return
         seen[key] = stem
         entry = {"text": text, "situation": situations[0] if len(situations) == 1 else situations}
-        for k in ("kind", "channel", "realm", "level", "classType", "only"):
+        for k in ("kind", "channel", "realm", "level", "classType", "only", "invites"):
             if k in f:
                 entry[k] = f[k]
         errors = []
@@ -932,7 +966,25 @@ def main():
                 ledger[group]["dropped"] += 1
                 reasons[(group, "dropped")][why] += 1
             continue
+        if "thread" in f.get("only", {}):
+            waiting.append((group, line, text, f))
+            continue
         add(group, file_for(line, situations, f), text, situations, f)
+
+    # an answer written for a thread is said in the situations where an opening line invites it
+    invited = collections.defaultdict(set)
+    for entries in out.values():
+        for entry in entries:
+            if "invites" in entry:
+                invited[entry["invites"]].update([entry["situation"]] if isinstance(entry["situation"], str) else entry["situation"])
+    for group, line, text, f in waiting:
+        f["only"]["thread"] = [t for t in f["only"]["thread"] if invited.get(t)]
+        situations = sorted({s for t in f["only"]["thread"] for s in invited[t]})
+        if not situations:
+            ledger[group]["held"] += 1
+            reasons[(group, "held")]["answers that follow the thread of a conversation"] += 1
+            continue
+        add(group, "ls_threads", text, situations, f)
 
     ledger["scenes and debates / -"]["lines"] = len(corpus.get("scenes", []))
     ledger["scenes and debates / -"]["held"] = len(corpus.get("scenes", []))
@@ -972,7 +1024,7 @@ def main():
                     continue
                 if part == "tell":
                     ledger[group]["held"] += 1
-                    reasons[(group, "held")]["answers to a question about a named place"] += 1
+                    reasons[(group, "held")]["answers about a place that give levels and monster lists from Living Server's own world"] += 1
                     continue
                 if not here or not zones:
                     ledger[group]["dropped"] += 1

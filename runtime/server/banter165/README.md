@@ -35,9 +35,20 @@ Check before handing in:
   `"only": { "zone": ["Spindelhalla"] }` or `"only": { "class": "Skald", "target": ["Pywrtr"] }`. It tests the same
   values the placeholders fill: zone, class, target, boss, raid, keep, bg, destination (a key must be one the line's
   situation can fill). Names are compared without case. Use it for a line that is true of one place, monster, boss or
-  class and wrong of any other.
+  class and wrong of any other. Two more values can be tested: `"time"` (`"day"` or `"night"`, the game clock where
+  the speaker stands; night is 18:00 to 06:00), and `"thread"` (see `invites`).
+- `invites` (optional, opening lines only): one word for what the line asks of the next speaker, for example
+  `"invites": "boast"`. A `kind: reply` line with `"only": { "thread": ["boast"] }` is said only after such a line, and
+  three times in four the answer to it is taken from those lines. Replies with no thread still answer anything.
 - `text`: 4-160 printable ASCII characters, no double quotes, no double spaces, no curly quotes or dashes; placeholders
   in braces from the allowed list for that situation. A line whose placeholder has no value at that moment is not said.
+
+## A player asks about a place
+
+When a player's message names a zone and reads as a question ("what is in Spindelhalla?"), or is said to a bot, a bot
+that has a line tied to that zone (`"only": { "zone": [...] }`, in dungeon, hunting, travel or idle) answers with it.
+The realm, level and class filters still apply, so a Hibernian knows nothing of Albion's zones. With no such line the
+usual reply_* lines answer. Nothing new is written for this: every line about a place is also an answer about it.
 
 ## Lines from Living Server (`ls_*.json`)
 
