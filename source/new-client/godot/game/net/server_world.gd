@@ -518,6 +518,10 @@ func _add_npc(d: Dictionary) -> void:
 			"heading": int(d.heading), "pos": [p.x, p.y, p.z], "equipment": "srv%d" % oid, "aggro_level": 0,
 			"aggro_range": 0, "roam": 0, "pet": (f2 & 0x80) != 0, "temp": true}
 	spawn["quest"] = _quest_indicator(d)
+	# NPCCreate flags3 0x40 (owner 2026-11-11): the server marks a gamebot / hired companion, so its name is a player's
+	# from the first frame (NamePlates' marker guess stays as a fallback for an older server)
+	if int(d.get("flags3", 0)) & 0x40:
+		spawn["player_like"] = true
 	var st := NpcState.new(states.size(), spawn, _model_info(int(d.model) & 0x7FFF, bool(d.get("moving_object", false))))
 	st.level = int(d.level) & 0x7F
 	st.yaw = Server.yaw_of(int(d.heading))
@@ -664,6 +668,8 @@ func _update_npc(st: NpcState, d: Dictionary) -> void:
 	st.spawn["level"] = int(d.level) & 0x7F
 	st.level = int(d.level) & 0x7F
 	st.spawn["quest"] = _quest_indicator(d)
+	if int(d.get("flags3", 0)) & 0x40:                          # (a gamebot / companion: see _add_npc)
+		st.spawn["player_like"] = true
 	# its flags change while you watch it (GameNPC.Flags sends it again): a monster that hides until its helpers die
 	# or sleeps by day gets "no name / can't be targeted / peaceful" and loses them again. They were read only when it
 	# first appeared, so a hidden one kept its name and could be targeted (tester 0.5: "NPC invisible - Snarls": the

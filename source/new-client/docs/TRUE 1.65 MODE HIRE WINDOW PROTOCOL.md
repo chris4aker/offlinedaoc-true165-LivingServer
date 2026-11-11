@@ -63,6 +63,8 @@ Agreed between the client and server chats.
 - op 14 rows added in 0.6: the Role rows (kinds 13-15) gain choice 3 "Melee and heal, no attack spells"; casters get
   kind 29 "Save power" (key savepower: 0 Automatic, 1 Off, 2 Strict) in place of kind 26, which stays for everyone
   else, and kind 30 "Attack spells" (key attackspells: 0 Automatic, 1 Area spells only, 2 None - buffs only).
+- NPCCreate (0xDA) flags3 bit 0x40: the living is a gamebot or a hired companion (GameBot) - the client draws its name
+  as a player's from the first frame. Other flags3 bits as before (0x01 lesson, 0x02 lore, 0x20 pending).
 - op 30, the companion stance: [4] 0 aggressive (the default; every login), 1 defensive, 2 passive. Sent on
   /aggressive, /defensive and /passive; the group window's stance button cycles them in that order. A client that
   doesn't know a value shows aggressive.
