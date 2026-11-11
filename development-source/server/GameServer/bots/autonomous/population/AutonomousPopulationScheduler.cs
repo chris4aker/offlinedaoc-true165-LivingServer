@@ -329,6 +329,9 @@ namespace DOL.GS
             public bool FillPhase;
             public double SwapTokens;
             public double NewTokens;
+            // owner 2026-11-10: level1 fill pace (AutonomousPopulationFillPace)
+            public double FillNewTokens = AutonomousPopulationFillPace.PerMinute;
+            public DateTime NextFillPaceLogUtc;
             public DateTime LastDecisionUtc;
             public DateTime NextDecisionUtc;
             public readonly Dictionary<long, ManagedBot> Live = new();
@@ -767,13 +770,18 @@ namespace DOL.GS
 
             int newPer30 = NewPer30Minutes(goal);
             r.NewTokens = Math.Min(newPer30, r.NewTokens + newPer30 * dt / 1800.0);
+            r.FillNewTokens = AutonomousPopulationFillPace.NextTokens(r.FillNewTokens, dt);
             int pace = s.RotationStep;
             int swapPer30 = (int)Math.Ceiling(SwapsPer30Minutes(goal) * PaceSwap[pace]);
             r.SwapTokens = Math.Min(swapPer30, r.SwapTokens + swapPer30 * dt / 1800.0);
 
             var avail = new int[BracketCount];
             for (int b = 0; b < BracketCount; b++) avail[b] = r.Pools[b].Full ? Big : lists.Eligible(b);
-            int newBudget = r.FillPhase ? Big : (int)Math.Floor(r.NewTokens);
+            // owner 2026-11-10: while filling, session ends and swaps count only the free new bots, never the paced tokens
+            // (those are Fill's; sharing them kept the realm flat below its goal)
+            int newBudget = r.FillPhase
+                ? AutonomousPopulationFillPace.ReplacementBudget(AutonomousPopulationFillPace.Enabled, liveTotal + inbound, goal, have[0], targets[0])
+                : (int)Math.Floor(r.NewTokens);
             avail[0] = (int)Math.Min(Big, (long)avail[0] + newBudget);
 
             if (pace > 0)
@@ -1056,7 +1064,7 @@ namespace DOL.GS
                 }
                 if (b == 0 && need > 0)
                 {
-                    int k = Math.Min(need, r.FillPhase ? need : (int)Math.Floor(r.NewTokens));
+                    int k = AllowNew(r, need, goal, liveTotal + inbound, have[0], now);
                     QueueNew(r, k);
                     have[0] += k;
                     fill -= k;
@@ -1073,7 +1081,7 @@ namespace DOL.GS
             }
             if (fill > 0)
             {
-                int k = Math.Min(fill, r.FillPhase ? fill : (int)Math.Floor(r.NewTokens));
+                int k = AllowNew(r, fill, goal, liveTotal + inbound, have[0], now);
                 QueueNew(r, k);
                 have[0] += k;
                 inbound += k;
@@ -1086,6 +1094,26 @@ namespace DOL.GS
             _busy[c.BotId] = 0;
             r.LoginQueue.Add(new LoginOrder(c.BotId, Math.Clamp(c.Level, 1, 50), profile, profile.Status == 1, false));
             r.Pools[BracketOf(c.Level)].Items.Remove(c);
+        }
+
+        /// <summary>How many new level 1s Fill may queue now (owner 2026-11-10: at most 4 a realm a minute while filling,
+        /// once the realm is half full and its 1-9 share is met; AutonomousPopulationFillPace). Spends the paced tokens.</summary>
+        private int AllowNew(RealmState r, int want, int goal, int liveAndInbound, int bracket0, DateTime now)
+        {
+            if (want <= 0) return 0;
+            if (!r.FillPhase) return Math.Min(want, (int)Math.Floor(r.NewTokens));
+            if (!AutonomousPopulationFillPace.Enabled) return want;
+            int target0 = r.Targets.Length > 0 ? r.Targets[0] : 0;
+            int free = AutonomousPopulationFillPace.FreeNew(liveAndInbound, goal, bracket0, target0);
+            int k = AutonomousPopulationFillPace.Allowed(want, free, r.FillNewTokens);
+            if (k > free) r.FillNewTokens = Math.Max(0, r.FillNewTokens - (k - free));
+            if (k < want && now >= r.NextFillPaceLogUtc)
+            {
+                r.NextFillPaceLogUtc = now.AddMinutes(1);
+                LogInfo($"POPULATION_FILL_PACE realm={PopulationGoalSettings.RealmName(r.Realm)} new_now={k} held={want - k} " +
+                        $"live_and_inbound={liveAndInbound} goal={goal} level1_9={bracket0}/{target0} per_minute={AutonomousPopulationFillPace.PerMinute}");
+            }
+            return k;
         }
 
         private void QueueNew(RealmState r, int count)

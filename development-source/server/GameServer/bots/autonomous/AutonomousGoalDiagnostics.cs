@@ -65,6 +65,16 @@ namespace DOL.GS
         public int Deaths { get; private set; }
         public int RecoveryAttempts { get; private set; }
         public string LastPathStatus { get; private set; } = string.Empty;
+        /// <summary>owner 2026-11-10: which camp rule chose this camp (crowd_widened, level1_blue, ...); empty for the normal draw.</summary>
+        public string Choice { get; set; } = string.Empty;
+
+        /// <summary>Straight start-to-goal distance in the same region, -1 across regions (owner 2026-11-10: level-1 travel check).</summary>
+        public static int StartGoalDistance(int startRegion, int startX, int startY, int goalRegion, int goalX, int goalY)
+        {
+            if (startRegion != goalRegion) return -1;
+            double dx = (double)startX - goalX, dy = (double)startY - goalY;
+            return (int)Math.Round(Math.Sqrt(dx * dx + dy * dy));
+        }
 
         public bool MatchesTarget(string name, int region, int x, int y, int z)
         {
@@ -143,7 +153,9 @@ namespace DOL.GS
                     kills = Kills, targetKills = TargetKills, xp = Experience, targetXp = TargetExperience,
                     deaths = Deaths, recoveryAttempts = RecoveryAttempts,
                     terminalRouteFailures = reason == GoalAttemptEnd.RouteFailure ? 1 : 0, lastPathStatus = LastPathStatus,
-                    reason = reason.ToString(), outcome = Classify(reason, TargetKills), detail
+                    reason = reason.ToString(), outcome = Classify(reason, TargetKills), detail,
+                    choice = Choice ?? string.Empty,
+                    startGoalDistance = StartGoalDistance(StartRegion, StartX, StartY, Region, X, Y)
                 };
             }
         }
@@ -203,7 +215,15 @@ namespace DOL.GS
                 var position = failurePosition ?? (bot.CurrentRegionID, bot.X, bot.Y, bot.Z);
                 object summary = attempt.Finish(reason, detail, DateTime.UtcNow,
                     position.Item1, position.Item2, position.Item3, position.Item4);
-                if (summary != null) Log.Info("AUTONOMOUS_GOAL_ATTEMPT " + JsonSerializer.Serialize(summary));
+                if (summary != null)
+                {
+                    Log.Info("AUTONOMOUS_GOAL_ATTEMPT " + JsonSerializer.Serialize(summary));
+                    // owner 2026-11-10: level1 abort check counters (counts only; never changes goals)
+                    AutonomousLowLevelTargetPolicy.NoteAttemptEnd(attempt.Realm, attempt.Level, attempt.Choice, attempt.Region,
+                        AutonomousGoalAttempt.StartGoalDistance(attempt.StartRegion, attempt.StartX, attempt.StartY,
+                            attempt.Region, attempt.X, attempt.Y),
+                        attempt.ArrivedUtc.HasValue, reason);
+                }
             }
             catch { }
         }
