@@ -74,6 +74,9 @@ internal sealed partial class MainForm : Form
     private readonly CheckBox _makeMeGm = new() { Text = "Make Me a GM", AutoSize = true, ForeColor = DaocTheme.Parchment, Font = new Font("Georgia", 9f, FontStyle.Bold) };
     private readonly CheckBox _rvrAnnouncements = new() { Text = "RvR and battleground announcements", AutoSize = true, Checked = true, ForeColor = DaocTheme.Parchment, Font = new Font("Georgia", 9f, FontStyle.Bold) };
     private readonly CheckBox _pveAnnouncements = new() { Text = "PvE realm event announcements", AutoSize = true, Checked = true, ForeColor = DaocTheme.Parchment, Font = new Font("Georgia", 9f, FontStyle.Bold) };
+    // XP rate options back from the old repo (owner 2026-11-10): player and gamebot rates, saved as server properties.
+    private readonly ComboBox _playerXpRate = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 108 };
+    private readonly ComboBox _botXpRate = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 108 };
     private readonly Label _optionsStatus = new()
     {
         AutoSize = true,
@@ -472,7 +475,7 @@ internal sealed partial class MainForm : Form
         groups.Controls.Add(BuildActiveGroupsPanel());
         var rvr = new TabPage("Active RvR") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
         rvr.Controls.Add(BuildActiveRvrPanel());
-        var options = new TabPage("Options") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
+        var options = new TabPage("Options") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text, AutoScroll = true };
         options.Controls.Add(BuildOptionsPanel());
         tabs.TabPages.Add(population);
         var world = new TabPage("World Population") { BackColor = DaocTheme.Panel, ForeColor = DaocTheme.Text };
@@ -530,7 +533,7 @@ internal sealed partial class MainForm : Form
         var surface = new InsetPanel
         {
             Dock = DockStyle.Top,
-            Height = 330,
+            Height = 410,
             Margin = new Padding(18),
             Padding = new Padding(20),
             Accent = DaocTheme.Gold,
@@ -539,13 +542,15 @@ internal sealed partial class MainForm : Form
         {
             Dock = DockStyle.Fill,
             ColumnCount = 3,
-            RowCount = 6,
+            RowCount = 8,
             BackColor = Color.Transparent,
         };
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 210));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 135));
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 48));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
         layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40));
@@ -578,10 +583,21 @@ internal sealed partial class MainForm : Form
         layout.SetColumnSpan(_pveAnnouncements, 2);
         layout.Controls.Add(OptionDescription("Screen announcements when realm raids form, and to every realm when a final boss (epic dungeons, Summoner's Hall, Darkness Falls) is defeated."), 2, 3);
         _pveAnnouncements.CheckedChanged += async (_, _) => await SaveAnnouncementSettingAsync();
+        // Player and gamebot XP rates (owner 2026-11-10), default 1x.
+        ConfigureXpRateSelector(_playerXpRate);
+        ConfigureXpRateSelector(_botXpRate);
+        layout.Controls.Add(OptionLabel("PLAYER XP RATE"), 0, 4);
+        layout.Controls.Add(_playerXpRate, 1, 4);
+        layout.Controls.Add(OptionDescription("Your characters' experience from kills. Hired companions earn at this rate too. 1x is the original rate."), 2, 4);
+        _playerXpRate.SelectedIndexChanged += async (_, _) => await SaveXpRateAsync(XpRateSettings.PlayerKey, _playerXpRate);
+        layout.Controls.Add(OptionLabel("GAMEBOT XP RATE"), 0, 5);
+        layout.Controls.Add(_botXpRate, 1, 5);
+        layout.Controls.Add(OptionDescription("Experience from kills for the autonomous gamebots that live in the world. 1x is the original rate."), 2, 5);
+        _botXpRate.SelectedIndexChanged += async (_, _) => await SaveXpRateAsync(XpRateSettings.BotKey, _botXpRate);
         Label about = OptionDescription(TrueMode.Summary);
-        layout.Controls.Add(about, 0, 4);
+        layout.Controls.Add(about, 0, 6);
         layout.SetColumnSpan(about, 3);
-        layout.Controls.Add(_optionsStatus, 0, 5);
+        layout.Controls.Add(_optionsStatus, 0, 7);
         layout.SetColumnSpan(_optionsStatus, 3);
         surface.Controls.Add(layout);
         return surface;
@@ -604,6 +620,15 @@ internal sealed partial class MainForm : Form
         Font = new Font("Georgia", 9.25f, FontStyle.Bold),
         TextAlign = ContentAlignment.MiddleLeft,
     };
+
+    private static void ConfigureXpRateSelector(ComboBox selector)
+    {
+        StyleInput(selector);
+        selector.Anchor = AnchorStyles.Left;
+        selector.Margin = new Padding(0, 6, 0, 6);
+        foreach (double rate in XpRateSettings.Presets)
+            selector.Items.Add(new XpRateOption(rate, XpRateSettings.Label(rate)));
+    }
 
     private Control BuildActiveGroupsPanel()
     {
@@ -1447,6 +1472,9 @@ internal sealed partial class MainForm : Form
             _rvrAnnouncements.Enabled = editable;
             _pveAnnouncements.Checked = snapshot.PveAnnouncements;
             _pveAnnouncements.Enabled = editable;
+            SelectXpRate(_playerXpRate, snapshot.PlayerXpRate);
+            SelectXpRate(_botXpRate, snapshot.BotXpRate);
+            _playerXpRate.Enabled = _botXpRate.Enabled = editable;
             if (_savingOptions)
             {
                 _optionsStatus.ForeColor = DaocTheme.Success;
@@ -1461,6 +1489,56 @@ internal sealed partial class MainForm : Form
         {
             _loadingOptions = false;
         }
+    }
+
+    private static void SelectXpRate(ComboBox selector, double rate)
+    {
+        XpRateOption? match = selector.Items.Cast<XpRateOption>()
+            .FirstOrDefault(option => Math.Abs(option.Multiplier - rate) < 0.001);
+        if (match == null)
+        {
+            // A rate set outside the launcher (e.g. by hand) is shown as it is.
+            match = new XpRateOption(rate, $"{XpRateSettings.Format(rate)}×  Custom");
+            selector.Items.Add(match);
+        }
+        if (!ReferenceEquals(selector.SelectedItem, match))
+            selector.SelectedItem = match;
+    }
+
+    // Player / gamebot XP rate (owner 2026-11-10): saved as a server property, used at the next server startup.
+    private async Task SaveXpRateAsync(string key, ComboBox selector)
+    {
+        if (_loadingOptions || _savingOptions || selector.SelectedItem is not XpRateOption option) return;
+        if (IsServerRunning() || FindExactServerProcess() is not null)
+        {
+            MessageBox.Show(this, "Stop the server before changing experience rates.", "Server is running");
+            await RefreshDashboardAsync();
+            return;
+        }
+        if (!XpRateSettings.IsValid(key, option.Multiplier))
+        {
+            await RefreshDashboardAsync();
+            return;
+        }
+        _savingOptions = true;
+        _playerXpRate.Enabled = _botXpRate.Enabled = _rvrAnnouncements.Enabled = _pveAnnouncements.Enabled = _makeMeGm.Enabled = _startButton.Enabled = false;
+        string what = key == XpRateSettings.PlayerKey ? "PLAYER XP RATE" : "GAMEBOT XP RATE";
+        _optionsStatus.Text = $"APPLYING {what} {option.Label}…";
+        _optionsStatus.ForeColor = DaocTheme.Success;
+        try { await Task.Run(() => PersistXpRate(key, option.Multiplier)); }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Unable to save XP rate"); }
+        finally { _savingOptions = false; await RefreshDashboardAsync(); }
+    }
+
+    private void PersistXpRate(string key, double multiplier)
+    {
+        if (IsServerRunning() || FindExactServerProcess() is not null)
+            throw new InvalidOperationException("The server must be fully stopped.");
+        if (!File.Exists(_database))
+            throw new InvalidOperationException("The prepared world database is missing.");
+        using var connection = new SQLiteConnection($"Data Source={_database};Version=3;Pooling=False;Default Timeout=10");
+        connection.Open();
+        XpRateSettings.Write(connection, key, multiplier);
     }
 
     private async Task SaveAnnouncementSettingAsync()
@@ -1776,6 +1854,8 @@ internal sealed partial class MainForm : Form
         }
         bool rvrAnnouncements = ReadSwitch(connection, "rvr_battleground_announcements");
         bool pveAnnouncements = ReadSwitch(connection, "pve_realm_event_announcements");
+        double playerXpRate = XpRateSettings.Read(connection, XpRateSettings.PlayerKey);
+        double botXpRate = XpRateSettings.Read(connection, XpRateSettings.BotKey);
         // Saved bots per realm: one grouped count, only while the server is stopped (it reports its own counts) or
         // when the goals file has to be created.
         bool goalsMissing = !PopulationGoalSettings.Exists(StateDirectory);
@@ -1788,7 +1868,7 @@ internal sealed partial class MainForm : Form
             goalsNotice = $"Population goals created: Albion {first.Albion:N0}, Midgard {first.Midgard:N0}, Hibernia {first.Hibernia:N0}";
         }
         return new DashboardSnapshot(serverState, bots, groups, active, memoryMb, botAiDelay, makeMeGm, ReadRvrWorld(),
-            rvrAnnouncements, pveAnnouncements, savedCounts, goalsNotice);
+            rvrAnnouncements, pveAnnouncements, savedCounts, goalsNotice, playerXpRate, botXpRate);
     }
 
     // Anything but an explicit "false" (including a missing row) reads as on.
@@ -3341,7 +3421,8 @@ internal sealed partial class MainForm : Form
     }
     private sealed record DashboardSnapshot(string ServerState, List<BotRow> Bots, List<GroupRow> Groups,
         int Active, double ServerMemoryMb, BotAiDelayReport? BotAiDelay, bool MakeMeGm = false, RvrWorldSnapshot? RvrWorld = null,
-        bool RvrAnnouncements = true, bool PveAnnouncements = true, int[]? SavedCounts = null, string GoalsNotice = "");
+        bool RvrAnnouncements = true, bool PveAnnouncements = true, int[]? SavedCounts = null, string GoalsNotice = "",
+        double PlayerXpRate = 1, double BotXpRate = 1);
 
     private sealed record LiveBotStatus(long BotId, int Level, string ZoneName, string Activity,
         string CurrentGoal, string TargetName, string TravelDestination, string ObjectiveProgress,
