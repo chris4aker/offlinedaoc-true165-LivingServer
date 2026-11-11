@@ -49628,6 +49628,22 @@
    "reason": "True 1.65 Rinda's keys (owner 2026-11-10): the last step took nothing (right-click finished it); now the iron keychain is handed in, then the key finishes the quest - same text, reward and finish line"
   },
   {
+   "sql": "UPDATE ItemTemplate SET MaxCount = 10 WHERE lower(Id_nb) IN ('aventurine_gem', 'onyx_gem', 'small_silver_laden_box', 'wizard_locked_box') AND MaxCount <> 10",
+   "reason": "True 1.65 loot stacks like its kind (owner 2026-11-11, #36): 4 loot items stack to 10 like the other drops of their kind (build_stacks165.py, stack165.json)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET MaxCount = 15 WHERE lower(Id_nb) IN ('cyhraeth cloak', 'footman_cloak') AND MaxCount <> 15",
+   "reason": "True 1.65 loot stacks like its kind (owner 2026-11-11, #36): 2 loot items stack to 15 like the other drops of their kind (build_stacks165.py, stack165.json)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET MaxCount = 30 WHERE lower(Id_nb) IN ('apple_fly_wings', 'chunk_of_wolf_meat', 'cleddyf''s_head', 'complete_worry_wort_skin', 'frog_legs', 'golden_orb', 'king_smugluk''s_head', 'mootang''s_head', 'patch_of_aughisky_hide', 'pristine_aughisky_hide', 'pristine_boars_hide', 'rat tongue', 'rotting hog tail', 'slimy_swamp_goo_skin', 'small_mirror', 'smallmaulerskin', 'snake_meat', 'tattered_black_canine_pelt', 'torn_wolf_pelt', 'water_orb', 'worn_carnelian_studded_belt') AND MaxCount <> 30",
+   "reason": "True 1.65 loot stacks like its kind (owner 2026-11-11, #36): 21 loot items stack to 30 like the other drops of their kind (build_stacks165.py, stack165.json)"
+  },
+  {
+   "sql": "UPDATE ItemTemplate SET MaxCount = 200 WHERE lower(Id_nb) IN ('adder_fang', 'botonid leaf branch', 'copper_amethyst_bracelet', 'cythraul_essence', 'dangerous_tooth', 'death worm silk', 'ghostly_banshee_hair', 'snake_scales', 'stolen_bear_tooth', 'wolf_fang') AND MaxCount <> 200",
+   "reason": "True 1.65 loot stacks like its kind (owner 2026-11-11, #36): 10 loot items stack to 200 like the other drops of their kind (build_stacks165.py, stack165.json)"
+  },
+  {
    "sql": "UPDATE Mob SET X = 34223, Y = 31341, Z = 16015 WHERE Mob_ID = '100005865' AND Region = 125",
    "reason": "True 1.65 batch 36 (#36, owner 2026-11-11): Te'Bui back at its CapnBry spot (zone 125 local 26031,23149 z 16015 -> region 34223,31341) instead of ~660 units from the Spindelhalla arrival point, where low-level bots landed beside it; position only (level, stats, aggression unchanged)"
   },

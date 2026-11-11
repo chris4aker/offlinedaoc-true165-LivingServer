@@ -1,0 +1,5600 @@
+{
+ "Adder_Fang": {
+  "name": "Adder Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "Apple_Fly_Wings": {
+  "name": "Apple Fly Wings",
+  "kind": "wing",
+  "max_count": 30,
+  "source": "6 stacking wing drops: 1 x15, 5 x30"
+ },
+ "aventurine_gem": {
+  "name": "aventurine",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "Botonid Leaf Branch": {
+  "name": "Botonid Leaf Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "chunk_of_wolf_meat": {
+  "name": "chunk of wolf meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "Cleddyf's_Head": {
+  "name": "Cleddyf's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "Complete_Worry_Wort_Skin": {
+  "name": "Complete Worry Wort Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "Copper_Amethyst_Bracelet": {
+  "name": "Copper Amethyst Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "Cyhraeth Cloak": {
+  "name": "Cyhraeth Cloak",
+  "kind": "cloak",
+  "max_count": 15,
+  "source": "2 stacking cloak drops: 1 x15, 1 x30"
+ },
+ "Cythraul_Essence": {
+  "name": "Cythraul Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "Dangerous_Tooth": {
+  "name": "Dangerous Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "Death Worm Silk": {
+  "name": "Death Worm Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "Footman_Cloak": {
+  "name": "Footman Cloak",
+  "kind": "cloak",
+  "max_count": 15,
+  "source": "2 stacking cloak drops: 1 x15, 1 x30"
+ },
+ "frog_legs": {
+  "name": "frog legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "Ghostly_Banshee_Hair": {
+  "name": "Ghostly Banshee Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "Golden_Orb": {
+  "name": "Golden Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "King_Smugluk's_Head": {
+  "name": "King Smugluk's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "moonstone_gem": {
+  "name": "moonstone",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "Mootang's_Head": {
+  "name": "Mootang's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "onyx_gem": {
+  "name": "onyx",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6968": {
+  "name": "Agate",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6969": {
+  "name": "Azurite",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6970": {
+  "name": "Garnet",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6971": {
+  "name": "Topaz",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6972": {
+  "name": "Citrine",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6976": {
+  "name": "Black Opal",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6979": {
+  "name": "Amethyst",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6980": {
+  "name": "Carnelian",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6981": {
+  "name": "Lapis Lazuli",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6985": {
+  "name": "Blue Diamond",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6987": {
+  "name": "Black Star Diopside",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6989": {
+  "name": "Cat's Eye Opal",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6991": {
+  "name": "Blue Spinel",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6992": {
+  "name": "Bloodstone",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6993": {
+  "name": "Malachite",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_6994": {
+  "name": "Green Tourmaline",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_7000": {
+  "name": "Orange Tourmaline",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_7004": {
+  "name": "Chryoprase",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_drop_7008": {
+  "name": "Precious Jasper",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_acrid_ghoul_ear": {
+  "name": "Acrid Ghoul Ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_prima_adder_poison_sac": {
+  "name": "Adder Poison Sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_prima_affixed_geas_stone": {
+  "name": "Affixed Geas Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_alfanc_eye": {
+  "name": "Alfanc Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_alfanc_fang": {
+  "name": "Alfanc Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_ancient_molded_stone": {
+  "name": "Ancient Molded Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_anger_sprite_wing": {
+  "name": "Anger Sprite Wing",
+  "kind": "wing",
+  "max_count": 30,
+  "source": "6 stacking wing drops: 1 x15, 5 x30"
+ },
+ "p165_prima_animal_pelt": {
+  "name": "Animal Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_aqueous_slug_carapace": {
+  "name": "Aqueous Slug Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_arachite_carapace": {
+  "name": "Arachite Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_arachite_egg_sac": {
+  "name": "Arachite Egg Sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_prima_arachite_silk_cloak": {
+  "name": "Arachite Silk Cloak",
+  "kind": "cloak",
+  "max_count": 15,
+  "source": "2 stacking cloak drops: 1 x15, 1 x30"
+ },
+ "p165_prima_arachite_silk_gland": {
+  "name": "Arachite Silk Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_arachnid_leg": {
+  "name": "Arachnid Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_arachnid_silk": {
+  "name": "Arachnid Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_ashen_fellwood_branch": {
+  "name": "Ashen Fellwood Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_august_levian_al_pelt": {
+  "name": "August Levian-Al Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_badger_cub_tooth": {
+  "name": "Badger Cub Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_bag_of_glowing_seeds": {
+  "name": "Bag of Glowing Seeds",
+  "kind": "seeds",
+  "max_count": 200,
+  "source": "3 stacking seeds drops: 3 x200"
+ },
+ "p165_prima_banisher_s_signet_ring": {
+  "name": "Banisher's Signet Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_banshee_essence": {
+  "name": "Banshee Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_bayer_fang": {
+  "name": "Bayer Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_beach_rat_fur": {
+  "name": "Beach Rat Fur",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_beaded_hobgoblin_belt": {
+  "name": "Beaded Hobgoblin Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_bear_skin": {
+  "name": "Bear Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_bear_tongue": {
+  "name": "Bear Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_bitten_truesilver_stone": {
+  "name": "Bitten Truesilver Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_black_badger_claw": {
+  "name": "Black Badger Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_black_badger_meat": {
+  "name": "Black Badger Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_black_badger_tooth": {
+  "name": "Black Badger Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_black_bear_claw": {
+  "name": "Black Bear Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_black_bear_pelt": {
+  "name": "Black Bear Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_black_bear_tongue": {
+  "name": "Black Bear Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_black_clawed_hand": {
+  "name": "Black Clawed Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_black_dog_paw": {
+  "name": "Black Dog Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_black_lion_skin": {
+  "name": "Black Lion Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_black_orm_claw": {
+  "name": "Black Orm Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_black_orm_hide": {
+  "name": "Black Orm Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_black_orm_tooth": {
+  "name": "Black Orm Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_black_soul_stone": {
+  "name": "Black Soul Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_bleached_leg_bone": {
+  "name": "Bleached Leg Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_bleeder_hatchling_tail": {
+  "name": "Bleeder Hatchling Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_bleeder_tail": {
+  "name": "Bleeder Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_blindsnake_fang": {
+  "name": "Blindsnake Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_blindsnake_skin": {
+  "name": "Blindsnake Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_blood_red_ruby": {
+  "name": "Blood Red Ruby",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_blood_rune_krigare_carapace": {
+  "name": "Blood Rune Krigare Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_blood_stained_carapace": {
+  "name": "Blood Stained Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_bloodied_bone": {
+  "name": "Bloodied Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_bloodied_rat_fur": {
+  "name": "Bloodied Rat Fur",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_bloodstone_ring": {
+  "name": "Bloodstone Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_bloody_arm_bone": {
+  "name": "Bloody Arm Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_bloody_canine_fang": {
+  "name": "Bloody Canine Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_bloody_skull": {
+  "name": "Bloody Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_bloody_thigh_bone": {
+  "name": "Bloody Thigh Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_bloody_warg_fang": {
+  "name": "Bloody Warg Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_bog_crawler_chitin_shell": {
+  "name": "Bog Crawler Chitin Shell",
+  "kind": "shell",
+  "max_count": 200,
+  "source": "4 stacking shell drops: 1 x10, 1 x30, 2 x200"
+ },
+ "p165_prima_bone_bayer_skull": {
+  "name": "Bone Bayer Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_bottle_of_elderberry_wine": {
+  "name": "Bottle of Elderberry Wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_prima_bottle_of_poteen_wine": {
+  "name": "Bottle of Poteen Wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_prima_bottle_of_wine": {
+  "name": "Bottle of Wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_prima_brass_insignia_ring": {
+  "name": "Brass Insignia Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_broken_carved_music_box": {
+  "name": "Broken Carved Music Box",
+  "kind": "box",
+  "max_count": 10,
+  "source": "3 stacking box drops: 3 x10"
+ },
+ "p165_prima_bronze_buckled_roman_belt": {
+  "name": "Bronze Buckled Roman Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_brown_adder_stone": {
+  "name": "Brown Adder Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_brown_bear_pelt": {
+  "name": "Brown Bear Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_burned_skull": {
+  "name": "Burned Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_caoranach_hide": {
+  "name": "Caoranach Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_carrion_drake_hide": {
+  "name": "Carrion Drake Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_carrion_drake_tongue": {
+  "name": "Carrion Drake Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_carrion_drake_tooth": {
+  "name": "Carrion Drake Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_carved_ice_totem": {
+  "name": "Carved Ice Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_caustic_venom_gland": {
+  "name": "Caustic Venom Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_cave_hound_claw": {
+  "name": "Cave Hound Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_cave_hound_skin": {
+  "name": "Cave Hound Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_cave_hound_tooth": {
+  "name": "Cave Hound Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_cave_spider_carapace": {
+  "name": "Cave Spider Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_cave_spider_leg": {
+  "name": "Cave Spider Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_cave_spider_silk": {
+  "name": "Cave Spider Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_cave_toad_skin": {
+  "name": "Cave Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_cave_viper_meat": {
+  "name": "Cave Viper Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_cave_viper_skin": {
+  "name": "Cave Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_celtic_bracelet": {
+  "name": "Celtic Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_changeling_blood": {
+  "name": "Changeling Blood",
+  "kind": "blood",
+  "max_count": 30,
+  "source": "4 stacking blood drops: 2 x30, 2 x200"
+ },
+ "p165_prima_changeling_ear": {
+  "name": "Changeling Ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_prima_changeling_hair": {
+  "name": "Changeling Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_changeling_tongue": {
+  "name": "Changeling Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_charred_grumoz_hoof": {
+  "name": "Charred Grumoz Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_charred_hoof": {
+  "name": "Charred Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_charred_leg_bone": {
+  "name": "Charred Leg Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_chewed_bone": {
+  "name": "Chewed Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_chiller_head": {
+  "name": "Chiller Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_chipped_mirror": {
+  "name": "Chipped Mirror",
+  "kind": "mirror",
+  "max_count": 30,
+  "source": "2 stacking mirror drops: 1 x30, 1 x200"
+ },
+ "p165_prima_chitin_carapace": {
+  "name": "Chitin Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_chitin_claw": {
+  "name": "Chitin Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_chitin_leg": {
+  "name": "Chitin Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_chitin_tail": {
+  "name": "Chitin Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_chunk_of_meat": {
+  "name": "Chunk of Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_chunk_of_rotting_flesh": {
+  "name": "Chunk of Rotting Flesh",
+  "kind": "flesh",
+  "max_count": 30,
+  "source": "4 stacking flesh drops: 2 x30, 2 x200"
+ },
+ "p165_prima_clear_blue_orb": {
+  "name": "Clear Blue Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_clear_oval_stone": {
+  "name": "Clear Oval Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_cliff_spiderling_claw": {
+  "name": "Cliff Spiderling Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_cliff_spiderling_legs": {
+  "name": "Cliff Spiderling Legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_clouded_beryl": {
+  "name": "Clouded Beryl",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_cloudy_white_gem": {
+  "name": "Cloudy White Gem",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_cloven_hoof": {
+  "name": "Cloven Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_copper_spinel_bracelet": {
+  "name": "Copper Spinel Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_cornish_hen_feathers": {
+  "name": "Cornish Hen Feathers",
+  "kind": "feather",
+  "max_count": 30,
+  "source": "4 stacking feather drops: 4 x30"
+ },
+ "p165_prima_cornwall_drake_claw": {
+  "name": "Cornwall Drake Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_cornwall_drake_meat": {
+  "name": "Cornwall Drake Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_cornwall_drake_tooth": {
+  "name": "Cornwall Drake Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_corpse_devourer_carapace": {
+  "name": "Corpse Devourer Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_corpse_devourer_silk": {
+  "name": "Corpse Devourer Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_corpse_eater_leg": {
+  "name": "Corpse Eater Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_courier_pouch": {
+  "name": "Courier Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_cracked_crab_carapace": {
+  "name": "Cracked Crab Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_cracked_ireon_ring": {
+  "name": "Cracked Ireon Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_creeper_clawed_hand": {
+  "name": "Creeper Clawed Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_creeper_skin": {
+  "name": "Creeper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_crypt_spider_carapace": {
+  "name": "Crypt Spider Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_crypt_spider_leg": {
+  "name": "Crypt Spider Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_crypt_spider_silk": {
+  "name": "Crypt Spider Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_crystalized_amber": {
+  "name": "Crystalized Amber",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_crystalized_crab_chitin_shell": {
+  "name": "Crystalized Crab Chitin Shell",
+  "kind": "shell",
+  "max_count": 200,
+  "source": "4 stacking shell drops: 1 x10, 1 x30, 2 x200"
+ },
+ "p165_prima_crystalized_eye": {
+  "name": "Crystalized Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_crystalized_jotun_hand": {
+  "name": "Crystalized Jotun Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_crystalized_viper_skin": {
+  "name": "Crystalized Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_cursed_ekyps_control_orb": {
+  "name": "Cursed Ekyps Control Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_cyhraeth_hair": {
+  "name": "Cyhraeth Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_dartmoor_pony_hide": {
+  "name": "Dartmoor Pony Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_dazzling_jeweled_carapace": {
+  "name": "Dazzling Jeweled Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_deamhan_claw": {
+  "name": "Deamhan Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_deamhan_hound_claw": {
+  "name": "Deamhan Hound Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_deamhan_hound_pelt": {
+  "name": "Deamhan Hound Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_deamhan_hound_tooth": {
+  "name": "Deamhan Hound Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_deamhan_wing": {
+  "name": "Deamhan Wing",
+  "kind": "wing",
+  "max_count": 30,
+  "source": "6 stacking wing drops: 1 x15, 5 x30"
+ },
+ "p165_prima_death_spider_head": {
+  "name": "Death Spider Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_death_worm_carapace": {
+  "name": "Death Worm Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_deathly_reanimated_bones": {
+  "name": "Deathly Reanimated Bones",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_decayed_pig_hoof": {
+  "name": "Decayed Pig Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_decaying_troll_paw": {
+  "name": "Decaying Troll Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_detrital_crab_claw": {
+  "name": "Detrital Crab Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_digestive_sac": {
+  "name": "Digestive Sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_prima_diseased_rat_skin": {
+  "name": "Diseased Rat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_diseased_tail": {
+  "name": "Diseased Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_drakulv_nightwalker_s_cloak": {
+  "name": "Drakulv Nightwalker's Cloak",
+  "kind": "cloak",
+  "max_count": 15,
+  "source": "2 stacking cloak drops: 1 x15, 1 x30"
+ },
+ "p165_prima_draugr_hound_pelt": {
+  "name": "Draugr Hound Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_dream_stone": {
+  "name": "Dream Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_dried_bear_meat": {
+  "name": "Dried Bear Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_driftwood_totem": {
+  "name": "Driftwood Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_dryad_hide_belt": {
+  "name": "Dryad Hide Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_dullahan_s_blackened_heart": {
+  "name": "Dullahan's Blackened Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_dullahan_s_skin": {
+  "name": "Dullahan's Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_eel_meat": {
+  "name": "Eel Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_eel_poison_gland": {
+  "name": "Eel Poison Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_eirebug_carapace": {
+  "name": "Eirebug Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_eirebug_mandible": {
+  "name": "Eirebug Mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_prima_elder_fellwood_branch": {
+  "name": "Elder Fellwood Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_elder_head": {
+  "name": "Elder Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_ellyll_silken_hair": {
+  "name": "Ellyll Silken Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_emerald_snake_fang": {
+  "name": "Emerald Snake Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_empyreal_mist_orb": {
+  "name": "Empyreal Mist Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_empyrean_silk": {
+  "name": "Empyrean Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_enhorning_hide": {
+  "name": "Enhorning Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_enriched_black_orm_hide": {
+  "name": "Enriched Black Orm Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_enriched_orm_scales": {
+  "name": "Enriched Orm Scales",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_envy_drakeling_hide": {
+  "name": "Envy Drakeling Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_envy_stone": {
+  "name": "Envy Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_etched_silver_orb": {
+  "name": "Etched Silver Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_expended_commanding_stone": {
+  "name": "Expended Commanding Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_faerie_beetle_carapace": {
+  "name": "Faerie Beetle Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_faerie_beetle_leg": {
+  "name": "Faerie Beetle Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_faerie_beetle_mandible": {
+  "name": "Faerie Beetle Mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_prima_faerie_drakes_rainbow_scale": {
+  "name": "Faerie Drakes Rainbow Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_faerie_drakes_scaled_hide": {
+  "name": "Faerie Drakes Scaled Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_faerie_drakes_tail": {
+  "name": "Faerie Drakes Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_faerie_frog_legs": {
+  "name": "Faerie Frog Legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_faerie_frog_skin": {
+  "name": "Faerie Frog Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_faerie_gem": {
+  "name": "Faerie Gem",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_faerie_horse_pelt": {
+  "name": "Faerie Horse Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_faerie_horse_tail": {
+  "name": "Faerie Horse Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_faerie_steed_pelt": {
+  "name": "Faerie Steed Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_faerie_steed_tail": {
+  "name": "Faerie Steed Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_feccan_skin": {
+  "name": "Feccan Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_fee_lion_claw": {
+  "name": "Fee Lion Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_fee_lion_meat": {
+  "name": "Fee Lion Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_fee_lion_pelt": {
+  "name": "Fee Lion Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_fee_lion_tooth": {
+  "name": "Fee Lion Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_fell_cat_s_tooth": {
+  "name": "Fell Cat's Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_fetch_s_magical_skin": {
+  "name": "Fetch's Magical Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_fiery_diamond_orb": {
+  "name": "Fiery Diamond Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_fiery_hound_skin": {
+  "name": "Fiery Hound Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_fiery_red_stone": {
+  "name": "Fiery Red Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_fine_unworked_stone": {
+  "name": "Fine Unworked Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_fire_ant_leg": {
+  "name": "Fire Ant Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_fire_ant_mandible": {
+  "name": "Fire Ant Mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_prima_fire_seeds": {
+  "name": "Fire Seeds",
+  "kind": "seeds",
+  "max_count": 200,
+  "source": "3 stacking seeds drops: 3 x200"
+ },
+ "p165_prima_firecat_claw": {
+  "name": "Firecat Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_firecat_fang": {
+  "name": "Firecat Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_firecat_pelt": {
+  "name": "Firecat Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_flask_of_fire_wine": {
+  "name": "Flask of Fire Wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_prima_flayed_rat_tail": {
+  "name": "Flayed Rat Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_forest_spider_carapace": {
+  "name": "Forest Spider Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_forest_viper_skin": {
+  "name": "Forest Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_forked_snake_tongue": {
+  "name": "Forked Snake Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_frost_rimmed_silver_cup": {
+  "name": "Frost-Rimmed Silver Cup",
+  "kind": "cup",
+  "max_count": 200,
+  "source": "2 stacking cup drops: 2 x200"
+ },
+ "p165_prima_frosty_leg": {
+  "name": "Frosty Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_fulgent_dusklight_gem": {
+  "name": "Fulgent Dusklight Gem",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_furious_warshade_gem": {
+  "name": "Furious Warshade Gem",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_fused_quartz_stone": {
+  "name": "Fused Quartz Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_fylgja_pelt": {
+  "name": "Fylgja Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_gale_s_essence": {
+  "name": "Gale's Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_gehk_hoof": {
+  "name": "Gehk Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_gem_clicker_carapace": {
+  "name": "Gem Clicker Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_gem_clicker_claw": {
+  "name": "Gem Clicker Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_gem_dusted_bone": {
+  "name": "Gem Dusted Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_gem_dusted_pristine_rat_pelt": {
+  "name": "Gem Dusted Pristine Rat Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_gem_dusted_rat_pelt": {
+  "name": "Gem Dusted Rat Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_gem_dusted_skull": {
+  "name": "Gem Dusted Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_gem_imbedded_rat_fang": {
+  "name": "Gem Imbedded Rat Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_ghost_wolf_hide": {
+  "name": "Ghost Wolf Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_ghost_wolf_teeth": {
+  "name": "Ghost Wolf Teeth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_ghoul_skin": {
+  "name": "Ghoul Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_ghoulic_viper_skin": {
+  "name": "Ghoulic Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_giant_ant_carapace": {
+  "name": "Giant Ant Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_giant_ant_legs": {
+  "name": "Giant Ant Legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_giant_boar_hide": {
+  "name": "Giant Boar Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_giant_boar_tusk": {
+  "name": "Giant Boar Tusk",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_giant_frog_skin": {
+  "name": "Giant Frog Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_giant_leaper_leg": {
+  "name": "Giant Leaper Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_giant_lizard_hide": {
+  "name": "Giant Lizard Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_giant_water_skin": {
+  "name": "Giant Water Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_glimmer_spirit_essence": {
+  "name": "Glimmer Spirit Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_glimmer_striker_belt": {
+  "name": "Glimmer Striker Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_glimmering_spirit_orb": {
+  "name": "Glimmering Spirit Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_glistening_mud_frog_skin": {
+  "name": "Glistening Mud Frog Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_glow_worm_carapace": {
+  "name": "Glow Worm Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_glowing_rat_claw": {
+  "name": "Glowing Rat Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_glowing_red_orb": {
+  "name": "Glowing Red Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_glowing_ultramarine_stone": {
+  "name": "Glowing Ultramarine Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_goborchend_hoof": {
+  "name": "Goborchend Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_grand_pooka_hoof": {
+  "name": "Grand Pooka Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_granite_shard": {
+  "name": "Granite Shard",
+  "kind": "shard",
+  "max_count": 10,
+  "source": "2 stacking shard drops: 1 x10, 1 x30"
+ },
+ "p165_prima_grass_cat_fang": {
+  "name": "Grass Cat Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_grass_cat_skin": {
+  "name": "Grass Cat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_grass_stained_stone": {
+  "name": "Grass Stained Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_grass_viper_skin": {
+  "name": "Grass Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_green_jasper": {
+  "name": "Green Jasper",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_green_sapphire": {
+  "name": "Green Sapphire",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_grey_warg_skin": {
+  "name": "Grey Warg Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_guard_s_gold_nose_ring": {
+  "name": "Guard's Gold Nose Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_guardian_veil_ring": {
+  "name": "Guardian Veil Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_hag_s_green_hair": {
+  "name": "Hag's Green Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_hallaratta_pelt": {
+  "name": "Hallaratta Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_hand_tooled_belt": {
+  "name": "Hand-Tooled Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_hardened_clay_heart": {
+  "name": "Hardened Clay Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_harvester_carapace": {
+  "name": "Harvester Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_hill_cat_claw": {
+  "name": "Hill Cat Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_hill_cat_skin": {
+  "name": "Hill Cat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_hill_toad_skin": {
+  "name": "Hill Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_hollow_bone_totem": {
+  "name": "Hollow Bone Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_hooked_orm_claw": {
+  "name": "Hooked Orm Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_horned_toad_skin": {
+  "name": "Horned Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_horrific_petrified_branch": {
+  "name": "Horrific Petrified Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_human_hide_belt": {
+  "name": "Human-Hide Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_hunk_of_warg_meat": {
+  "name": "Hunk of Warg Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_husk_carapace": {
+  "name": "Husk Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_icy_winter_wolf_pelt": {
+  "name": "Icy Winter Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_ilmenite_shard": {
+  "name": "Ilmenite Shard",
+  "kind": "shard",
+  "max_count": 10,
+  "source": "2 stacking shard drops: 1 x10, 1 x30"
+ },
+ "p165_prima_impaler_s_barbed_leg": {
+  "name": "Impaler's Barbed Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_impling_claw": {
+  "name": "Impling Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_impling_eye": {
+  "name": "Impling Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_impling_wing": {
+  "name": "Impling Wing",
+  "kind": "wing",
+  "max_count": 30,
+  "source": "6 stacking wing drops: 1 x15, 5 x30"
+ },
+ "p165_prima_intricate_sea_shell_bracelet": {
+  "name": "Intricate Sea Shell Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_ircon_stone": {
+  "name": "Ircon Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_ire_wolf_pelt": {
+  "name": "Ire Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_ire_wolf_tooth": {
+  "name": "Ire Wolf Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_irewood_greenbark_branch": {
+  "name": "Irewood Greenbark Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_ivory_warg_tooth": {
+  "name": "Ivory Warg Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_jewel_encrusted_eye": {
+  "name": "Jewel-Encrusted Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_jeweled_eye": {
+  "name": "Jeweled Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_jeweled_merman_skull": {
+  "name": "Jeweled Merman Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_jeweled_redbone_skull": {
+  "name": "Jeweled Redbone Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_jeweled_skull_totem": {
+  "name": "Jeweled Skull Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_keltoi_crafted_belt": {
+  "name": "Keltoi Crafted Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_kobold_skull_cup": {
+  "name": "Kobold Skull Cup",
+  "kind": "cup",
+  "max_count": 200,
+  "source": "2 stacking cup drops: 2 x200"
+ },
+ "p165_prima_lake_serpent_fang": {
+  "name": "Lake Serpent Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_lake_serpent_skin": {
+  "name": "Lake Serpent Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_large_annag_head": {
+  "name": "Large Annag Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_large_bleached_bone": {
+  "name": "Large Bleached Bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_large_bounder_pelt": {
+  "name": "Large Bounder Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_large_carrion_drake_scale": {
+  "name": "Large Carrion Drake Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_large_cave_mauler_skin": {
+  "name": "Large Cave Mauler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_large_garnet": {
+  "name": "Large Garnet",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_large_gold_tooth": {
+  "name": "Large Gold Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_large_rock_bounder_tooth": {
+  "name": "Large Rock Bounder Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_large_topaz_ring": {
+  "name": "Large Topaz Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_large_venomous_spider_gland": {
+  "name": "Large Venomous Spider Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_large_warg_paw": {
+  "name": "Large Warg Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_large_warhound_paw": {
+  "name": "Large Warhound Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_large_winter_wolf_pelt": {
+  "name": "Large Winter Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_large_wolfhound_fang": {
+  "name": "Large Wolfhound Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_large_wolfhound_pelt": {
+  "name": "Large Wolfhound Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_large_wolfspider_leg": {
+  "name": "Large Wolfspider Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_leaper_eye": {
+  "name": "Leaper Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_leaper_tongue_belt": {
+  "name": "Leaper Tongue Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_leathery_skin": {
+  "name": "Leathery Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_lesser_banshee_essence": {
+  "name": "Lesser Banshee Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_lieutenant_s_pouch": {
+  "name": "Lieutenant's Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_lion_skin": {
+  "name": "Lion Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_lizard_s_head": {
+  "name": "Lizard's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_lock_of_silver_hair": {
+  "name": "Lock of Silver Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_locked_spell_book": {
+  "name": "Locked Spell Book",
+  "kind": "book",
+  "max_count": 200,
+  "source": "2 stacking book drops: 2 x200"
+ },
+ "p165_prima_lone_wolf_fang": {
+  "name": "Lone Wolf Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_lone_wolf_pelt": {
+  "name": "Lone Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_luminescent_orb": {
+  "name": "Luminescent Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_lump_of_rotting_meat": {
+  "name": "Lump of Rotting Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_lynx_skin": {
+  "name": "Lynx Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_malefic_spirit_orb": {
+  "name": "Malefic Spirit Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_malicious_black_heart": {
+  "name": "Malicious Black Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_mangled_rat_s_paw": {
+  "name": "Mangled Rat's Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_manifested_phantom_terror_claw": {
+  "name": "Manifested Phantom Terror Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_marrow_leech_carapace": {
+  "name": "Marrow Leech Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_mauler_claw": {
+  "name": "Mauler Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_mauler_skin": {
+  "name": "Mauler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_medium_carrion_drake_scale": {
+  "name": "Medium Carrion Drake Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_medium_werewolf_pelt": {
+  "name": "Medium Werewolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_mephit_skull": {
+  "name": "Mephit Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_mephit_wing": {
+  "name": "Mephit Wing",
+  "kind": "wing",
+  "max_count": 30,
+  "source": "6 stacking wing drops: 1 x15, 5 x30"
+ },
+ "p165_prima_merman_scales": {
+  "name": "Merman Scales",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_mindworm_poison_gland": {
+  "name": "Mindworm Poison Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_mist_wraith_essence": {
+  "name": "Mist Wraith Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_misty_gray_stone": {
+  "name": "Misty Gray Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_moonshone_bracelet": {
+  "name": "Moonshone Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_moor_wolf_skin": {
+  "name": "Moor Wolf Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_mud_crab_chitin_shell": {
+  "name": "Mud Crab Chitin Shell",
+  "kind": "shell",
+  "max_count": 200,
+  "source": "4 stacking shell drops: 1 x10, 1 x30, 2 x200"
+ },
+ "p165_prima_mud_frog_skin": {
+  "name": "Mud Frog Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_mud_man_totem": {
+  "name": "Mud-Man Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_multifaceted_eye": {
+  "name": "Multifaceted Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_mutilated_hobgoblin_hand": {
+  "name": "Mutilated Hobgoblin Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_mystical_welkin_orb": {
+  "name": "Mystical Welkin Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_necklace_of_leaves": {
+  "name": "Necklace of Leaves",
+  "kind": "leaves",
+  "max_count": 200,
+  "source": "4 stacking leaves drops: 1 x30, 3 x200"
+ },
+ "p165_prima_oak_branch": {
+  "name": "Oak Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_obsidian": {
+  "name": "Obsidian",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_obsidian_bracelet": {
+  "name": "Obsidian Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_onyx_and_ruby_ring": {
+  "name": "Onyx and Ruby Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_onyx_ring": {
+  "name": "Onyx Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_orb_of_the_restless_eye": {
+  "name": "Orb of the Restless Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_otherworldly_wine": {
+  "name": "Otherworldly Wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_prima_painted_elven_skull": {
+  "name": "Painted Elven Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_parthanan_head": {
+  "name": "Parthanan Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_patch_of_decayed_hair": {
+  "name": "Patch of Decayed Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_patched_old_sack": {
+  "name": "Patched Old Sack",
+  "kind": "sack",
+  "max_count": 30,
+  "source": "2 stacking sack drops: 1 x30, 1 x200"
+ },
+ "p165_prima_pearl": {
+  "name": "Pearl",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_pendrake_claw": {
+  "name": "Pendrake Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_pendrake_fang": {
+  "name": "Pendrake Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_pendrake_skin": {
+  "name": "Pendrake Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_perfect_white_wolf_pelt": {
+  "name": "Perfect White Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_phantom_miner_essence": {
+  "name": "Phantom Miner Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_phosphorescent_carapace": {
+  "name": "Phosphorescent Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_phosphorescent_claw": {
+  "name": "Phosphorescent Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_phosphorescent_pelt": {
+  "name": "Phosphorescent Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_phosphorescent_tooth": {
+  "name": "Phosphorescent Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_piece_of_amber": {
+  "name": "Piece of Amber",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_piece_of_burnt_skin": {
+  "name": "Piece of Burnt Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_piece_of_obsidian": {
+  "name": "Piece of Obsidian",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_pilfered_draconic_scale": {
+  "name": "Pilfered Draconic Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_pine_branch": {
+  "name": "Pine Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_pointed_fang": {
+  "name": "Pointed Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_poison_sac": {
+  "name": "Poison Sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_prima_poisonous_cave_toad_skin": {
+  "name": "Poisonous Cave Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_poisonous_mephit_fang": {
+  "name": "Poisonous Mephit Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_polished_bones": {
+  "name": "Polished Bones",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "p165_prima_polished_eldspar_stone": {
+  "name": "Polished Eldspar Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_polished_granite_stone": {
+  "name": "Polished Granite Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_pony_hoof": {
+  "name": "Pony Hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_prima_pooka_hair": {
+  "name": "Pooka Hair",
+  "kind": "hair",
+  "max_count": 200,
+  "source": "3 stacking hair drops: 1 x30, 2 x200"
+ },
+ "p165_prima_pooka_skin": {
+  "name": "Pooka Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pouch_of_hobgoblin_eyes": {
+  "name": "Pouch of Hobgoblin Eyes",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_powdered_quartz": {
+  "name": "Powdered Quartz",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_prelate_s_polished_carapace": {
+  "name": "Prelate's Polished Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_preserved_human_heart": {
+  "name": "Preserved Human Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_primitive_fire_opal_eyed_totem": {
+  "name": "Primitive Fire Opal Eyed Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_pristine_alfanc_hide": {
+  "name": "Pristine Alfanc Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_badger_pelt": {
+  "name": "Pristine Badger Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_bear_skin": {
+  "name": "Pristine Bear Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_black_badger_pelt": {
+  "name": "Pristine Black Badger Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_black_bear_pelt": {
+  "name": "Pristine Black Bear Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_black_lion_skin": {
+  "name": "Pristine Black Lion Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_bleeder_skin": {
+  "name": "Pristine Bleeder Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_blindsnake_skin": {
+  "name": "Pristine Blindsnake Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_brown_bear_pelt": {
+  "name": "Pristine Brown Bear Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_cave_hound_skin": {
+  "name": "Pristine Cave Hound Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_cave_toad_skin": {
+  "name": "Pristine Cave Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_cave_viper_skin": {
+  "name": "Pristine Cave Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_chitin_carapace": {
+  "name": "Pristine Chitin Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_cornwall_drake_skin": {
+  "name": "Pristine Cornwall Drake Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_crab_carapace": {
+  "name": "Pristine Crab Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_dark_hound_pelt": {
+  "name": "Pristine Dark Hound Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_dartmoor_pony_hide": {
+  "name": "Pristine Dartmoor Pony Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_diseased_rat_skin": {
+  "name": "Pristine Diseased Rat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_eel_skin": {
+  "name": "Pristine Eel Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_enhorning_hide": {
+  "name": "Pristine Enhorning Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_fiery_hound_skin": {
+  "name": "Pristine Fiery Hound Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_forest_cat_skin": {
+  "name": "Pristine Forest Cat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_frosty_hide": {
+  "name": "Pristine Frosty Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_fylgja_pelt": {
+  "name": "Pristine Fylgja Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_gem_clicker_carapace": {
+  "name": "Pristine Gem Clicker Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_ghoulic_viper_skin": {
+  "name": "Pristine Ghoulic Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_hallaratta_pelt": {
+  "name": "Pristine Hallaratta Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_hatchling_skin": {
+  "name": "Pristine Hatchling Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_horned_toad_skin": {
+  "name": "Pristine Horned Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_icy_wolf_pelt": {
+  "name": "Pristine Icy Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_leech_carapace": {
+  "name": "Pristine Leech Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_leech_skin": {
+  "name": "Pristine Leech Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_lone_wolf_pelt": {
+  "name": "Pristine Lone Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_luch_hide": {
+  "name": "Pristine Luch Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_mara_pelt": {
+  "name": "Pristine Mara Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_mature_wyvern_hide": {
+  "name": "Pristine Mature Wyvern Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_mauler_skin": {
+  "name": "Pristine Mauler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_moor_wolf_skin": {
+  "name": "Pristine Moor Wolf Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_pale_horse_pelt": {
+  "name": "Pristine Pale Horse Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_pendrake_skin": {
+  "name": "Pristine Pendrake Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_poisonous_toad_skin": {
+  "name": "Pristine Poisonous Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_scaled_fiend_skin": {
+  "name": "Pristine Scaled Fiend Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_scaled_snarler_pelt": {
+  "name": "Pristine Scaled Snarler Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_scaled_varg_pelt": {
+  "name": "Pristine Scaled Varg Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_sheer_black_pelt": {
+  "name": "Pristine Sheer Black Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_shock_slug_carapace": {
+  "name": "Pristine Shock Slug Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_sinach_hide": {
+  "name": "Pristine Sinach Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_slug_carapace": {
+  "name": "Pristine Slug Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_snowy_wolverine_pelt": {
+  "name": "Pristine Snowy Wolverine Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_spider_carapace": {
+  "name": "Pristine Spider Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_pristine_tunneler_skin": {
+  "name": "Pristine Tunneler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_warg_pelt": {
+  "name": "Pristine Warg Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_wee_were_pelt": {
+  "name": "Pristine Wee Were Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_winter_wolf_pelt": {
+  "name": "Pristine Winter Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pristine_wolf_pelt": {
+  "name": "Pristine Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_pulsing_rotwood_heart": {
+  "name": "Pulsing Rotwood Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_punctured_cyclen_eye": {
+  "name": "Punctured Cyclen Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_rage_wolf_fang": {
+  "name": "Rage Wolf Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_rat_fur": {
+  "name": "Rat Fur",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_razor_sharp_claw": {
+  "name": "Razor Sharp Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_red_diamond": {
+  "name": "Red Diamond",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_reflective_stone": {
+  "name": "Reflective Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_renitent_mindworm_skin": {
+  "name": "Renitent Mindworm Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_restless_ethereal_eye": {
+  "name": "Restless Ethereal Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_ripped_piece_of_silk": {
+  "name": "Ripped Piece of Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_rock_imp_head": {
+  "name": "Rock Imp Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_rotten_fanged_tooth": {
+  "name": "Rotten Fanged Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_rotten_tooth": {
+  "name": "Rotten Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_rotting_pig_skin": {
+  "name": "Rotting Pig Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_rotting_troll_hide": {
+  "name": "Rotting Troll Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_runner_s_pouch": {
+  "name": "Runner's Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_rusty_iron_ring": {
+  "name": "Rusty Iron Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_saturated_black_orm_hide": {
+  "name": "Saturated Black Orm Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_saturated_orm_scales": {
+  "name": "Saturated Orm Scales",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_savage_arachite_claw": {
+  "name": "Savage Arachite Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_savage_fishing_bear_meat": {
+  "name": "Savage Fishing Bear Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_savage_fishing_bear_skin": {
+  "name": "Savage Fishing Bear Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_savage_fishing_bear_tooth": {
+  "name": "Savage Fishing Bear Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_scaled_fiend_skin": {
+  "name": "Scaled Fiend Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_scaled_fiend_tail": {
+  "name": "Scaled Fiend Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_scaled_fiend_tooth": {
+  "name": "Scaled Fiend Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_scaled_snarler_pelt": {
+  "name": "Scaled Snarler Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_scaled_varg_pelt": {
+  "name": "Scaled Varg Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_scorpion_carapace": {
+  "name": "Scorpion Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_scorpion_claw": {
+  "name": "Scorpion Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_scorpion_tail": {
+  "name": "Scorpion Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_scragger_s_pouch": {
+  "name": "Scragger's Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_scrap_of_ghoul_flesh": {
+  "name": "Scrap of Ghoul Flesh",
+  "kind": "flesh",
+  "max_count": 30,
+  "source": "4 stacking flesh drops: 2 x30, 2 x200"
+ },
+ "p165_prima_scrying_mirror": {
+  "name": "Scrying Mirror",
+  "kind": "mirror",
+  "max_count": 30,
+  "source": "2 stacking mirror drops: 1 x30, 1 x200"
+ },
+ "p165_prima_sea_serpent_totem": {
+  "name": "Sea Serpent Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_seared_skull": {
+  "name": "Seared Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_serrated_alfanc_tooth": {
+  "name": "Serrated Alfanc Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_severed_bwgan_hand": {
+  "name": "Severed Bwgan Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_severed_bwgan_leg": {
+  "name": "Severed Bwgan Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_severed_bwgwl_hand": {
+  "name": "Severed Bwgwl Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_severed_bwgwl_leg": {
+  "name": "Severed Bwgwl Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_severed_gwr_drwgiaid_hand": {
+  "name": "Severed Gwr-Drwgiaid Hand",
+  "kind": "hand",
+  "max_count": 30,
+  "source": "5 stacking hand drops: 1 x10, 4 x30"
+ },
+ "p165_prima_severed_gwr_drwgiaid_leg": {
+  "name": "Severed Gwr-Drwgiaid Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_shadowhunter_pelt": {
+  "name": "Shadowhunter Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_shadowhunter_teeth": {
+  "name": "Shadowhunter Teeth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_shambler_branch": {
+  "name": "Shambler Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_sharp_tooth": {
+  "name": "Sharp Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_sharp_tusk": {
+  "name": "Sharp Tusk",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_sharp_wolf_claw": {
+  "name": "Sharp Wolf Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_sheer_black_pelt": {
+  "name": "Sheer Black Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_sheet_of_shimmering_bark": {
+  "name": "Sheet of Shimmering Bark",
+  "kind": "bark",
+  "max_count": 30,
+  "source": "2 stacking bark drops: 1 x30, 1 x200"
+ },
+ "p165_prima_shimmering_painted_skull": {
+  "name": "Shimmering Painted Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_shock_slug_carapace": {
+  "name": "Shock Slug Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_shredded_bleeder_skin": {
+  "name": "Shredded Bleeder Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_shredded_hatchling_skin": {
+  "name": "Shredded Hatchling Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_shrunken_elven_head": {
+  "name": "Shrunken Elven Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabra_skirmisher_s_head": {
+  "name": "Siabra Skirmisher's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_ambusher_s_head": {
+  "name": "Siabrian Ambusher's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_chieftain_s_head": {
+  "name": "Siabrian Chieftain's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_footpad_s_head": {
+  "name": "Siabrian Footpad's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_fury_s_head": {
+  "name": "Siabrian Fury's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_piller_s_head": {
+  "name": "Siabrian Piller's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_raider_s_head": {
+  "name": "Siabrian Raider's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_siabrian_waylayer_s_head": {
+  "name": "Siabrian Waylayer's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_sickly_pulsing_orb": {
+  "name": "Sickly Pulsing Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_silver_amethyst_ring": {
+  "name": "Silver Amethyst Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_silver_drakeling_hide": {
+  "name": "Silver Drakeling Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_silver_pearl_ring": {
+  "name": "Silver Pearl Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_silver_topaz_ring": {
+  "name": "Silver Topaz Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_skeletal_paw": {
+  "name": "Skeletal Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_skeleton_skull": {
+  "name": "Skeleton Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_sky_worshipper_totem": {
+  "name": "Sky Worshipper Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_sleek_black_pelt": {
+  "name": "Sleek Black Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_sleek_black_skin": {
+  "name": "Sleek Black Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_small_annag_head": {
+  "name": "Small Annag Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_small_bounder_pelt": {
+  "name": "Small Bounder Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_small_carrion_drake_scale": {
+  "name": "Small Carrion Drake Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_small_copper_bracelet": {
+  "name": "Small Copper Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_small_engraved_scale": {
+  "name": "Small Engraved Scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_prima_small_gold_stitched_pouch": {
+  "name": "Small Gold-Stitched Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_small_hill_cat_claw": {
+  "name": "Small Hill Cat Claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_prima_small_hill_cat_skin": {
+  "name": "Small Hill Cat Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_small_rock_bounder_tooth": {
+  "name": "Small Rock Bounder Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_small_shell": {
+  "name": "Small Shell",
+  "kind": "shell",
+  "max_count": 200,
+  "source": "4 stacking shell drops: 1 x10, 1 x30, 2 x200"
+ },
+ "p165_prima_small_skeletal_head": {
+  "name": "Small Skeletal Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_small_werewolf_pelt": {
+  "name": "Small Werewolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_small_woodeater_leg": {
+  "name": "Small Woodeater Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_smooth_blue_stone": {
+  "name": "Smooth Blue Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_smooth_bone_totem": {
+  "name": "Smooth Bone Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_smooth_golem_stone": {
+  "name": "Smooth Golem Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_snowy_wolverine_pelt": {
+  "name": "Snowy Wolverine Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_softly_glowing_orb": {
+  "name": "Softly Glowing Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_prima_sooty_eye": {
+  "name": "Sooty Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_sparkling_gem_studded_carapace": {
+  "name": "Sparkling Gem Studded Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_spider_carved_jade": {
+  "name": "Spider-Carved Jade",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_spider_poison_gland": {
+  "name": "Spider Poison Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_spiderling_carapace": {
+  "name": "Spiderling Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_spiderling_silk": {
+  "name": "Spiderling Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_spindel_silk": {
+  "name": "Spindel Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_spindly_rock_crab_leg": {
+  "name": "Spindly Rock Crab Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_spined_carapace": {
+  "name": "Spined Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_spined_death_claw_bracelet": {
+  "name": "Spined Death Claw Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_spiney_drakeling_tail": {
+  "name": "Spiney Drakeling Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_spirit_fang": {
+  "name": "Spirit Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_sprawling_arachnid_carapace": {
+  "name": "Sprawling Arachnid Carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_prima_square_cut_sapphire": {
+  "name": "Square-Cut Sapphire",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_sticky_arachite_silk": {
+  "name": "Sticky Arachite Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_strong_arachite_silk": {
+  "name": "Strong Arachite Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_supple_willow_branch": {
+  "name": "Supple Willow Branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_prima_svartalf_asterite_ring": {
+  "name": "Svartalf Asterite Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_sveawolf_fang": {
+  "name": "Sveawolf Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_sveawolf_skin": {
+  "name": "Sveawolf Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_tanned_animal_skin": {
+  "name": "Tanned Animal Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_tanned_bear_hide": {
+  "name": "Tanned Bear Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_tarnished_glimmer_spirit_ring": {
+  "name": "Tarnished Glimmer Spirit Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_tattered_rope_belt": {
+  "name": "Tattered Rope Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_prima_tattered_warg_pelt": {
+  "name": "Tattered Warg Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_thorny_green_sapphire_bracelet": {
+  "name": "Thorny Green Sapphire Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_tomb_crab_leg": {
+  "name": "Tomb Crab Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_tomb_spider_leg": {
+  "name": "Tomb Spider Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_torn_leather_sack": {
+  "name": "Torn Leather Sack",
+  "kind": "sack",
+  "max_count": 30,
+  "source": "2 stacking sack drops: 1 x30, 1 x200"
+ },
+ "p165_prima_torn_luminescent_skin": {
+  "name": "Torn Luminescent Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_tough_hide": {
+  "name": "Tough Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_translucent_finliath_tooth": {
+  "name": "Translucent Finliath Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_translucent_mindworm_fang": {
+  "name": "Translucent Mindworm Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_troglodyte_eye": {
+  "name": "Troglodyte Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_troll_hide_bracelet": {
+  "name": "Troll Hide Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_troll_skull": {
+  "name": "Troll Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_truesilver_covered_skull": {
+  "name": "Truesilver Covered Skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_prima_truesilver_lined_stone": {
+  "name": "Truesilver Lined Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_tunneler_fang": {
+  "name": "Tunneler Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_tunneler_skin": {
+  "name": "Tunneler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_twisted_mithril_nose_ring": {
+  "name": "Twisted Mithril Nose Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_undamaged_cyclen_eye": {
+  "name": "Undamaged Cyclen Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_unseelie_signet_ring": {
+  "name": "Unseelie Signet Ring",
+  "kind": "ring",
+  "max_count": 15,
+  "source": "6 stacking ring drops: 4 x15, 2 x30"
+ },
+ "p165_prima_unworked_stone": {
+  "name": "Unworked Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_ursine_head": {
+  "name": "Ursine Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_venomous_spider_gland": {
+  "name": "Venomous Spider Gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_prima_venomspitter_s_head": {
+  "name": "Venomspitter's Head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_prima_venomspitter_skin": {
+  "name": "Venomspitter Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_vial_of_elven_essence": {
+  "name": "Vial of Elven Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_vial_of_elvish_essence": {
+  "name": "Vial of Elvish Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_vial_of_green_tree_blood": {
+  "name": "Vial of Green Tree Blood",
+  "kind": "blood",
+  "max_count": 30,
+  "source": "4 stacking blood drops: 2 x30, 2 x200"
+ },
+ "p165_prima_vial_of_silver_poisoned_blood": {
+  "name": "Vial of Silver Poisoned Blood",
+  "kind": "blood",
+  "max_count": 30,
+  "source": "4 stacking blood drops: 2 x30, 2 x200"
+ },
+ "p165_prima_vial_of_silvery_blood": {
+  "name": "Vial of Silvery Blood",
+  "kind": "blood",
+  "max_count": 30,
+  "source": "4 stacking blood drops: 2 x30, 2 x200"
+ },
+ "p165_prima_vine_carved_totem": {
+  "name": "Vine-Carved Totem",
+  "kind": "totem",
+  "max_count": 200,
+  "source": "2 stacking totem drops: 2 x200"
+ },
+ "p165_prima_virulent_green_eye": {
+  "name": "Virulent Green Eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_prima_wailing_essence_gem": {
+  "name": "Wailing Essence Gem",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_prima_warhound_tail": {
+  "name": "Warhound Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_wart_covered_toad_skin": {
+  "name": "Wart-Covered Toad Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_water_opal_shell_bracelet": {
+  "name": "Water Opal Shell Bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_prima_water_seers_stone": {
+  "name": "Water Seers Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_wayward_traveler_pouch": {
+  "name": "Wayward Traveler Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_weak_arachite_silk": {
+  "name": "Weak Arachite Silk",
+  "kind": "silk",
+  "max_count": 200,
+  "source": "5 stacking silk drops: 1 x30, 4 x200"
+ },
+ "p165_prima_wee_were_pelt": {
+  "name": "Wee Were Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_werewolf_ear": {
+  "name": "Werewolf Ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_prima_werewolf_fang": {
+  "name": "Werewolf Fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_prima_werewolf_hide": {
+  "name": "Werewolf Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_werewolf_meat": {
+  "name": "Werewolf Meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_prima_werewolf_paw": {
+  "name": "Werewolf Paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_prima_werewolf_tail": {
+  "name": "Werewolf Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_werewolf_tongue": {
+  "name": "Werewolf Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_prima_western_basilisk_skin": {
+  "name": "Western Basilisk Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_white_wolf_pelt": {
+  "name": "White Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_wind_ghoul_essence": {
+  "name": "Wind Ghoul Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_wind_mephit_essence": {
+  "name": "Wind Mephit Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_winter_wolf_pelt": {
+  "name": "Winter Wolf Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_wolf_s_ear": {
+  "name": "Wolf's Ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_prima_wolf_skin": {
+  "name": "Wolf Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_wolf_tail": {
+  "name": "Wolf Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_prima_wolfhound_hide": {
+  "name": "Wolfhound Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_wolfhound_pelt": {
+  "name": "Wolfhound Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_wolfhound_s_ear": {
+  "name": "Wolfhound's Ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_prima_wolfspider_leg": {
+  "name": "Wolfspider Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_woodeater_leg": {
+  "name": "Woodeater Leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_prima_wooden_shambler_heart": {
+  "name": "Wooden Shambler Heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_prima_worg_hide_pouch": {
+  "name": "Worg-Hide Pouch",
+  "kind": "pouch",
+  "max_count": 200,
+  "source": "2 stacking pouch drops: 2 x200"
+ },
+ "p165_prima_worked_frog_skin": {
+  "name": "Worked Frog Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_worked_viper_skin": {
+  "name": "Worked Viper Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_worm_skin": {
+  "name": "Worm Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_worn_leech_skin": {
+  "name": "Worn Leech Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_worn_pale_horse_pelt": {
+  "name": "Worn Pale Horse Pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_worn_runed_stone": {
+  "name": "Worn Runed Stone",
+  "kind": "stone",
+  "max_count": 200,
+  "source": "9 stacking stone drops: 3 x30, 6 x200"
+ },
+ "p165_prima_wraith_essence": {
+  "name": "Wraith Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_prima_yell_hound_skin": {
+  "name": "Yell Hound Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_yowler_s_blood_runed_bear_skin": {
+  "name": "Yowler's Blood Runed Bear-Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_prima_zephyr_wraith_essence": {
+  "name": "Zephyr Wraith Essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_uth_1032": {
+  "name": "pristine rooter skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1052": {
+  "name": "small green topaz",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1059": {
+  "name": "tawny lynx meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1073": {
+  "name": "lynx claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1076": {
+  "name": "warhound pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1166": {
+  "name": "berry wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_uth_118": {
+  "name": "spinel",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1213": {
+  "name": "worg's paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_1218": {
+  "name": "cave bear meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1221": {
+  "name": "crawler meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1222": {
+  "name": "crawler skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1228": {
+  "name": "cave bear skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1229": {
+  "name": "large mauler claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1230": {
+  "name": "spider leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_1238": {
+  "name": "pristine cave mauler skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1266": {
+  "name": "boar skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1273": {
+  "name": "drake meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1274": {
+  "name": "adder skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1301": {
+  "name": "bloated spider legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_1332": {
+  "name": "ebony fellwood branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_1344": {
+  "name": "cliff spider legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_1357": {
+  "name": "yellowed ghoul skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1359": {
+  "name": "yellow topaz",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1414": {
+  "name": "diseased claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1416": {
+  "name": "wolf skull",
+  "kind": "skull",
+  "max_count": 30,
+  "source": "5 stacking skull drops: 1 x15, 3 x30, 1 x200"
+ },
+ "p165_uth_1477": {
+  "name": "giant wolf skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1504": {
+  "name": "piece of lapis lazuli",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1505": {
+  "name": "pink pearl",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1526": {
+  "name": "adder meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1532": {
+  "name": "ancient basilisk skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1543": {
+  "name": "drakeling eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_1579": {
+  "name": "arachnid poison sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_uth_1582": {
+  "name": "arachnid carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_1599": {
+  "name": "worm acid sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_uth_1619": {
+  "name": "thick pristine werewolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1624": {
+  "name": "ruined badger pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1626": {
+  "name": "giant frog tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_uth_1627": {
+  "name": "giant frog legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_1629": {
+  "name": "badger pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1635": {
+  "name": "warhound claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1636": {
+  "name": "warhound hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1668": {
+  "name": "beach rat claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1670": {
+  "name": "sharp hound claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1671": {
+  "name": "pristine redhound pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1678": {
+  "name": "stalker pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1769": {
+  "name": "large red hound claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1793": {
+  "name": "icestrider leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_193": {
+  "name": "ragged wolf pup pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1931": {
+  "name": "fishing bear forager meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_1932": {
+  "name": "fishing bear forager skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_194": {
+  "name": "wolf pup's ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_uth_1968": {
+  "name": "round diamond",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_1972": {
+  "name": "leafy willow branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_1980": {
+  "name": "large werewolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1986": {
+  "name": "timber cat paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_1987": {
+  "name": "timber cat fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_1989": {
+  "name": "broken mauler fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_1990": {
+  "name": "scarred mauler paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_1991": {
+  "name": "scarred mauler pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1992": {
+  "name": "timberland badger pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1994": {
+  "name": "timberland badger claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_1995": {
+  "name": "timber cat pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_1996": {
+  "name": "timber cat meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_2077": {
+  "name": "bog creeper eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_2078": {
+  "name": "bog creeper leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2079": {
+  "name": "hopper leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2081": {
+  "name": "bog creeper carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_2082": {
+  "name": "bog frog leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_214": {
+  "name": "boar tusk",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_2168": {
+  "name": "draoish sacrificial heart",
+  "kind": "heart",
+  "max_count": 30,
+  "source": "3 stacking heart drops: 2 x30, 1 x200"
+ },
+ "p165_uth_217": {
+  "name": "large snake head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_uth_219": {
+  "name": "large snake skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2243": {
+  "name": "wee wolf tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "p165_uth_2244": {
+  "name": "wee wolf fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_2246": {
+  "name": "cat fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_2247": {
+  "name": "brush cat pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2253": {
+  "name": "brush cat ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_uth_2254": {
+  "name": "brush cat paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_2281": {
+  "name": "forest ettin head",
+  "kind": "head",
+  "max_count": 30,
+  "source": "7 stacking head drops: 6 x30, 1 x100"
+ },
+ "p165_uth_2282": {
+  "name": "hide sack",
+  "kind": "sack",
+  "max_count": 30,
+  "source": "2 stacking sack drops: 1 x30, 1 x200"
+ },
+ "p165_uth_2283": {
+  "name": "giant wolf fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_2297": {
+  "name": "clouded basilisk eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_23": {
+  "name": "water beetle leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2300": {
+  "name": "horse skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_231": {
+  "name": "cwn annwn pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_232": {
+  "name": "cracked cwn annwn claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_2330": {
+  "name": "shredded worg skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2433": {
+  "name": "fishing bear skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2480": {
+  "name": "dappled lynx skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_25": {
+  "name": "water beetle mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_uth_2546": {
+  "name": "lizard eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_2557": {
+  "name": "glowing hound eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_2558": {
+  "name": "hound pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2563": {
+  "name": "fire toad leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2567": {
+  "name": "large glowing eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_26": {
+  "name": "water beetle carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_2601": {
+  "name": "tawny pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2662": {
+  "name": "tattered dappled lynx skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2731": {
+  "name": "white boar hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2733": {
+  "name": "rooter meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_2818": {
+  "name": "bloodied worg skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2905": {
+  "name": "pristine hill hound pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2908": {
+  "name": "decayed dire wolf hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2909": {
+  "name": "pristine dire wolf hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2924": {
+  "name": "bottle of fetid wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_uth_298": {
+  "name": "giant beetle leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2981": {
+  "name": "pristine worg skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_2993": {
+  "name": "muryan leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_2994": {
+  "name": "brown bear paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_3030": {
+  "name": "large luch meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_3032": {
+  "name": "water badger pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3093": {
+  "name": "empyrean wine",
+  "kind": "wine",
+  "max_count": 30,
+  "source": "2 stacking wine drops: 2 x30"
+ },
+ "p165_uth_311": {
+  "name": "red spinel",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_3139": {
+  "name": "spider legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_3140": {
+  "name": "spider claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_3147": {
+  "name": "huge crab claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_3159": {
+  "name": "worm skin bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_uth_3164": {
+  "name": "chunk of preserved meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_3181": {
+  "name": "faerie badger meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_3296": {
+  "name": "large eirebug carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_3307": {
+  "name": "bog creeper poison sac",
+  "kind": "sac",
+  "max_count": 30,
+  "source": "2 stacking sac drops: 2 x30"
+ },
+ "p165_uth_3325": {
+  "name": "ollipheist meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_3326": {
+  "name": "ollipheist fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_3327": {
+  "name": "ollipheist claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_3350": {
+  "name": "cave bear pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3353": {
+  "name": "fisher hatcher carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_3370": {
+  "name": "large white wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3403": {
+  "name": "frosty bear pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3409": {
+  "name": "frosty hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3410": {
+  "name": "sleipneirson hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3411": {
+  "name": "mature wyvern hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3418": {
+  "name": "pristine sleipneirson hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3433": {
+  "name": "ice wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3459": {
+  "name": "pristine ollipheist hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3460": {
+  "name": "manifested terror claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_3517": {
+  "name": "pallid hog's hoof",
+  "kind": "hoof",
+  "max_count": 10,
+  "source": "2 stacking hoof drops: 1 x10, 1 x200"
+ },
+ "p165_uth_3518": {
+  "name": "frigid hog's tusk",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_3519": {
+  "name": "myrkcat claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_3524": {
+  "name": "green orm scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_uth_3525": {
+  "name": "green orm fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_3555": {
+  "name": "white willow branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_3557": {
+  "name": "aspen branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_3558": {
+  "name": "downy branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_3564": {
+  "name": "pristine muryan carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_3587": {
+  "name": "swamp hopper skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3687": {
+  "name": "large werewolf paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_369": {
+  "name": "rock clipper leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_3697": {
+  "name": "bog crawler leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_3699": {
+  "name": "bog crawler mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_uth_370": {
+  "name": "rock clipper mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_uth_3738": {
+  "name": "faerie badger pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_38": {
+  "name": "badger claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_39": {
+  "name": "pristine badger hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_3940": {
+  "name": "crab leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_402": {
+  "name": "dampwood mite leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_403": {
+  "name": "mite poison gland",
+  "kind": "gland",
+  "max_count": 10,
+  "source": "4 stacking gland drops: 2 x10, 1 x30, 1 x200"
+ },
+ "p165_uth_4034": {
+  "name": "forest cat claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4055": {
+  "name": "fellwood branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_406": {
+  "name": "luch meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_408": {
+  "name": "luch claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4135": {
+  "name": "pristine cave crawler skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4147": {
+  "name": "wolverine claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4210": {
+  "name": "broken levian-al claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4211": {
+  "name": "flayed levian-al pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4268": {
+  "name": "wolverine pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4345": {
+  "name": "pristine ice wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4347": {
+  "name": "large luch claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4348": {
+  "name": "pristine large luch hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4352": {
+  "name": "pristine white wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4354": {
+  "name": "snowy white wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4378": {
+  "name": "gilded grimwood branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_442": {
+  "name": "primrose eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_4489": {
+  "name": "chunk of dark hound meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_4490": {
+  "name": "dark hound pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4497": {
+  "name": "myrkcat skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4503": {
+  "name": "ruined horse skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_46": {
+  "name": "large eirebug leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_4675": {
+  "name": "red tipped cwn annwn ear",
+  "kind": "ear",
+  "max_count": 30,
+  "source": "5 stacking ear drops: 4 x30, 1 x200"
+ },
+ "p165_uth_468": {
+  "name": "bear meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_4727": {
+  "name": "sulphur crab meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_4729": {
+  "name": "sulphur crab claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_4827": {
+  "name": "glowing yellow eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_4831": {
+  "name": "large bloated spider legs",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_487": {
+  "name": "basilisk meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_4872": {
+  "name": "pristine cave bear skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4878": {
+  "name": "silvery scale",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "p165_uth_4888": {
+  "name": "small wolverine pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4956": {
+  "name": "forest cat skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_4973": {
+  "name": "golden oak branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_5026": {
+  "name": "bog frog skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_506": {
+  "name": "zircon",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_5161": {
+  "name": "bloodstained bear claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_5166": {
+  "name": "slashed bear pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5216": {
+  "name": "strider eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_5218": {
+  "name": "strider carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "p165_uth_5251": {
+  "name": "large woodeater leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_5308": {
+  "name": "pristine large sveawolf skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5420": {
+  "name": "supple bear pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5422": {
+  "name": "cracked levian-al fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_5423": {
+  "name": "levian-al fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_5424": {
+  "name": "levian-al claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_5425": {
+  "name": "slashed levian-al pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5436": {
+  "name": "patch of wolf fur",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5437": {
+  "name": "wee wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5507": {
+  "name": "wolverine meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_566": {
+  "name": "zephyr's windy essence",
+  "kind": "essence",
+  "max_count": 200,
+  "source": "7 stacking essence drops: 3 x30, 4 x200"
+ },
+ "p165_uth_57": {
+  "name": "eirebug leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_5711": {
+  "name": "pristine frosty bear pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_573": {
+  "name": "cliff beetle leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_581": {
+  "name": "tingler claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_584": {
+  "name": "large sveawolf skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_5849": {
+  "name": "luminescent crimson orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "p165_uth_586": {
+  "name": "ribbon toad leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_632": {
+  "name": "rage wolf claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_633": {
+  "name": "rage wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_6366": {
+  "name": "sinach claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_6367": {
+  "name": "sinach meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_639": {
+  "name": "cliff hanger leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_664": {
+  "name": "huge boar tusk",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "p165_uth_6843": {
+  "name": "pristine cave bear cub pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_7159": {
+  "name": "shadowy orm eye",
+  "kind": "eye",
+  "max_count": 30,
+  "source": "10 stacking eye drops: 1 x10, 7 x30, 2 x200"
+ },
+ "p165_uth_7655": {
+  "name": "onyx and carnelian belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ },
+ "p165_uth_7959": {
+  "name": "rat pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_7964": {
+  "name": "wolverine paw",
+  "kind": "paw",
+  "max_count": 10,
+  "source": "9 stacking paw drops: 3 x10, 2 x30, 1 x100, 3 x200"
+ },
+ "p165_uth_8011": {
+  "name": "pristine stalker pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_828": {
+  "name": "leaper leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_830": {
+  "name": "leaper tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "p165_uth_8379": {
+  "name": "large red diamond",
+  "kind": "gem",
+  "max_count": 10,
+  "source": "34 stacking gem drops: 16 x10, 2 x20, 7 x30, 9 x200"
+ },
+ "p165_uth_838": {
+  "name": "rock crab leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_839": {
+  "name": "rock crab shell",
+  "kind": "shell",
+  "max_count": 200,
+  "source": "4 stacking shell drops: 1 x10, 1 x30, 2 x200"
+ },
+ "p165_uth_8402": {
+  "name": "pristine wyvern hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_843": {
+  "name": "pristine sveawolf skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_8489": {
+  "name": "shimmering Sturdy moon claw",
+  "kind": "claw",
+  "max_count": 30,
+  "source": "17 stacking claw drops: 1 x10, 9 x30, 1 x50, 6 x200"
+ },
+ "p165_uth_849": {
+  "name": "water snake meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "p165_uth_853": {
+  "name": "veined mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_uth_863": {
+  "name": "whelp hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_878": {
+  "name": "green serpent skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_885": {
+  "name": "small lynx skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_896": {
+  "name": "pony hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_899": {
+  "name": "initiate's bracelet",
+  "kind": "bracelet",
+  "max_count": 200,
+  "source": "3 stacking bracelet drops: 1 x10, 2 x200"
+ },
+ "p165_uth_907": {
+  "name": "hunk of gooey flesh",
+  "kind": "flesh",
+  "max_count": 30,
+  "source": "4 stacking flesh drops: 2 x30, 2 x200"
+ },
+ "p165_uth_914": {
+  "name": "leafy grovewood branch",
+  "kind": "branch",
+  "max_count": 200,
+  "source": "9 stacking branch drops: 1 x10, 8 x200"
+ },
+ "p165_uth_927": {
+  "name": "cliff hanger mandible",
+  "kind": "mandible",
+  "max_count": 200,
+  "source": "9 stacking mandible drops: 2 x10, 2 x30, 5 x200"
+ },
+ "p165_uth_966": {
+  "name": "army ant leg",
+  "kind": "leg",
+  "max_count": 30,
+  "source": "3 stacking leg drops: 3 x30"
+ },
+ "p165_uth_976": {
+  "name": "lupine skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_979": {
+  "name": "small sveawolf skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "p165_uth_980": {
+  "name": "harvestman carapace",
+  "kind": "carapace",
+  "max_count": 200,
+  "source": "11 stacking carapace drops: 2 x10, 9 x200"
+ },
+ "Patch_of_Aughisky_Hide": {
+  "name": "Patch of Aughisky Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "Pristine_Aughisky_Hide": {
+  "name": "Pristine Aughisky Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "Pristine_Boars_Hide": {
+  "name": "Pristine Boars Hide",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "Rat Tongue": {
+  "name": "Rat Tongue",
+  "kind": "tongue",
+  "max_count": 30,
+  "source": "4 stacking tongue drops: 2 x30, 1 x100, 1 x200"
+ },
+ "Rotting Hog Tail": {
+  "name": "Rotting Hog Tail",
+  "kind": "tail",
+  "max_count": 30,
+  "source": "6 stacking tail drops: 1 x10, 3 x30, 2 x200"
+ },
+ "Shimmering_Gnawed_Bone_165l12": {
+  "name": "gnawed bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "Shimmering_Gnawed_Bone_165l24": {
+  "name": "gnawed bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "Shimmering_Gnawed_Bone_165l3": {
+  "name": "gnawed bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "Shimmering_Gnawed_Bone_165l9": {
+  "name": "gnawed bone",
+  "kind": "bone",
+  "max_count": 200,
+  "source": "3 stacking bone drops: 3 x200"
+ },
+ "Slimy_Swamp_Goo_Skin": {
+  "name": "Slimy Swamp Goo Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "small_mirror": {
+  "name": "small mirror",
+  "kind": "mirror",
+  "max_count": 30,
+  "source": "2 stacking mirror drops: 1 x30, 1 x200"
+ },
+ "Small_Silver_Laden_Box": {
+  "name": "Small Silver Laden Box",
+  "kind": "box",
+  "max_count": 10,
+  "source": "3 stacking box drops: 3 x10"
+ },
+ "smallmaulerskin": {
+  "name": "Small Mauler Skin",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "snake_meat": {
+  "name": "snake meat",
+  "kind": "meat",
+  "max_count": 30,
+  "source": "3 stacking meat drops: 3 x30"
+ },
+ "snake_scales": {
+  "name": "snake scales",
+  "kind": "scale",
+  "max_count": 200,
+  "source": "3 stacking scale drops: 1 x30, 2 x200"
+ },
+ "Stolen_Bear_Tooth": {
+  "name": "Stolen Bear Tooth",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "tattered_black_canine_pelt": {
+  "name": "tattered black canine pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "torn_wolf_pelt": {
+  "name": "torn wolf pelt",
+  "kind": "pelt",
+  "max_count": 30,
+  "source": "20 stacking pelt drops: 5 x10, 1 x15, 10 x30, 4 x200"
+ },
+ "Water_Orb": {
+  "name": "Water Orb",
+  "kind": "orb",
+  "max_count": 30,
+  "source": "4 stacking orb drops: 1 x10, 3 x30"
+ },
+ "Wizard_Locked_Box": {
+  "name": "Wizard Locked Box",
+  "kind": "box",
+  "max_count": 10,
+  "source": "3 stacking box drops: 3 x10"
+ },
+ "wolf_fang": {
+  "name": "wolf fang",
+  "kind": "tooth",
+  "max_count": 200,
+  "source": "39 stacking tooth drops: 2 x10, 9 x30, 1 x100, 27 x200"
+ },
+ "Worn_Carnelian_Studded_Belt": {
+  "name": "Worn Carnelian Studded Belt",
+  "kind": "belt",
+  "max_count": 30,
+  "source": "2 stacking belt drops: 1 x30, 1 x200"
+ }
+}

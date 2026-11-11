@@ -653,6 +653,13 @@ if os.path.exists(LOOT_PRICES):
     for k, v in json.load(open(LOOT_PRICES, encoding='utf-8')).items():
         if k in {i.lower() for i in built}:
             built[next(i for i in built if i.lower() == k)]['Price'] = v['price']
+# loot that stacks like the other drops of its kind (../build_stacks165.py, owner 2026-11-11)
+STACKS = os.path.join(T165, 'stack165.json')
+if os.path.exists(STACKS):
+    _stacks = {k.lower(): v['max_count'] for k, v in json.load(open(STACKS, encoding='utf-8')).items()}
+    for i, row in built.items():
+        if i.lower() in _stacks:
+            row['MaxCount'] = _stacks[i.lower()]
 addfile('add-primaitems165.json', 'ItemTemplate', 'Id_nb',
         'True 1.65 Prima batch items (2026-11-07): Atlas drop items our world lacked, from period Allakhazam item pages '
         '(Wayback <= 2003-11) or Uthgard item pages (stats as the page gives them; look from the closest existing item); '

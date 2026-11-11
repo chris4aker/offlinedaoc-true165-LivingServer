@@ -70,7 +70,7 @@
    "CanDropAsLoot": 1,
    "IsTradable": 1,
    "Price": 30,
-   "MaxCount": 1,
+   "MaxCount": 10,
    "IsIndestructible": 0,
    "PackSize": 1,
    "Realm": 0,
