@@ -159,6 +159,15 @@ namespace DOL.UnitTests
             .GetMethod("Tick", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new[] { Session(player) });
         private static string Detail(Human player) => (string)Session(player).GetType().GetField("Detail").GetValue(Session(player));
 
+        // owner 2026-11-11: /grind range +25% (was Clamp(reach - 100, 1000, 2000))
+        [TestCase(0, 1250)] [TestCase(1200, 1375)] [TestCase(1500, 1750)] [TestCase(1760, 2075)] [TestCase(3000, 2500)]
+        public void GrindSearchRadiusIsAQuarterLonger(int reach, int expected) =>
+            Assert.That(PlayerCompanionGrind.SearchRadius(reach), Is.EqualTo(expected));
+
+        [TestCase(0, 2000)] [TestCase(1500, 2100)] [TestCase(1760, 2425)] [TestCase(3000, 2850)]
+        public void GrindPullOrderReachesTheSearchPlusTheCampNeverUnderTheManualPull(int reach, int expected) =>
+            Assert.That(PlayerCompanionGrind.PullOrderRange(reach), Is.EqualTo(expected));
+
         [TestCase("1", true)] [TestCase("2", true)] [TestCase("50", true)] [TestCase("65", true)] [TestCase("255", true)]
         [TestCase("0", false)] [TestCase("-1", false)] [TestCase("256", false)] [TestCase("frog", false)]
         public void MobLevelArgumentIsExplicitAndValidated(string value, bool valid) =>

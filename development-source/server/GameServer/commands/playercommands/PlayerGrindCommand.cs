@@ -7,6 +7,7 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS.Commands
 {
@@ -16,16 +17,25 @@ namespace DOL.GS.Commands
     /// </summary>
     public static class PlayerCompanionGrind
     {
-        public const int PullRadius = 1000;
-        public const int MaxPullRadius = 2000;
+        public const int PullRadius = 1250;
+        public const int MaxPullRadius = 2500;
 
         /// <summary>
         /// How far /grind looks for its next monster (owner 2026-11-09: "the target selection range for /grind is too
         /// short" - a crossbow reaches 1,200 and pull spells 1,500, but only monsters within 1,000 were picked): the
-        /// puller's own reach less a step, never under 1,000 (a melee puller walks up as before), at most 2,000.
+        /// puller's own reach less a step, plus a quarter (owner 2026-11-11: /grind range +25%), never under 1,250 (a
+        /// melee puller walks up as before), at most 2,500.
         /// </summary>
-        public static int SearchRadius(int pullerReach) => Math.Clamp(pullerReach - 100, PullRadius, MaxPullRadius);
+        public static int SearchRadius(int pullerReach) => Math.Clamp((pullerReach - 100) * 5 / 4, PullRadius, MaxPullRadius);
         public const int RegroupRadius = 350;
+
+        /// <summary>
+        /// How far from the player a /grind pull order may reach (PlayerLedPullCoordinator.Begin): the search radius plus
+        /// the regroup radius (a companion at camp is up to 350 units from the player), never under the 2,000 a manual
+        /// /pull uses.
+        /// </summary>
+        public static int PullOrderRange(int pullerReach) =>
+            Math.Max(BotBrain.GROUP_DEFENSE_ASSIST_RADIUS, SearchRadius(pullerReach) + RegroupRadius);
         public const int ContactTimeout = 35_000;
         // The legacy native client can close an otherwise healthy localhost
         // session after a long period with no player-originated movement. A
@@ -33,6 +43,7 @@ namespace DOL.GS.Commands
         // resynchronization packet; it creates no movement or combat action.
         private const int ClientSessionRefreshInterval = 4 * 60_000;
         private static readonly ConcurrentDictionary<GamePlayer, Session> Sessions = new();
+        private static readonly Logger log = LoggerManager.Create(typeof(PlayerCompanionGrind));
         private static System.Threading.Timer _timer;
 
         private sealed class Session
@@ -355,7 +366,12 @@ namespace DOL.GS.Commands
                 session.Target = target; session.ContactDeadline = now + ContactTimeout; session.ReadySince = 0;
                 // This is precisely the existing /pull command's shared combat
                 // dispatch, protected by the strict temporary-only party gate.
-                session.Detail = PlayerLedPullCoordinator.Begin(player, target, puller.Name);
+                // The order reaches as far as the search did (a manual /pull keeps 2,000).
+                int reach = AutonomousDefensivePull.RangedPullReach(puller);
+                int orderRange = PullOrderRange(reach);
+                if (log.IsInfoEnabled) log.Info($"GRIND_PULL_RANGE player=\"{player.Name}\" puller=\"{puller.Name}\" target=\"{target.Name}\" " +
+                         $"distance={player.GetDistanceTo(target)} reach={reach} search={SearchRadius(reach)} range={orderRange}");
+                session.Detail = PlayerLedPullCoordinator.Begin(player, target, puller.Name, orderRange);
             }
             catch (Exception exception)
             {

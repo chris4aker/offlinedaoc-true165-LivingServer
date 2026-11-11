@@ -26,6 +26,8 @@ namespace DOL.GS
             // True 1.65 Mode: the tank brings the monster back to the player (AutonomousDefensivePull) instead of
             // starting the fight at the spawn.
             public bool BringBack;
+            // How far from the player the monster may be (/grind's longer search reaches past the default 2,000).
+            public int Range = BotBrain.GROUP_DEFENSE_ASSIST_RADIUS;
         }
         private static readonly ConditionalWeakTable<Group, GroupState> States = new();
 
@@ -33,10 +35,15 @@ namespace DOL.GS
         /// "/pull (companion name)": that companion pulls (owner 2026-11-06). Null or empty: the automatic pick
         /// (<see cref="ChoosePuller"/>).
         /// </param>
-        public static string Begin(GamePlayer player, GameLiving target, string pullerName = null)
+        /// <param name="range">
+        /// How far from the player the target may be. A manual /pull keeps the group assist radius (2,000); /grind passes
+        /// its own search radius plus its regroup radius (owner 2026-11-11: /grind range +25%).
+        /// </param>
+        public static string Begin(GamePlayer player, GameLiving target, string pullerName = null,
+            int range = BotBrain.GROUP_DEFENSE_ASSIST_RADIUS)
         {
             Group group = player?.Group;
-            if (!ValidEnemy(player, target)) return "No valid nearby pull target.";
+            if (!ValidEnemy(player, target, range)) return "No valid nearby pull target.";
             if (group == null)
             {
                 // Preserve /pull as a direct pet command when playing solo.
@@ -46,7 +53,7 @@ namespace DOL.GS
             GroupState state = States.GetOrCreateValue(group);
             Cancel(state.Pending, false);
             GameBot[] helpers = group.GetMembersInTheGroup().OfType<GameBot>()
-                .Where(bot => Available(bot, player) && bot.IsWithinRadius(target, BotBrain.GROUP_DEFENSE_ASSIST_RADIUS) &&
+                .Where(bot => Available(bot, player) && bot.IsWithinRadius(target, range) &&
                     bot.Brain is BotBrain).ToArray();
             foreach (GameBot bot in helpers) bot.EnterPlayerLedGroup(player);
             if (CompanionPvpEngagement.Enemy(player, target) && helpers.Any(bot => CompanionPvpEngagement.Leader(bot) == player))
@@ -83,14 +90,14 @@ namespace DOL.GS
                 tank = ChoosePuller(helpers, target);
             if (tank == null || helpers.Any(bot => bot.InCombat || bot.IsAttacking) || FindLeaderTarget(player) != null)
             {
-                Engage(player, target, true);
+                Engage(player, target, true, range: range);
                 return "Pull ordered: attackers engage; healers and buffers support the party.";
             }
 
             var order = new Order { Group = group, Leader = player, Tank = tank, Target = target,
                 Deadline = GameLoop.GameLoopTime + (Classic165Mode.IsOn
                     ? AutonomousDefensivePull.PlayerLedTimeoutMilliseconds : ContactTimeoutMilliseconds),
-                BringBack = Classic165Mode.IsOn };
+                BringBack = Classic165Mode.IsOn, Range = range };
             Volatile.Write(ref state.Pending, order);
             foreach (GameBot bot in helpers)
                 if (bot != tank) ((BotBrain)bot.Brain).PrepareForTankPull();
@@ -167,7 +174,7 @@ namespace DOL.GS
             Order order = Volatile.Read(ref state.Pending);
             if (order == null || Volatile.Read(ref order.Finished) != 0) return false;
             if (order.Leader.Group != order.Group || !order.Group.IsInTheGroup(order.Leader) ||
-                !ValidEnemy(order.Leader, order.Target) || !Available(order.Tank, order.Leader) ||
+                !ValidEnemy(order.Leader, order.Target, order.Range) || !Available(order.Tank, order.Leader) ||
                 order.Tank.Group != order.Group || !order.Group.IsInTheGroup(order.Tank) ||
                 GameLoop.GameLoopTime >= order.Deadline)
             {
@@ -286,13 +293,14 @@ namespace DOL.GS
             living is GameNPC { Brain: ControlledMobBrain { Owner: GamePlayer owner } brain } &&
             (owner.ControlledBrain?.Body == living || !brain.IsMainPet) ? owner : null;
 
-        private static void Engage(GamePlayer player, GameLiving target, bool orderHumanPet, bool onlyIdle = false)
+        private static void Engage(GamePlayer player, GameLiving target, bool orderHumanPet, bool onlyIdle = false,
+            int range = BotBrain.GROUP_DEFENSE_ASSIST_RADIUS)
         {
-            if (player?.Group == null || !ValidEnemy(player, target)) return;
+            if (player?.Group == null || !ValidEnemy(player, target, range)) return;
             foreach (GameLiving member in player.Group.GetMembersInTheGroup())
             {
                 if (member is GameBot bot && bot.PlayerGroupLeader == player && Available(bot, player) &&
-                    bot.IsWithinRadius(target, BotBrain.GROUP_DEFENSE_ASSIST_RADIUS) && bot.Brain is BotBrain brain &&
+                    bot.IsWithinRadius(target, range) && bot.Brain is BotBrain brain &&
                     !(onlyIdle && InOwnFight(bot)))
                     brain.AssistPlayerAttack(target);
             }
@@ -370,9 +378,10 @@ namespace DOL.GS
             spell?.SpellType is eSpellType.Mesmerize or eSpellType.Mez or eSpellType.Stun or eSpellType.Amnesia ||
             spell?.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease && spell.Value >= 99;
 
-        private static bool ValidEnemy(GamePlayer player, GameLiving target) => player != null && target?.IsAlive == true &&
+        private static bool ValidEnemy(GamePlayer player, GameLiving target, int range = BotBrain.GROUP_DEFENSE_ASSIST_RADIUS) =>
+            player != null && target?.IsAlive == true &&
             target.ObjectState == GameObject.eObjectState.Active && target.CurrentRegionID == player.CurrentRegionID &&
-            player.IsWithinRadius(target, BotBrain.GROUP_DEFENSE_ASSIST_RADIUS) &&
+            player.IsWithinRadius(target, range) &&
             GameServer.ServerRules.IsAllowedToAttack(player, target, true);
 
         private static void Cancel(Order order, bool inform)

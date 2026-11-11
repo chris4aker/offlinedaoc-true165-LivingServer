@@ -466,6 +466,18 @@ namespace DOL.UnitTests
             Assert.That(pet.Attacks, Is.EqualTo(1));
         }
 
+        [Test] public void GrindRangeReachesPastTheManualPullRadius_ManualPullKeeps2000()
+        {
+            var (player, tank, damage, _, enemy) = Party();
+            enemy.TestX = 2300;
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy), Is.EqualTo("No valid nearby pull target."));
+            Assert.That(B(tank).Pulls, Is.Zero);
+            int range = DOL.GS.Commands.PlayerCompanionGrind.PullOrderRange(1760);
+            Assert.That(PlayerLedPullCoordinator.Begin(player, enemy, null, range), Does.Contain("leads"));
+            Assert.That(B(tank).Pulls, Is.EqualTo(1));
+            Assert.That(PlayerLedPullCoordinator.IsWaiting(damage), Is.True, "the open order keeps the /grind range");
+        }
+
         [Test] public void NoTank_DamageEngagesImmediately()
         {
             var (player, tank, damage, healer, enemy) = Party();
