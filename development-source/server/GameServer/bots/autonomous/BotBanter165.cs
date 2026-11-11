@@ -289,7 +289,25 @@ namespace DOL.GS
                 return null;
             Remember(line.Id);
             string text = BanterLibrary165.Fill(line.Text, values);
-            return string.IsNullOrWhiteSpace(text) ? null : text;
+            if (string.IsNullOrWhiteSpace(text))
+                return null;
+            FeatureCounters165.Add(CounterName(channel, reply));
+            return text;
+        }
+
+        /// <summary>FEATURE_COUNTERS_165 key of a library line: banter_realm / _guild / _local (say) / _party (group),
+        /// with _reply for answers (to another bot or to a player).</summary>
+        public static string CounterName(string channel, bool? reply)
+        {
+            string name = channel switch
+            {
+                "realm" => "banter_realm",
+                "guild" => "banter_guild",
+                "say" => "banter_local",
+                "group" => "banter_party",
+                _ => "banter_other",
+            };
+            return reply == true ? name + "_reply" : name;
         }
 
         /// <summary>An opening line for a bot that has decided to speak (realm, say or guild channel), or null.</summary>

@@ -21,6 +21,15 @@ namespace DOL.GS
             _ => true,
         };
 
+        /// <summary><see cref="Helps"/>, counting each pet buff skipped as useless (FEATURE_COUNTERS_165, issue #28).</summary>
+        public static bool HelpsCounted(Spell spell)
+        {
+            bool helps = Helps(spell);
+            if (!helps)
+                FeatureCounters165.Add("pet_buff_useless_skip");
+            return helps;
+        }
+
         /// <summary>The realm-buff order rank of a pet in True 1.65: after every player and bot (BotBrain.BuffTargetRank).</summary>
         public const int PetRank = 4;
     }

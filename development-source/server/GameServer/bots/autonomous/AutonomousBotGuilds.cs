@@ -90,6 +90,11 @@ namespace DOL.GS
                     banked = guild.AddToBank(dues, false);
                 if (!banked)
                     AutonomousBotEconomy.AddMoney(botId, dues);   // the bank did not take them (it is full): the bot keeps them
+                else
+                {
+                    FeatureCounters165.Add("guild_dues_credits");
+                    FeatureCounters165.Add("guild_dues_copper", dues);
+                }
             }
             return true;
         }

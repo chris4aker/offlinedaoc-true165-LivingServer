@@ -3076,7 +3076,7 @@ namespace DOL.AI.Brain
         /// Pets: everything but power/endurance regeneration, acuity and fatigue (GitHub #28, BotPetBuffBenefit).
         /// </summary>
         internal static bool BuffHelps(GameLiving target, Spell spell) => BotPetBuffBenefit.IsPetLike(target)
-            ? BotPetBuffBenefit.Helps(spell)
+            ? BotPetBuffBenefit.HelpsCounted(spell)
             : BuffHelps(ClassOf(target), spell, Classic165Mode.IsOn);
 
         /// <summary>
@@ -3126,7 +3126,7 @@ namespace DOL.AI.Brain
         private GameLiving FindMissingPartyPetBuffTarget(Spell spell)
         {
             // GitHub #28 (owner 2026-11-10): never a buff a pet gets nothing from
-            if (!BotPetBuffBenefit.Helps(spell))
+            if (!BotPetBuffBenefit.HelpsCounted(spell))
                 return null;
             GameNPC pet = BotGroupPetBuffTargets.Enumerate(BotBody, spell)
                 .FirstOrDefault(candidate => !LivingHasEffect(candidate, spell));
@@ -6582,6 +6582,7 @@ namespace DOL.AI.Brain
                         {
                             spellToCast = hot;
                             spellTarget = member;
+                            FeatureCounters165.Add("healer_prehot_tank");   // FEATURE_COUNTERS_165
                             break;
                         }
                 }

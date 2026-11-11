@@ -26,8 +26,11 @@ namespace DOL.AI.Brain
             // walk (thinks come 2.6-5 s apart at 1,500 bots); sitting or resting is a known stop and ends it at once.
             bool restingStop = bot.IsSitting || bot.IsRecoveryResting || leader.IsSitting || leader is GameBot { IsRecoveryResting: true };
             long lastWalk = leader.movementComponent?.LastWalkTick ?? 0;
-            return BotTravelCastHold.Holds(true, fighting, walking, restingStop,
+            bool holds = BotTravelCastHold.Holds(true, fighting, walking, restingStop,
                 lastWalk <= 0 ? -1 : GameLoop.GameLoopTime - lastWalk);
+            if (holds)
+                FeatureCounters165.Add("travel_upkeep_hold");   // one per held upkeep check (FEATURE_COUNTERS_165)
+            return holds;
         }
 
         /// <summary>
@@ -36,9 +39,13 @@ namespace DOL.AI.Brain
         /// </summary>
         private bool HotRunningOrComing(GameLiving target, Spell hot)
         {
-            if (target == null || hot == null ||
-                (BotHotPrecheck.ConflictRule ? HotPrecheckBlocks(target, hot) : LivingHasEffect(target, hot)))
+            if (target == null || hot == null)
                 return true;
+            if (BotHotPrecheck.ConflictRule ? HotPrecheckBlocks(target, hot) : LivingHasEffect(target, hot))
+            {
+                FeatureCounters165.Add("hot_stack_skip");   // FEATURE_COUNTERS_165: a HoT held back, one already on
+                return true;
+            }
             // Owner 2026-11-10 (review): only a heal over time of the same kind counts (BotHealTriage165.SameKindHot);
             // Shaman regenerations share the health regen family with songs and other regen buffs
             eEffect family = EffectHelper.GetEffectFromSpell(hot);
@@ -61,7 +68,10 @@ namespace DOL.AI.Brain
                         coming = true;
                         break;
                     }
-            return !BotHealTriage165.HotWorthCasting(running, coming, target.HealthPercent);
+            bool skip = !BotHealTriage165.HotWorthCasting(running, coming, target.HealthPercent);
+            if (skip && (running || coming))
+                FeatureCounters165.Add("hot_stack_skip");
+            return skip;
 
             bool SameKind(Spell other) => BotHealTriage165.SameKindHot(hot, other, IsOwnHot(other));
             bool CastsSameKindAt(ISpellHandler handler) => handler?.Spell != null && handler.Target == target && SameKind(handler.Spell);
