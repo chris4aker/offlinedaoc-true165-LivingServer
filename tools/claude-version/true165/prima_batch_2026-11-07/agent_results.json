@@ -187,11 +187,11 @@
      "atlas_name": "Tattered Brea and Tattered Woven",
      "item": "Tattered Brea / Tattered Woven (armor sets)",
      "verdict": "EXISTS_AS",
-     "existing_id": "Tattered_Rawhide_Brea_Jerkin",
+     "existing_id": "ld_tattered_rawhide_brea_jerkin",
      "realm": 3,
      "item_kind": "armor",
      "evidence": "Atlas Connacht/Lough Derg '(8-10% each piece) Tattered Brea and Tattered Woven'; DB has both sets",
-     "notes": "Two set references, not one item. Pieces: Tattered_Rawhide_Brea_Boots/_Gloves/_Jerkin/_Leggings (also ld_tattered_rawhide_brea_*), Tattered_Woolen_Woven_Boots/_Cap/_Gloves/_Pants/_Sleeves/_Vest. Map the loot to all pieces."
+     "notes": "Two set references, not one item. Pieces: Tattered_Rawhide_Brea_Boots/_Gloves/_Jerkin/_Leggings (also ld_tattered_rawhide_brea_*), Tattered_Woolen_Woven_Boots/_Cap/_Gloves/_Pants/_Sleeves/_Vest. Map the loot to all pieces. Mapped to the period leather ld_tattered_rawhide_brea_jerkin (owner 2026-11-11: the cloth jerkin is not the period drop)."
     },
     {
      "atlas_name": "Bottle of Elderberry Wine",

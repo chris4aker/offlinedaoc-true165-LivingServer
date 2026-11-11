@@ -414,6 +414,18 @@
     "key": "Mob_ID",
     "where": "Mob_ID IN ('43fcae3c-16ac-57f5-bba2-b949e1386fd8', '650595cd-5057-5d41-8e48-638729fb74a1') AND PackageID = 'ClassicQuest'",
     "reason": "True 1.65 quest twins (owner 2026-11-09): quest copies of kill targets that stood beside period spawns of the same name (Cyfwlch Difwych, ellyll villager); the period ones count for the quest"
+   },
+   {
+    "table": "Mob",
+    "key": "Mob_ID",
+    "where": "Mob_ID = 'd2ff99a4-3a90-4910-8348-30631f316950'",
+    "reason": "True 1.65 batch 36 (#36, owner 2026-11-11): the stray second Kalf - a weapon merchant on Jordheim Kalf's template standing in Spindelhalla (31946,28525); gamebots shopped there (\"Grind Kalf in Spindelhalla\"). The Jordheim Kalf stays"
+   },
+   {
+    "table": "MerchantItem",
+    "key": "MerchantItem_ID",
+    "where": "lower(ItemTemplateID) = 'housing_consignment_deed'",
+    "reason": "True 1.65 batch 36 (#31, owner 2026-11-11): no consignment merchant in 1.65 housing - the consignment deed comes off the lot markers and deed merchants (housing_*_lotmarker, *_lotmarker and the deed lists)"
    }
   ]
  },
@@ -49614,6 +49626,46 @@
   {
    "sql": "UPDATE DataQuest SET StepType = '0|0|10|11', StepText = 'Search for a hobgoblin snake-finder around Haggerfel and see if it has Rinda''s keys.|Slay the black mauler cub that ate Rinda''s key.|Give the iron keychain to Rinda in Haggerfel.|Give Rinda her key.', SourceText = 'Thank you! Thank you! I know there are some hobgoblins around that like to play jokes on people, viscious and mean ones. Why don''t you check there while I check the merchant huts again?|||', AdvanceText = '|||', TargetText = '|||', TargetName = 'hobgoblin snake-finder;100|black mauler cub;100|Dwarven Guard Rinda;100|Dwarven Guard Rinda;100', StepItemTemplates = 'cq_iron_keychain|cq_rinda_s_key||', CollectItemTemplate = '||cq_iron_keychain|cq_rinda_s_key', RewardMoney = '0|0|0|400', RewardXP = '0|0|0|40' WHERE ID = 20097",
    "reason": "True 1.65 Rinda's keys (owner 2026-11-10): the last step took nothing (right-click finished it); now the iron keychain is handed in, then the key finishes the quest - same text, reward and finish line"
+  },
+  {
+   "sql": "UPDATE Mob SET X = 34223, Y = 31341, Z = 16015 WHERE Mob_ID = '100005865' AND Region = 125",
+   "reason": "True 1.65 batch 36 (#36, owner 2026-11-11): Te'Bui back at its CapnBry spot (zone 125 local 26031,23149 z 16015 -> region 34223,31341) instead of ~660 units from the Spindelhalla arrival point, where low-level bots landed beside it; position only (level, stats, aggression unchanged)"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Radius direct damage plus root, which means that any enemy in the spell''s area is damaged and rooted.' WHERE KeyName = 'AtlasOF_Ichor'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_Ichor description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'All enemy summoned/controlled creatures (i.e. pets) in the spell''s radius immediately turn on their masters and attack them. This is a ground-targetted radius effect spell.' WHERE KeyName = 'AtlasOF_SeveringTheTether'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_SeveringTheTether description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Combat Style: Opening: None Weapon type: Any Fatigue cost: None Damage: Very high Attack bonus: Very high Defense bonus: Medium' WHERE KeyName = 'AtlasOF_StyleDoombringer'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_StyleDoombringer description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Combat Style: Opening: None Weapon type: Any Fatigue cost: None Damage: Very high Attack bonus: Very high Defense bonus: Medium' WHERE KeyName = 'AtlasOF_StyleRavager'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_StyleRavager description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Combat Style: Opening: None Weapon type: Any Fatigue cost: None Damage: Very high Attack Bonus: Very high Defense bonus: Medium' WHERE KeyName = 'AtlasOF_StyleRazorback'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_StyleRazorback description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Your group moves at twice normal speed for 30 seconds. This ability will not break in combat. This ability also bypasses the movement penalties from mesmerize, root/snare, and stun, although other effects such as inability to attack will remain.' WHERE KeyName = 'AtlasOF_SpeedOfSound'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_SpeedOfSound description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Ability SET Description = 'Ground-targetted cloud spell that lasts 30 seconds. Every 5 seconds, anyone within radius of the object representing the center of the cloud takes damage and is 35% snared. The damage is percent based, and goes up with the user''s level.' WHERE KeyName = 'AtlasOF_ThornweedField'",
+   "reason": "True 1.65 batch 36 (#35, owner 2026-11-11): AtlasOF_ThornweedField description stored double-encoded (UTF-8 read as cp1252); plain ASCII text"
+  },
+  {
+   "sql": "UPDATE Mob SET Race = 0 WHERE Race = 2209",
+   "reason": "True 1.65 batch 36 (owner 2026-11-11, \"fix race 2209 if it's an issue\"): the 13 \"innocent\" rows in Marfach Caverns (region 276) had Race 2209, which does not exist (the server warned and fell back to 0 resists); Race 0 like the other 46 innocents - numbers unchanged"
+  },
+  {
+   "sql": "UPDATE NpcTemplate SET Race = 0 WHERE TemplateId IN (7701, 55500, 9902) AND Race = 2209",
+   "reason": "True 1.65 batch 36 (owner 2026-11-11): the three \"innocent\" templates with the non-existent Race 2209 -> 0 (same 0 resists as before, no warning)"
   }
  ]
 }
