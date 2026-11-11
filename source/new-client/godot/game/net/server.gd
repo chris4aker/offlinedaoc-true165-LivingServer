@@ -614,7 +614,7 @@ func _save_looks() -> void:
 ## PLAY: the server loads the character and puts it in the world; the zone loads when its position arrives.
 func enter_world(c: Dictionary) -> void:
 	max_speed_pct = 100
-	companion_defensive = false                           # (the server's stance starts aggressive at every login)
+	companion_stance = 0                                  # (the server's stance starts aggressive at every login)
 	model_types = {}
 	game_time_ms = -1                                     # (a fresh login waits for the server's own time)
 	_friends_listed = false
@@ -1054,9 +1054,17 @@ signal skills_changed
 ## VariousUpdate 3 (info.craft_skill / craft_title).
 var craft_skills := {}
 signal craft_changed
-## The group's companion stance (server protocol, 2026-10-30, both modes): /aggressive or /defensive for the whole group, the
-## server's DebugMode 'H' op 30 on every change ([4] 1 defensive / 0 aggressive). Not saved: aggressive at login.
-var companion_defensive := false
+## The group's companion stance (server protocol, 2026-10-30, both modes): /aggressive, /defensive or /passive for the whole
+## group, the server's DebugMode 'H' op 30 on every change ([4] 0 aggressive / 1 defensive / 2 passive, 2026-11-11; any other
+## value reads as aggressive). Not saved: aggressive at login.
+const STANCE_AGGRESSIVE := 0
+const STANCE_DEFENSIVE := 1
+const STANCE_PASSIVE := 2
+var companion_stance := STANCE_AGGRESSIVE
+## (older readers: true only for DEFENSIVE)
+var companion_defensive: bool:
+	get:
+		return companion_stance == STANCE_DEFENSIVE
 signal stance_changed
 var info_item_slot := -1                 # the inventory slot whose information was just asked for (its answer's buttons)
 ## The server's timer window (0xF3): seconds and its text ("Currently Making: bronze dagger", "Salvaging: ...",

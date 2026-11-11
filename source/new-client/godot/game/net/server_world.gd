@@ -157,7 +157,8 @@ func _on_world(kind: String, d: Dictionary) -> void:
 		"companion":                                        # True 1.65 Mode's companion windows (plan 17g / 17h)
 			var body := PackedByteArray(d.body)
 			if body.size() > 4 and body[3] == 30:            # the group's companion stance (both modes)
-				Server.companion_defensive = body[4] == 1
+				var st := int(body[4])                       # 0 aggressive / 1 defensive / 2 passive (unknown -> aggressive)
+				Server.companion_stance = st if st in [Server.STANCE_DEFENSIVE, Server.STANCE_PASSIVE] else Server.STANCE_AGGRESSIVE
 				Server.stance_changed.emit()
 				return
 			if viewer and viewer.ui and viewer.ui.companion_net:
@@ -675,11 +676,9 @@ func _update_npc(st: NpcState, d: Dictionary) -> void:
 			if now & Npc.FLAG_CANTTARGET and st.view == target:
 				clear_target()
 			if (now ^ was) & (Npc.FLAG_GHOST | Npc.FLAG_CANTTARGET):   # its look and its click shape are built once:
-				if st.view == target:                                 # drawn again, as for a new model
-					target = null
-				active.erase(st.index)
-				st.view.queue_free()
-				st.view = null
+				drop_view_keep_target(st)                             # drawn again, as for a new model (still your
+																	# target once rebuilt - not when it became
+																	# untargetable: cleared just above)
 	# a gamebot stealthing / coming out: the server sends it again with its STEALTH flag (GameNPC.Flags) to everyone
 	# who can still see it - those who can't detect it get it removed instead
 	st.stealth_look = (int(d.get("flags2", 0)) & 0x04) != 0
@@ -951,6 +950,8 @@ func _remove(oid: int, park := true, kind := 1, why := "") -> void:
 	_mover.erase(st)
 	_dropped[oid] = [String(st.spawn.get("name", "")), why if why != "" else ("server removed it (type %d)" % kind),
 			Time.get_ticks_msec(), st.view != null and is_instance_valid(st.view), park and st.alive and st.view != null]
+	if st == _retarget:                                         # your target, gone while its view was drawn again
+		clear_target()
 	if st.view:
 		if st.view == target:
 			clear_target()
@@ -999,12 +1000,8 @@ func _equip(d: Dictionary) -> void:
 		st.spawn["weapon_slots"] = ws
 	if st and st.view and is_instance_valid(st.view) and st.view is Npc and (st.view as Npc).redress():
 		return                                                  # (dressed again in place: no blink - reset day C14)
-	if st and st.view:                                          # built again with the new gear
-		if st.view == target:
-			target = null
-		active.erase(st.index)
-		st.view.queue_free()
-		st.view = null
+	if st and st.view:                                          # built again with the new gear (your target again
+		drop_view_keep_target(st)                               # once rebuilt: NpcManager._retarget)
 
 
 ## ModelChange (0xDB): a living takes another model - a necromancer's shade (822), a berserker's Vendo form, illusions,
@@ -1023,7 +1020,12 @@ func _model_change(d: Dictionary) -> void:
 			viewer.player.morph(info)
 		return
 	var st: NpcState = by_oid.get(oid)
-	if st == null or String(st.spawn.get("model", "")) == str(int(d.model)):
+	if st == null:
+		return
+	# the model and the size come apart (a size-only change - a shrink / growth spell - sends the same model): a new
+	# size alone is drawn too (it returned here before, so the new size never showed)
+	var resized := int(d.get("size", 0)) > 0 and int(d.size) != int(st.spawn.get("size", 50))
+	if String(st.spawn.get("model", "")) == str(int(d.model)) and not resized:
 		return
 	st.spawn["model"] = str(int(d.model))
 	if hair_bits > 0:
@@ -1031,13 +1033,11 @@ func _model_change(d: Dictionary) -> void:
 	if int(d.get("size", 0)) > 0:
 		st.spawn["size"] = int(d.size)
 	st.info = info
-	if st.view:                                                  # drawn again with the new model
-		var was_target: bool = st.view == target
-		if was_target:
-			target = null
-		active.erase(st.index)
-		st.view.queue_free()
-		st.view = null
+	# drawn again with the new model / size (the size is in the figure's scale, its hover, click box and name plate,
+	# all set when it is built). Your target stays your target (owner 2026-11-11: a minor changeling, Snarls, a
+	# necromancer's shade lost it - name plate, health bar): the new view becomes the target again when it is built,
+	# without a new target sent - the server never let go of it
+	drop_view_keep_target(st)
 
 
 func _death(oid: int) -> void:
@@ -1276,6 +1276,8 @@ func target_for_trade(oid: int) -> void:
 		return
 	if target and is_instance_valid(target) and int(target.spawn.get("oid", 0)) == oid:
 		return
+	if target_object == oid and (target == null or not is_instance_valid(target)):
+		return                                                 # (a ground object's window - a lot marker: targeted)
 	var st: NpcState = by_oid.get(oid)
 	if st and st.view and is_instance_valid(st.view) and st.view is Npc:
 		select(st.view as Npc)
@@ -1289,6 +1291,7 @@ func select(n: Npc) -> void:
 	if n == null or not (n.state.alive or n.rez_target()):   # (a dead bot / companion stays targetable: to resurrect)
 		return
 	target = n
+	_retarget = null
 	target_object = 0
 	var nm := String(n.spawn.name)
 	var lower := nm.length() > 0 and nm[0] == nm[0].to_lower()
@@ -1334,8 +1337,9 @@ func update_views(max_build: int) -> void:
 	for oid in _parked.keys():                                   # parked too long: let go
 		if now - int(_parked[oid][6]) > PARK_S * 1000.0:
 			_drop_parked(oid)
-	if target and is_instance_valid(target):
-		PlayerData.target["health"] = target.state.health
+	var ts := target_state()                                     # (also while its view is drawn again)
+	if ts:
+		PlayerData.target["health"] = ts.health
 
 
 func _message(d: Dictionary) -> void:
@@ -1553,7 +1557,7 @@ func _combat(d: Dictionary) -> void:
 	var st: NpcState = by_oid.get(int(d.defender))
 	if st and int(d.health) <= 100:
 		_set_health(st, int(d.health))
-	if target and is_instance_valid(target) and target.state == st:
+	if st and target_state() == st:                             # (also while its view is drawn again)
 		PlayerData.target["health"] = st.health
 		PlayerData.target_changed.emit()
 
@@ -1930,6 +1934,8 @@ func sees(a: Vector3, b: Vector3) -> bool:
 ## Your target in view, for the position packets' action flags (the server's melee needs it: AttackComponent's
 ## "IsObjectInFront && TargetInView", set from every position update - ProcessActionFlags).
 func target_in_view(from: Vector3) -> bool:
+	if (target == null or not is_instance_valid(target)) and _retarget and target_door == 0:
+		return sees(from, _retarget.pos)                      # (your target while its view is drawn again)
 	if (target == null or not is_instance_valid(target)) and target_door != 0:
 		# a targeted door (keep doors and gates are attacked, by hand and by siege engines): in view when the way to
 		# its doorway is clear, up to a step short of it on this side - the leaf in the doorway is no wall to its own
@@ -2168,6 +2174,7 @@ func use_object(cam: Camera3D, screen_pos: Vector2) -> bool:
 		return true
 	if not hit.is_empty() and hit.collider.has_meta("house_hookpoint"):   # a hookpoint marker: its store (1.64: a
 		var hp: Dictionary = hit.collider.get_meta("house_hookpoint")     # right click, no Shift needed)
+		last_interact_oid = 0                                    # (its store is no NPC's: nothing to target again)
 		Server.client.call("HouseMenu", int(hp.house), int(hp.menu), 0)
 		return true
 	if hit.is_empty() or not hit.collider.has_meta("server_object"):
@@ -2180,6 +2187,9 @@ func use_object(cam: Camera3D, screen_pos: Vector2) -> bool:
 	if holder and int(holder.get_meta("model", 0)) in HOUSE_USE_MODELS and _in_housing_region():
 		if int(holder.get_meta("model", 0)) in [1489, 1491, 1493]:
 			Server.house_vault_at = Time.get_ticks_msec()        # (its window 4 is the house vault, not companion gear)
+		# the window it opens is this object's (GitHub #31: a lot marker's deed list kept the NPC right-clicked
+		# before, and BUY targeted that NPC again - the server's GameLotMarker.OnPlayerBuy needs the marker targeted)
+		last_interact_oid = oid
 		var r := Server.to_region(_current_zone(), player.global_position)
 		Server.client.call("Interact", oid, int(r.x), int(r.y))
 		return true
@@ -2190,6 +2200,7 @@ func use_object(cam: Camera3D, screen_pos: Vector2) -> bool:
 func _target_ground(oid: int) -> void:
 	var holder: Node3D = objects.get(oid)
 	target = null
+	_retarget = null
 	target_door = 0
 	target_object = oid
 	var nm := String(holder.get_meta("name", "")) if holder else ""
@@ -2408,7 +2419,9 @@ func _merchant(d: Dictionary) -> void:
 		var title := HousingWindowsScript.store_title(wt)
 		if title != "":
 			who = title
-	viewer.ui.merchant.server_oid = last_interact_oid
+	# player housing's stores (window 3-11) are bought from by window type (HouseMgr.BuyHousingItem), not from your
+	# target: nothing is targeted again for them (a hookpoint's or house menu's store kept the NPC right-clicked before)
+	viewer.ui.merchant.server_oid = 0 if wt >= 3 and wt <= 11 else last_interact_oid
 	viewer.ui.merchant.open_server(who, _merchant_pages, int(d.window))
 
 
@@ -2506,6 +2519,7 @@ func request_door(door: ZoneDoor) -> void:
 	if not info.is_empty():
 		if target:
 			target = null
+		_retarget = null
 		target_object = 0
 		target_door = int(info.oid)
 		PlayerData.set_target({"name": String(info.name) if String(info.name) != "" else "door", "level": 0,

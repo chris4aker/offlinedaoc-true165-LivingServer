@@ -756,8 +756,9 @@ func _build_minigroup() -> void:
 	_mini_rows.position = Vector2(7, 7)
 	_mini_rows.add_theme_constant_override("separation", 2)
 	w.add_child(_mini_rows)
-	# the group's companion stance, one click swaps it (owner 2026-10-30, new client only): /aggressive or /defensive,
-	# as typed; the server's op 30 says which it is (Server.companion_defensive). Small and dim in the top-right corner
+	# the group's companion stance, one click moves it on (owner 2026-10-30, new client only; PASSIVE 2026-11-11):
+	# AGGRESSIVE -> DEFENSIVE -> PASSIVE -> AGGRESSIVE, sent as the typed /aggressive, /defensive, /passive; the server's
+	# op 30 says which it is (Server.companion_stance). Small and dim in the top-right corner
 	_stance = Button.new()
 	_stance.flat = true
 	_stance.focus_mode = Control.FOCUS_NONE
@@ -769,23 +770,27 @@ func _build_minigroup() -> void:
 	_stance.offset_right = -4
 	_stance.offset_top = -1
 	_stance.offset_bottom = 8
-	_stance.tooltip_text = "Your companions' stance (the whole group): click to switch AGGRESSIVE / DEFENSIVE"
+	_stance.tooltip_text = "Your companions' stance (the whole group). Click to cycle AGGRESSIVE / DEFENSIVE / PASSIVE " 		+ "(passive: they stop fighting and only follow you - for retreating or running through an area)"
 	_stance.visible = false
 	_stance.pressed.connect(func():
-		Server.command("/aggressive" if Server.companion_defensive else "/defensive"))
+		Server.command(STANCE_NEXT_COMMAND.get(Server.companion_stance, "/defensive")))
 	w.add_child(_stance)
 	PlayerData.hook(self, Server.stance_changed, _show_stance)
 	_show_stance()
 
 
 var _stance: Button
+## the stance button: the command its click sends from each stance (the cycle), and each stance's label and colour
+const STANCE_NEXT_COMMAND := {0: "/defensive", 1: "/passive", 2: "/aggressive"}
+const STANCE_LABEL := {0: "AGGRESSIVE", 1: "DEFENSIVE", 2: "PASSIVE"}
+const STANCE_COLOR := {0: Color(1.0, 0.62, 0.45, 0.75), 1: Color(0.55, 0.75, 1.0, 0.75), 2: Color(0.62, 0.90, 0.62, 0.75)}
 
 
 func _show_stance() -> void:
 	if _stance == null:
 		return
-	_stance.text = "DEFENSIVE" if Server.companion_defensive else "AGGRESSIVE"
-	var c := Color(0.55, 0.75, 1.0, 0.75) if Server.companion_defensive else Color(1.0, 0.62, 0.45, 0.75)
+	_stance.text = STANCE_LABEL.get(Server.companion_stance, "AGGRESSIVE")
+	var c: Color = STANCE_COLOR.get(Server.companion_stance, STANCE_COLOR[0])
 	for k in ["font_color", "font_hover_color", "font_pressed_color"]:
 		_stance.add_theme_color_override(k, c if k == "font_color" else c.lightened(0.3))
 

@@ -22,6 +22,15 @@ func _ready() -> void:
 	await get_tree().create_timer(1.0).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(out + "/group_windows.png")
+	# the companion stance button (2026-11-11: AGGRESSIVE -> DEFENSIVE -> PASSIVE, unknown values read as aggressive);
+	# shown only online, so it is checked by its label and the command a click would send, not by a picture
+	for st in [0, 1, 2, 7]:
+		Server.companion_stance = st if st in [1, 2] else 0
+		Server.stance_changed.emit()
+		print("[group_ui] stance %d -> label '%s', click sends %s" % [st, ui._stance.text,
+			ui.STANCE_NEXT_COMMAND.get(Server.companion_stance, "?")])
+	Server.companion_stance = 0
+	Server.stance_changed.emit()
 	ui.windows["benefits"].hide_window()
 	ui.windows["warmap"].show_window()
 	for r in ["alb", "mid", "hib"]:

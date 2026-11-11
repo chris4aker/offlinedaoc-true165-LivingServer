@@ -20,6 +20,10 @@ var region: RegionWorld                     # null: one zone (tests, the world h
 var states: Array = []                      # NpcState for EVERY spawn - the simulation
 var active := {}                            # spawn index -> Npc (views near the player)
 var target: Npc
+## Your target while its view is drawn again (a new model - a changeling, a necromancer's shade -, new gear, a ghost
+## flag; owner 2026-11-11: the target was lost and its health stopped): the view goes, the server keeps the target,
+## and the new view becomes the target again when it is built (update_views) - no new target sent to the server.
+var _retarget: NpcState
 var _scenes := {}
 var _tick := 0.0
 var _frame := 0
@@ -567,6 +571,10 @@ func update_views(max_build: int) -> void:
 			s.view = n
 			active[s.index] = n
 			built += 1
+			if s == _retarget:
+				_retarget = null
+				if s.alive and target == null:
+					target = n                              # (con colour and health follow just below)
 		elif d > FREE_RANGE and active.has(s.index):
 			if active[s.index] == target:
 				clear_target()
@@ -574,6 +582,10 @@ func update_views(max_build: int) -> void:
 			active.erase(s.index)
 			s.view = null
 	_prep_start()
+	if _retarget and (not _retarget.alive or Vector2(_retarget.pos.x - pp.x, _retarget.pos.z - pp.z).length() > FREE_RANGE):
+		_retarget = null                                   # it died (no target on a corpse) or went out of sight
+		if target == null:                                 # while drawn again: let go, as for a view
+			clear_target()
 	if target and is_instance_valid(target) and not target.state.alive:
 		clear_target()                                     # it died: no target on a corpse (owner's old client)
 	if target and is_instance_valid(target):
@@ -794,6 +806,7 @@ func select(n: Npc) -> void:
 	if n == null or not (n.state.alive or n.rez_target()):
 		return                                             # (a corpse can't be targeted - owner's old client)
 	target = n
+	_retarget = null
 	var s := n.spawn
 	var nm := n.display_name(true)
 	var ex: Dictionary = data.get("examine", {})
@@ -832,7 +845,28 @@ func interact(n: Npc) -> void:
 
 func clear_target() -> void:
 	target = null
+	_retarget = null
 	PlayerData.set_target({})
+
+
+## A view about to be freed and drawn again (a new model, gear, look): if it is your target, it becomes the target
+## again once rebuilt (_retarget) - the target window keeps it, the server's target is untouched.
+func drop_view_keep_target(st: NpcState) -> void:
+	if st.view == null:
+		return
+	if st.view == target:
+		target = null
+		_retarget = st
+	active.erase(st.index)
+	st.view.queue_free()
+	st.view = null
+
+
+## Your target's state, also while its view is being drawn again (the health bar, the in-view flag).
+func target_state() -> NpcState:
+	if target and is_instance_valid(target):
+		return target.state
+	return _retarget
 
 
 ## Tab-style: the nearest enemy (targetable, not of your realm) within range: a monster, or a character of another
