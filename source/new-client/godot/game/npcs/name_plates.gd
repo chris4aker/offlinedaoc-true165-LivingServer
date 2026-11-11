@@ -46,7 +46,7 @@ static func colored() -> bool:
 	if _colored < 0:
 		var cfg := ConfigFile.new()
 		cfg.load(UiArt.settings_path)
-		_colored = 1 if bool(cfg.get_value("interface", "name_colours", false)) else 0
+		_colored = 1 if bool(cfg.get_value("interface", "name_colours", true)) else 0   # on unless turned off (owner 2026-11-11)
 	return _colored == 1
 
 
