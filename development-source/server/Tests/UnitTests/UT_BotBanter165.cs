@@ -102,6 +102,10 @@ public class UT_BotBanter165
     [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"weight\":0}", "weight")]
     [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"colour\":\"red\"}", "unknown key")]
     [TestCase("{\"text\":\"Glad to join\",\"situation\":\"guild_join\",\"channel\":\"realm\"}", "guild channel only")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":[\"Spindelhalla\"]}", "must be an object")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"level\":[\"50\"]}}", "cannot test")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"boss\":[\"Golestandt\"]}}", "never filled")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"zone\":[\" Spindelhalla\"]}}", "spaces around")]
     public void Parse_RejectsBadLines(string line, string expected)
     {
         BanterLibrary165.BanterSet set = Parse(File1(line));
@@ -141,6 +145,30 @@ public class UT_BotBanter165
         Assert.That(BanterLibrary165.CountCandidates(set, healer, out string situation), Is.EqualTo(6));
         Assert.That(situation, Is.EqualTo("idle"));
         Assert.That(BanterLibrary165.CountCandidates(set, healer with { Reply = true }, out _), Is.EqualTo(1));
+    }
+
+    [Test]
+    public void Choose_SaysAnOnlyLineJustWhereItIsTrue()
+    {
+        // a line about one place, monster or class is never said about another
+        BanterLibrary165.BanterSet set = Parse(File1(
+            "{\"text\":\"These halls are full of spiders.\",\"situation\":\"dungeon\",\"only\":{\"zone\":[\"Spindelhalla\",\"Varulvhamn\"]}}," +
+            "{\"text\":\"A Skald sings the whole way down.\",\"situation\":\"dungeon\",\"only\":{\"class\":\"Skald\",\"zone\":\"Spindelhalla\"}}," +
+            "{\"text\":\"Mind the big one in the last room.\",\"situation\":\"dungeon\",\"only\":{\"target\":\"Pywrtr\"}}"));
+        Assert.That(set.Errors, Is.Empty, string.Join("; ", set.Errors));
+        var rng = new Random(5);
+        BanterLibrary165.Query In(string zone, string className, string target = null) => new(["dungeon"], "say", eRealm.Midgard, 30, className, null,
+            target == null ? Values(("zone", zone), ("class", className)) : Values(("zone", zone), ("class", className), ("target", target)));
+
+        Assert.That(BanterLibrary165.CountCandidates(set, In("Spindelhalla", "Warrior"), out _), Is.EqualTo(1));
+        Assert.That(BanterLibrary165.CountCandidates(set, In("spindelhalla", "Skald"), out _), Is.EqualTo(2), "names are compared without case");
+        Assert.That(BanterLibrary165.CountCandidates(set, In("Varulvhamn", "Skald"), out _), Is.EqualTo(1), "every test of a line must hold");
+        Assert.That(BanterLibrary165.CountCandidates(set, In("Nisse's Lair", "Skald"), out _), Is.Zero);
+        Assert.That(BanterLibrary165.CountCandidates(set, In("Nisse's Lair", "Skald", "Pywrtr"), out _), Is.EqualTo(1));
+        Assert.That(BanterLibrary165.Choose(set, In("Nisse's Lair", "Skald", "pywrtr"), rng, null, out _).Text, Is.EqualTo("Mind the big one in the last room."));
+        // no value to test (the speaker is not in a zone the query knows): the line is not said
+        var noZone = new BanterLibrary165.Query(["dungeon"], "say", eRealm.Midgard, 30, "Skald", null, Values(("class", "Skald")));
+        Assert.That(BanterLibrary165.Choose(set, noZone, rng, null, out _), Is.Null);
     }
 
     [Test]

@@ -70,7 +70,8 @@ discord twitch youtube phone
 """.split()}
 FORBIDDEN_PHRASES = ["champion level", "master level", "new frontiers", "darkness rising", "trials of", "/go", "real life", "irl"]
 
-LINE_KEYS = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight"]
+LINE_KEYS = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only"]
+ONLY_KEYS = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination"]
 MIN_LEN, MAX_LEN = 4, 160
 PLACEHOLDER = re.compile(r"\{([a-z]+)\}")
 WORD = re.compile(r"[A-Za-z']+")
@@ -200,6 +201,25 @@ def check_line(line, defaults, errors):
         errors.append("guild_join lines are guild channel only")
     if channels and set(channels) == {"group"} and not all(is_reply(s) for s in situations):
         errors.append("the group channel is only used for reply_* lines")
+    only = field("only")
+    if only is not None:
+        if not isinstance(only, dict) or not only:
+            errors.append('"only" must be an object such as { "zone": ["Spindelhalla"] }')
+        else:
+            for key, names in only.items():
+                if key not in ONLY_KEYS:
+                    errors.append(f'"only" cannot test "{key}" (it tests {", ".join(ONLY_KEYS)})')
+                    continue
+                names = strings(names, "only." + key, errors)
+                if names is None:
+                    continue
+                if any(not n.strip() or n != n.strip() for n in names):
+                    errors.append(f'"only.{key}" has an empty name or one with spaces around it')
+                    continue
+                if key not in ALWAYS:
+                    for s in situations:
+                        if s in SITUATIONS and key not in SITUATIONS[s]:
+                            errors.append(f'"only" tests {{{key}}}, which is never filled in situation {s}')
     check_text(text, situations, errors)
     return situations
 

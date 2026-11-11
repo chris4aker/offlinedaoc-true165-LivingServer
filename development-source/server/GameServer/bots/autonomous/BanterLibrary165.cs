@@ -26,6 +26,12 @@ namespace DOL.GS
         public static readonly string[] ClassTypes = ["tank", "melee", "healer", "support", "caster", "pet", "stealth", "archer"];
         public static readonly string[] Kinds = ["open", "reply"];
 
+        /// <summary>
+        /// Placeholder values a line's "only" may test: the line is said only when the speaker's value is one of the
+        /// names listed, so a line about one place, monster, boss or class is never said about another.
+        /// </summary>
+        public static readonly string[] OnlyKeys = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination"];
+
         /// <summary>Placeholders every situation can use (the speaker's own facts).</summary>
         public static readonly string[] AlwaysPlaceholders = ["bot", "realm", "enemyrealm", "level", "class", "zone"];
 
@@ -137,6 +143,8 @@ namespace DOL.GS
             public bool Reply;          // kind "reply"
             public double Weight = 1;
             public string[] Placeholders;
+            /// <summary>"only": placeholder name to the values it must be one of; null when the line has no such test.</summary>
+            public Dictionary<string, string[]> Only;
             public string File;
         }
 
@@ -263,7 +271,7 @@ namespace DOL.GS
             return defaults.ValueKind == JsonValueKind.Object && defaults.TryGetProperty(name, out JsonElement fallback) ? fallback : default;
         }
 
-        private static readonly string[] LineKeys = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight"];
+        private static readonly string[] LineKeys = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only"];
 
         /// <summary>One line object (with file defaults applied); null when it cannot be used. Problems go to errors.</summary>
         public static Line ParseLine(JsonElement element, JsonElement defaults, List<string> errors)
@@ -371,8 +379,48 @@ namespace DOL.GS
             if (line.ChannelMask == 1 << 3 && !line.Situations.All(IsReplySituation))
                 errors.Add("the group channel is only used for reply_* lines");
 
+            line.Only = ParseOnly(Field(element, defaults, "only"), line.Situations, errors);
+
             errors.AddRange(CheckText(line.Text, line.Situations, out line.Placeholders));
             return line;
+        }
+
+        /// <summary>
+        /// "only": { "zone": ["Spindelhalla"], "class": "Skald" }. Each key is a placeholder from OnlyKeys that the
+        /// line's situations can fill; each value is one name or a list of names (compared without case).
+        /// </summary>
+        private static Dictionary<string, string[]> ParseOnly(JsonElement only, IReadOnlyCollection<string> situations, List<string> errors)
+        {
+            if (only.ValueKind == JsonValueKind.Undefined)
+                return null;
+            if (only.ValueKind != JsonValueKind.Object || !only.EnumerateObject().Any())
+            {
+                errors.Add("\"only\" must be an object such as { \"zone\": [\"Spindelhalla\"] }");
+                return null;
+            }
+            var tests = new Dictionary<string, string[]>(StringComparer.Ordinal);
+            foreach (JsonProperty property in only.EnumerateObject())
+            {
+                if (Array.IndexOf(OnlyKeys, property.Name) < 0)
+                {
+                    errors.Add($"\"only\" cannot test \"{property.Name}\" (it tests {string.Join(", ", OnlyKeys)})");
+                    continue;
+                }
+                string[] names = Strings(property.Value, "only." + property.Name, errors, single: true);
+                if (names == null)
+                    continue;
+                if (names.Any(name => string.IsNullOrWhiteSpace(name) || name != name.Trim()))
+                {
+                    errors.Add($"\"only.{property.Name}\" has an empty name or one with spaces around it");
+                    continue;
+                }
+                if (Array.IndexOf(AlwaysPlaceholders, property.Name) < 0)
+                    foreach (string situation in situations)
+                        if (Situations.TryGetValue(situation, out string[] extra) && Array.IndexOf(extra, property.Name) < 0)
+                            errors.Add($"\"only\" tests {{{property.Name}}}, which is never filled in situation {situation}");
+                tests[property.Name] = names;
+            }
+            return tests.Count > 0 ? tests : null;
         }
 
         private static string[] Strings(JsonElement value, string name, List<string> errors, bool single)
@@ -475,7 +523,7 @@ namespace DOL.GS
             return index < 0 ? 0 : 1 << index;
         }
 
-        /// <summary>Does a line suit this query (channel, realm, level, class type, kind, fillable placeholders)?</summary>
+        /// <summary>Does a line suit this query (channel, realm, level, class type, kind, fillable placeholders, "only")?</summary>
         public static bool Fits(Line line, string situation, Query query, int classMask)
         {
             if (line.ChannelMask != 0 && (line.ChannelMask & ChannelBit(query.Channel)) == 0)
@@ -492,6 +540,22 @@ namespace DOL.GS
             foreach (string token in line.Placeholders)
                 if (query.Values == null || !query.Values.TryGetValue(token, out string value) || string.IsNullOrWhiteSpace(value))
                     return false;
+            if (line.Only != null)
+                foreach (KeyValuePair<string, string[]> test in line.Only)
+                {
+                    if (query.Values == null || !query.Values.TryGetValue(test.Key, out string have) || string.IsNullOrWhiteSpace(have))
+                        return false;
+                    have = have.Trim();
+                    bool named = false;
+                    foreach (string name in test.Value)
+                        if (string.Equals(name, have, StringComparison.OrdinalIgnoreCase))
+                        {
+                            named = true;
+                            break;
+                        }
+                    if (!named)
+                        return false;
+                }
             return true;
         }
 
