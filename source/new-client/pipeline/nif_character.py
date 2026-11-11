@@ -145,6 +145,53 @@ def trim(tracks, duration, length):
     return out, length
 
 
+# Looping clips kept whole (owner 2026-11-10: the lupine snarler's trot and the zombies' walk restarted before the step
+# was done): animnifs 'frames' is cut short of some loops' .kfa - wlf_walk.kfa is 10 of 54 frames, zombie_walk.kfa 15
+# of 30 - and the cut pose is 35-55 degrees off the first, so every loop snapped back. Those files close on their first
+# pose at their own stop time; a loop that does (and whose cut does not) is kept whole. The table length stays the
+# stride's time base (monsters.json clip_seconds). build_monsters turns it on; the race figures are left as they were.
+WHOLE_LOOPS = False
+LOOP_CLOSED_DEG = 8.0                                     # the file's end this close to its start: a closed loop
+LOOP_POP_DEG = 10.0                                       # the table's cut this far off: a visible snap
+LOOP_CLIPS = ('ladder', 'idle', 'walk', 'run', 'walk_back', 'strafe_left', 'strafe_right', 'swim', 'cast_mid',
+              'sit_idle', 'bow_aim', 'xbow_aim', 'xbow_idle', 'throw_aim', 'fly')   # (as Fig3Figure.loops)
+
+
+def loops(clip):
+    return clip in LOOP_CLIPS or clip.startswith('combat_idle') or (clip.startswith('cast_') and clip.endswith('_mid'))
+
+
+def _rot_at(times, quats, t):
+    i = int(np.searchsorted(times, t, side='right')) - 1
+    if i < 0:
+        return quats[0]
+    if i >= len(times) - 1:
+        return quats[-1]
+    f = (t - times[i]) / max(1e-9, float(times[i + 1] - times[i]))
+    q = quats[i] * (1.0 - f) + quats[i + 1] * f
+    return q / max(1e-9, float(np.linalg.norm(q)))
+
+
+def pose_gap(tracks, t):
+    """The largest bone rotation (degrees) between the clip's pose at 0 and at t."""
+    gap = 0.0
+    for tr in tracks.values():
+        if 'rot' not in tr or len(tr['rot'][0]) < 2:
+            continue
+        times, quats = tr['rot']
+        d = abs(float(np.dot(_rot_at(times, quats, 0.0), _rot_at(times, quats, t))))
+        gap = max(gap, math.degrees(2.0 * math.acos(min(1.0, d))))
+    return gap
+
+
+def keeps_whole_loop(tracks, duration, length):
+    """A loop the table cuts short (length) whose .kfa closes at its own stop time (duration) and whose cut doesn't."""
+    if not length or length >= duration - 1e-4:
+        return False
+    closed, cut = pose_gap(tracks, duration), pose_gap(tracks, length)
+    return closed <= LOOP_CLOSED_DEG and cut >= LOOP_POP_DEG and cut >= 2.0 * closed
+
+
 # A pose file (flex weapons' idle, I_1FW_M.kfa: controllers without keyframe data) holds the pose in the kfa's own
 # bone nodes - the n-th node after the root for the n-th bone named. Off by default (build_flex_weapons turns it on).
 KFA_STATIC_POSES = False
@@ -552,7 +599,11 @@ def build(model, parts, clips, out_path, texture_uri, file_bind=False):
                 tracks, duration = embedded_clip(nif)
             else:
                 tracks, duration = read_clip(kfa, bone_names)
-            tracks, duration = trim(tracks, duration, rest[0] if rest else None)
+            length = rest[0] if rest else None
+            table_len = None                               # (a loop kept whole: its table length, the stride base)
+            if WHOLE_LOOPS and loops(anim_name) and keeps_whole_loop(tracks, duration, length):
+                table_len, length = length, duration
+            tracks, duration = trim(tracks, duration, length)
         except Exception as e:                             # one clip that won't read (a file the client lacks, keys
             if anim_name in REQUIRED_CLIPS:                # for another skeleton): left out, the rest still built
                 raise
@@ -585,7 +636,8 @@ def build(model, parts, clips, out_path, texture_uri, file_bind=False):
                                  'interpolation': 'LINEAR'})
                 channels.append({'sampler': len(samplers) - 1, 'target': {'node': target, 'path': path}})
         d.g['animations'].append({'name': anim_name, 'channels': channels, 'samplers': samplers})
-        report[anim_name] = {'file': kfa, 'bones': matched, 'of': len(tracks), 'seconds': round(duration * stretch, 2), 'speed': round(speed, 3)}
+        report[anim_name] = {'file': kfa, 'bones': matched, 'of': len(tracks), 'speed': round(speed, 3),
+                             'seconds': round((table_len or duration) * stretch, 2)}
     d.save(out_path)
     return report
 

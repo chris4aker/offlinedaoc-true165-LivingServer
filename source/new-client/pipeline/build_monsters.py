@@ -22,6 +22,7 @@ from assets_pipeline import CLIENT, ROOT
 from daoc_mpk import read_mpk
 from netimmerse import read_nif, spec
 import nif_character as nc
+nc.WHOLE_LOOPS = True                                    # loops cut short of their .kfa kept whole (owner 2026-11-10)
 from texture_index import TextureIndex
 
 OUT = ROOT / 'godot/content/monsters'
