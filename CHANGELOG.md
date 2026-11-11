@@ -63,9 +63,10 @@ hold). Its changelog has the history of everything this version inherits.
 - Gamebots: fixes for bots dropping out of the world, lost inventory items, bots stuck recovering after a death for
   hours, healers too low on power to resurrect, and bots idling at the Realm Exchange.
 - Launcher: Player XP rate and Gamebot XP rate are back in the Options tab (1x to 10x, 1x by default).
-- Name colours: Settings > Interface > NAME COLOURS, or `/colornames` and `/oldnamecolors`, turns on the 1.54 client's
-  coloured names: monsters by con, NPCs cyan, enemies red, guild dark green, group light orange, other players light
-  blue, the dead brown and your target white. Gamebots and companions show as players.
+- Name colours: the 1.54 client's coloured names are on by default - monsters by con, NPCs cyan, enemies red,
+  guild dark green, group light orange, other players light blue, the dead brown and your target white; gamebots
+  and companions show as players. Settings > Interface > NAME COLOURS (Classic), or `/oldnamecolors`, turns them off;
+  `/colornames` turns them back on.
 - Monsters: their walk and run cycles play in full; they were cut short when the models were converted (wolves
   such as the lupine snarler, zombies and the necromancer's servant, bears, boars, cats, spiders, giants and more).
 - Horses: your character stays in the saddle on stablemaster routes when the horse goes up or down hills.
@@ -110,6 +111,8 @@ hold). Its changelog has the history of everything this version inherits.
   cliff edge in Camelot Hills on the way to the Black Mountains.
 - Gamebots: Savages stop buying shields they can't use and Bards and Minstrels stop re-buying flutes; no bot buys
   a copy of gear it already owns.
+- Merchants: Darkness Falls seal merchants and bounty merchants show an item's cost in seals or bounty points,
+  such as "28 EMERALD SEALS"; it read as copper (GitHub issue #37).
 
 ## 0.5 (2026-11-09)
 
