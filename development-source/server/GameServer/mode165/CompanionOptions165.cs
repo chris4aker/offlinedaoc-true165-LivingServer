@@ -21,6 +21,8 @@ namespace DOL.GS
     /// Kinds 5 and up are generic (client protocol, 2026-11-05): names[0] is the row's caption, the rest the choices,
     /// [3] the chosen index into the choices without the caption; the client sends "option (row) (kind) (slot) (i)".
     /// Each is one class AI choice from the 2026-11-05 class audit (see Generics); choice 0 is always "Automatic".
+    /// 2026-11-11: kind 29 is the pure casters' "Save power" row (key savepower, third choice Strict; kind 26 stays for
+    /// everyone else), kind 30 "Attack spells" (casters); every Role row (13-15) has a fourth choice, 3 "Melee and heal".
     /// </summary>
     public static class CompanionOptions165
     {
@@ -30,7 +32,9 @@ namespace DOL.GS
         public const byte KindAggro = 5, KindHealAt = 6, KindDebuff = 7, KindBolts = 8, KindBerserk = 9, KindGuard = 10,
             KindHunterPet = 11, KindStealthOpen = 12, KindHealerRole = 13, KindShamanRole = 14, KindFriarRole = 15,
             KindLifeTransfer = 16, KindAmnesia = 17, KindPerform = 18, KindSavePower = 26, KindPositioning = 27,
-            KindDebuffLine = 28;
+            KindDebuffLine = 28, KindSavePowerCaster = 29, KindAttackSpells = 30;
+        /// <summary>The fourth Role choice of every healer's Role row (owner 2026-11-11; CompanionSpellOptions165).</summary>
+        public const string MeleeHealChoice = "Melee and heal, no attack spells (melee interrupts casts)";
         public static readonly HashSet<string> Verbs = ["charm", "pet", "subpet", "song", "option"];
 
         /// <summary>A generic AI choice row: its kind, stored key, caption, choices (0 = Automatic) and who gets it.</summary>
@@ -61,13 +65,14 @@ namespace DOL.GS
             // Roles (one stored key "role"; the rows differ by class). Prima / period forums: a Cleric either smites and
             // does crowd control or heals; a Shaman buffs, heals and rezzes from the back; a Friar is the off-healer.
             new(KindHealerRole, "role", "Role", ["Automatic (heal and buff)", "Heal first, attack when nobody is hurt",
-                    "Attack, heal only emergencies"],
+                    "Attack, heal only emergencies", MeleeHealChoice],
                 bot => (eCharacterClass)bot.CharacterClass.ID is eCharacterClass.Cleric or eCharacterClass.Druid or
                     eCharacterClass.Healer),
-            new(KindShamanRole, "role", "Role", ["Automatic (melee and cast)", "Stay back and heal", "Caster, no melee"],
+            new(KindShamanRole, "role", "Role", ["Automatic (melee and cast)", "Stay back and heal", "Caster, no melee",
+                    MeleeHealChoice],
                 bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Shaman),
             new(KindFriarRole, "role", "Role", ["Automatic (fight and heal)", "Off-healer (heals under 40% in a fight)",
-                    "Main healer (stays back)"],
+                    "Main healer (stays back)", MeleeHealChoice],
                 bot => (eCharacterClass)bot.CharacterClass.ID == eCharacterClass.Friar),
             new(KindLifeTransfer, "lifetransfer", "Life transfer", ["Automatic (groupmate under 35%)", "Off"],
                 bot => bot.Spells?.Any(spell => spell.SpellType == eSpellType.LifeTransfer) == true),
@@ -98,7 +103,17 @@ namespace DOL.GS
             // casters and hybrids (owner 2026-11-06, period: stop nuking at about half power while the tank holds the
             // monster): on, no damage spells under 50% power unless the monster is under 30%; off, nukes freely
             new(KindSavePower, "savepower", "Save power", ["Automatic (on)", "Off"],
-                bot => HasDamageSpell((bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Concat(bot.BoltSpells ?? []))),
+                bot => HasAttackSpell(bot) && !IsCaster(bot)),
+            // pure casters (owner 2026-11-11, "AI options only for those casters"): the same stored key with a third choice,
+            // Strict - no damage spells under 50% power whoever holds the monster, point blank and area damage too
+            new(KindSavePowerCaster, "savepower", "Save power", ["Automatic (on)", "Off",
+                    "Strict (no nukes or area under 50%, tank or not)"],
+                bot => HasAttackSpell(bot) && IsCaster(bot)),
+            // ... and which attack spells at all (a Runemaster: "afk personal bladeturn, no nukes"): area damage only, or
+            // none - buffs (its own bladeturn kept up in the fight), crowd control and utility only (CompanionSpellOptions165)
+            new(KindAttackSpells, "attackspells", "Attack spells", ["Automatic", "Area spells only (no single-target nukes)",
+                    "None - buffs only (no damage or debuffs)"],
+                bot => HasAttackSpell(bot) && IsCaster(bot)),
             // melee with a back or side style (owner 2026-11-06; Prima: Berserkers, Blademasters, Mercenaries, Infiltrators
             // attack from behind while the tank holds the monster): Automatic steps behind a monster the main tank holds;
             // Flank behind any monster that is not on it; Stay in front never moves for a style (BotBrain.Flank)
@@ -112,6 +127,12 @@ namespace DOL.GS
 
         /// <summary>A generic AI option's caption (the row's name in the AI Options tab), or null for an unknown kind.</summary>
         public static string Caption(byte kind) => Generics.FirstOrDefault(g => g.Kind == kind)?.Caption;
+
+        private static bool HasAttackSpell(GameBot bot) =>
+            HasDamageSpell((bot.HarmfulSpells ?? []).Concat(bot.InstantHarmfulSpells ?? []).Concat(bot.BoltSpells ?? []));
+
+        private static bool IsCaster(GameBot bot) =>
+            bot.CharacterClass != null && CompanionSpellOptions165.IsCasterClass((eCharacterClass)bot.CharacterClass.ID);
 
         /// <summary>Whether a spell list holds a damage spell (the "Save power" row is offered then).</summary>
         public static bool HasDamageSpell(IEnumerable<Spell> spells) => spells.Any(BotCasterPriority.IsDamage);

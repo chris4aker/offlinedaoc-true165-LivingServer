@@ -21,6 +21,10 @@ namespace DOL.UnitTests
             for (byte kind = 5; kind <= CompanionOptions165.KindPositioning; kind++)
                 Assert.That(CompanionOptions165.Option(kind), Is.Not.Null, $"kind {kind}");
             Assert.That(CompanionOptions165.Option(CompanionOptions165.KindPositioning + 1), Is.Null);
+            // owner 2026-11-11: the casters' Save power and Attack spells rows (28 is the per-debuff row, not generic)
+            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindSavePowerCaster), Is.Not.Null);
+            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindAttackSpells), Is.Not.Null);
+            Assert.That(CompanionOptions165.Option(CompanionOptions165.KindAttackSpells + 1), Is.Null);
         }
 
         // owner 2026-11-06: charming starts off for a hired Hunter only (it keeps its wolf); on for every other charm class

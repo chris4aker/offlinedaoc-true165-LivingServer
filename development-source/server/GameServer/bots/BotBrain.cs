@@ -2466,7 +2466,9 @@ namespace DOL.AI.Brain
         /// clear, skips offensive casters while they rest, and puts the shield
         /// behind every other long buff, so it came back long after the fight.
         /// </summary>
-        private bool TryRestoreSelfBladeturn()
+        /// <param name="fight">owner 2026-11-11: a caster set to "Attack spells: None" also puts it back up in the fight
+        /// (aggro on the group is no reason to wait; still never while hit in the last 3 s, swinging or busy).</param>
+        private bool TryRestoreSelfBladeturn(bool fight = false)
         {
             GameBot bot = BotBody;
             if (bot == null || !bot.IsAlive)
@@ -2478,7 +2480,7 @@ namespace DOL.AI.Brain
                 return true;
             if (now < _nextSelfBladeturnTick || bot.IsOnStableMasterRoute ||
                 CompanionFollowPolicy.WaitingForLeaderToStop(bot) ||
-                !SelfBladeturnSafe(true, HasAggro, bot.IsAttacking,
+                !SelfBladeturnSafe(true, !fight && HasAggro, bot.IsAttacking,
                     bot.IsCasting || bot.castingComponent?.HasPendingSkillRequests == true,
                     bot.IsStunned || bot.IsMezzed || bot.IsSilenced,
                     now - bot.LastAttackedByEnemyTick))
@@ -4319,7 +4321,8 @@ namespace DOL.AI.Brain
         /// </summary>
         private bool TryOutOfPowerWait(GameLiving target)
         {
-            if (target?.IsAlive != true || Body.IsCasting || !OutOfPowerForOffense())
+            // owner 2026-11-11: a caster set to "Attack spells: None" waits the same way (no staff charge, no walk-in)
+            if (target?.IsAlive != true || Body.IsCasting || !OutOfPowerForOffense() && !CastsNoAttackSpells)
                 return false;
             if (Body.ControlledBrain != null && !UsesDefensiveOnlyPet)
                 CommandPetAttack(target);
@@ -4701,13 +4704,19 @@ namespace DOL.AI.Brain
         {
             GameBot bot = BotBody;
             if (!Classic165Mode.IsOn || bot == null || Body.ManaPercent >= BotCasterPriority.SavePowerBelowPercent ||
-                Body.Group == null || Body.TargetObject is not GameNPC target || target is GameBot || !target.IsAlive)
+                Body.TargetObject is not GameNPC target || target is GameBot || !target.IsAlive)
+                return false;
+            // a caster's "Save power: Strict" (owner 2026-11-11): whoever holds the monster, grouped or not
+            int savePower = bot.IsPlayerCompanion ? CompanionOptions165.Choice(bot, "savepower") : 0;
+            if (savePower == CompanionSpellOptions165.SavePowerStrict)
+                return CompanionSpellOptions165.StrictSavesPower(savePower, Body.ManaPercent, target.HealthPercent);
+            if (Body.Group == null)
                 return false;
             if (bot.IsPlayerCompanion)
             {
                 bool attackingHealer = RoleChoice == 2 && bot.CharacterClass?.ID is (int)eCharacterClass.Cleric or
                     (int)eCharacterClass.Druid or (int)eCharacterClass.Healer;
-                if (!BotCasterPriority.CompanionSavesPower(CompanionOptions165.Choice(bot, "savepower"), attackingHealer))
+                if (!BotCasterPriority.CompanionSavesPower(savePower, attackingHealer))
                     return false;
             }
             else if (!bot.IsAutonomousWorldBot || bot.IsPlayerLedGroup || !PrefersCurrentSpellRange())
@@ -4845,6 +4854,7 @@ namespace DOL.AI.Brain
                 if (TryGroupCelerity()) return true;
                 if (TryShamanPveAddRoot()) return true;
                 if (TryShortCombatShield()) return true;
+                if (TryNoAttackSpellsBladeturn()) return true;
                 if (BotBody.CharacterClass.ID == (int)eCharacterClass.Cleric && RoleChoice != 2)
                 {
                     if (!Util.Chance(Math.Max(5, Body.ManaPercent - 50)))
@@ -5390,7 +5400,7 @@ namespace DOL.AI.Brain
 
         protected bool CanCastOffensiveSpell(Spell spell)
         {
-            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell))
+            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell) || SpellOptionBlocks(spell))
                 return false;
             if (spell == null || spell.Level > Body.Level || IsOutclassedDamageSpell(spell) ||
                 Body.TargetObject is not GameLiving target || !target.IsAlive ||
@@ -5526,7 +5536,7 @@ namespace DOL.AI.Brain
 
         protected virtual bool CheckInstantOffensiveSpells(Spell spell)
         {
-            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell))
+            if (IsServantCommandOutsideItsPath(spell) || spell != null && !DebuffChosen(spell) || SpellOptionBlocks(spell))
                 return false;
             if (spell == null || IsOutclassedDamageSpell(spell) || Body.Mana < BotBody.PowerCost(spell) ||
                 !BardBotCrowdControlPolicy.AllowsOrdinaryOffense((eCharacterClass)BotBody.CharacterClass.ID, spell.SpellType) ||

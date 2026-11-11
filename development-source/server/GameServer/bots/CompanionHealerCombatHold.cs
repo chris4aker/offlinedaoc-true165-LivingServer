@@ -18,8 +18,9 @@ namespace DOL.GS
             bool leaderWithinLeash) =>
             temporaryCompanion && !autonomous && support && groupInCombat && leaderWithinLeash;
 
+        // owner 2026-11-11: a healer set to "Melee and heal, no attack spells" fights in melee, so it does not hold back
         public static bool Holds(GameBot bot, GamePlayer leader) =>
-            bot != null && leader != null &&
+            bot != null && leader != null && !CompanionSpellOptions165.MeleeHealRole(bot) &&
             Holds(bot.IsPlayerCompanion, false, BotPartyRoles.IsSupport(bot),
                 GroupInCombat(bot, leader),
                 leader.CurrentRegion == bot.CurrentRegion && bot.IsWithinRadius(leader, LeashRange));

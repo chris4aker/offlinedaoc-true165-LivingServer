@@ -168,7 +168,8 @@ namespace DOL.AI.Brain
 
         private bool PointBlankReady(Spell spell) =>
             spell != null && spell.Level <= Body.Level && Body.GetSkillDisabledDuration(spell) <= 0 &&
-            Body.Mana >= BotBody.PowerCost(spell) && !IsOutclassedDamageSpell(spell);
+            Body.Mana >= BotBody.PowerCost(spell) && !IsOutclassedDamageSpell(spell) &&
+            !SpellOptionBlocks(spell);   // AI Options (owner 2026-11-11): Strict save power, attack spells, melee healer
 
         /// <summary>The caster's best point blank damage spell with a cast time (Wizard, Theurgist, Eldritch, Enchanter, Mentalist, Spiritmaster, Runemaster, Bonedancer).</summary>
         private Spell BestPointBlankSpell() =>

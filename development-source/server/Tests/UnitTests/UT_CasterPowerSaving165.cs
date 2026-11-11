@@ -32,6 +32,11 @@ namespace DOL.GS.Tests
             Assert.That(option, Is.Not.Null);
             Assert.That(option.Value.Key, Is.EqualTo("savepower"), "the key SavePowerForGroup reads");
             Assert.That(option.Value.Choices, Is.EqualTo(new[] { "Automatic (on)", "Off" }), "choice 1 is Off");
+            // owner 2026-11-11: the pure casters' row (same key) adds choice 2, Strict (UT_CompanionSpellOptions165)
+            var caster = CompanionOptions165.Option(CompanionOptions165.KindSavePowerCaster);
+            Assert.That(caster.Value.Key, Is.EqualTo("savepower"));
+            Assert.That(caster.Value.Choices[..2], Is.EqualTo(new[] { "Automatic (on)", "Off" }), "0 and 1 unchanged");
+            Assert.That(caster.Value.Choices[2], Does.StartWith("Strict"));
             Assert.That(CompanionOptions165.KindSavePower, Is.GreaterThanOrEqualTo(5), "a generic row: the client shows it as sent");
             Spell nuke = new(new DbSpell { Type = "DirectDamage", Target = "Enemy", Damage = 50 }, 1);
             Spell mez = new(new DbSpell { Type = "Mesmerize", Target = "Enemy", Duration = 30 }, 1);
