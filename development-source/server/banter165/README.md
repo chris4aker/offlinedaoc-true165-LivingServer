@@ -31,5 +31,23 @@ Check before handing in:
 - `kind`: open (default: starts a conversation or stands alone) | reply (answers another bot's line in the same situation).
   Not used on reply_*, chat_close, guild_join.
 - `weight`: above 0, at most 10 (default 1).
+- `only` (optional): the line is said only when the speaker's own value is one of the names given, for example
+  `"only": { "zone": ["Spindelhalla"] }` or `"only": { "class": "Skald", "target": ["Pywrtr"] }`. It tests the same
+  values the placeholders fill: zone, class, target, boss, raid, keep, bg, destination (a key must be one the line's
+  situation can fill). Names are compared without case. Use it for a line that is true of one place, monster, boss or
+  class and wrong of any other.
 - `text`: 4-160 printable ASCII characters, no double quotes, no double spaces, no curly quotes or dashes; placeholders
   in braces from the allowed list for that situation. A line whose placeholder has no value at that moment is not said.
+
+## Lines from Living Server (`ls_*.json`)
+
+The `ls_*.json` files hold lines from [Living Server](https://github.com/chris4aker/OfflineDAoC-LivingServer), rewritten
+for this library by `tools/import_living_server_banter.py`: given a situation and filters here, put into this
+library's voice, tied with `only` to the class or zone they are about, and checked by the validator. They are rebuilt
+from scratch by the tool, so do not edit them by hand; change the tool's rules and run it again:
+
+    python -I tools\import_living_server_banter.py --living-server <checkout> --world-db <opendaoc-165.sqlite3.db> --ledger banter165\LIVING-SERVER-LINES.md
+
+[LIVING-SERVER-LINES.md](LIVING-SERVER-LINES.md) counts what was written, what was left out and why, and what is held
+until the library has a way to say it. The new lines of a situation are weighted to take half of its airtime together,
+so they do not crowd out the lines that were here first. To leave them out, delete the `ls_*.json` files.
