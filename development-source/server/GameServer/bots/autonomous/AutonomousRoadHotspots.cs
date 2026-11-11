@@ -211,6 +211,36 @@ namespace DOL.GS
             return FirstBlockedLeg(leg, region, dangerous, out _) >= 0;
         }
 
+        /// <summary>
+        /// Owner 2026-11-11 (item 18): a ride whose landing leaves this straight walk to the goal through a hotspot costs this
+        /// much more in the horse planner, so a safer landing (or walk) wins unless it is more than 10 minutes slower. Howth: a
+        /// Realm Exchange trip walked 50,000 units from the landing over the Silvermine road (spraggonilt 19-22) to Eilwen;
+        /// the Connla horse lands west of Eilwen with nothing on the way.
+        /// </summary>
+        public const double FinishWalkDetourSeconds = 600;
+
+        /// <summary>
+        /// Pure rule (owner 2026-11-11): the straight walk from a landing (or the bot) to its goal passes a hotspot in this
+        /// region. A hotspot holding the start (the landing rule judges that) or the goal (the bot was sent there on
+        /// purpose; nothing else would get it there safer) does not count.
+        /// </summary>
+        public static bool FinishWalkUnsafe(ushort region, int startX, int startY, int goalX, int goalY, Hotspot[] dangerous)
+        {
+            if (dangerous == null)
+                return false;
+            foreach (Hotspot h in dangerous)
+            {
+                if (h.Region != region || Near(h.X, h.Y, startX, startY, Radius) || Near(h.X, h.Y, goalX, goalY, Radius))
+                    continue;
+                if (h.X < Math.Min(startX, goalX) - Radius || h.X > Math.Max(startX, goalX) + Radius ||
+                    h.Y < Math.Min(startY, goalY) - Radius || h.Y > Math.Max(startY, goalY) + Radius)
+                    continue;
+                if (SegmentDistanceSquared(startX, startY, goalX, goalY, h.X, h.Y) <= (double)Radius * Radius)
+                    return true;
+            }
+            return false;
+        }
+
         /// <summary>Pure rule: a horse landing within <see cref="Radius"/> + <see cref="LandingMargin"/> of a hotspot in this region.</summary>
         public static bool LandingNearHotspot(ushort region, int x, int y, Hotspot[] dangerous)
         {

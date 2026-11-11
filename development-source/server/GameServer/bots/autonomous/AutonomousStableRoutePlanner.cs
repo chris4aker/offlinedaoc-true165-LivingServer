@@ -93,7 +93,7 @@ public static class AutonomousStableRoutePlanner
     private static readonly Logger Log = LoggerManager.Create(typeof(AutonomousStableRoutePlanner));
 
     [ServerProperty("bots", "bot_stable_landing_safety",
-        "Owner 2026-11-10: solo gamebots skip a horse whose landing has a pack of aggressive monsters 4 or more levels above them (from spawn data) when they only pass through (the Parthanan Farm horse for Hibernians below 15).", true)]
+        "Owner 2026-11-10: solo gamebots skip a horse whose landing has a pack of aggressive monsters 3 or more levels above them (from spawn data) when they only pass through (the Parthanan Farm horse for Hibernians below 16; margin tightened 2026-11-11).", true)]
     public static bool LandingSafetyEnabled = true;
 
     /// <summary>Owner 2026-11-10: spawns within this distance of a landing count for its threat.</summary>
@@ -104,11 +104,19 @@ public static class AutonomousStableRoutePlanner
     public const int LandingGoalRadius = 3_000;
 
     /// <summary>
-    /// Pure rule (owner 2026-11-10, threshold fixed by the critic): a landing is unsafe for a solo bot passing through when
-    /// its threat is MORE than 3 levels above the bot (threat 18: level 14 skips it, level 15 keeps the period horse).
+    /// Owner 2026-11-11 (item 18): the landing margin, tightened from 3 (the camp rule) to 2. East Lough Derg (threat 18):
+    /// level 15 riders still died within 5 minutes at 20% (31/152, overnight 5x run) against about 14% elsewhere; 16+ keep it.
+    /// Only that landing has a spawn threat today, so no other horse changes.
+    /// </summary>
+    public const int LandingLevelsAbove = 2;
+
+    /// <summary>
+    /// Pure rule (owner 2026-11-10, margin 2026-11-11): a landing is unsafe for a solo bot passing through when its threat
+    /// is MORE than <see cref="LandingLevelsAbove"/> levels above the bot (threat 18: level 15 skips it, level 16 keeps the
+    /// period horse).
     /// </summary>
     public static bool LandingUnsafe(int landingThreatLevel, int botLevel, double landingToGoal) =>
-        landingThreatLevel > botLevel + AutonomousCampThreatPolicy.LevelsAboveSoloBot && landingToGoal > LandingGoalRadius;
+        landingThreatLevel > botLevel + LandingLevelsAbove && landingToGoal > LandingGoalRadius;
 
     /// <summary>
     /// Pure rule: the level a spawn row threatens with, or 0 when it never attacks on sight (a realm NPC, aggro level 0,
@@ -294,12 +302,19 @@ public static class AutonomousStableRoutePlanner
         long availableMoney,
         IReadOnlyList<LegMetric> legs,
         IReadOnlySet<int> excludedBoardingLegs = null,
-        IReadOnlySet<int> unusableLegs = null)   // owner 2026-11-10: never ridden, first or later (unsafe landings)
+        IReadOnlySet<int> unusableLegs = null,   // owner 2026-11-10: never ridden, first or later (unsafe landings)
+        IReadOnlySet<int> unsafeFinishLegs = null,   // owner 2026-11-11: the walk from this landing to the goal passes a hotspot
+        bool directWalkUnsafe = false,
+        double unsafeFinishPenaltySeconds = AutonomousRoadHotspots.FinishWalkDetourSeconds)
     {
         walkSpeed = Math.Max(1d, walkSpeed);
         double direct = Distance(startX, startY, goalX, goalY) / walkSpeed;
         if (legs == null || legs.Count == 0)
             return null;
+        // Owner 2026-11-11 (item 18): finishing on foot through a hotspot (from a landing, or the whole way) is not
+        // forbidden, it only costs more, so a safer finish wins when it is at most the penalty slower; the reported
+        // estimate stays the real travel time.
+        double penalty = Math.Max(0d, unsafeFinishPenaltySeconds);
 
         int count = legs.Count;
         double[] best = Enumerable.Repeat(double.PositiveInfinity, count).ToArray();
@@ -322,6 +337,7 @@ public static class AutonomousStableRoutePlanner
         }
 
         double bestTrip = direct;
+        double bestScore = direct + (directWalkUnsafe ? penalty : 0d);
         int bestFirst = -1;
         int bestHops = 0;
         long bestPrice = 0;
@@ -345,8 +361,10 @@ public static class AutonomousStableRoutePlanner
             LegMetric current = legs[currentIndex];
 
             double completed = currentCost + Distance(current.EndX, current.EndY, goalX, goalY) / walkSpeed;
-            if (completed + 0.25 < bestTrip)
+            double score = completed + (unsafeFinishLegs?.Contains(currentIndex) == true ? penalty : 0d);
+            if (score + 0.25 < bestScore)
             {
+                bestScore = score;
                 bestTrip = completed;
                 bestFirst = first[currentIndex];
                 bestHops = hops[currentIndex];
@@ -418,7 +436,11 @@ public static class AutonomousStableRoutePlanner
         // Owner 2026-11-10 (P3): a solo bot never rides to a landing it cannot survive on its way elsewhere (the Parthanan
         // Farm horse lands 1.7 km from level 17-18 parthanans: 24% of riders died within 5 minutes, levels 9-14), nor to
         // one beside a live death hotspot, and does not walk to a horse straight through a hotspot (P2).
+        // Owner 2026-11-11 (item 18): nor finishes on foot from a landing straight through a hotspot when a safer landing
+        // is at most 10 minutes slower (Howth to Eilwen over the Silvermine road: 47% of Howth riders died within 5 minutes).
         HashSet<int> unusable = null;
+        HashSet<int> finishUnsafe = null;
+        bool directUnsafe = false;
         string skipped = null;
         long nowTick = GameLoop.GameLoopTime;
         if (bot.Group == null && !boundedMeetupApproach)
@@ -426,6 +448,10 @@ public static class AutonomousStableRoutePlanner
             AutonomousRoadHotspots.Hotspot[] hotspots = AutonomousRoadHotspots.PathCheckEnabled
                 ? AutonomousRoadHotspots.DangerousTo(bot.Level, nowTick)
                 : Array.Empty<AutonomousRoadHotspots.Hotspot>();
+            directUnsafe = hotspots.Length > 0 && AutonomousRoadHotspots.FinishWalkUnsafe(bot.CurrentRegionID,
+                (int)bot.X, (int)bot.Y, (int)goal.X, (int)goal.Y, hotspots);
+            if (directUnsafe)
+                skipped = "walk(hotspot)";
             for (int i = 0; i < candidates.Count; i++)
             {
                 Candidate candidate = candidates[i];
@@ -441,6 +467,12 @@ public static class AutonomousStableRoutePlanner
                     (unusable ??= []).Add(i);
                     skipped = (skipped == null ? string.Empty : skipped + ",") + candidate.Ticket.Id_nb +
                               (threat ? $"(threat {landingThreat})" : "(hotspot)");
+                }
+                else if (hotspots.Length > 0 && AutonomousRoadHotspots.FinishWalkUnsafe(bot.CurrentRegionID,
+                             candidate.End.X, candidate.End.Y, (int)goal.X, (int)goal.Y, hotspots))
+                {
+                    (finishUnsafe ??= []).Add(i);
+                    skipped = (skipped == null ? string.Empty : skipped + ",") + candidate.Ticket.Id_nb + "(walk hotspot)";
                 }
                 if (hotspots.Length > 0 && AutonomousRoadHotspots.WalkLegUnsafe(bot.CurrentRegionID, (int)bot.X, (int)bot.Y,
                         (int)candidate.BoardingPoint.X, (int)candidate.BoardingPoint.Y, hotspots))
@@ -463,25 +495,30 @@ public static class AutonomousStableRoutePlanner
                 (excluded ??= []).Add(index);
 
         // owner 2026-11-10: one line when the landing rule changed the plan (the ride it would have taken otherwise)
-        RouteDecision? unrestricted = unusable == null || !TryTakeLandingSkipSample(bot.ObjectID, nowTick) ? null : ChooseFirstLeg(
+        // owner 2026-11-11: also when only the finishing walk (item 18) changed it; "walk" on either side is on foot
+        bool sampled = (unusable != null || finishUnsafe != null || directUnsafe) && TryTakeLandingSkipSample(bot.ObjectID, nowTick);
+        RouteDecision? unrestricted = !sampled ? null : ChooseFirstLeg(
             bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded);
         void LogLandingSkip(RouteDecision? chosen)
         {
-            if (!unrestricted.HasValue || chosen.HasValue && chosen.Value.FirstLegIndex == unrestricted.Value.FirstLegIndex &&
-                Math.Abs(chosen.Value.EstimatedSeconds - unrestricted.Value.EstimatedSeconds) < 0.5)
+            if (!sampled || chosen.HasValue == unrestricted.HasValue && (!chosen.HasValue ||
+                    chosen.Value.FirstLegIndex == unrestricted.Value.FirstLegIndex &&
+                    Math.Abs(chosen.Value.EstimatedSeconds - unrestricted.Value.EstimatedSeconds) < 0.5))
                 return;
+            double walk = Distance(bot.X, bot.Y, goal.X, goal.Y) / Math.Max(1, (int)bot.MaxSpeed);
             Log.Info($"AUTONOMOUS_STABLE_LANDING_SKIP bot=\"{bot.Name}\" id={bot.DatabaseID} level={bot.Level} " +
                      $"region={bot.CurrentRegionID} skipped=\"{skipped}\" " +
-                     $"wouldBoard=\"{candidates[unrestricted.Value.FirstLegIndex].Ticket.Id_nb}\" " +
+                     $"wouldBoard=\"{(unrestricted.HasValue ? candidates[unrestricted.Value.FirstLegIndex].Ticket.Id_nb : "walk")}\" " +
                      $"now=\"{(chosen.HasValue ? candidates[chosen.Value.FirstLegIndex].Ticket.Id_nb : "walk")}\" " +
-                     $"seconds={unrestricted.Value.EstimatedSeconds:0}->{(chosen.HasValue ? chosen.Value.EstimatedSeconds : unrestricted.Value.DirectWalkSeconds):0}");
+                     $"seconds={(unrestricted.HasValue ? unrestricted.Value.EstimatedSeconds : walk):0}->{(chosen.HasValue ? chosen.Value.EstimatedSeconds : walk):0}");
         }
 
         for (int attempt = 0; attempt < Math.Min(AutonomousStableBoardingFailureCache.MaximumNewProbesPerSearch,
                  candidates.Count); attempt++)
         {
             RouteDecision? decision = ChooseFirstLeg(
-                bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded, unusable);
+                bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded, unusable,
+                finishUnsafe, directUnsafe);
             if (attempt == 0)
                 LogLandingSkip(decision);
             if (!decision.HasValue)
