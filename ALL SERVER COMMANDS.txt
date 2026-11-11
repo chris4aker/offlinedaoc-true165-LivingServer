@@ -10,7 +10,7 @@ COMMON TRUE 1.65 COMMANDS
 Companions are hired at the innkeeper of your realm's traveler's inn (right-click).
 /spawn and /raid are GM only in True 1.65; there is no conjured helper.
 /companionui runs the hiring and companion windows (their buttons send it).
-/pull, /aggressive and /defensive control your companions.
+/pull, /aggressive, /defensive and /passive control your companions.
 /task asks guards and townsfolk for tasks (levels 1-19). /questguide opens quest walkthroughs.
 /horn is the Horn of Rallying window (level 50, after its courier quest).
 Fresh accounts are normal players; the launcher "Make Me a GM" option is OFF by default.
@@ -36,7 +36,7 @@ NORMAL PLAYER COMMANDS
   Handler: DOL.GS.Commands.AFKCommandHandler
 
 /aggressive
-  Companions assist your attacks normally (the default).
+  Companions assist your attacks normally (the default; every login starts here).
   /aggressive
   Handler: DOL.GS.Commands.CompanionAggressiveCommand
 
@@ -277,7 +277,7 @@ NORMAL PLAYER COMMANDS
 
 /defensive
   Companions wait near you and fight what comes within about 350 units.
-  Pull monsters back to the group. /aggressive switches back.
+  Pull monsters back to the group. /aggressive or /passive switches.
   /defensive
   Handler: DOL.GS.Commands.CompanionDefensiveCommand
 
@@ -553,6 +553,14 @@ NORMAL PLAYER COMMANDS
   Shows all Players that are currently online
   Usage: /online
   Handler: DOL.GS.Commands.OnlineCommandHandler
+
+/passive
+  Companions and their pets fight nothing, not even when attacked, and follow you.
+  For retreating or walking through an area. It stops /grind; /grind and /pull are refused
+  while it is on. /aggressive or /defensive ends it. It lasts through zoning and resets to
+  aggressive at login. The group window's stance button cycles the three.
+  /passive
+  Handler: DOL.GS.Commands.CompanionPassiveCommand
 
 /played
   Returns the age of the character

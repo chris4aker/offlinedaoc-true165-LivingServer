@@ -60,6 +60,12 @@ Agreed between the client and server chats.
   op 3 text slot 8. New client: the companion window's AI OPTIONS tab (shown only when the rows exist; any
   later AI choice is a kind 5 and up: its first name is the row's caption, the rest its choices (two: buttons,
   more: a list), picked with `option <row> <kind> <slot> <i>` - no new client code).
+- op 14 rows added in 0.6: the Role rows (kinds 13-15) gain choice 3 "Melee and heal, no attack spells"; casters get
+  kind 29 "Save power" (key savepower: 0 Automatic, 1 Off, 2 Strict) in place of kind 26, which stays for everyone
+  else, and kind 30 "Attack spells" (key attackspells: 0 Automatic, 1 Area spells only, 2 None - buffs only).
+- op 30, the companion stance: [4] 0 aggressive (the default; every login), 1 defensive, 2 passive. Sent on
+  /aggressive, /defensive and /passive; the group window's stance button cycles them in that order. A client that
+  doesn't know a value shows aggressive.
 - op 15, the Realm Exchange chest page's time left: [4] count, then 3 bytes each - the listing's place 0-99, minutes
   left (u16); 0 not offered, 0xFFFF no limit. Sent when the chest opens or changes page, after a price and after a
   duration whisper. Broker whispers: `sort <name|level|quality|price> <asc|desc>`, `duration <place 0-99> <12|24|48>`.
