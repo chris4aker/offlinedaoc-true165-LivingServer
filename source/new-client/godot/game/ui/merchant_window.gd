@@ -72,16 +72,21 @@ func build() -> void:
 	_qty_label.position = Vector2(6, 391)
 	_qty_label.size = Vector2(56, 12)
 	_qty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_qty_label.tooltip_text = "How many packs (or pieces) one BUY gets"
+	_qty_label.tooltip_text = "How many packs (or pieces) one BUY gets\nShift+click an arrow: 10 at a time; mouse wheel: 1 (Shift: 10)"
 	_qty_label.mouse_filter = Control.MOUSE_FILTER_PASS
+	_qty_label.gui_input.connect(_qty_wheel)
 	add_child(_qty_label)
+	# GitHub #33: Shift+click = 10 at a time; past 1 / past QTY_MAX the arrows wrap round; the wheel over the quantity
+	# (or its arrows) steps it too
 	var less := UiArt.button("<", Vector2(18, 14), 9)
 	less.position = Vector2(12, 405)
-	less.pressed.connect(func(): set_qty(qty - 1))
+	less.pressed.connect(func(): step_qty(-1, Input.is_key_pressed(KEY_SHIFT)))
+	less.gui_input.connect(_qty_wheel)
 	add_child(less)
 	var more := UiArt.button(">", Vector2(18, 14), 9)
 	more.position = Vector2(36, 405)
-	more.pressed.connect(func(): set_qty(qty + 1))
+	more.pressed.connect(func(): step_qty(1, Input.is_key_pressed(KEY_SHIFT)))
+	more.gui_input.connect(_qty_wheel)
 	add_child(more)
 	_keep = UiArt.button("KEEP", Vector2(50, 15), 8)
 	_keep.position = Vector2(288, 392)
@@ -233,6 +238,29 @@ func _track_input(event: InputEvent) -> void:
 func set_qty(n: int) -> void:
 	qty = clampi(n, 1, QTY_MAX)
 	_qty_label.text = "QTY %d" % qty
+
+
+## The quantity arrows (GitHub #33): 1 a click, 10 with Shift; the down arrow at 1 goes round to QTY_MAX and the up
+## arrow at QTY_MAX to 1 (a Shift step that would pass an end stops at it first, then wraps on the next click).
+func step_qty(dir: int, shift: bool) -> void:
+	if dir < 0 and qty <= 1:
+		set_qty(QTY_MAX)
+	elif dir > 0 and qty >= QTY_MAX:
+		set_qty(1)
+	else:
+		set_qty(qty + dir * (10 if shift else 1))
+
+
+## The mouse wheel over the quantity or its arrows: up = more, down = less, 1 a notch (Shift: 10); stops at 1 and
+## QTY_MAX (no wrap: a quick spin would go round).
+func _qty_wheel(event: InputEvent) -> void:
+	if not (event is InputEventMouseButton and event.pressed):
+		return
+	var mb := event as InputEventMouseButton
+	if mb.button_index != MOUSE_BUTTON_WHEEL_UP and mb.button_index != MOUSE_BUTTON_WHEEL_DOWN:
+		return
+	set_qty(qty + (1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else -1) * (10 if mb.shift_pressed else 1))
+	get_viewport().set_input_as_handled()
 
 
 func select_item(id: String) -> void:
