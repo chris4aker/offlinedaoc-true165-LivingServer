@@ -1,0 +1,307 @@
+== Darkness Falls (region 249): 2468 monsters, 467 radar sightings, 645 of our monsters where the radar looked
+  essence shredder                  263 ->  154  radar  19 sightings   6 spots, ours where radar looked  50, f 0.57  {'Public_DB': 263}
+  demoniac familiar                 183 ->  183  radar 100 sightings  41 spots, ours where radar looked  81, f 1.00  {'Public_DB': 142, 'base': 41}
+  molochian tempter                 173 ->  173  radar  14 sightings   4 spots, ours where radar looked   5, f 1.00  {'Public_DB': 173}
+  plated fiend                      162 ->  116  radar  39 sightings  19 spots, ours where radar looked  82, f 0.71  {'Public_DB': 162}
+  avernal quasit                    121 ->  121  radar  29 sightings  10 spots, ours where radar looked  31, f 1.00  {'Public_DB': 103, 'base': 18}
+  rocot                             119 ->   79  radar  19 sightings   7 spots, ours where radar looked  43, f 0.66  {'Public_DB': 119}
+  succubus                          117 ->  117  radar  15 sightings   9 spots, ours where radar looked  17, f 1.00  {'base': 117}
+  apprentice necyomancer             98 ->   90  radar  25 sightings  10 spots, ours where radar looked  41, f 0.91  {'Public_DB': 98}
+  naburite drinker                   96 ->   96  radar  12 sightings   4 spots, ours where radar looked  15, f 1.00  {'Public_DB': 96}
+  necyomancer                        92 ->   92  radar  29 sightings   9 spots, ours where radar looked  38, f 1.00  {'Public_DB': 92}
+  deamhaness                         83 ->   83  radar  21 sightings   7 spots, ours where radar looked  30, f 1.00  {'Public_DB': 83}
+  lilispawn                          82 ->   66  radar  18 sightings   7 spots, ours where radar looked  34, f 0.79  {'Public_DB': 82}
+  young necyomancer                  76 ->   56  radar  17 sightings   7 spots, ours where radar looked  35, f 0.73  {'Public_DB': 76}
+  chaosian                           57 ->   57  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'base': 26, 'Public_DB': 31}
+  experienced necyomancer            57 ->   57  radar   4 sightings   1 spots, ours where radar looked   6, f 1.00  {'Public_DB': 57}
+  condemned necyomancer              44 ->   43  radar   1 sightings   1 spots, ours where radar looked  22, f 1.00  {'Public_DB': 43, 'base': 1}
+  nightmare                          42 ->   42  radar   6 sightings   5 spots, ours where radar looked  11, f 0.82  {'base': 42}
+  mahr                               35 ->   35  radar  10 sightings   6 spots, ours where radar looked  11, f 1.00  {'Public_DB': 35}
+  cursed necyomancer                 32 ->   32  radar   9 sightings   5 spots, ours where radar looked   8, f 1.00  {'Public_DB': 32}
+  cambion                            31 ->   31  radar   4 sightings   2 spots, ours where radar looked   0, f 1.00  {'Public_DB': 31}
+  umbrood warrior                    28 ->   28  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'base': 28}
+  clinging soul                      26 ->   26  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'base': 26}
+  soultorn hibernian silver hand     24 ->   24  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Public_DB': 24}
+  umbral hulk                        21 ->   21  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'base': 21}
+  soultorn hibernian savant          19 ->   19  radar   4 sightings   2 spots, ours where radar looked   5, f 1.00  {'Public_DB': 19}
+  soultorn hibernian wayfayer        19 ->   19  radar   0 sightings   0 spots, ours where radar looked   6, f 1.00  {'Public_DB': 19}
+  chthonian crawler                  17 ->   17  radar   6 sightings   5 spots, ours where radar looked   6, f 1.00  {'base': 17}
+  soultorn norse einherjar           16 ->   16  radar   0 sightings   0 spots, ours where radar looked   2, f 1.00  {'Public_DB': 16}
+  soultorn norse vakten              16 ->   16  radar   2 sightings   1 spots, ours where radar looked   4, f 1.00  {'Public_DB': 16}
+  soultorn albion protector          15 ->   15  radar   1 sightings   1 spots, ours where radar looked   0, f 1.00  {'Public_DB': 15}
+  tormented necyomancer              15 ->   15  radar   5 sightings   4 spots, ours where radar looked   0, f 1.00  {'Public_DB': 15}
+  soultorn albion eagle knight       14 ->   12  radar   4 sightings   4 spots, ours where radar looked   8, f 0.75  {'Public_DB': 14}
+  soultorn hibernian brehon          13 ->   13  radar   1 sightings   1 spots, ours where radar looked   4, f 1.00  {'Public_DB': 13}
+  umbral aegis                       13 ->   13  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Yggdrasil': 13}
+  soultorn norse stormur vakten      12 ->   12  radar   3 sightings   3 spots, ours where radar looked   8, f 1.00  {'Public_DB': 12}
+  soultorn albion gryphon knight     10 ->   10  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Public_DB': 10}
+  soultorn albion phoenix knight     10 ->   10  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Public_DB': 10}
+  soultorn hibernian raven ardent    10 ->   10  radar   3 sightings   2 spots, ours where radar looked   5, f 1.00  {'Public_DB': 10}
+  soultorn albion guardian            9 ->    9  radar   3 sightings   2 spots, ours where radar looked   3, f 1.00  {'Public_DB': 9}
+  soultorn albion myrmidon            8 ->    8  radar   1 sightings   1 spots, ours where radar looked   5, f 1.00  {'Public_DB': 8}
+  soultorn albion warder              7 ->    7  radar   1 sightings   1 spots, ours where radar looked   5, f 1.00  {'Public_DB': 7}
+  soultorn hibernian cosantoir        7 ->    7  radar   3 sightings   2 spots, ours where radar looked   4, f 1.00  {'Public_DB': 7}
+  pale guardian                       6 ->    6  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'base': 6}
+  soultorn hibernian grove protector    6 ->    6  radar   0 sightings   0 spots, ours where radar looked   2, f 1.00  {'Public_DB': 6}
+  soultorn norse isen vakten          6 ->    6  radar   3 sightings   2 spots, ours where radar looked   0, f 1.00  {'Public_DB': 6}
+  soultorn norse elding vakten        5 ->    5  radar   1 sightings   1 spots, ours where radar looked   5, f 1.00  {'Public_DB': 5}
+  soultorn norse isen herra           5 ->    5  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Public_DB': 5}
+  TOTAL 2468 -> 2226
+== Midgard DF entrance (Vale of Mularn): 39 monsters, 125 radar sightings, 37 of our monsters where the radar looked
+  manes demon                        19 ->   17  radar  52 sightings  12 spots, ours where radar looked  15, f 1.00  {'BestiaryG9': 3, 'true165-restored': 16}
+  grumoz demon                       15 ->   14  radar  27 sightings  10 spots, ours where radar looked  14, f 1.00  {'true165-restored': 14, 'BestiaryG9': 1}
+  TOTAL 39 -> 36
+== Albion DF entrance (Camelot Hills): 28 monsters, 150 radar sightings, 28 of our monsters where the radar looked
+  manes demon                         9 ->    9  radar  18 sightings   7 spots, ours where radar looked   9, f 1.00  {'Public_DB': 9}
+  rotting zombie                      7 ->    7  radar  11 sightings   4 spots, ours where radar looked   7, f 1.00  {'Public_DB': 7}
+  TOTAL 28 -> 28
+== Hibernia DF entrance (Connacht): 13 monsters, 0 radar sightings, 0 of our monsters where the radar looked
+  manes demon                         5 ->    5  radar   0 sightings   0 spots, ours where radar looked   0, f 1.00  {'Public_DB': 5}
+  TOTAL 13 -> 13
+removed: 245 (0 from add-restoredspawns165.json, 245 base rows by rule)
+
+00d9c6bf-e7eb-490d-9d3f-428ecb12ff57	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+2077	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+21081	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+21691	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+21701	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+21a03784-afe8-4d0c-9966-d7585ecd7d9c	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+5bb48690-07e4-4381-8e31-6a03c252f3b5	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+bd2f7f58-da89-4a1d-bd7b-38776bc88f12	Darkness Falls (region 249)	apprentice necyomancer	rule	density: 98 rows, radar 25 sightings / 10 spots, 41 of ours where it looked; kept 90
+33ea1c06-83ed-4c67-8156-e97923ae2811	Darkness Falls (region 249)	condemned necyomancer	rule	duplicate of 22708 (136 units, other source)
+077d0f57-939c-48a8-a11d-afdaa7267dba	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+0d696a5b-b8d2-4fa8-bc0d-dc00581f8222	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+0dc8b103-76dd-4cfd-a3cd-9069078401fb	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+11944	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+12dd699d-f79c-4ee5-aeb3-ba61e07faf9c	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+14114552-33ef-408d-888e-efccd1f15f38	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+1555b788-6175-454d-bd97-ce3b8c7df4c9	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+16441b6b-066b-4aa3-8fe5-804c725e2bbd	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+1a253b3f-a17b-49c0-b4ec-05f310de39e8	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+1e89309e-726f-46f3-8006-9aabd2cf8dd7	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+2103dbbb-2ce9-4acd-96eb-05bf8aa0f935	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21192	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21193	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21206	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21215	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21218	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21395	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21400	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21505	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21518	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21822	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+21827	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22515	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22519	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22526	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22562	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22595	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22654	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22675	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22681	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22683	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+22693	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+256434ab-7718-4aba-bae0-50728642c4f0	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+26c47409-225c-4f1a-9ab9-183aa0feaa90	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+27e56575-3ea0-47cb-b3fe-b2190c795b47	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+31200d5f-2927-440b-ad4b-fac424659aae	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+3815e404-8566-4ebf-adbe-d17cee5955d2	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+38a7d242-4867-4f81-a63c-413f041a384d	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+3bb4625d-d70f-4e24-bdbc-79573e9e7acc	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+3e33c256-0a7b-4df5-ae44-e51b38a8297a	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+3e8dd1fd-2c13-449f-a748-3844a0727789	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+417a095d-ced3-4300-bc98-e6c25b2cf96c	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+436add6b-f70e-4c1a-9925-9eb855a19b4a	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4371a526-2018-4bb2-952f-8bcfe4110c8e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+443b36fd-34bd-464a-8664-be1a497b5ec9	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4582074f-427e-4d60-9bbd-a5da53dfcf78	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4687	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+48a46f24-2b39-4123-890b-1420719f76b7	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+49053064-5d12-4dca-9981-2d607e90f2cb	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4b7f7e8c-bd95-440a-8363-f04da76cee70	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4c922c90-60a1-46e7-9ff5-2a76066c6728	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4cacfd4d-9a15-4957-9fda-50262dc21f39	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4d0acc8b-8e48-4948-b0c3-25cc8c5cacab	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+4f4b2ed5-5a6f-4718-879b-f52593a2cd6e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+51bd9a19-69f1-41ef-a887-395c0039e7a5	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+5244e835-6ae8-4f99-b839-83b4fde36e71	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+52cbc737-4a48-4c61-8ba9-2d272bb39465	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+542b8746-ce8b-4c35-815a-6c4b24fb3125	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+5c2f11b2-f9ba-4dbd-a698-994f82d81e5f	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+5d951f42-e4a2-4fe0-b339-5218c71d4912	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6006	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+615e2dd2-c218-4f91-9339-167136b1a34e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+61b9126c-50fc-465c-b7b0-85053e37a979	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6311e4dc-d675-4fbf-a0e8-70fce6405974	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+66ff6861-3336-4ef3-9e6a-47bc01596afc	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+67963739-0565-417f-ae53-a029912685a0	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+69b75ec5-aa74-42c8-85e3-6777f87be5b1	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6a8ba06e-b031-4d92-b2e8-366f7b518335	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6c3bea77-966c-48fb-8d12-fba1eb94a656	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6c48167f-a550-4684-972f-bac7a8936548	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+6f3b8cb6-74d8-4ffd-81db-f376fb3a672f	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+7018044f-8a97-4aec-a84d-d1942c88c7b4	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+71843d58-f2f8-4d1e-80f9-4693e833c27a	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+7a256066-df52-424b-98bd-2d5b13117dd5	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+7a7b058a-6671-4c1d-97be-cfd04ea18337	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+7bd42f5b-9cb8-45aa-92f7-65041bd4bb3e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+7f74944c-7dee-4c0c-aa2b-dd887de66558	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+8415571e-c10e-4523-a8f1-19a8a07a9514	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+89ba9788-4207-48fd-a9eb-f474eecffe54	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+8d60ff97-3494-4ead-aa31-795aa936f362	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+8eecd561-f449-48c0-be0b-2127259c8aea	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+9836982e-18b3-454b-a09c-53b2b9b7922a	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+9a1e9d67-bcb6-4e0d-92f1-8ea0d1ff5d4d	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+9df2c2cb-5dba-4edb-8ce1-e05270cd1210	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+a855a3ed-7f13-4ee5-b1ee-e7ccbfc239aa	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+b457fb1b-3038-41b8-b3fb-f718ebdce812	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+b73fcbbc-3f6c-4fa7-8a60-5e4ea001a526	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+b7d27add-e26c-4b66-aa91-b3c0d7c5a2f8	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+b7f7878f-ba3f-4b60-b4a4-3171acabe8b7	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+c1df2194-8d97-4353-a72c-5d7f61353d60	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+c49f42e8-880f-4d6f-9e43-2da1dda9395a	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+cda38ddf-6e64-47ab-80bc-83de99484408	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+cf60e4c1-6e96-4939-919e-2a0ffb681b57	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+cf9b48b0-b1ea-4835-a6b4-68078842cc5e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+d3a40b4c-c86b-4989-a5c5-cd0fc33fd0cb	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+e16a86c1-c6dc-4ef8-b4f2-4212bdd922ea	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+e39bd2cf-011a-4dcf-baef-01e38ba1fd03	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+e6fd20a2-d42a-4763-8854-acf2ebcc64f0	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+e88a1d1b-a367-4fd0-ae83-12b3940ff134	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+ea6b080c-aaae-482f-ab97-bb8e1c456e0c	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+ea9f7d0a-db03-457c-9551-4851519f1ded	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+ebe6c64b-ba13-46f1-9979-735f991f6e1b	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+f2dbf0f7-50c6-404f-9a39-da5ab255c35f	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+f577a9f1-3460-4dae-9d12-7f136520576b	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+f7149c1d-3d02-4d5f-ac4d-7dab9e59a1c7	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+f96d0a94-c237-455c-b25e-1f00c193544e	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+fa6f72c3-6461-4362-b7a0-03dfb90b2663	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+fc5f29f2-da7b-47e3-8f4d-176efa18180f	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+fe87a812-c3ee-4e8e-b8ca-199501a73bf8	Darkness Falls (region 249)	essence shredder	rule	density: 263 rows, radar 19 sightings / 6 spots, 50 of ours where it looked; kept 150
+0ddf2467-7d80-4ea9-898a-2af8b4521820	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+12655	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+13009	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+13981	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+1c92729d-1f2a-40a1-929c-358d0e5848b5	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+21253	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+21471	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+21481	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+21874	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+3639	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+3952c33a-1c0b-420f-bd7d-8b286840c5e4	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+55c07079-f17b-4579-ba28-e0c77cbcffd1	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+6a4943ce-ee6c-44cf-957a-badf89a8ded9	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+7cd4861c-ef8e-4503-8997-2a30aef511a7	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+87883425-12e3-4291-b973-669d85eb3d1e	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+c204e72e-0169-4bbe-b123-cd3ee46043b3	Darkness Falls (region 249)	lilispawn	rule	density: 82 rows, radar 18 sightings / 7 spots, 34 of ours where it looked; kept 66
+05760a28-d589-47bb-8c2a-5710599b3314	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+06f4b2cb-541c-4cf7-b2ae-508869dd03ce	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+0af9abab-071f-45c3-a9b5-7df13e24e44d	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+0d8a6f24-a439-43a8-b677-3b34f252e76a	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+16599	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21128	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21163	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21268	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21316	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21326	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21430	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21674	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21680	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21682	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21684	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21688	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21693	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21703	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21707	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21718	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21719	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+21720	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+22378	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+22806	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+271d3854-d5e5-4882-bef1-3ed34cbe8160	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+2786	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+3665bb04-738e-4faa-9453-8d6d63d57b82	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+421615a1-b6d5-4ccf-af9c-bfb8b581b443	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+4885	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+53528488-0024-43b6-b52f-f5148afa11d2	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+5700	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+6208	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+63b3ea5d-469a-4efc-9b1a-07dcc0695a0a	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+6490	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+6528a70c-7ed3-4275-afe0-8e2de3cd097c	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+6599685c-8505-4239-a2e4-9fa030cc0a19	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+7837	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+b34baae9-d339-4b0e-89a0-996620346fe4	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+b4c086fe-e3cc-4cdb-9538-96c4a0c1daa1	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+ba1b0903-576d-40a8-bafe-467c1d3cc728	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+c49a20e1-1a2b-428e-9db6-3afaa6f0cb2d	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+ca538d01-c799-45e3-b0f1-99b36590334a	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+ddbb8990-4daf-41fa-9d4b-e653942a1691	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+ddc1d502-5e63-4493-ab72-abdc9d9de6ae	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+f436c125-b012-4e42-b73e-9602321baaf1	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+f786b204-4f06-4e9b-a6dd-2dd5c5600cea	Darkness Falls (region 249)	plated fiend	rule	density: 162 rows, radar 39 sightings / 19 spots, 82 of ours where it looked; kept 116
+11588	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+135cd7e7-ec1b-441c-82a8-80ddd0ba7939	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+1ab7db85-2ed8-4610-81ac-34f7dc3b5e1a	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+206f0969-fcbe-45bf-9291-129feac5a304	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21103	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21111	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21148	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21555	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21560	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21563	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21575	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21587	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21594	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21595	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21617	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21775	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21783	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21786	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21795	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21814	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21817	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21826	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+21912	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+22408	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+22415	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+22750	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+2cd9f538-b1ce-4c63-b68c-bf285605914d	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+39b2012b-7be7-45b2-9392-33d3519bd8ad	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+3e9186de-8b38-497a-96c1-c7ef3113e295	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+46d696e5-fad5-48d9-9c1d-3a766cd9a92a	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+520bf3cf-128d-494d-a52f-06e4fa50e695	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+52a57807-7599-4f5a-b36e-7f8915e9000a	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+6acb2199-e8f8-44fc-ba62-638fd7d4be51	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+7538	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+8c4bf454-4def-4847-a116-c4d78c3015ac	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+91fdcf98-ee75-460b-8174-9c0d0cf85d44	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+a9c4a308-fa3e-4400-a105-ba56521fb81b	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+adf7d06a-87d1-466b-a254-8c98e2f22a04	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+b8770ce1-f0dc-4824-9769-ac896ff988d7	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+e5fccc2f-3a50-40cb-bcc0-001a35d65a79	Darkness Falls (region 249)	rocot	rule	density: 119 rows, radar 19 sightings / 7 spots, 43 of ours where it looked; kept 79
+12596	Darkness Falls (region 249)	soultorn albion eagle knight	rule	density: 14 rows, radar 4 sightings / 4 spots, 8 of ours where it looked; kept 11
+7965dffc-446a-4fa5-b614-f577608502f9	Darkness Falls (region 249)	soultorn albion eagle knight	rule	density: 14 rows, radar 4 sightings / 4 spots, 8 of ours where it looked; kept 11
+0ffa8ff1-a15b-4ad5-ba0e-da61a91a180a	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+15011	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+21066	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+21075	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+21247	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+21844	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+22379	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+225f274e-7a1e-4835-bea2-faac75fe960a	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+2c9cf491-c973-4643-aab9-69fa88b4f492	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+2d39faad-3305-45fd-9675-3c9e0c628643	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+317221a9-bc29-406d-ada4-49d2fa8e3e83	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+32af584f-122e-4913-aea0-44955c7b7560	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+3328926d-3e89-440a-a2ea-5f8b40714388	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+37d6080b-5736-46ae-b593-a3ba0db55522	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+3db1996b-1238-4221-8864-b3656af3da6d	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+4b90ba9f-0af2-4f12-b685-4a2fbc4e644b	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+4d824a47-8dce-46f9-bf79-070a66e61baa	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+5a7e4143-1ae9-49cd-8288-ac496cbab8eb	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+a13df054-79a8-40ee-9b8c-1e042434b3b0	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+bea95317-5106-452d-8201-422b54b3e26a	Darkness Falls (region 249)	young necyomancer	rule	density: 76 rows, radar 17 sightings / 7 spots, 35 of ours where it looked; kept 56
+17993b00-f038-5ac8-b3b5-d0fd43e75de3	Midgard DF entrance (Vale of Mularn)	grumoz demon	rule	duplicate of 94506bfa-61bd-4158-9e1c-ec0d10aa134e (243 units, other source)
+032251ee-daca-59a1-bc77-df41fe8c20f6	Midgard DF entrance (Vale of Mularn)	manes demon	rule	duplicate of 2e128012-3ef2-4ea0-a52e-d2fe9745cc12 (281 units, other source)
+2e2a943c-9c5a-5f35-b0ec-dc8e18112055	Midgard DF entrance (Vale of Mularn)	manes demon	rule	duplicate of 9ba08c43-2b34-46d9-a3d7-05abe75cce32 (94 units, other source)
