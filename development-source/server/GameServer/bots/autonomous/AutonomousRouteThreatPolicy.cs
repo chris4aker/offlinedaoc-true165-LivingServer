@@ -88,6 +88,68 @@ namespace DOL.GS
                 ? RouteThreatAction.Detour
                 : decided;
 
+        [ServerProperty("bots", "bot_route_threat_linked_pack",
+            "Owner 2026-11-10: a solo bot with no way around a GREEN route monster counts only the monsters that would really join the fight (their own aggro covers it; gamebots never bring friends) when deciding to fight or give up, up to 3. Detours keep the wide count.", true)]
+        public static bool LinkedPackEnabled = true;
+
+        [ServerProperty("bots", "bot_route_threat_needs_aggro_level",
+            "Owner 2026-11-10: for solo gamebots, monsters with aggro level 0 (they never attack on sight) are not counted as route threats or pack members. Group leaders are unchanged.", true)]
+        public static bool RequireAggroLevel = true;
+
+        /// <summary>Owner 2026-11-10: the aggro-level filter applies to solo bots only; a group leader keeps every monster as before.</summary>
+        public static bool CountsByAggroLevel(bool solo, int aggroLevel) => !solo || !RequireAggroLevel || aggroLevel > 0;
+
+        [ServerProperty("bots", "bot_route_threat_never_pull_sneaky",
+            "Owner 2026-11-10: a solo bot goes around a stealthed or ranged route monster (pixie scouts) instead of pulling it when a way around exists; with none it pulls it as before (never a new give-up).", true)]
+        public static bool NeverPullSneaky = true;
+
+        /// <summary>Owner 2026-11-10: the most linked monsters a solo bot still pulls on a GREEN route monster.</summary>
+        public const int GreenLinkedPullLimit = 3;
+
+        /// <summary>The wide pack test (unchanged from before 2026-11-10): the two aggro circles touch.</summary>
+        public static bool InWidePack(float distance2D, float dz, int blockerAggro, int otherAggro) =>
+            Math.Abs(dz) <= 160 && distance2D < Math.Max(320, blockerAggro + otherAggro + 80);
+
+        /// <summary>The other monster's own aggro covers a fight at the blocker, so it would join (proximity aggro only).</summary>
+        public static bool JoinsFight(float distance2D, float dz, int otherAggro, int margin) =>
+            Math.Abs(dz) <= 160 && distance2D <= otherAggro + margin;
+
+        /// <summary>
+        /// Owner 2026-11-10: the pack size used by <see cref="Decide"/>. Gamebots never bring friends (BafFriends.PullerPlayer),
+        /// so for a solo bot on a GREEN monster with at most <see cref="GreenLinkedPullLimit"/> linked monsters only those
+        /// count. Never more than the wide pack, so no decision gets harsher. Detours always use the wide pack.
+        /// </summary>
+        public static int DecisionPack(bool grouped, ConColor con, int widePack, int linkedPack) =>
+            LinkedPackEnabled && !grouped && con == ConColor.GREEN && linkedPack <= GreenLinkedPullLimit
+                ? Math.Min(linkedPack, widePack)
+                : widePack;
+
+        /// <summary>
+        /// Owner 2026-11-10: a solo bot goes around a stealthed or ranged route monster (pixie scouts) instead of pulling it
+        /// when a usable way around exists. With none the Pull stands: pulling green pixies is the safest choice (~2% deaths)
+        /// while a give-up dies 14-17% and loses the camp (design P6), so this never makes a new Retarget or Ignore.
+        /// </summary>
+        public static RouteThreatAction AvoidSneaky(RouteThreatAction decided, bool grouped, bool stealthOrRanged,
+            bool detourAvailable, int detoursSoFar) =>
+            NeverPullSneaky && !grouped && stealthOrRanged && decided == RouteThreatAction.Pull &&
+            detourAvailable && detoursSoFar < MaxDetoursPerThreat
+                ? RouteThreatAction.Detour
+                : decided;
+
+        /// <summary>
+        /// The route decision (owner 2026-11-10): Decide uses <see cref="DecisionPack"/>; PreferDetour ALWAYS gets the wide
+        /// pack, so every pack detour (the pixie-scout guard of 2026-11-08) is kept. <see cref="AvoidSneaky"/> comes after.
+        /// </summary>
+        public static RouteThreatAction DecideRoute(ConColor con, bool grouped, int widePack, int linkedPack, bool bossLike,
+            bool detourAvailable, int detoursSoFar, bool mayRetarget, bool lowLevelSolo, bool nearOwnRecentRoadDeath,
+            out int decisionPack)
+        {
+            decisionPack = DecisionPack(grouped, con, widePack, linkedPack);
+            RouteThreatAction action = Decide(con, grouped, decisionPack, bossLike, detourAvailable, detoursSoFar,
+                mayRetarget, lowLevelSolo);
+            return PreferDetour(action, grouped, widePack, nearOwnRecentRoadDeath, detourAvailable, detoursSoFar);
+        }
+
         /// <summary>
         /// The point on the route (within the look-ahead) nearest to a position, and the route's
         /// horizontal direction there.

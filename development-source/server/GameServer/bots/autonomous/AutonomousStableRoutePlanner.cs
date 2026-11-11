@@ -5,6 +5,8 @@ using System.Linq;
 using System.Numerics;
 using DOL.Database;
 using DOL.GS.Movement;
+using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.GS;
 
@@ -88,6 +90,155 @@ public static class AutonomousStableRoutePlanner
     private static readonly object NetworkCacheLock = new();
     private static readonly Dictionary<(ushort RegionId, eRealm Realm), CandidateCache> NetworkCache = new();
     private static readonly AutonomousStableBoardingFailureCache FirstBoardingFailures = new();
+    private static readonly Logger Log = LoggerManager.Create(typeof(AutonomousStableRoutePlanner));
+
+    [ServerProperty("bots", "bot_stable_landing_safety",
+        "Owner 2026-11-10: solo gamebots skip a horse whose landing has a pack of aggressive monsters 4 or more levels above them (from spawn data) when they only pass through (the Parthanan Farm horse for Hibernians below 15).", true)]
+    public static bool LandingSafetyEnabled = true;
+
+    /// <summary>Owner 2026-11-10: spawns within this distance of a landing count for its threat.</summary>
+    public const int LandingThreatRadius = 2_500;
+    /// <summary>The landing threat is the level of the N-th strongest aggressive spawn there (a pack, not one lone named).</summary>
+    public const int LandingThreatPack = 3;
+    /// <summary>A bot whose goal is this close to the landing is going there, not through it, and may ride.</summary>
+    public const int LandingGoalRadius = 3_000;
+
+    /// <summary>
+    /// Pure rule (owner 2026-11-10, threshold fixed by the critic): a landing is unsafe for a solo bot passing through when
+    /// its threat is MORE than 3 levels above the bot (threat 18: level 14 skips it, level 15 keeps the period horse).
+    /// </summary>
+    public static bool LandingUnsafe(int landingThreatLevel, int botLevel, double landingToGoal) =>
+        landingThreatLevel > botLevel + AutonomousCampThreatPolicy.LevelsAboveSoloBot && landingToGoal > LandingGoalRadius;
+
+    /// <summary>
+    /// Pure rule: the level a spawn row threatens with, or 0 when it never attacks on sight (a realm NPC, aggro level 0,
+    /// no aggro range, peaceful). A template that replaces mob values gives its highest level ("17-18" is 18) and its aggro.
+    /// </summary>
+    public static int SpawnThreatLevel(byte realm, int mobLevel, int mobAggroLevel, int mobAggroRange, uint mobFlags,
+        bool templateReplaces, string templateLevel, int templateAggroLevel, int templateAggroRange)
+    {
+        if (realm != 0 || (mobFlags & (uint)GameNPC.eFlags.PEACE) != 0)
+            return 0;
+        int level = mobLevel, aggroLevel = mobAggroLevel, aggroRange = mobAggroRange;
+        if (templateReplaces)
+        {
+            aggroLevel = templateAggroLevel;
+            aggroRange = templateAggroRange;
+            int highest = HighestNumber(templateLevel);
+            if (highest > 0)
+                level = highest;
+        }
+        return aggroLevel > 0 && aggroRange > 0 ? Math.Max(1, level) : 0;
+    }
+
+    /// <summary>Pure rule: the level of the <paramref name="pack"/>-th strongest of the spawn levels (0 with fewer).</summary>
+    public static int LandingThreat(IEnumerable<int> spawnLevels, int pack)
+    {
+        int[] top = spawnLevels.Where(level => level > 0).OrderByDescending(level => level).Take(pack).ToArray();
+        return top.Length < pack ? 0 : top[^1];
+    }
+
+    private static int HighestNumber(string text)
+    {
+        int highest = 0, current = -1;
+        foreach (char c in (text ?? string.Empty) + " ")
+        {
+            if (char.IsDigit(c))
+                current = Math.Min(10_000, (current < 0 ? 0 : current * 10) + (c - '0'));
+            else if (current >= 0)
+            {
+                highest = Math.Max(highest, current);
+                current = -1;
+            }
+        }
+        return Math.Min(highest, 255);
+    }
+
+    private readonly record struct SpawnThreat(int X, int Y, int Level);
+    // aggressive spawn points per region from the world database, read once (spawn rows do not move; live NPCs that are
+    // dead or respawning must not make a landing flip between safe and unsafe, critic 2026-11-10). Owner 2026-11-10: read
+    // on a pool thread, never inside NetworkCacheLock on a game-loop thread; a failed read is not kept and is retried.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<ushort, SpawnThreat[]> RegionSpawnThreats = new();
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<ushort, long> SpawnThreatNextLoad = new();
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<(ushort Region, int X, int Y), int> LandingThreats = new();
+    private const long SpawnThreatRetryMilliseconds = 60_000;
+
+    /// <summary>The region's spawn threats once read; until then starts one background read and returns null.</summary>
+    private static SpawnThreat[] SpawnThreatsFor(ushort region, long now)
+    {
+        if (RegionSpawnThreats.TryGetValue(region, out SpawnThreat[] threats))
+            return threats;
+        long next = SpawnThreatNextLoad.GetOrAdd(region, 0L);
+        if (now >= next && SpawnThreatNextLoad.TryUpdate(region, long.MaxValue, next))
+            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
+            {
+                SpawnThreat[] loaded = LoadSpawnThreats(region);
+                if (loaded != null)
+                    RegionSpawnThreats[region] = loaded;
+                else
+                    SpawnThreatNextLoad[region] = GameLoop.GameLoopTime + SpawnThreatRetryMilliseconds;
+            });
+        return null;
+    }
+
+    /// <summary>Null when the read failed (no database, an exception), so it is retried instead of kept.</summary>
+    private static SpawnThreat[] LoadSpawnThreats(ushort region)
+    {
+        try
+        {
+            if (GameServer.Database == null)
+                return null;
+            List<SpawnThreat> threats = new();
+            foreach (DbMob mob in DOLDB<DbMob>.SelectObjects(DB.Column("Region").IsEqualTo(region)))
+            {
+                NpcTemplate template = mob.NPCTemplateID > 0 ? NpcTemplateMgr.GetTemplate(mob.NPCTemplateID) : null;
+                int level = SpawnThreatLevel(mob.Realm, mob.Level, mob.AggroLevel, mob.AggroRange, mob.Flags,
+                    template?.ReplaceMobValues == true, template?.Level, template?.AggroLevel ?? 0, template?.AggroRange ?? 0);
+                if (level > 0)
+                    threats.Add(new SpawnThreat(mob.X, mob.Y, level));
+            }
+            return threats.ToArray();
+        }
+        catch (Exception e)
+        {
+            Log.Warn($"AUTONOMOUS_STABLE_LANDING_THREAT_LOAD_FAILED region={region}: {e.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>A landing's threat level, worked out once per landing; 0 while the region's spawn data is still being read.</summary>
+    private static int LandingThreatLevel(ushort region, int x, int y, long now)
+    {
+        if (LandingThreats.TryGetValue((region, x, y), out int level))
+            return level;
+        SpawnThreat[] spawns = SpawnThreatsFor(region, now);
+        if (spawns == null)
+            return 0;
+        const double radiusSquared = (double)LandingThreatRadius * LandingThreatRadius;
+        level = LandingThreat(spawns
+            .Where(s => (double)(s.X - x) * (s.X - x) + (double)(s.Y - y) * (s.Y - y) <= radiusSquared)
+            .Select(s => s.Level), LandingThreatPack);
+        if (LandingThreats.Count > 4_096)
+            LandingThreats.Clear();
+        LandingThreats[(region, x, y)] = level;
+        return level;
+    }
+
+    // owner 2026-11-10: the AUTONOMOUS_STABLE_LANDING_SKIP line needs a second, unrestricted search; it runs at most once per
+    // bot per few minutes, not on every FindBest
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<int, long> NextLandingSkipSample = new();
+    public const long LandingSkipSampleMilliseconds = 5 * 60_000;
+
+    /// <summary>True (and the next sample is put off) when this bot may run the unrestricted search for the skip log line.</summary>
+    public static bool TryTakeLandingSkipSample(int botId, long now)
+    {
+        if (NextLandingSkipSample.TryGetValue(botId, out long next) && now < next)
+            return false;
+        if (NextLandingSkipSample.Count > 8_192)
+            NextLandingSkipSample.Clear();
+        NextLandingSkipSample[botId] = now + LandingSkipSampleMilliseconds;
+        return true;
+    }
 
     public readonly record struct LegMetric(
         int Index,
@@ -142,7 +293,8 @@ public static class AutonomousStableRoutePlanner
         double walkSpeed,
         long availableMoney,
         IReadOnlyList<LegMetric> legs,
-        IReadOnlySet<int> excludedBoardingLegs = null)
+        IReadOnlySet<int> excludedBoardingLegs = null,
+        IReadOnlySet<int> unusableLegs = null)   // owner 2026-11-10: never ridden, first or later (unsafe landings)
     {
         walkSpeed = Math.Max(1d, walkSpeed);
         double direct = Distance(startX, startY, goalX, goalY) / walkSpeed;
@@ -159,7 +311,7 @@ public static class AutonomousStableRoutePlanner
         for (int index = 0; index < count; index++)
         {
             LegMetric leg = legs[index];
-            if (excludedBoardingLegs?.Contains(index) == true)
+            if (excludedBoardingLegs?.Contains(index) == true || unusableLegs?.Contains(index) == true)
                 continue;
             if (leg.Price < 0 || leg.Price > availableMoney || leg.RideSeconds <= 0)
                 continue;
@@ -203,7 +355,7 @@ public static class AutonomousStableRoutePlanner
 
             for (int nextIndex = 0; nextIndex < count; nextIndex++)
             {
-                if (visited[nextIndex])
+                if (visited[nextIndex] || unusableLegs?.Contains(nextIndex) == true)
                     continue;
                 LegMetric next = legs[nextIndex];
                 if (next.Price < 0 || spent[currentIndex] > availableMoney - next.Price || next.RideSeconds <= 0)
@@ -263,6 +415,39 @@ public static class AutonomousStableRoutePlanner
                         candidates[i].BoardingPoint.X, candidates[i].BoardingPoint.Y), bot.MaxSpeed))
                     (excluded ??= []).Add(i);
 
+        // Owner 2026-11-10 (P3): a solo bot never rides to a landing it cannot survive on its way elsewhere (the Parthanan
+        // Farm horse lands 1.7 km from level 17-18 parthanans: 24% of riders died within 5 minutes, levels 9-14), nor to
+        // one beside a live death hotspot, and does not walk to a horse straight through a hotspot (P2).
+        HashSet<int> unusable = null;
+        string skipped = null;
+        long nowTick = GameLoop.GameLoopTime;
+        if (bot.Group == null && !boundedMeetupApproach)
+        {
+            AutonomousRoadHotspots.Hotspot[] hotspots = AutonomousRoadHotspots.PathCheckEnabled
+                ? AutonomousRoadHotspots.DangerousTo(bot.Level, nowTick)
+                : Array.Empty<AutonomousRoadHotspots.Hotspot>();
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                Candidate candidate = candidates[i];
+                // owner 2026-11-10: the switch applies here, at once (the threat is no longer baked into the 5-minute cache)
+                int landingThreat = LandingSafetyEnabled
+                    ? LandingThreatLevel(bot.CurrentRegionID, candidate.End.X, candidate.End.Y, nowTick)
+                    : 0;
+                bool threat = LandingSafetyEnabled && LandingUnsafe(landingThreat, bot.Level,
+                    Distance(candidate.End.X, candidate.End.Y, goal.X, goal.Y));
+                if (threat || hotspots.Length > 0 &&
+                    AutonomousRoadHotspots.LandingNearHotspot(bot.CurrentRegionID, candidate.End.X, candidate.End.Y, hotspots))
+                {
+                    (unusable ??= []).Add(i);
+                    skipped = (skipped == null ? string.Empty : skipped + ",") + candidate.Ticket.Id_nb +
+                              (threat ? $"(threat {landingThreat})" : "(hotspot)");
+                }
+                if (hotspots.Length > 0 && AutonomousRoadHotspots.WalkLegUnsafe(bot.CurrentRegionID, (int)bot.X, (int)bot.Y,
+                        (int)candidate.BoardingPoint.X, (int)candidate.BoardingPoint.Y, hotspots))
+                    (excluded ??= []).Add(i);
+            }
+        }
+
         // A straight-line cost can choose a remote master across a broken
         // zone seam. Reuse recent failures only while this bot remains in the
         // same small pocket, then prove at most two new first walks per search.
@@ -277,11 +462,28 @@ public static class AutonomousStableRoutePlanner
             if (FirstBoardingFailures.WasRecentlyUnreachable(ProbeFor(candidates[index]), nowUtc))
                 (excluded ??= []).Add(index);
 
+        // owner 2026-11-10: one line when the landing rule changed the plan (the ride it would have taken otherwise)
+        RouteDecision? unrestricted = unusable == null || !TryTakeLandingSkipSample(bot.ObjectID, nowTick) ? null : ChooseFirstLeg(
+            bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded);
+        void LogLandingSkip(RouteDecision? chosen)
+        {
+            if (!unrestricted.HasValue || chosen.HasValue && chosen.Value.FirstLegIndex == unrestricted.Value.FirstLegIndex &&
+                Math.Abs(chosen.Value.EstimatedSeconds - unrestricted.Value.EstimatedSeconds) < 0.5)
+                return;
+            Log.Info($"AUTONOMOUS_STABLE_LANDING_SKIP bot=\"{bot.Name}\" id={bot.DatabaseID} level={bot.Level} " +
+                     $"region={bot.CurrentRegionID} skipped=\"{skipped}\" " +
+                     $"wouldBoard=\"{candidates[unrestricted.Value.FirstLegIndex].Ticket.Id_nb}\" " +
+                     $"now=\"{(chosen.HasValue ? candidates[chosen.Value.FirstLegIndex].Ticket.Id_nb : "walk")}\" " +
+                     $"seconds={unrestricted.Value.EstimatedSeconds:0}->{(chosen.HasValue ? chosen.Value.EstimatedSeconds : unrestricted.Value.DirectWalkSeconds):0}");
+        }
+
         for (int attempt = 0; attempt < Math.Min(AutonomousStableBoardingFailureCache.MaximumNewProbesPerSearch,
                  candidates.Count); attempt++)
         {
             RouteDecision? decision = ChooseFirstLeg(
-                bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded);
+                bot.X, bot.Y, goal.X, goal.Y, Math.Max(1, (int)bot.MaxSpeed), money, metrics, excluded, unusable);
+            if (attempt == 0)
+                LogLandingSkip(decision);
             if (!decision.HasValue)
                 return null;
 
@@ -547,6 +749,7 @@ public static class AutonomousStableRoutePlanner
                     region.GetZone((int)safeBoarding.X, (int)safeBoarding.Y) != boardingZone ||
                     !AutonomousZoneItinerary.HasCompleteCorridor(nav, boardingZone, safeBoarding, interaction))
                     continue;
+                // owner 2026-11-10: the landing's threat is worked out in FindBest, outside this lock (solo landing rule)
                 candidates.Add(new Candidate(master, ticket, route, endpoint, rideSeconds, safeBoarding, interaction));
             }
         }

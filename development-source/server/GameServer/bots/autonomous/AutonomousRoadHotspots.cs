@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -149,6 +151,88 @@ namespace DOL.GS
             // already inside it: only destinations near it are refused, so the bot can still choose its way out
             return fromRegion == toRegion && !Near(h.X, h.Y, fromX, fromY, Radius) &&
                 SegmentDistanceSquared(fromX, fromY, toX, toY, h.X, h.Y) <= (double)Radius * Radius;
+        }
+
+        [ServerProperty("bots", "bot_hotspot_path_check",
+            "Owner 2026-11-10: solo gamebots check live death hotspots against their real path (navmesh corners) to a camp and to a horse, not only the straight line, and choose another camp or horse (at most 2 replans per 15 minutes).", true)]
+        public static bool PathCheckEnabled = true;
+
+        [ServerProperty("bots", "bot_hotspot_service_walk_check",
+            "Owner 2026-11-10: solo gamebots also check their real walk to a merchant, healer or trainer against live death hotspots and choose another service (needs bot_hotspot_path_check; same replan budget).", true)]
+        public static bool ServiceWalkCheckEnabled = true;
+
+        /// <summary>Owner 2026-11-10: at most this many hotspot replans per bot in <see cref="ReplanWindowMilliseconds"/>.</summary>
+        public const int ReplanBudget = 2;
+        public const long ReplanWindowMilliseconds = 15 * 60_000;
+        /// <summary>A horse skipped for a hotspot on the walk to it is skipped this long (capped at 15 minutes, critic 2026-11-10).</summary>
+        public const long HotspotSkipMilliseconds = 10 * 60_000;
+        /// <summary>A horse landing this close to a dangerous hotspot is not used by solo bots (P3, owner 2026-11-10).</summary>
+        public const int LandingMargin = 750;
+
+        /// <summary>
+        /// Pure rule (owner 2026-11-10): the first leg of a real path (corners) that comes within <see cref="Radius"/> of
+        /// a hotspot in this region, or -1. A hotspot that already holds path[0] is skipped, so a bot can still walk out
+        /// (as <see cref="Blocks(Hotspot[], ushort, int, int, ushort, int, int)"/> allows); a path ending inside counts.
+        /// </summary>
+        public static int FirstBlockedLeg(ReadOnlySpan<Vector3> path, ushort region, Hotspot[] dangerous, out Hotspot hit)
+        {
+            hit = null;
+            if (path.Length < 2 || dangerous == null || dangerous.Length == 0)
+                return -1;
+            int first = -1;
+            foreach (Hotspot h in dangerous)
+            {
+                if (h.Region != region || Near(h.X, h.Y, (int)path[0].X, (int)path[0].Y, Radius))
+                    continue;
+                int limit = first < 0 ? path.Length - 1 : first;
+                for (int i = 0; i < limit; i++)
+                {
+                    int ax = (int)path[i].X, ay = (int)path[i].Y, bx = (int)path[i + 1].X, by = (int)path[i + 1].Y;
+                    if (h.X < Math.Min(ax, bx) - Radius || h.X > Math.Max(ax, bx) + Radius ||
+                        h.Y < Math.Min(ay, by) - Radius || h.Y > Math.Max(ay, by) + Radius)
+                        continue;
+                    if (SegmentDistanceSquared(ax, ay, bx, by, h.X, h.Y) <= (double)Radius * Radius)
+                    {
+                        first = i;
+                        hit = h;
+                        break;
+                    }
+                }
+            }
+            return first;
+        }
+
+        /// <summary>Pure rule: a straight walk (to a horse) passes a hotspot in this region (one holding the start is skipped).</summary>
+        public static bool WalkLegUnsafe(ushort region, int startX, int startY, int endX, int endY, Hotspot[] dangerous)
+        {
+            Span<Vector3> leg = stackalloc Vector3[2];
+            leg[0] = new(startX, startY, 0);
+            leg[1] = new(endX, endY, 0);
+            return FirstBlockedLeg(leg, region, dangerous, out _) >= 0;
+        }
+
+        /// <summary>Pure rule: a horse landing within <see cref="Radius"/> + <see cref="LandingMargin"/> of a hotspot in this region.</summary>
+        public static bool LandingNearHotspot(ushort region, int x, int y, Hotspot[] dangerous)
+        {
+            if (dangerous == null)
+                return false;
+            foreach (Hotspot h in dangerous)
+                if (h.Region == region && Near(h.X, h.Y, x, y, Radius + LandingMargin))
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Pure rule: another hotspot replan is allowed when fewer than <see cref="ReplanBudget"/> of the given replan ticks
+        /// fall inside the last <see cref="ReplanWindowMilliseconds"/>.
+        /// </summary>
+        public static bool ReplanAllowed(ReadOnlySpan<long> recentReplans, long now)
+        {
+            int inWindow = 0;
+            foreach (long tick in recentReplans)
+                if (tick > 0 && now - tick < ReplanWindowMilliseconds)
+                    inWindow++;
+            return inWindow < ReplanBudget;
         }
 
         public static void Clear()
