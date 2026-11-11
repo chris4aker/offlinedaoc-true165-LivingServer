@@ -214,6 +214,8 @@ namespace DOL.GS.PacketHandler
 					flags3 |= 0x01;
 				if (questIndicator == eQuestIndicator.Lore)
 					flags3 |= 0x02;
+				if (npc is GameBot)
+					flags3 |= 0x40; // a gamebot or hired companion (True 1.65: the new client draws it as a player)
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
 

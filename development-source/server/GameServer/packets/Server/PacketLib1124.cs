@@ -231,6 +231,11 @@ namespace DOL.GS.PacketHandler
 					if (questIndicator == eQuestIndicator.Pending)
 						flags3 |= 0x20;
 
+					// True 1.65 (owner 2026-11-11): a gamebot or hired companion is marked from its first create, so the new
+					// client draws its name as a player's at once (it guessed from map markers and showed NPC cyan first)
+					if (npc is GameBot)
+						flags3 |= 0x40;
+
 					pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 					pak.WriteShort(0x00); // new in 1.71 unknown
 
