@@ -11,6 +11,10 @@ namespace DOL.GS
     public abstract class GameStaticItemTimed : GameStaticItem
     {
         protected Lock _pickUpLock = new();
+        // owner 2026-11-10: set (under _pickUpLock) once a pickup succeeds. A taken bag is only Inactive, not Deleted,
+        // so two group bots looting one bag on two threads both took it: one item object in two slots or two bots
+        // (231 failed inventory inserts and an item sold twice in 48 h of logs).
+        protected bool _pickedUp;
         private uint _removeDelay = ServerProperties.Properties.WORLD_ITEM_DECAY_TIME;
         private RemoveItemAction _removeItemAction;
 
@@ -43,6 +47,7 @@ namespace DOL.GS
             if (!base.AddToWorld())
                 return false;
 
+            _pickedUp = false; // a respawned item can be taken again
             _removeItemAction ??= new RemoveItemAction(this);
             _removeItemAction.Start((int) _removeDelay);
             return true;

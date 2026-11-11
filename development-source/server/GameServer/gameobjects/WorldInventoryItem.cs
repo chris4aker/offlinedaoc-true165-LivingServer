@@ -143,7 +143,12 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryAutoPickUpItem(this);
+                if (ObjectState is eObjectState.Deleted || _pickedUp)
+                    return TryPickUpResult.DoesNotWant;
+                TryPickUpResult result = itemOwner.TryAutoPickUpItem(this);
+                if (result is TryPickUpResult.Success)
+                    _pickedUp = true;
+                return result;
             }
         }
 
@@ -151,7 +156,12 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryPickUpItem(source, this);
+                if (ObjectState is eObjectState.Deleted || _pickedUp)
+                    return TryPickUpResult.DoesNotWant;
+                TryPickUpResult result = itemOwner.TryPickUpItem(source, this);
+                if (result is TryPickUpResult.Success)
+                    _pickedUp = true;
+                return result;
             }
         }
     }

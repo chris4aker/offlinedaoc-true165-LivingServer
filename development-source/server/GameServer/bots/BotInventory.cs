@@ -9,6 +9,7 @@ namespace DOL.GS
 {
     public class BotInventory : GameLivingInventory
     {
+        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(typeof(BotInventory));
         private readonly string _persistenceOwnerId;
         private readonly HashSet<DbInventoryItem> _itemsBeingSaved = new(ReferenceEqualityComparer.Instance);
 
@@ -22,6 +23,21 @@ namespace DOL.GS
         }
 
         public bool IsPersistent => !string.IsNullOrWhiteSpace(_persistenceOwnerId);
+
+        /// <summary>
+        /// A copy of the items taken under the inventory lock (owner 2026-11-10). Loot from a group member, a purchase or a
+        /// save can change a bot's inventory on another thread while its AI scans it; the live collection then threw
+        /// "Collection was modified" inside the AI turn (TryEquipRealInstrument, CoatFromVial) and NpcService removed the
+        /// bot from the world. One copy here covers every caller.
+        /// </summary>
+        public override ICollection<DbInventoryItem> AllItems
+        {
+            get
+            {
+                lock (Lock)
+                    return m_items.Values.ToArray();
+            }
+        }
 
         public override Task<IList> StartLoadFromDatabaseTask(string inventoryId)
         {
@@ -97,6 +113,9 @@ namespace DOL.GS
             List<DbInventoryItem> remove = [];
             var written = new List<(BotInventory Inventory, DbInventoryItem Live, DbInventoryItem Snapshot)>();
             var deletedCopies = new List<(DbInventoryItem Live, DbInventoryItem Snapshot)>();
+            // owner 2026-11-10: row id -> owner for every row this batch adds or updates. One item held by two bots
+            // was inserted twice and failed the whole batch (UNIQUE constraint failed: Inventory.Inventory_ID).
+            var writtenIds = new Dictionary<string, string>();
 
             try
             {
@@ -108,7 +127,8 @@ namespace DOL.GS
                 List<DbInventoryItem> deleted;
                 lock (inventory.Lock)
                 {
-                    deleted = inventory._itemsAwaitingDeletion.Where(item => item.IsPersisted).ToList();
+                    HashSet<string> heldIds = inventory.DropDuplicateSlotsLocked(ownerId);
+                    deleted = inventory.TakeDeletionsLocked(ownerId, heldIds);
                     foreach (DbInventoryItem item in deleted)
                     {
                         DbInventoryItem snapshot = item.CreatePersistenceSnapshot();
@@ -119,6 +139,13 @@ namespace DOL.GS
                     {
                         if (item == null || item is GameInventoryRelic)
                             continue;
+                        bool emptyStack = item.IsStackable && item.Count == 0;
+                        if (!emptyStack && item.ObjectId != null && writtenIds.TryGetValue(item.ObjectId, out string firstOwner))
+                        {
+                            // owner 2026-11-10: the first bot keeps the row this batch; never write one row twice
+                            Log.Warn($"BOT_INVENTORY_SHARED_ITEM id={item.ObjectId} item=\"{item.Name}\" owner={firstOwner} alsoHeldBy={ownerId} slot={(int)slot}: saved once, for the first owner");
+                            continue;
+                        }
                         item.OwnerID = ownerId;
                         item.SlotPosition = (int)slot;
                         // The actor may move/sell this item as soon as Lock is
@@ -126,7 +153,9 @@ namespace DOL.GS
                         DbInventoryItem snapshot = item.CreatePersistenceSnapshot();
                         inventory._itemsBeingSaved.Add(item);
                         written.Add((inventory, item, snapshot));
-                        if (item.IsStackable && item.Count == 0)
+                        if (!emptyStack && item.ObjectId != null)
+                            writtenIds[item.ObjectId] = ownerId;
+                        if (emptyStack)
                         {
                             remove.Add(snapshot);
                             deletedCopies.Add((item, snapshot));
@@ -140,6 +169,17 @@ namespace DOL.GS
                 captures.Add((inventory, deleted));
             }
 
+            // owner 2026-11-10: a tombstone whose row another bot in this batch still holds keeps its row.
+            for (int i = remove.Count - 1; i >= 0; i--)
+            {
+                DbInventoryItem gone = remove[i];
+                if (gone.ObjectId == null || !writtenIds.TryGetValue(gone.ObjectId, out string holder))
+                    continue;
+                remove.RemoveAt(i);
+                deletedCopies.RemoveAll(entry => ReferenceEquals(entry.Snapshot, gone));
+                Log.Warn($"BOT_INVENTORY_DELETE_SKIPPED id={gone.ObjectId} item=\"{gone.Name}\" holder={holder}: still held, row kept");
+            }
+
             // Persist definitions before their new inventory references. The ORM
             // otherwise inserts the parent first, then its relations separately;
             // a failed relation write leaves a persisted parent that may be clean
@@ -150,8 +190,9 @@ namespace DOL.GS
             if (definitions.Length != 0 && !GameServer.Database.AddObject(definitions))
                 return false;
 
-            bool saved = (remove.Count == 0 || GameServer.Database.DeleteObject(remove)) &&
-                         (update.Count == 0 || GameServer.Database.SaveObject(update));
+            bool saved = remove.Count == 0 || GameServer.Database.DeleteObject(remove);
+            if (saved && update.Count > 0 && !GameServer.Database.SaveObject(update))
+                saved = ReinsertMissingRows(update, add);
             if (saved && add.Count > 0 && !GameServer.Database.AddObject(add))
             {
                 // A previous partially successful batch may have written a row
@@ -208,10 +249,122 @@ namespace DOL.GS
             item.OwnerID == stored.OwnerID && item.OwnerLot == 0 && stored.OwnerLot == 0 &&
             item.ITemplate_Id == stored.ITemplate_Id && item.UTemplate_Id == stored.UTemplate_Id && item.Count == stored.Count;
 
+        /// <summary>Of two slots holding the same item object, the one kept: the lowest (worn before bag before vault).</summary>
+        public static eInventorySlot KeepDuplicateSlot(eInventorySlot first, eInventorySlot second) => first <= second ? first : second;
+
+        /// <summary>
+        /// owner 2026-11-10: one item object sitting in two slots (a loot bag taken twice) was saved as two rows, could be
+        /// sold twice, and its sale deleted the row of the copy still worn (Gloves of Precision: 79 failed saves, gone on
+        /// restart). Keeps <see cref="KeepDuplicateSlot"/> and clears the other slots; nothing is lost, it is one item.
+        /// Returns the row ids this inventory holds. Caller holds Lock.
+        /// </summary>
+        private HashSet<string> DropDuplicateSlotsLocked(string ownerId)
+        {
+            var heldIds = new HashSet<string>(m_items.Count);
+            var keptSlot = new Dictionary<DbInventoryItem, eInventorySlot>(m_items.Count, ReferenceEqualityComparer.Instance);
+            List<(DbInventoryItem Item, eInventorySlot Slot)> extra = null;
+            foreach ((eInventorySlot slot, DbInventoryItem item) in m_items)
+            {
+                if (item == null)
+                    continue;
+                if (item.ObjectId != null)
+                    heldIds.Add(item.ObjectId);
+                if (!keptSlot.TryGetValue(item, out eInventorySlot other))
+                {
+                    keptSlot[item] = slot;
+                    continue;
+                }
+                eInventorySlot keep = KeepDuplicateSlot(other, slot);
+                keptSlot[item] = keep;
+                extra ??= new List<(DbInventoryItem Item, eInventorySlot Slot)>();
+                extra.Add((item, keep == other ? slot : other));
+            }
+            if (extra == null)
+                return heldIds;
+            foreach ((DbInventoryItem item, eInventorySlot slot) in extra)
+            {
+                m_items.Remove(slot);
+                eInventorySlot keep = keptSlot[item];
+                item.SlotPosition = (int)keep;
+                Log.Warn($"BOT_INVENTORY_DUPLICATE_SLOT owner={ownerId} id={item.ObjectId} item=\"{item.Name}\" kept={(int)keep} cleared={(int)slot}");
+            }
+            return heldIds;
+        }
+
+        /// <summary>
+        /// owner 2026-11-10: the tombstones to delete. A removed item that this bot still holds in another slot, or that
+        /// another owner has taken since (its OwnerID is theirs), keeps its row. Caller holds Lock.
+        /// </summary>
+        private List<DbInventoryItem> TakeDeletionsLocked(string ownerId, HashSet<string> heldIds)
+        {
+            var deleted = new List<DbInventoryItem>();
+            for (int i = _itemsAwaitingDeletion.Count - 1; i >= 0; i--)
+            {
+                DbInventoryItem item = _itemsAwaitingDeletion[i];
+                if (item == null || !item.IsPersisted)
+                    continue;
+                string holder = item.ObjectId != null && heldIds.Contains(item.ObjectId) ? ownerId
+                    : !string.IsNullOrEmpty(item.OwnerID) && item.OwnerID != ownerId ? item.OwnerID : null;
+                if (holder == null)
+                {
+                    deleted.Add(item);
+                    continue;
+                }
+                _itemsAwaitingDeletion.RemoveAt(i);
+                Log.Warn($"BOT_INVENTORY_DELETE_SKIPPED owner={ownerId} id={item.ObjectId} item=\"{item.Name}\" holder={holder}: still held, row kept");
+            }
+            return deleted;
+        }
+
+        /// <summary>
+        /// owner 2026-11-10: an UPDATE that touched no row means the row is gone while the bot still holds the item; it
+        /// was retried every flush and the item was lost on restart. Such items are inserted again in this batch. Any other
+        /// failed update still fails the batch. Runs only after a failed update (one key lookup per failed row).
+        /// </summary>
+        private static bool ReinsertMissingRows(List<DbInventoryItem> update, List<DbInventoryItem> add)
+        {
+            bool onlyMissing = true;
+            int missing = 0;
+            foreach (DbInventoryItem snapshot in update)
+            {
+                // A written row is clean again; an unchanged one was never sent.
+                if (!snapshot.Dirty)
+                    continue;
+                if (string.IsNullOrWhiteSpace(snapshot.ObjectId) ||
+                    GameServer.Database.FindObjectByKey<DbInventoryItem>(snapshot.ObjectId) != null)
+                {
+                    onlyMissing = false;
+                    continue;
+                }
+                snapshot.IsPersisted = false;
+                add.Add(snapshot);
+                missing++;
+                Log.Warn($"BOT_INVENTORY_ROW_MISSING owner={snapshot.OwnerID} id={snapshot.ObjectId} item=\"{snapshot.Name}\" slot={snapshot.SlotPosition}: inserted again");
+            }
+            bool recovered = MissingRowsExplainFailedUpdate(missing, !onlyMissing);
+            if (!recovered)
+                Log.Warn($"BOT_INVENTORY_UPDATE_FAILED rows={update.Count} missing={missing} otherFailed={!onlyMissing}: batch failed");
+            return recovered;
+        }
+
+        /// <summary>
+        /// Pure rule (owner 2026-11-10, review): a failed update counts as recovered only when at least one row was found
+        /// missing (and is inserted again) and nothing else failed. A failed relation save or a rolled-back commit leaves
+        /// no dirty row behind, and still fails the batch.
+        /// </summary>
+        public static bool MissingRowsExplainFailedUpdate(int missingRows, bool otherRowFailed) =>
+            missingRows > 0 && !otherRowFailed;
+
         public override bool AddItem(eInventorySlot slot, DbInventoryItem item)
         {
             lock (Lock)
             {
+                // owner 2026-11-10: the same item object never goes into a second slot (see DropDuplicateSlotsLocked)
+                if (item != null && TryFindSlotLocked(item, out eInventorySlot heldSlot))
+                {
+                    Log.Warn($"BOT_INVENTORY_DUPLICATE_ADD owner={_persistenceOwnerId} id={item.ObjectId} item=\"{item.Name}\" held={(int)heldSlot} refused={(int)slot}");
+                    return false;
+                }
                 if (!base.AddItem(slot, item))
                     return false;
                 _itemsAwaitingDeletion.Remove(item);
@@ -219,6 +372,20 @@ namespace DOL.GS
                     item.OwnerID = _persistenceOwnerId;
                 return true;
             }
+        }
+
+        private bool TryFindSlotLocked(DbInventoryItem item, out eInventorySlot slot)
+        {
+            foreach ((eInventorySlot held, DbInventoryItem other) in m_items)
+            {
+                if (ReferenceEquals(other, item))
+                {
+                    slot = held;
+                    return true;
+                }
+            }
+            slot = eInventorySlot.Invalid;
+            return false;
         }
 
         public override bool RemoveItem(DbInventoryItem item)

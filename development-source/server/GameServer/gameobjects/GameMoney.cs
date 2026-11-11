@@ -41,7 +41,13 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryAutoPickUpMoney(this);
+                // owner 2026-11-10: a coin already taken (see GameStaticItemTimed._pickedUp) is never paid twice
+                if (ObjectState is eObjectState.Deleted || _pickedUp)
+                    return TryPickUpResult.DoesNotWant;
+                TryPickUpResult result = itemOwner.TryAutoPickUpMoney(this);
+                if (result is TryPickUpResult.Success)
+                    _pickedUp = true;
+                return result;
             }
         }
 
@@ -49,7 +55,12 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryPickUpMoney(source, this);
+                if (ObjectState is eObjectState.Deleted || _pickedUp)
+                    return TryPickUpResult.DoesNotWant;
+                TryPickUpResult result = itemOwner.TryPickUpMoney(source, this);
+                if (result is TryPickUpResult.Success)
+                    _pickedUp = true;
+                return result;
             }
         }
     }
