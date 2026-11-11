@@ -353,6 +353,60 @@ public static partial class AutonomousRvrEventLayer
         }
     }
 
+    /// <summary>
+    /// The attacking and defending realm of a live siege or relic-road event (relic road: the carrying realm attacks,
+    /// the relic's owner defends), or None/None. Read by bot banter only when a bot speaks (owner 2026-11-10).
+    /// </summary>
+    public static (eRealm Attacker, eRealm Defender) EventRealms(string targetId)
+    {
+        if (string.IsNullOrEmpty(targetId))
+            return (eRealm.None, eRealm.None);
+        lock (Sync)
+        {
+            if (Events.TryGetValue(targetId, out ActiveEvent active))
+                return (active.AttackerRealm, active.DefenderRealm);
+            if (CarrierEvents.TryGetValue(targetId, out var carrier))
+            {
+                // Owner 2026-11-10 (review): CarrierTargets' OwningRealm is the realm carrying the relic (the taker)
+                eRealm carrying = CarrierOrigins.TryGetValue(targetId, out var origin) ? origin.Attacker
+                    : CarrierTargets.GetValueOrDefault(targetId)?.OwningRealm ?? eRealm.None;
+                // owner 2026-11-10 (round 3): the realm that held the relic (the keep's defender), not its home realm
+                return CarrierEventRealms(carrying, CarrierDefender(origin.Defender, targetId), carrier.Participants.Keys);
+            }
+            return (eRealm.None, eRealm.None);
+        }
+    }
+
+    /// <summary>
+    /// Pure rule (owner 2026-11-10, review): on a relic road the carrying realm attacks and the relic's owner defends -
+    /// its home realm, or, when the carrier is bringing its own relic home, the first other realm in the event.
+    /// </summary>
+    public static (eRealm Attacker, eRealm Defender) CarrierEventRealms(eRealm carrying, eRealm relicHome,
+        IEnumerable<eRealm> participants)
+    {
+        eRealm defender = relicHome != eRealm.None && relicHome != carrying ? relicHome
+            : participants?.FirstOrDefault(realm => realm != carrying && realm != eRealm.None) ?? eRealm.None;
+        if (carrying == eRealm.None)
+            carrying = participants?.FirstOrDefault(realm => realm != defender && realm != eRealm.None) ?? eRealm.None;
+        return (carrying, defender);
+    }
+
+    /// <summary>Pure rule (owner 2026-11-10, round 3): who defends a relic road - the realm whose keep held the relic,
+    /// saved when the relic left; the relic's home realm only when nothing was saved.</summary>
+    public static eRealm CarrierDefender(eRealm keepDefender, string carrierId) =>
+        keepDefender != eRealm.None ? keepDefender : RelicHomeOfCarrierId(carrierId);
+
+    /// <summary>The relic's home realm from its carrier event id (RelicCarrierTargetId), or None.</summary>
+    public static eRealm RelicHomeOfCarrierId(string carrierId)
+    {
+        const string prefix = "rvr-relic-carrier-";
+        if (carrierId == null || !carrierId.StartsWith(prefix, StringComparison.Ordinal))
+            return eRealm.None;
+        int end = carrierId.IndexOf('-', prefix.Length);
+        string number = end < 0 ? carrierId[prefix.Length..] : carrierId[prefix.Length..end];
+        return int.TryParse(number, out int realm) && realm is >= 1 and <= 3 ? (eRealm)realm : eRealm.None;
+    }
+
     public static LiveObjective ChooseVariedTarget(IEnumerable<LiveObjective> candidates, ISet<string> used, Random random = null)
     {
         var eligible = candidates.ToArray();
@@ -1780,7 +1834,7 @@ public static partial class AutonomousRvrEventLayer
             RealmEventRecords.Finish(keepId, "Relic taken", "Relic removed; the battle continued as an escort/interception event.");
             RealmEventRecords.Begin(carrierId, carrierAnchor?.Name ?? active.Target.Name, "Relic", GlobalConstants.RealmToName(active.AttackerRealm), "Continued from " + active.Target.Name);
             RealmEventRecords.Progress(carrierId, "Battle", "Relic escort / interception", active.Attackers.Values.Sum() + active.Defenders.Values.Sum() + active.ThirdRealm.Values.Sum(), 0);
-            CarrierOrigins[carrierId] = (keepId, active.AttackerRealm);
+            CarrierOrigins[carrierId] = (keepId, active.AttackerRealm, active.DefenderRealm);
             Events.Remove(keepId);
             Cooldowns[keepId] = nowTick + TargetCooldownMilliseconds;
             var log = DOL.Logging.LoggerManager.Create(typeof(AutonomousRvrEventLayer));

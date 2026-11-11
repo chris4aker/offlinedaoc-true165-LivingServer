@@ -16,8 +16,9 @@ public static partial class AutonomousRvrEventLayer
     /// <summary>A relic seen back on a pad this long without its RelicMounted/RelicReturned event ends the carrier event anyway.</summary>
     public const long CarrierMountedGraceMilliseconds = 2_000;
 
-    /// <summary>The relic keep a carrier event came from and the realm that took the relic (resumed after a restart).</summary>
-    private static readonly Dictionary<string, (string KeepId, eRealm Attacker)> CarrierOrigins = new(StringComparer.Ordinal);
+    /// <summary>The relic keep a carrier event came from, the realm that took the relic and the realm that held it
+    /// (owner 2026-11-10, round 3).</summary>
+    private static readonly Dictionary<string, (string KeepId, eRealm Attacker, eRealm Defender)> CarrierOrigins = new(StringComparer.Ordinal);
     private static readonly Dictionary<string, long> CarrierMountedSeen = new(StringComparer.Ordinal);
 
     /// <summary>

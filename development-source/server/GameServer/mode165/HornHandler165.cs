@@ -237,6 +237,7 @@ namespace DOL.GS
             foreach (GamePlayer near in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 near.Out.SendMessage($"{player.Name} sounds the Horn of Rallying: the realm gathers for {chosen.Name}!",
                     eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            BotBanter165.OnHornSounded(player, chosen.Name);   // a bot or two answer the call on the realm channel (owner 2026-11-10)
             if (rally?.GuestsSummoned > 0)
                 return $"The horn sounds! {rally.Answer.Live} answer from the field and {rally.GuestsSummoned} more are on their way to {chosen.Name}.";
             return $"The horn sounds across the land! The realm rallies for {chosen.Name}.";

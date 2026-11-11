@@ -69,13 +69,15 @@ public static class AutonomousBotChatCoordinator
             }
         }
 
-        string opening = BuildAmbientOpening(starter, context, faction);
+        // banter165 lines first when one fits what the bot is doing; otherwise today's lines (owner 2026-11-10)
+        string opening = BotBanter165.TryOpening(starter, context, faction ? "realm" : "say", out BotBanter165.Topic topic) ??
+                         BuildAmbientOpening(starter, context, faction);
         if (faction)
             BroadcastFaction(starter.Name, starter.Realm, opening);
         else if (!starter.Say(opening))
             return false;
 
-        ScheduleBotReplies(starter, opening, faction, false);
+        ScheduleBotReplies(starter, opening, faction, false, topic);
         return true;
     }
 
@@ -98,7 +100,10 @@ public static class AutonomousBotChatCoordinator
         if (player == null || string.IsNullOrWhiteSpace(message) || player.CurrentRegion == null)
             return;
         CompanionChat165.OnPlayerSay(player, message);
-        if (AutonomousChatIntentModel.Predict(message) == eAutonomousChatIntent.IgnoreOutOfWorld)
+        // "ding", "ty", "rez pls" read as out-of-world to the intent model; bots may answer those, but never a
+        // hard out-of-world word ("the epic football game") (owner 2026-11-10)
+        if (AutonomousChatIntentModel.Predict(message) == eAutonomousChatIntent.IgnoreOutOfWorld &&
+            !(BanterLibrary165.PeriodWordRescues(message) && BotBanter165.Current.Count > 0))
             return;
         lock (Sync)
         {
@@ -125,7 +130,10 @@ public static class AutonomousBotChatCoordinator
             ? $"Does anybody want to make me an offer on {item}?"
             : $"How much do u think {item} is worth?";
         BroadcastFaction(seller.Name, seller.Realm, opening);
-        ScheduleBotReplies(seller, opening, true, false);
+        // repliers may use banter165 "trading" reply lines about this item (owner 2026-11-10)
+        var topic = new BotBanter165.Topic { Situation = "trading" };
+        topic.Shared["item"] = item;
+        ScheduleBotReplies(seller, opening, true, false, topic);
         return true;
     }
 
@@ -277,14 +285,18 @@ public static class AutonomousBotChatCoordinator
             : RollResponseCount(eligible.Length);
         HashSet<string> scheduledResponses = new(StringComparer.OrdinalIgnoreCase);
         int scheduledIndex = 0;
+        // a rescued "ty" / "rez pls" never falls back to the built-in "keep it on the realm" scolding (owner 2026-11-10)
+        bool rescued = intent == eAutonomousChatIntent.IgnoreOutOfWorld && BanterLibrary165.PeriodWordRescues(message);
         for (int index = 0; index < count; index++)
         {
             GameBot responder = eligible[index];
             string response = hasKnowledge
                 ? knowledge
-                : directed
+                : BotBanter165.TryPlayerReply(responder, player, message, faction ? "realm" : "say", directed) ??
+                  (rescued ? null
+                    : directed
                     ? GenerateDirectedReply(message)
-                    : faction ? GenerateFactionReply(message) : GenerateLocalReply(responder, message);
+                    : faction ? GenerateFactionReply(message) : GenerateLocalReply(responder, message));
             if (!TryAddDistinctResponse(scheduledResponses, response, out response))
                 continue;
             Schedule(responder, 1_300 + scheduledIndex++ * 1_800 + Random.Shared.Next(1_200), () =>
@@ -297,8 +309,9 @@ public static class AutonomousBotChatCoordinator
         }
     }
 
-    private static void ScheduleBotReplies(GameBot starter, string opening, bool faction, bool fromPlayer)
+    private static void ScheduleBotReplies(GameBot starter, string opening, bool faction, bool fromPlayer, BotBanter165.Topic topic = null)
     {
+        string channel = faction ? "realm" : "say";
         bool hasKnowledge = AutonomousChatKnowledge.TryAnswer(starter.Realm, opening, out string knowledge);
         GameBot[] eligible = AutonomousBotRegistry.Snapshot()
             .Where(bot => bot != starter && Eligible(bot) && bot.Realm == starter.Realm)
@@ -312,7 +325,8 @@ public static class AutonomousBotChatCoordinator
         for (int index = 0; index < count; index++)
         {
             GameBot responder = eligible[index];
-            string response = hasKnowledge ? knowledge : faction ? GenerateFactionReply(opening) : GenerateLocalReply(responder, opening);
+            string response = hasKnowledge ? knowledge : BotBanter165.TryReply(responder, topic, channel) ??
+                (faction ? GenerateFactionReply(opening) : GenerateLocalReply(responder, opening));
             if (!TryAddDistinctResponse(scheduledResponses, response, out response))
                 continue;
             Schedule(responder, 1_700 + scheduledCount++ * 2_100 + Random.Shared.Next(1_300), () =>
@@ -328,7 +342,8 @@ public static class AutonomousBotChatCoordinator
         // while the channel cooldown prevents it from becoming a chat loop.
         if (!fromPlayer && !hasKnowledge && scheduledCount > 0 && Random.Shared.NextDouble() < 0.28)
         {
-            string closing = faction ? "Fair enough. Safe travels." : "Understood. I will keep at it.";
+            string closing = BotBanter165.TryClosing(starter, channel) ??
+                             (faction ? "Fair enough. Safe travels." : "Understood. I will keep at it.");
             Schedule(starter, 5_500 + scheduledCount * 1_500, () =>
             {
                 if (faction && HasFactionAudience(starter.Realm))

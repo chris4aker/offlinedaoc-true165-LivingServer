@@ -51,6 +51,7 @@ namespace DOL.GS.Commands
 				}
 
 				client.Player.Group.SendMessageToGroupMembers(client.Player, msg, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
+				BotBanter165.OnPlayerGroupChat(client.Player, msg.Trim()); // a gamebot in the party may answer (owner 2026-11-10)
 			}
 			else
 			{

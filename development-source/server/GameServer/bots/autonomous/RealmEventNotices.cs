@@ -90,7 +90,10 @@ namespace DOL.GS
                         (!forces.TryGetValue(force, out string target) || target != notice.EventId)) continue;
                     if (Random.Shared.Next(++candidates) == 0) speaker = bot;
                 }
-                AutonomousBotChatCoordinator.BroadcastFaction(speaker?.Name ?? fallback?.Name ?? "Realm herald", notice.Realm, notice.Text);
+                string herald = speaker?.Name ?? fallback?.Name ?? "Realm herald";
+                AutonomousBotChatCoordinator.BroadcastFaction(herald, notice.Realm, notice.Text);
+                // a bot or two may follow the notice with banter165 lines for its situation (owner 2026-11-10)
+                BotBanter165.FollowNotice(notice.EventId, notice.Realm, notice.Text, herald);
             }
         }
     }

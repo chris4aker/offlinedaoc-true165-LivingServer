@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS;
 
@@ -80,6 +81,26 @@ public static partial class AutonomousChatIntentModel
         "twitter", "facebook", "instagram", "tiktok", "reddit", "headline", "headlines", "news",
     };
 
+    [ServerProperty("bots", "bot_chat_learned_offtopic_blocks_rescue",
+        "Do the off-topic words the chat model learns (movie, television, school, homework, job, phone ...) stop a period chat word (ty, rez, epic, rally) from rescuing a message, like the hard off-topic words do?", true)]
+    public static bool LearnedOffTopicBlocksRescue = true;
+
+    /// <summary>
+    /// Owner 2026-11-10 (review): the real-life words of the out-of-world training rows that are not in
+    /// <see cref="HardOutOfWorld"/>. Words with a game meaning ("market", "campaign", "real", "world") are left out.
+    /// </summary>
+    private static readonly HashSet<string> LearnedOutOfWorld = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "movie", "movies", "tv", "television", "school", "homework", "job", "jobs", "car", "cars", "phone",
+        "internet", "politician", "politicians", "vote", "voting",
+    };
+
+    // "good job" and the like are game praise, not real-life work (owner 2026-11-10, round 3: awesome/excellent/
+    // amazing/fine job, job well done too)
+    [GeneratedRegex(@"\b(good|nice|great|gj|awesome|excellent|amazing|fine|solid|well)\s+jobs?\b|\bjob\s+well\s+done\b",
+        RegexOptions.IgnoreCase)]
+    private static partial Regex GamePraiseRegex();
+
     private static readonly HashSet<string> HardAbuse = new(StringComparer.OrdinalIgnoreCase)
     {
         "shit", "dumb", "idiot", "idiots", "moron", "morons", "garbage", "worthless", "pathetic",
@@ -134,6 +155,25 @@ public static partial class AutonomousChatIntentModel
             }
         }
         return best - runnerUp < 0.18 ? eAutonomousChatIntent.Unknown : bestIntent;
+    }
+
+    /// <summary>True when the text has a hard out-of-world word (football, election...); nothing may rescue it (owner 2026-11-10).</summary>
+    public static bool HasHardOutOfWorldWord(string text) => Tokens(text).Any(HardOutOfWorld.Contains);
+
+    /// <summary>
+    /// Owner 2026-11-10 (review): a hard out-of-world word, or (switch on) one the model learned from its out-of-world
+    /// rows ("anyone see the epic movie"). No period chat word may rescue such a message.
+    /// </summary>
+    public static bool HasOutOfWorldWord(string text) => HasOutOfWorldWord(text, LearnedOffTopicBlocksRescue);
+
+    /// <summary>Pure rule behind <see cref="HasOutOfWorldWord(string)"/>, with the switch passed in.</summary>
+    public static bool HasOutOfWorldWord(string text, bool learnedWords)
+    {
+        if (HasHardOutOfWorldWord(text))
+            return true;
+        if (!learnedWords || string.IsNullOrEmpty(text))
+            return false;
+        return Tokens(GamePraiseRegex().Replace(text, " ")).Any(LearnedOutOfWorld.Contains);
     }
 
     private static Model Train()
