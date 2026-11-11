@@ -214,6 +214,36 @@ namespace DOL.GS.Housing
             CheckItemTemplate("Hibernia vault", "housing_hib_vault", 1491, (int)eObjectType.HouseVault, 10000000, 0, 0, 0, 0, 3);
         }
 
+        /// <summary>The merchant lists the lot markers sell from (CheckMerchantItemTemplates seeds each one).</summary>
+        public static readonly string[] LotMarkerListNames = { "housing_alb_lotmarker", "housing_mid_lotmarker", "housing_hib_lotmarker", "housing_custom_lotmarker" };
+
+        /// <summary>
+        /// Deeds a lot marker list sells. No consignment merchant deed: the Realm Exchange replaces the
+        /// consignment merchant (owner, GitHub #31), so lot markers never offer housing_consignment_deed.
+        /// </summary>
+        public static string[] GetLotMarkerItemIds(string lotMarkerList)
+        {
+            switch (lotMarkerList)
+            {
+                case "housing_alb_lotmarker":
+                    return new[] { "housing_alb_cottage_deed", "housing_alb_house_deed", "housing_alb_villa_deed", "housing_alb_mansion_deed",
+                                   "housing_porch_deed", "housing_porch_remove_deed" /*, "housing_deed_of_guild_transfer"*/ };
+                case "housing_mid_lotmarker":
+                    return new[] { "housing_mid_cottage_deed", "housing_mid_house_deed", "housing_mid_villa_deed", "housing_mid_mansion_deed",
+                                   "housing_porch_deed", "housing_porch_remove_deed" /*, "housing_deed_of_guild_transfer"*/ };
+                case "housing_hib_lotmarker":
+                    return new[] { "housing_hib_cottage_deed", "housing_hib_house_deed", "housing_hib_villa_deed", "housing_hib_mansion_deed",
+                                   "housing_porch_deed", "housing_porch_remove_deed" /*, "housing_deed_of_guild_transfer"*/ };
+                case "housing_custom_lotmarker":
+                    return new[] { "housing_alb_cottage_deed", "housing_alb_house_deed", "housing_alb_villa_deed", "housing_alb_mansion_deed",
+                                   "housing_hib_cottage_deed", "housing_hib_house_deed", "housing_hib_villa_deed", "housing_hib_mansion_deed",
+                                   "housing_mid_cottage_deed", "housing_mid_house_deed", "housing_mid_villa_deed", "housing_mid_mansion_deed",
+                                   "housing_porch_deed", "housing_porch_remove_deed" /*, "housing_deed_of_guild_transfer"*/ };
+                default:
+                    return Array.Empty<string>();
+            }
+        }
+
         private static void CheckMerchantItemTemplates()
         {
             if (!Properties.LOAD_HOUSING_ITEMS)
@@ -222,31 +252,8 @@ namespace DOL.GS.Housing
             }
 
             //lot markers
-            string[] alblotmarkeritems = {
-                                             "housing_alb_cottage_deed", "housing_alb_house_deed", "housing_alb_villa_deed", "housing_alb_mansion_deed",
-                                             "housing_porch_deed", "housing_porch_remove_deed", "housing_consignment_deed",//"housing_deed_of_guild_transfer"
-			                             };
-            CheckMerchantItems("housing_alb_lotmarker", alblotmarkeritems);
-
-            string[] midlotmarkeritems = {
-                                             "housing_mid_cottage_deed", "housing_mid_house_deed", "housing_mid_villa_deed", "housing_mid_mansion_deed",
-                                             "housing_porch_deed", "housing_porch_remove_deed", "housing_consignment_deed",//"housing_deed_of_guild_transfer"
-			                             };
-            CheckMerchantItems("housing_mid_lotmarker", midlotmarkeritems);
-
-            string[] hiblotmarkeritems = {
-                                             "housing_hib_cottage_deed", "housing_hib_house_deed", "housing_hib_villa_deed", "housing_hib_mansion_deed",
-                                             "housing_porch_deed", "housing_porch_remove_deed", "housing_consignment_deed",//"housing_deed_of_guild_transfer"
-			                             };
-            CheckMerchantItems("housing_hib_lotmarker", hiblotmarkeritems);
-
-            string[] customlotmarkeritems = {
-                                             "housing_alb_cottage_deed", "housing_alb_house_deed", "housing_alb_villa_deed", "housing_alb_mansion_deed",
-                                             "housing_hib_cottage_deed", "housing_hib_house_deed", "housing_hib_villa_deed", "housing_hib_mansion_deed",
-                                             "housing_mid_cottage_deed", "housing_mid_house_deed", "housing_mid_villa_deed", "housing_mid_mansion_deed",
-                                             "housing_porch_deed", "housing_porch_remove_deed", "housing_consignment_deed", //"housing_deed_of_guild_transfer"
-			                             };
-            CheckMerchantItems("housing_custom_lotmarker", customlotmarkeritems);
+            foreach (string lotMarkerList in LotMarkerListNames)
+                CheckMerchantItems(lotMarkerList, GetLotMarkerItemIds(lotMarkerList));
 
             //hookpoints
             var indoorNpcBase = new List<string> {
