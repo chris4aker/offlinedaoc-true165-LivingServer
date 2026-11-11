@@ -69,6 +69,47 @@ hold). Its changelog has the history of everything this version inherits.
 - Monsters: their walk and run cycles play in full; they were cut short when the models were converted (wolves
   such as the lupine snarler, zombies and the necromancer's servant, bears, boars, cats, spiders, giants and more).
 - Horses: your character stays in the saddle on stablemaster routes when the horse goes up or down hills.
+- `/passive`: your companions and their pets stop fighting, casting, healing and buffing and only follow you - for
+  retreating or running through an area. The group window's stance button cycles AGGRESSIVE, DEFENSIVE and PASSIVE
+  (green). It stops `/grind`, and resets to aggressive at login.
+- `/grind` looks about 25% further for monsters (1,250 to 2,500 units, by the puller's bow or spell range), and the
+  puller walks up a little further to shoot.
+- Companions: healers that can melee (Shaman, Cleric, Druid, Healer, Friar) have a new Role choice, "Melee and heal,
+  no attack spells": they fight in melee, heal at their normal line and keep their buffs, but never nuke, DoT or
+  debuff. Casters (Runemaster, Wizard, Sorcerer, Eldritch, Spiritmaster, Enchanter, Theurgist, Cabalist, Animist,
+  Bonedancer) get "Save power: Strict" (no nukes or area spells under half power, whoever is tanking) and "Attack
+  spells: Area spells only / None - buffs only" (a Runemaster on None keeps its bladeturn up and saves its power).
+  Automatic stays as it was.
+- Companions in Darkness Falls follow you on foot instead of vanishing and reappearing behind you (GitHub issue #38).
+- Targeting: a monster that changes shape, such as the minor changeling, stays targeted with its name and health
+  shown, and its new size shows.
+- Housing: the housing zones have maps, and lot deeds can be bought from the lot marker (the purchase went to the
+  last NPC you had clicked). The consignment merchant deed is gone; the Realm Exchange replaces it (GitHub issue #31).
+- Maps: an area the original game had no map for, such as Dodens Gruva, says so instead of showing black (GitHub
+  issue #32).
+- Merchants: Shift+click on a quantity arrow steps by 10, the mouse wheel changes the quantity, and the down arrow
+  at 1 goes to 100 (GitHub issue #33).
+- Collision: the Jordheim assembly hall has its walls again, and so do 15 other buildings and rooms converted before
+  a collision fix, in Tir na Nog, Darkness Falls and several dungeons (GitHub issue #34).
+- Realm abilities: their delve text shows values instead of "EN INFO1", and seven descriptions lost stray characters
+  (Ichor of the Deep, Doombringer, Ravager...) (GitHub issue #35).
+- Spindelhalla: a stray copy of Jordheim's weapon merchant Kalf is gone, and Te'Bui stands at its period spot deeper
+  in, not beside the entrance where it killed low-level bots (GitHub issue #36).
+- Loot: 933 drops that didn't stack now stack like others of their kind - gems, pelts, teeth, claws, carapaces and
+  more (GitHub issue #36). Nothing a quest takes was changed.
+- Loot: the Tattered Rawhide Brea Jerkin drops only as the period leather piece; a broken cloth copy is gone.
+- Darkness Falls: 245 over-dense spawns are thinned (essence shredders, plated fiends, rocots, young necyomancers...)
+  and a few demons at the Midgard entrance; every camp keeps monsters (GitHub issue #39).
+- Gamebots: a group that keeps losing members to monsters far above it leaves instead of regrouping beside them (the
+  glimmers in Shannon Estuary killed one group dozens of times), and the camp is avoided by groups of that level for
+  two hours.
+- Gamebots: a group's healer walks over to raise a fallen member, also while the group regroups, unless the body
+  lies beside the killer; fewer bots give up and release.
+- Gamebots: low-level bots take a safer horse landing when the walk from it crosses a known death spot (the Howth
+  landing and the Silvermine road), level 15 bots skip the Parthanan Farm stop, and bots no longer pile up on a
+  cliff edge in Camelot Hills on the way to the Black Mountains.
+- Gamebots: Savages stop buying shields they can't use and Bards and Minstrels stop re-buying flutes; no bot buys
+  a copy of gear it already owns.
 
 ## 0.5 (2026-11-09)
 
