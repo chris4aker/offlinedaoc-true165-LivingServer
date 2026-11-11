@@ -113,6 +113,8 @@ hold). Its changelog has the history of everything this version inherits.
   a copy of gear it already owns.
 - Merchants: Darkness Falls seal merchants and bounty merchants show an item's cost in seals or bounty points,
   such as "28 EMERALD SEALS"; it read as copper (GitHub issue #37).
+- Name colours: gamebots and companions show the light blue player colour as soon as they come into view; some
+  showed the NPC cyan first and switched as they came closer.
 
 ## 0.5 (2026-11-09)
 
