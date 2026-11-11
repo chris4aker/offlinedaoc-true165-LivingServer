@@ -1199,6 +1199,9 @@ namespace DOL.GS
                     out bool newHotspot) is { } hotspot && newHotspot)
                 log.Info($"AUTONOMOUS_ROAD_HOTSPOT region={hotspot.Region} at={hotspot.X},{hotspot.Y} killer=\"{deathSource.Name}\" " +
                          $"killer_level={hotspot.KillerLevel} - bots below level {hotspot.KillerLevel - AutonomousRoadHotspots.KillerLevelsAbove + 1} avoid it");
+            // item 16: a party losing members to monsters far above them near one spot leaves it (AutonomousGroupDangerRetreat)
+            if (IsAutonomousWorldBot && Group != null && killer is GameLiving partyKiller)
+                AutonomousBotGroupCoordinator.NoteMemberDeath(this, partyKiller);
             if (Classic165Mode.IsOn && IsAutonomousWorldBot && Group == null && PersistentRecord is { BindRegionId: > 0 } bind)
                 _bindDeaths165.Record(CurrentRegionID, X, Y, (ushort)bind.BindRegionId, bind.BindX, bind.BindY, GameLoop.GameLoopTime);
             IsReturningAfterRelease = false;

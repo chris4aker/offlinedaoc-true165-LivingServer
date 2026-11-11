@@ -1782,6 +1782,9 @@ public static partial class AutonomousBotGroupCoordinator
             FinishGroupTask(session, eventReason);
             return false;
         }
+        // item 16: members lost to monsters far above them near one spot end the task there (AutonomousGroupDangerRetreat)
+        if (raidView == null && TryRetreatFromDanger(session, members))
+            return false;
         if (session.TaskClock.HasExpired(GameLoop.GameLoopTime) &&
             raidView == null &&
             !(session.ObjectiveKind == eAutonomousObjectiveKind.RvR &&
