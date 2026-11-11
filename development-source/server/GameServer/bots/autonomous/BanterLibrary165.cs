@@ -30,7 +30,16 @@ namespace DOL.GS
         /// Placeholder values a line's "only" may test: the line is said only when the speaker's value is one of the
         /// names listed, so a line about one place, monster, boss or class is never said about another.
         /// </summary>
-        public static readonly string[] OnlyKeys = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination"];
+        public static readonly string[] OnlyKeys = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination", "time", "thread"];
+
+        /// <summary>"only": { "time": ... } names: the game clock where the speaker stands (night is 18:00 to 06:00).</summary>
+        public static readonly string[] Times = ["day", "night"];
+
+        /// <summary>How often a reply to an opener that "invites" something is taken from the lines written for that thread.</summary>
+        public const double ThreadReplyChance = 0.75;
+
+        /// <summary>Open situations whose zone lines also answer a player who asks about that zone.</summary>
+        public static readonly string[] PlaceTalk = ["dungeon", "hunting", "travel", "idle"];
 
         /// <summary>Placeholders every situation can use (the speaker's own facts).</summary>
         public static readonly string[] AlwaysPlaceholders = ["bot", "realm", "enemyrealm", "level", "class", "zone"];
@@ -128,6 +137,7 @@ namespace DOL.GS
         private static readonly HashSet<string> ForbiddenWordSet = new(ForbiddenWords, StringComparer.OrdinalIgnoreCase);
         private static readonly Regex PlaceholderRegex = new(@"\{([a-z]+)\}", RegexOptions.Compiled);
         private static readonly Regex WordRegex = new(@"[A-Za-z']+", RegexOptions.Compiled);
+        private static readonly Regex ThreadRegex = new(@"^[a-z]+(_[a-z]+)*$", RegexOptions.Compiled);
 
         /// <summary>One loaded line. Masks keep a pick cheap at 1,500+ bots.</summary>
         public sealed class Line
@@ -145,6 +155,8 @@ namespace DOL.GS
             public string[] Placeholders;
             /// <summary>"only": placeholder name to the values it must be one of; null when the line has no such test.</summary>
             public Dictionary<string, string[]> Only;
+            /// <summary>"invites": what this opening line asks for ("boast", "joke"); replies that test only.thread answer it.</summary>
+            public string Invites;
             public string File;
         }
 
@@ -163,7 +175,7 @@ namespace DOL.GS
 
         /// <summary>What a pick asks for. Values holds the placeholder values this call can fill.</summary>
         public sealed record Query(IReadOnlyList<string> Situations, string Channel, eRealm Realm, int Level, string ClassName,
-            bool? Reply, IReadOnlyDictionary<string, string> Values);
+            bool? Reply, IReadOnlyDictionary<string, string> Values, string MustTest = null);
 
         #region Loading
 
@@ -271,7 +283,7 @@ namespace DOL.GS
             return defaults.ValueKind == JsonValueKind.Object && defaults.TryGetProperty(name, out JsonElement fallback) ? fallback : default;
         }
 
-        private static readonly string[] LineKeys = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only"];
+        private static readonly string[] LineKeys = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only", "invites"];
 
         /// <summary>One line object (with file defaults applied); null when it cannot be used. Problems go to errors.</summary>
         public static Line ParseLine(JsonElement element, JsonElement defaults, List<string> errors)
@@ -379,7 +391,19 @@ namespace DOL.GS
             if (line.ChannelMask == 1 << 3 && !line.Situations.All(IsReplySituation))
                 errors.Add("the group channel is only used for reply_* lines");
 
-            line.Only = ParseOnly(Field(element, defaults, "only"), line.Situations, errors);
+            line.Only = ParseOnly(Field(element, defaults, "only"), line.Situations, line.Reply, errors);
+
+            JsonElement invites = Field(element, defaults, "invites");
+            if (invites.ValueKind != JsonValueKind.Undefined)
+            {
+                string word = invites.ValueKind == JsonValueKind.String ? invites.GetString() : null;
+                if (word == null || !ThreadRegex.IsMatch(word))
+                    errors.Add("\"invites\" must be one word of lower-case letters, such as \"boast\"");
+                else if (line.Reply || line.Situations.Any(IsKindless))
+                    errors.Add("\"invites\" is for an opening line (not kind reply, reply_*, chat_close or guild_join)");
+                else
+                    line.Invites = word;
+            }
 
             errors.AddRange(CheckText(line.Text, line.Situations, out line.Placeholders));
             return line;
@@ -389,7 +413,7 @@ namespace DOL.GS
         /// "only": { "zone": ["Spindelhalla"], "class": "Skald" }. Each key is a placeholder from OnlyKeys that the
         /// line's situations can fill; each value is one name or a list of names (compared without case).
         /// </summary>
-        private static Dictionary<string, string[]> ParseOnly(JsonElement only, IReadOnlyCollection<string> situations, List<string> errors)
+        private static Dictionary<string, string[]> ParseOnly(JsonElement only, IReadOnlyCollection<string> situations, bool reply, List<string> errors)
         {
             if (only.ValueKind == JsonValueKind.Undefined)
                 return null;
@@ -414,7 +438,19 @@ namespace DOL.GS
                     errors.Add($"\"only.{property.Name}\" has an empty name or one with spaces around it");
                     continue;
                 }
-                if (Array.IndexOf(AlwaysPlaceholders, property.Name) < 0)
+                if (property.Name == "time")
+                {
+                    if (names.Any(name => Array.IndexOf(Times, name) < 0))
+                        errors.Add("\"only.time\" is \"day\" or \"night\"");
+                }
+                else if (property.Name == "thread")
+                {
+                    if (!reply || situations.Any(IsKindless))
+                        errors.Add("\"only\" tests thread, which only a kind reply line can follow");
+                    else if (names.Any(name => !ThreadRegex.IsMatch(name)))
+                        errors.Add("\"only.thread\" names must be one word of lower-case letters, such as \"boast\"");
+                }
+                else if (Array.IndexOf(AlwaysPlaceholders, property.Name) < 0)
                     foreach (string situation in situations)
                         if (Situations.TryGetValue(situation, out string[] extra) && Array.IndexOf(extra, property.Name) < 0)
                             errors.Add($"\"only\" tests {{{property.Name}}}, which is never filled in situation {situation}");
@@ -540,6 +576,8 @@ namespace DOL.GS
             foreach (string token in line.Placeholders)
                 if (query.Values == null || !query.Values.TryGetValue(token, out string value) || string.IsNullOrWhiteSpace(value))
                     return false;
+            if (query.MustTest != null && (line.Only == null || !line.Only.ContainsKey(query.MustTest)))
+                return false;
             if (line.Only != null)
                 foreach (KeyValuePair<string, string[]> test in line.Only)
                 {
@@ -805,6 +843,40 @@ namespace DOL.GS
         /// The reply situations for a player's message, most fitting first, always ending in reply_general.
         /// Reuses the intent model; a few period chat words (ding, thx, rez, bg) are caught first.
         /// </summary>
+        /// <summary>
+        /// The place a message names, or null: the longest of the names that stands in it as whole words. Case,
+        /// apostrophes and full stops do not count ("odins gate" names Odin's Gate). Pure.
+        /// </summary>
+        public static string PlaceNamed(string message, IEnumerable<string> names)
+        {
+            if (string.IsNullOrWhiteSpace(message) || names == null)
+                return null;
+            string said = " " + PlainWords(message) + " ";
+            string best = null;
+            foreach (string name in names)
+            {
+                if (string.IsNullOrWhiteSpace(name) || best != null && name.Length <= best.Length)
+                    continue;
+                string plain = PlainWords(name);
+                if (plain.Length >= 4 && said.Contains(" " + plain + " ", StringComparison.Ordinal))
+                    best = name;
+            }
+            return best;
+        }
+
+        private static string PlainWords(string text) =>
+            Regex.Replace(Regex.Replace(text.ToLowerInvariant(), @"['.]", string.Empty), @"[^a-z0-9]+", " ").Trim();
+
+        /// <summary>True when a message that names a place reads as a question about it (or was said to the bot).</summary>
+        public static bool AsksAboutPlace(string message, bool directed)
+        {
+            // a message that names a zone is about the world, whatever the intent model makes of the zone's name
+            string text = message ?? string.Empty;
+            if (AutonomousChatIntentModel.Predict(text) == eAutonomousChatIntent.Abuse || directed && Stop.IsMatch(text))
+                return false;
+            return directed || Where.IsMatch(text) || Question.IsMatch(text);
+        }
+
         public static List<string> ClassifyPlayerMessage(string message, bool directed)
         {
             var keys = new List<string>(4);

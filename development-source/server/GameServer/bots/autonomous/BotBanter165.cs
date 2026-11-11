@@ -146,6 +146,7 @@ namespace DOL.GS
             values["level"] = bot.Level.ToString();
             values["class"] = bot.ClassName;
             values["zone"] = bot.CurrentZone?.Description ?? string.Empty;
+            values["time"] = bot.CurrentRegion?.IsNightTime == true ? "night" : "day";
             string guild = AutonomousBotGuilds.GuildNameFor(bot);
             if (!string.IsNullOrWhiteSpace(guild))
                 values["guild"] = guild;
@@ -272,19 +273,24 @@ namespace DOL.GS
         /// used only part of the time (BanterLibrary165.UseLibraryChance) so the old lines stay in the mix.
         /// </summary>
         private static string Pick(IReadOnlyList<string> keys, string channel, GameBot speaker, Dictionary<string, string> values,
-            bool? reply, out string situation)
+            bool? reply, out string situation) => Pick(keys, channel, speaker, values, reply, null, out situation, out _);
+
+        /// <summary>The same, with the chosen line; mustTest keeps only lines whose "only" tests that value.</summary>
+        private static string Pick(IReadOnlyList<string> keys, string channel, GameBot speaker, Dictionary<string, string> values,
+            bool? reply, string mustTest, out string situation, out BanterLibrary165.Line line)
         {
             situation = null;
+            line = null;
             BanterLibrary165.BanterSet set = Current;
             if (set.Count == 0 || speaker == null)
                 return null;
-            var query = new BanterLibrary165.Query(keys, channel, speaker.Realm, speaker.Level, speaker.ClassName, reply, values);
+            var query = new BanterLibrary165.Query(keys, channel, speaker.Realm, speaker.Level, speaker.ClassName, reply, values, mustTest);
             int candidates = BanterLibrary165.CountCandidates(set, query, out string matched);
             if (candidates == 0)
                 return null;
             if (BanterLibrary165.BuiltInCovers(matched) && Random.Shared.NextDouble() >= BanterLibrary165.UseLibraryChance(candidates))
                 return null;
-            BanterLibrary165.Line line = BanterLibrary165.Choose(set, query, Random.Shared, IsRecent, out situation);
+            line = BanterLibrary165.Choose(set, query, Random.Shared, IsRecent, out situation);
             if (line == null)
                 return null;
             Remember(line.Id);
@@ -318,12 +324,14 @@ namespace DOL.GS
                 return null;
             (BanterLibrary165.Facts facts, Dictionary<string, string> values) = Read(bot, context);
             List<string> keys = BanterLibrary165.ResolveAmbient(facts, Random.Shared);
-            string line = Pick(keys, channel, bot, values, false, out string situation);
+            string line = Pick(keys, channel, bot, values, false, null, out string situation, out BanterLibrary165.Line chosen);
             if (line == null)
                 return null;
             if (situation == "levelup")
                 LevelUpAt.TryRemove(bot.DatabaseID, out _);   // one level-up line per level
             topic = new Topic { Situation = situation };
+            if (chosen?.Invites != null)
+                topic.Shared["thread"] = chosen.Invites;   // a boast is answered as a boast
             foreach (string shared in new[] { "keep", "raid", "boss", "bg", "enemyrealm", "target", "destination", "item" })
                 if (values.TryGetValue(shared, out string value))
                     topic.Shared[shared] = value;
@@ -339,6 +347,11 @@ namespace DOL.GS
             // the opener's topic (enemyrealm, keep, target...) wins over the responder's own values (owner 2026-11-10)
             foreach ((string key, string value) in topic.Shared)
                 values[key] = value;
+            // the opener asked for something (a boast, a joke): most of the time the answer is one written for that
+            if (topic.Shared.ContainsKey("thread") && Random.Shared.NextDouble() < BanterLibrary165.ThreadReplyChance &&
+                Pick([topic.Situation], channel, responder, values, true, "thread", out _, out _) is { } threaded)
+                return threaded;
+            values.Remove("thread");
             return Pick([topic.Situation], channel, responder, values, true, out _);
         }
 
@@ -353,7 +366,33 @@ namespace DOL.GS
                 return null;
             Dictionary<string, string> values = Read(responder).Values;
             values["player"] = player.Name;
+            // asked about a place by name, a bot that has something to say about that place says it
+            if (BanterLibrary165.PlaceNamed(message, ZoneNames()) is { } place && BanterLibrary165.AsksAboutPlace(message, directed))
+            {
+                var about = new Dictionary<string, string>(values, StringComparer.Ordinal) { ["zone"] = place };
+                if (Pick(BanterLibrary165.PlaceTalk, channel, responder, about, false, "zone", out _, out _) is { } told)
+                    return told;
+            }
             return Pick(BanterLibrary165.ClassifyPlayerMessage(message, directed), channel, responder, values, true, out _);
+        }
+
+        private static string[] _zoneNames;
+
+        /// <summary>Every zone's name, read once (the world's zones do not change while the server runs).</summary>
+        private static string[] ZoneNames()
+        {
+            if (_zoneNames != null)
+                return _zoneNames;
+            try
+            {
+                _zoneNames = WorldMgr.Zones.Values.Select(zone => zone?.Description).Where(name => !string.IsNullOrWhiteSpace(name))
+                    .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+            }
+            catch (Exception)
+            {
+                return [];
+            }
+            return _zoneNames;
         }
 
         /// <summary>One line for a fixed situation (e.g. guild_join), or null.</summary>

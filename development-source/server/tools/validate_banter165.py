@@ -70,8 +70,10 @@ discord twitch youtube phone
 """.split()}
 FORBIDDEN_PHRASES = ["champion level", "master level", "new frontiers", "darkness rising", "trials of", "/go", "real life", "irl"]
 
-LINE_KEYS = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only"]
-ONLY_KEYS = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination"]
+LINE_KEYS = ["text", "situation", "channel", "realm", "level", "classType", "kind", "weight", "only", "invites"]
+ONLY_KEYS = ["zone", "class", "target", "boss", "raid", "keep", "bg", "destination", "time", "thread"]
+TIMES = ["day", "night"]
+THREAD = re.compile(r"^[a-z]+(_[a-z]+)*$")
 MIN_LEN, MAX_LEN = 4, 160
 PLACEHOLDER = re.compile(r"\{([a-z]+)\}")
 WORD = re.compile(r"[A-Za-z']+")
@@ -216,10 +218,24 @@ def check_line(line, defaults, errors):
                 if any(not n.strip() or n != n.strip() for n in names):
                     errors.append(f'"only.{key}" has an empty name or one with spaces around it')
                     continue
-                if key not in ALWAYS:
+                if key == "time":
+                    if any(n not in TIMES for n in names):
+                        errors.append('"only.time" is "day" or "night"')
+                elif key == "thread":
+                    if kind != "reply" or any(is_kindless(s) for s in situations):
+                        errors.append('"only" tests thread, which only a kind reply line can follow')
+                    elif any(not THREAD.match(n) for n in names):
+                        errors.append('"only.thread" names must be one word of lower-case letters, such as "boast"')
+                elif key not in ALWAYS:
                     for s in situations:
                         if s in SITUATIONS and key not in SITUATIONS[s]:
                             errors.append(f'"only" tests {{{key}}}, which is never filled in situation {s}')
+    invites = field("invites")
+    if invites is not None:
+        if not isinstance(invites, str) or not THREAD.match(invites):
+            errors.append('"invites" must be one word of lower-case letters, such as "boast"')
+        elif kind == "reply" or any(is_kindless(s) for s in situations):
+            errors.append('"invites" is for an opening line (not kind reply, reply_*, chat_close or guild_join)')
     check_text(text, situations, errors)
     return situations
 

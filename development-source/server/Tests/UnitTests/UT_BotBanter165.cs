@@ -106,6 +106,11 @@ public class UT_BotBanter165
     [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"level\":[\"50\"]}}", "cannot test")]
     [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"boss\":[\"Golestandt\"]}}", "never filled")]
     [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"zone\":[\" Spindelhalla\"]}}", "spaces around")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"time\":\"dusk\"}}", "\"day\" or \"night\"")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"only\":{\"thread\":\"boast\"}}", "only a kind reply line")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"reply_general\",\"only\":{\"thread\":\"boast\"}}", "only a kind reply line")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"kind\":\"reply\",\"invites\":\"boast\"}", "for an opening line")]
+    [TestCase("{\"text\":\"Hello there\",\"situation\":\"idle\",\"invites\":\"Two Words\"}", "one word of lower-case letters")]
     public void Parse_RejectsBadLines(string line, string expected)
     {
         BanterLibrary165.BanterSet set = Parse(File1(line));
@@ -169,6 +174,52 @@ public class UT_BotBanter165
         // no value to test (the speaker is not in a zone the query knows): the line is not said
         var noZone = new BanterLibrary165.Query(["dungeon"], "say", eRealm.Midgard, 30, "Skald", null, Values(("class", "Skald")));
         Assert.That(BanterLibrary165.Choose(set, noZone, rng, null, out _), Is.Null);
+    }
+
+    [Test]
+    public void Choose_KeepsNightLinesForTheNightAndThreadRepliesForTheirThread()
+    {
+        BanterLibrary165.BanterSet set = Parse(File1(
+            "{\"text\":\"Quiet out here after dark.\",\"situation\":\"idle\",\"only\":{\"time\":\"night\"}}," +
+            "{\"text\":\"Soloed an orange with no potions.\",\"situation\":\"idle\",\"invites\":\"boast\"}," +
+            "{\"text\":\"Show off.\",\"situation\":\"idle\",\"kind\":\"reply\",\"only\":{\"thread\":[\"boast\"]}}," +
+            "{\"text\":\"True enough.\",\"situation\":\"idle\",\"kind\":\"reply\"}"));
+        Assert.That(set.Errors, Is.Empty, string.Join("; ", set.Errors));
+        Assert.That(set.BySituation["idle"].Single(l => l.Text.StartsWith("Soloed")).Invites, Is.EqualTo("boast"));
+        var rng = new Random(7);
+        BanterLibrary165.Query Open(string time) => new(["idle"], "say", eRealm.Albion, 30, "Armsman", false, Values(("time", time)));
+        Assert.That(BanterLibrary165.CountCandidates(set, Open("day"), out _), Is.EqualTo(1), "the night line is not said by day");
+        Assert.That(BanterLibrary165.CountCandidates(set, Open("night"), out _), Is.EqualTo(2));
+
+        // after a boast: with the thread, both replies fit; a pick that must test the thread takes the one written for it
+        var afterBoast = new BanterLibrary165.Query(["idle"], "say", eRealm.Albion, 30, "Armsman", true, Values(("thread", "boast")));
+        Assert.That(BanterLibrary165.CountCandidates(set, afterBoast, out _), Is.EqualTo(2));
+        Assert.That(BanterLibrary165.Choose(set, afterBoast with { MustTest = "thread" }, rng, null, out _).Text, Is.EqualTo("Show off."));
+        // after an opener that invites nothing (or a joke), the boast reply is never said
+        var afterNothing = new BanterLibrary165.Query(["idle"], "say", eRealm.Albion, 30, "Armsman", true, Values(("time", "day")));
+        Assert.That(BanterLibrary165.Choose(set, afterNothing, rng, null, out _).Text, Is.EqualTo("True enough."));
+        var afterJoke = new BanterLibrary165.Query(["idle"], "say", eRealm.Albion, 30, "Armsman", true, Values(("thread", "joke")));
+        Assert.That(BanterLibrary165.Choose(set, afterJoke with { MustTest = "thread" }, rng, null, out _), Is.Null);
+    }
+
+    [TestCase("anyone know what is in spindelhalla?", "Spindelhalla")]
+    [TestCase("what is odins gate like", "Odin's Gate")]
+    [TestCase("Is the Vale of Mularn safe at 5?", "Vale of Mularn")]
+    [TestCase("how do I get to black mtns south", "Black Mtns. South")]
+    [TestCase("lfg, any camp", null)]
+    [TestCase("the valet of mularnia", null)]
+    public void PlaceNamed_FindsTheLongestZoneNameSaidAsWholeWords(string message, string expected)
+    {
+        string[] zones = ["Spindelhalla", "Odin's Gate", "Vale of Mularn", "Mularn", "Black Mtns. South", "Vale"];
+        Assert.That(BanterLibrary165.PlaceNamed(message, zones), Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void AsksAboutPlace_NeedsAQuestionOrADirectWord()
+    {
+        Assert.That(BanterLibrary165.AsksAboutPlace("what is in spindelhalla?", directed: false), Is.True);
+        Assert.That(BanterLibrary165.AsksAboutPlace("spindelhalla", directed: true), Is.True);
+        Assert.That(BanterLibrary165.AsksAboutPlace("shut up about spindelhalla you idiot", directed: true), Is.False);
     }
 
     [Test]
