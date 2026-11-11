@@ -37,14 +37,14 @@ namespace DOL.GS
             return path;
         }
 
-        /// <summary>The XP rates in use: locked to 1x for players and bots in True 1.65 Mode (owner 2026-10-30), whatever the
-        /// launcher or a GM sets; normal mode uses the server properties as before.</summary>
-        public static double PlayerXpRate => IsOn ? 1.0 : ServerProperties.Properties.XP_RATE;
+        /// <summary>The XP rates in use: the launcher's Player XP rate and Gamebot XP rate options (default 1x). The 1x lock
+        /// of True 1.65 Mode (owner 2026-10-30) is lifted (owner 2026-11-10: bring the XP options back).</summary>
+        public static double PlayerXpRate => XpRates165.Sanitize(ServerProperties.Properties.XP_RATE);
 
         /// <summary>RvR event musters and marches in 1.65 Mode: bots walk without hasteners (plan section 6), so the
         /// travel-bound time limits are half again as long. Normal mode keeps its values.</summary>
         public static long TravelTime(long normal) => IsOn ? normal * 3 / 2 : normal;
-        public static double BotXpRate => IsOn ? 1.0 : ServerProperties.Properties.BOT_XP_RATE;
+        public static double BotXpRate => XpRates165.Sanitize(ServerProperties.Properties.BOT_XP_RATE);
 
         // Script namespaces and types that are freeshard or custom content: their start-up hooks do nothing in True 1.65
         // Mode (owner: everything freeshards added is removed; only the bot systems and the Realm Exchange stay).
