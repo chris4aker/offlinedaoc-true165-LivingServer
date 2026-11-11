@@ -2947,11 +2947,15 @@ namespace DOL.GS
 				else if (log.IsWarnEnabled)
 					log.Warn($"No resists defined for type: {type}");
 			}
-			else if (log.IsWarnEnabled)
+			// once per race id (2026-11-11 run: 165 identical lines for the Marfach "innocent" rows of race 2209); the
+			// missing row still gives 0, as before
+			else if (log.IsWarnEnabled && m_unknownRaceWarned.TryAdd(race, 0))
 				log.Warn($"No resists defined for race: {race}");
 
 			return resistValue;
 		}
+
+		private static readonly ConcurrentDictionary<int, byte> m_unknownRaceWarned = new();
 
 		/// <summary>
 		/// Convert object type to spec needed to use that object
@@ -2960,8 +2964,11 @@ namespace DOL.GS
 		/// <returns>spec names needed to use that object type</returns>
 		public static string ObjectTypeToSpec(eObjectType objectType)
 		{
+			// An instrument has no weapon specialization (a Bard/Minstrel/Skald trains no "Instrument" weapon line): null
+			// without a warning. A bard fighting with its drum active asked this on every attack check (2026-11-11 run:
+			// 191 warnings in 3 seconds, 01:33:54, a level 5 Bard meleeing with its training drum).
 			if (!m_objectTypeToSpec.TryGetValue(objectType, out string res))
-				if (log.IsWarnEnabled)
+				if (objectType is not eObjectType.Instrument && log.IsWarnEnabled)
 					log.Warn("Not found spec for object type " + objectType);
 			return res;
 		}
