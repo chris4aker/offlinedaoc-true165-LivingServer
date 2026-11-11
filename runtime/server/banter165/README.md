@@ -31,5 +31,10 @@ Check before handing in:
 - `kind`: open (default: starts a conversation or stands alone) | reply (answers another bot's line in the same situation).
   Not used on reply_*, chat_close, guild_join.
 - `weight`: above 0, at most 10 (default 1).
+- `only` (optional): the line is said only when the speaker's own value is one of the names given, for example
+  `"only": { "zone": ["Spindelhalla"] }` or `"only": { "class": "Skald", "target": ["Pywrtr"] }`. It tests the same
+  values the placeholders fill: zone, class, target, boss, raid, keep, bg, destination (a key must be one the line's
+  situation can fill). Names are compared without case. Use it for a line that is true of one place, monster, boss or
+  class and wrong of any other.
 - `text`: 4-160 printable ASCII characters, no double quotes, no double spaces, no curly quotes or dashes; placeholders
   in braces from the allowed list for that situation. A line whose placeholder has no value at that moment is not said.
