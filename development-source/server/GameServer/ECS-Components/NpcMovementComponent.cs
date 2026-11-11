@@ -56,7 +56,7 @@ namespace DOL.GS
             FallContinuation fall = _fallContinuation;
             if (fall == null) return false;
             Vector3 expected = fall.Stage == FallStage.WalkOffLip ? fall.Air : fall.Landing;
-            if (Owner is not GameBot { IsAutonomousWorldBot: true } bot ||
+            if (Owner is not GameBot bot || !CompanionDarknessFallsPaths.MayUseCertifiedFall(bot) ||
                 bot.CurrentRegionID != fall.Region || bot.Group != fall.Group ||
                 bot.PersistentRecord?.ObjectiveAssignmentId != fall.Assignment || !bot.IsAlive ||
                 bot.IsOnStableMasterRoute || Vector3.DistanceSquared(_ownerPosition, expected) > 16 * 16)
@@ -279,7 +279,7 @@ namespace DOL.GS
             // The controller may reissue the same travel order every tick.
             // Do not restart a certified fall between its lip and landing.
             if (_fallContinuation is { } fall &&
-                Owner is GameBot { IsAutonomousWorldBot: true } &&
+                Owner is GameBot fallBot && CompanionDarknessFallsPaths.MayUseCertifiedFall(fallBot) &&
                 Owner.CurrentRegionID == fall.Region &&
                 Vector3.DistanceSquared(destination, fall.Final) <= 64 * 64)
                 return;
@@ -718,7 +718,8 @@ namespace DOL.GS
             if (_pathfinder.TryGetNextNode(zone, _ownerPosition, destination, out Vector3? _nextNode))
             {
                 ClearAutonomousPathFailure();
-                if (Owner is GameBot { IsAutonomousWorldBot: true } bot &&
+                // GitHub #38: a player's companion takes the certified entrance drops too, following its player down.
+                if (Owner is GameBot bot && CompanionDarknessFallsPaths.MayUseCertifiedFall(bot) &&
                     zone.ID == AutonomousDarknessFallsPolicy.RegionId &&
                     _pathfinder.PathfindingStatus == PathfindingStatus.PathFound &&
                     AutonomousDarknessFallsNavigation.TryGetCertifiedFall(_ownerPosition,
@@ -963,6 +964,11 @@ namespace DOL.GS
                 StopMoving();
                 return 0;
             }
+
+            // A certified DF fall in progress (lip, then landing) finishes before the follow plans again: a replot from
+            // the lip would drop the fall and cut through the wall below (GitHub #38, companions following down a drop).
+            if (_fallContinuation != null && IsFlagSet(MovementState.WalkTo))
+                return Properties.GAMENPC_FOLLOWCHECK_TIME;
 
             Vector3 targetPos = new(FollowTarget.X, FollowTarget.Y, FollowTarget.Z);
 

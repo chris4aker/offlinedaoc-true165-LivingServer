@@ -102,17 +102,24 @@ namespace DOL.GS
                 pathBuffer.Clear();
                 pathBuffer.Origin = position;
 
-                if (Owner is GameBot { IsAutonomousWorldBot: true } &&
-                    zone.ZoneRegion?.ID == AutonomousDarknessFallsPolicy.RegionId &&
-                    !AutonomousDarknessFallsNavigation.MayQueueRuntimePath(pathfindingResult,
-                        rentedNodeBuffer, position, target) &&
-                    !AutonomousDarknessFallsNavigation.MayQueueOwnExitGroundPath(Owner.Realm,
-                        pathfindingResult, rentedNodeBuffer, position, target))
+                if (Owner is GameBot { IsAutonomousWorldBot: true } dfBot && zone.ZoneRegion?.ID == AutonomousDarknessFallsPolicy.RegionId)
                 {
-                    // DF navigation is only safe as a complete certified 3D
-                    // corridor. Do not advance along a partial route or an
-                    // uncertified Jump/fall while looking for a better path.
-                    return PathfindingStatus.NoPathFound;
+                    bool certified = AutonomousDarknessFallsNavigation.MayQueueRuntimePath(pathfindingResult,
+                            rentedNodeBuffer, position, target) ||
+                        AutonomousDarknessFallsNavigation.MayQueueOwnExitGroundPath(Owner.Realm,
+                            pathfindingResult, rentedNodeBuffer, position, target);
+                    if (CompanionDarknessFallsPaths.UsesCertifiedRouteGate(dfBot))
+                    {
+                        // DF navigation is only safe as a complete certified 3D
+                        // corridor. Do not advance along a partial route or an
+                        // uncertified Jump/fall while looking for a better path.
+                        if (!certified)
+                            return PathfindingStatus.NoPathFound;
+                    }
+                    // GitHub #38: a player's companion follows on the ordinary Detour path.
+                    else
+                        CompanionDarknessFallsPaths.NotePath(dfBot, pathfindingResult.Status,
+                            pathfindingResult.NodeCount, !certified, position, target);
                 }
 
                 if (pathfindingResult.Status is PathfindingStatus.BufferTooSmall)
