@@ -33,6 +33,26 @@ public static class AutonomousBotGoalPolicy
         (eAutonomousObjectiveKind)Settings.ForLevel(level).Choose((random ?? Random.Shared).NextDouble(), excludeGroup,
             excludeBattlegrounds || !BattlegroundBrackets.LevelHasBracket(level));
 
+    // Owner 2026-11-10: Choose with the bot's role - healer and tank bots favour Group PvE, damage bots draw exactly
+    // as Choose (AutonomousGroupQueueBalance; switch bot_group_goal_role_aware).
+    public static eAutonomousObjectiveKind ChooseFor(GameBot bot, Random random = null, bool excludeGroup = false,
+        bool excludeBattlegrounds = false)
+    {
+        eQueueCapability capability = AutonomousGroupQueueBalance.GoalCapabilityFor(bot);
+        if (capability == eQueueCapability.None)
+        {
+            eAutonomousObjectiveKind plain = Choose(bot.Level, random, excludeGroup, excludeBattlegrounds);
+            AutonomousGroupQueueBalance.NoteGoalRoll(bot, plain);
+            return plain;
+        }
+        int level = bot.Level;
+        var kind = (eAutonomousObjectiveKind)AutonomousGroupQueueBalance.ChooseKindForRole(Settings.ForLevel(level), capability,
+            (random ?? Random.Shared).NextDouble(), excludeGroup,
+            excludeBattlegrounds || !BattlegroundBrackets.LevelHasBracket(level));
+        AutonomousGroupQueueBalance.NoteGoalRoll(bot, kind);
+        return kind;
+    }
+
     // A battleground goal also needs a bracket for the level (15-35); level is the only battleground limit.
     public static bool Allows(int level, eAutonomousObjectiveKind kind) =>
         Settings.ForLevel(level).Allows((int)kind) &&

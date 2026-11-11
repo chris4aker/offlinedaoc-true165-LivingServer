@@ -37,6 +37,13 @@ namespace DOL.GS
             _ => false
         };
 
+        /// <summary>
+        /// The PvE roster matcher's slot rule: CanFill, plus a Hibernian Bard in a Healer slot (owner 2026-11-10,
+        /// switch bot_bard_fills_healer_slot). CanFill itself is unchanged.
+        /// </summary>
+        public static bool CanFillPveSlot(eCharacterClass characterClass, BotPveGroupRole role) =>
+            CanFill(characterClass, role) || BardGroupHealer165.FillsSlot(characterClass, role, BardGroupHealer165.Enabled);
+
         public static string GroupRoleLabel(BotPveGroupRole role) => role switch
         {
             BotPveGroupRole.Tank => "Tank",
